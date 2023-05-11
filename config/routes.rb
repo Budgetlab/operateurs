@@ -2,6 +2,12 @@ Rails.application.routes.draw do
   root 'pages#index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
-  # Defines the root path route ("/")
-  # root "articles#index"
+  # routes statiques
+  get '/mentions-legales', to: 'pages#mentions_legales'
+  get '/donnees-personnelles', to: 'pages#donnees_personnelles'
+  get '/accessibilite', to: 'pages#accessibilite'
+  get '/plan', to: 'pages#plan'
+  #routes pages erreurs
+  match '/500', via: :all, to: 'errors#error_500'
+  match '/404', via: :all, to: 'errors#error_404'
 end
