@@ -12,4 +12,8 @@ class ErrorsControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
     assert response.status == 404
   end
+  test "should get error_503" do
+    get '/503'
+    assert response.status == 503
+  end
 end

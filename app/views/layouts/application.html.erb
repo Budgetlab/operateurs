@@ -1,16 +1,28 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr" data-fr-scheme="system">
   <head>
-    <title>Operateurs</title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title><%= content_for?(:title) ? yield(:title) : "Operateurs" %></title>
+    <meta name="theme-color" content="#000091"><!-- Défini la couleur de thème du navigateur (Safari/Android) -->
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "dsfr", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <%= javascript_include_tag 'custom/dsfr.module.min', module: true %>
+    <%= javascript_include_tag 'custom/dsfr.nomodule.min', nomodule: true %>
+    <%= favicon_link_tag 'favicon/favicon.ico' %>
+    <link rel="apple-touch-icon" href="favicon/apple-touch-icon.png"><!-- 180×180 -->
+    <link rel="icon" href="favicon/favicon.svg" type="image/svg+xml">
+
   </head>
 
   <body>
     <%= yield %>
+    <%= render 'layouts/footer'%>
+
   </body>
 </html>
