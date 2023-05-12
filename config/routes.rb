@@ -10,4 +10,5 @@ Rails.application.routes.draw do
   #routes pages erreurs
   match '/500', via: :all, to: 'errors#error_500'
   match '/404', via: :all, to: 'errors#error_404'
+  match '/503', via: :all, to: 'errors#error_503'
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# Controller Pages statiques + pages erreurs
+# Controller Pages statiques
 class PagesController < ApplicationController
   def index; end
   def mentions_legales; end
