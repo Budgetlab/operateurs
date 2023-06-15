@@ -25,27 +25,35 @@
             <p class="fr-header__service-tagline">baseline - précisions sur l‘organisation</p>
           </div>
         </div>
-        <div class="fr-header__tools">
-          <div class="fr-header__tools-links">
-            <ul class="fr-btns-group">
-              <li>
-                <a class="fr-btn fr-icon-lock-line" href="[url - à modifier]">
-                  Se connecter
-                </a>
-              </li>
-            </ul>
+        <% if user_signed_in? %>
+          <div class="fr-header__tools">
+            <div class="fr-header__tools-links ">
+              <ul class="fr-btns-group">
+                <li>
+                  <%= link_to "Se déconnecter", destroy_user_session_path, data: { "turbo-method": :delete }, class:"fr-btn fr-fi-logout-box-r-line" %>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
+        <% end %>
       </div>
     </div>
   </div>
+  <% if user_signed_in? %>
   <div class="fr-header__menu fr-modal" id="modal-499" aria-labelledby="button-500">
     <div class="fr-container">
       <button class="fr-btn--close fr-btn" aria-controls="modal-499" title="Fermer">
         Fermer
       </button>
-      <div class="fr-header__menu-links">
-      </div>
+      <div class="fr-header__menu-links"></div>
+      <nav class="fr-nav" id="fr-navigation" role="navigation" aria-label="Menu principal">
+        <ul class="fr-nav__list">
+          <li class="fr-nav__item">
+            <%= active_link_to root_path, class: "fr-nav__link", target: "_self", :active => [['pages'],['index']] do%>Accueil<%end%>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
+  <%end %>
 </header>
