@@ -7,7 +7,10 @@ Rails.application.routes.draw do
   post '/select_nom' => 'users#select_nom'
   root 'pages#index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
+  resources :organismes
+  post '/import_organismes' => 'organismes#import'
+  get '/ministeres' => 'ministeres#index'
+  post '/import_ministeres' => 'ministeres#import'
   # routes statiques
   get '/mentions-legales', to: 'pages#mentions_legales'
   get '/donnees-personnelles', to: 'pages#donnees_personnelles'

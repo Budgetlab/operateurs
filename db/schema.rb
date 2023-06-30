@@ -10,9 +10,70 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_14_082432) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_29_134902) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ministeres", force: :cascade do |t|
+    t.string "nom"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "organismes", force: :cascade do |t|
+    t.string "etat"
+    t.integer "siren"
+    t.string "acronyme"
+    t.string "nom"
+    t.string "famille"
+    t.string "nature"
+    t.date "date_creation"
+    t.date "date_dissolution"
+    t.date "date_previsionnelle_dissolution"
+    t.string "effet_dissolution"
+    t.bigint "bureau_id", null: false
+    t.string "texte_institutif"
+    t.string "commentaire"
+    t.string "statut"
+    t.boolean "gbcp_1"
+    t.boolean "agent_comptable_present"
+    t.string "degre_gbcp"
+    t.boolean "gbcp_3"
+    t.string "comptabilite_budgetaire"
+    t.boolean "presence_controle"
+    t.string "nature_controle"
+    t.string "texte_soumission_controle"
+    t.string "autorite_controle"
+    t.bigint "controleur_id", null: false
+    t.string "texte_reglementaire_controle"
+    t.string "arrete_controle"
+    t.boolean "document_controle_present"
+    t.string "document_controle_lien"
+    t.date "document_controle_date"
+    t.string "arrete_nomination"
+    t.boolean "tutelle_financiere"
+    t.boolean "delegation_approbation"
+    t.string "autorite_approbation"
+    t.bigint "ministere_id", null: false
+    t.boolean "admin_db_present"
+    t.string "admin_db_fonction"
+    t.boolean "admin_preca"
+    t.boolean "controleur_preca"
+    t.boolean "controleur_ca"
+    t.boolean "comite_audit"
+    t.boolean "apu"
+    t.boolean "ciassp_n"
+    t.boolean "ciassp_n1"
+    t.boolean "odac_n"
+    t.boolean "odac_n1"
+    t.boolean "odal_n"
+    t.boolean "odal_n1"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["bureau_id"], name: "index_organismes_on_bureau_id"
+    t.index ["controleur_id"], name: "index_organismes_on_controleur_id"
+    t.index ["ministere_id"], name: "index_organismes_on_ministere_id"
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -28,4 +89,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_14_082432) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "organismes", "ministeres"
+  add_foreign_key "organismes", "users", column: "bureau_id"
+  add_foreign_key "organismes", "users", column: "controleur_id"
 end

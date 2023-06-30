@@ -7,6 +7,13 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  has_many :bureau_organismes,
+           foreign_key: :bureau_id,
+           class_name: 'Organisme'
+  has_many :controleur_organismes,
+           foreign_key: :controleur_id,
+           class_name: 'Organisme'
+
   def self.import(file)
     data = Roo::Spreadsheet.open(file.path)
     headers = data.row(1) # get header row

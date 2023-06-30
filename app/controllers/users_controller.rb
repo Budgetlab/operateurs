@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   protect_from_forgery with: :null_session
   def index
     # redirect_to root_path unless current_user && current_user.statut != '2B2O'
+    @noms_users = User.all.pluck(:nom)
   end
 
   def import
