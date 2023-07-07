@@ -1,2 +1,10 @@
-<h1>Organismes#new</h1>
-<p>Find me in app/views/organismes/new.html.erb</p>
+<% content_for :title do %>Formulaire création d'un organisme | [NOM] <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+          <%= render 'form_identite' %>
+      </div>
+    </div>
+  </div>
+</main>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_29_134902) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_04_173921) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,6 +18,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_134902) do
     t.string "nom"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "organisme_rattachements", force: :cascade do |t|
+    t.bigint "organisme_id", null: false
+    t.bigint "organisme_destination_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisme_destination_id"], name: "index_organisme_rattachements_on_organisme_destination_id"
+    t.index ["organisme_id"], name: "index_organisme_rattachements_on_organisme_id"
   end
 
   create_table "organismes", force: :cascade do |t|
@@ -89,6 +98,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_134902) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "organisme_rattachements", "organismes"
+  add_foreign_key "organisme_rattachements", "organismes", column: "organisme_destination_id"
   add_foreign_key "organismes", "ministeres"
   add_foreign_key "organismes", "users", column: "bureau_id"
   add_foreign_key "organismes", "users", column: "controleur_id"
