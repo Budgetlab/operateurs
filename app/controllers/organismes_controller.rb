@@ -40,7 +40,7 @@ class OrganismesController < ApplicationController
     @organisme = Organisme.find(params[:id])
     if params[:step].to_i == 1
       @bureaux = User.where(statut: "Bureau Sectiorel").order(nom: :asc)
-      @organismes = Organisme.all.order(nom: :asc).pluck(:nom, :id, :siren)
+      @organismes = Organisme.where.not(id: @organisme.id).order(nom: :asc).pluck(:nom, :id, :siren)
       @noms_organismes = @organismes.map { |el| el[0] }
       @siren_organismes = @organismes.map { |el| el[2] }
     end
@@ -51,7 +51,14 @@ class OrganismesController < ApplicationController
   def update
     @organisme = Organisme.find(params[:id])
     if @organisme.update(organisme_params)
-      if @organisme.statut == "valide"
+      if params[:organisme][:organismes] && @organisme.etat == 'Inactif' && (@organisme.effet_dissolution == 'Création' || @organisme.effet_dissolution == 'Rattachement')
+        @organisme.organisme_rattachements.destroy_all
+        selected_organismes = params[:organisme][:organismes] || [] # Récupérer les valeurs cochées
+        selected_organismes.each do |organisme_id|
+          @organisme.organisme_rattachements.create(organisme_destination_id: organisme_id)
+        end
+      end
+      if @organisme.statut == 'valide'
         redirect_to @organisme
       else
         redirect_to edit_organisme_path

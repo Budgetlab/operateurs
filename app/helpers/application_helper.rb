@@ -4,7 +4,7 @@
 module ApplicationHelper
   def format_boolean(string)
     case string
-    when nil
+    when nil, ''
       'Non renseigné'
     when true
       'Oui'

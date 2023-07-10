@@ -2,10 +2,10 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
     static get targets() {
-        return ['form','submitBouton','fieldRequire', 'checkRequire'];
+        return ['form','submitBouton','fieldRequire', 'checkRequire','checklist'];
     }
     connect() {
-
+        this.validateForm(this.formTarget);
     }
     validateBtn(isValid){
         if (isValid == true) {
@@ -14,14 +14,25 @@ export default class extends Controller {
             this.submitBoutonTarget.disabled = true;
         }
     }
-    validateForm(event){
+    validateForm(){
         let isValid = true;
+        const inputFields = this.formTarget.querySelectorAll('input:not([type="hidden"]), select');
+        inputFields.forEach((field) => {
+            if (field.value != "") {
+                field.disabled = false;
+                field.parentNode.classList.remove('fr-select-group--disabled');
+            }
+        })
         this.fieldRequireTargets.forEach((field) => {
             if (field.value == "" && field.disabled == false){
                 isValid = false;
             }
         })
         if (this.data.get("nomsorganismes")!= null){
+            this.changeEtat();
+            this.changeNature();
+            this.changeEffetDissolution();
+            this.checkBox();
             const nom_orga = document.getElementById("nom").value;
             const noms_organismes = JSON.parse(this.data.get("nomsorganismes"));
             noms_organismes.forEach((nom) => {
@@ -30,11 +41,17 @@ export default class extends Controller {
                 }
             })
         }
-        this.validateBtn(isValid);
-        if (!isValid) {
-            event.preventDefault();
+        if (this.checkRequireTargets != []){
+            const checkRequireTargetschecked = this.checkRequireTargets.filter(target => target.checked);
+            if (this.checkRequireTargets.length > 0 && checkRequireTargetschecked.length < Math.floor(this.checkRequireTargets.length/2)) {
+                isValid = false;
+            }
         }
+
+        this.validateBtn(isValid);
+        return isValid;
     }
+
     ChangeNom(event){
         document.getElementById("nom").classList.remove('fr-input--error');
         document.getElementById("nom").parentNode.classList.remove('fr-input-group--error');
@@ -59,10 +76,10 @@ export default class extends Controller {
             }
         })
     }
-    changeNature(event){
-        const result = getSelectedValues(event);
+    changeNature(){
+        const nature= document.getElementById("nature")
         const date_previsionnelle= document.getElementById("date_previsionnelle_dissolution")
-        if (result == "GIP"){
+        if (nature.value == "GIP"){
             date_previsionnelle.disabled = false;
             date_previsionnelle.parentNode.classList.remove('fr-select-group--disabled');
         }else{
@@ -71,12 +88,13 @@ export default class extends Controller {
             date_previsionnelle.value = null;
         }
     }
-    changeEtat(event){
-        const result = getSelectedValues(event);
+    changeEtat(){
+        const etat= document.getElementById("etat");
         const date_dissolution= document.getElementById("date_dissolution");
         const effet_dissolution= document.getElementById("effet_dissolution");
-        const btn_rattachement= document.getElementById("BtnRattachement")
-        if (result == "Inactif"){
+        const btn_rattachement= document.getElementById("BtnRattachement");
+        const checkedFields = this.formTarget.querySelectorAll("input[type=\'checkbox\']");
+        if (etat.value == "Inactif"){
             [date_dissolution,effet_dissolution].forEach((field) =>{
                 field.disabled = false;
                 field.parentNode.classList.remove('fr-select-group--disabled');
@@ -86,15 +104,18 @@ export default class extends Controller {
                 field.disabled = true;
                 field.parentNode.classList.add('fr-select-group--disabled');
             })
+            checkedFields.forEach((field) =>{
+                field.checked = false;
+            })
             date_dissolution.value = null;
             effet_dissolution.selectedIndex = 0;
             btn_rattachement.setAttribute("aria-expanded", "false");
         }
     }
-    changeEffetDissolution(event){
-        const result = getSelectedValues(event);
+    changeEffetDissolution(){
+        const effet= document.getElementById("effet_dissolution")
         const btn_rattachement= document.getElementById("BtnRattachement")
-        if (result == "Rattachement" || result == "création"){
+        if (effet.value == "Rattachement" || effet.value == "Création"){
             btn_rattachement.disabled = false;
             btn_rattachement.parentNode.classList.remove('fr-select-group--disabled');
 
@@ -104,6 +125,22 @@ export default class extends Controller {
             btn_rattachement.setAttribute("aria-expanded", "false");
         }
     }
+    checkBox(){
+        const btn_rattachement= document.getElementById("BtnRattachement");
+        const checkTargetschecked = this.checklistTargets.filter(target => target.checked);
+        if (checkTargetschecked.length > 0) {
+            btn_rattachement.textContent = "";
+            this.checklistTargets.forEach((field) =>{
+                if (field.checked){
+                    const label = this.element.querySelector(`label[for="${field.id}"]`);
+                    btn_rattachement.textContent = btn_rattachement.textContent + label.textContent + " | " ;
+                }
+            })
+        }else{
+            btn_rattachement.textContent = "- sélectionner -"
+        }
+    }
+
     ChangeGBCP1(event){
         const agent_comptable_no= document.getElementById("radio-agent");
         const agent_comptable_oui= document.getElementById("radio-agent-1");
@@ -142,17 +179,7 @@ export default class extends Controller {
             comptabilite_adapte.disabled = false;
         }
     }
-    validateFormStep2(event){
-        let isValid = true;
-        const checkRequireTargets = this.checkRequireTargets.filter(target => target.checked);
-        if (checkRequireTargets.length != 3) {
-            isValid = false;
-        }
-        this.validateBtn(isValid);
-        if (!isValid) {
-            event.preventDefault();
-        }
-    }
+
     ChangeControle(event){
         const value = JSON.parse(event.target.value);
         const inputFields = this.formTarget.querySelectorAll('input:not([type="hidden"]), select');
@@ -208,22 +235,7 @@ export default class extends Controller {
             lien.parentNode.classList.add('fr-input-group--disabled');
         }
     }
-    validateFormStep3(event){
-        let isValid = true;
-        this.fieldRequireTargets.forEach((field) => {
-            if (field.value == "" && field.disabled == false){
-                isValid = false;
-            }
-        })
-        const checkRequireTargets = this.checkRequireTargets.filter(target => target.checked);
-        if (checkRequireTargets.length != 1) {
-            isValid = false;
-        }
-        this.validateBtn(isValid);
-        if (!isValid) {
-            event.preventDefault();
-        }
-    }
+
     ChangeTutelle(event){
         const value = JSON.parse(event.target.value);
         if (value == true){

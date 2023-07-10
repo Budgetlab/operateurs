@@ -11,7 +11,23 @@
     </p>
   </div>
 <%else %>
-  <h1 class="fr-my-6w">Modification</h1>
+  <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
+    <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+    <div class="fr-collapse" id="breadcrumb-1">
+      <ol class="fr-breadcrumb__list">
+        <li>
+          <%= link_to root_path, class:"fr-breadcrumb__link" do %>Accueil<%end %>
+        </li>
+        <li>
+          <%= link_to organisme_path(@organisme), class:"fr-breadcrumb__link" do %><%= @organisme.nom %><%end %>
+        </li>
+        <li>
+          <a class="fr-breadcrumb__link" aria-current="page">Modification fiche d'identité</a>
+        </li>
+      </ol>
+    </div>
+  </nav>
+  <h1 class="fr-mb-6w">Modification fiche d'identité</h1>
 <%end %>
 <div class="fr-mt-4w" data-controller="form" data-form-nomsorganismes="<%= @noms_organismes %>" data-form-sirenorganismes="<%= @siren_organismes %>">
   <%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
@@ -76,7 +92,7 @@
         </div>
       </div>
       <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-select-group fr-select-group--disabled">
+        <div class="fr-input-group fr-select-group--disabled">
           <label for="date_previsionnelle_dissolution" class="fr-label">Date de dissolution*</label>
           <%= f.text_field :date_dissolution, class:"fr-select", data: { 'form-target': 'fieldRequire', controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.date_dissolution)}, value: @organisme.date_dissolution, id: "date_dissolution", placeholder: "- sélectionner -", disabled: true%>
         </div>
@@ -90,7 +106,7 @@
       <div class="fr-col-12 fr-col-lg-3">
         <div class="fr-select-group fr-select-group--disabled">
           <label for="effet_dissolution" class="fr-label">Organisme de rattachement*</label>
-          <button class="fr-select fr-btns-group--left" aria-controls="translate-1295" aria-expanded="false" title="Sélectionner un ou plusieurs organismes" data-action="click->form#Dropdown" data-form-target="fieldRequire" id="BtnRattachement" disabled>
+          <button class="fr-select fr-btns-group--left" aria-controls="translate-1295" aria-expanded="false" title="Sélectionner un ou plusieurs organismes" data-action="click->form#Dropdown" id="BtnRattachement" disabled>
             - sélectionner -
           </button>
           <div class="div-dropdown">
@@ -102,7 +118,7 @@
               <% @organismes.each_with_index do |organisme, i|%>
                 <div class="fr-fieldset__element">
                   <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
-                    <%= f.check_box "organismes[]", {id: "checkboxes-#{i}"}, organisme[1]%>
+                    <%= f.check_box :organismes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @organisme.organisme_rattachements.pluck(:organisme_destination_id).include?(organisme[1]) }, organisme[1]%>
                     <label class="fr-label" for="checkboxes-<%=i %>">
                       <%= organisme[0]%>
                     </label>
@@ -120,7 +136,7 @@
       <div class="fr-col-12 fr-col-lg-3">
         <div class="fr-select-group">
           <label for="bureau" class="fr-label">Bureau DB de rattachement*</label>
-          <%= f.select :bureau_id, options_for_select([["- sélectionner -", ""], *@bureaux.map { |bureau| [bureau.nom, bureau.id] }]) ,{selected: @organisme.bureau_id}, {data: {'form-target': 'fieldRequire' }, id:"bureau",class:"fr-select"}%>
+          <%= f.select :bureau_id, options_for_select([["- sélectionner -", ""]] + @bureaux.map { |bureau| [bureau.nom, bureau.id] }, selected: @organisme.bureau_id),{}, {data: {'form-target': 'fieldRequire' }, id:"bureau",class:"fr-select"}%>
         </div>
       </div>
       <div class="fr-col-12 fr-col-lg-9">
@@ -139,7 +155,18 @@
       </div>
     </div>
     <div class="fr-my-4w">
-      <%= f.submit "Valider et passer à l'étape suivante", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true %>
+      <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
+        <% if @organisme.statut == 'valide' %>
+        <li>
+          <%=link_to organisme_path(@organisme), class: "fr-btn fr-btn--secondary" do %>
+            Annuler
+          <%end %>
+        </li>
+        <%end %>
+        <li>
+          <%= f.submit("#{@organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
+        </li>
+      </ul>
     </div>
   <%end %>
 </div>

@@ -14,7 +14,7 @@
   <h1 class="fr-my-6w">Modification</h1>
 <%end %>
 <div class="fr-mt-4w" data-controller="form">
-<%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateFormStep3 input->form#validateFormStep3 turbo:before-fetch-request->form#validateFormStep3"}) do |f|%>
+<%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
   <% if @organisme.statut != "valide" %>
     <%= f.hidden_field :statut, value: "4" %>
   <%end %>
@@ -70,7 +70,7 @@
     <div class="fr-col-12 fr-col-lg-6">
       <div class="fr-select-group">
         <label for="ministere" class="fr-label">Ministère de tutelle (tutelle principale)*</label>
-        <%= f.select :ministere_id,options_for_select([["- sélectionner -", ""], *@ministeres.map { |ministere| [ministere.nom, ministere.id] }]),{selected: @organisme.ministere_id}, {data: {'form-target': 'fieldRequire'}, id:"ministere",class:"fr-select"}%>
+        <%= f.select :ministere_id,options_for_select([["- sélectionner -", ""], *@ministeres.map { |ministere| [ministere.nom, ministere.id] }], selected: @organisme.ministere_id),{}, {data: {'form-target': 'fieldRequire'}, id:"ministere",class:"fr-select"}%>
       </div>
     </div>
   </div>

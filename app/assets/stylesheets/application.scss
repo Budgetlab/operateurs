@@ -19,3 +19,8 @@
 .cwarning{
   color: var(--text-default-warning) !important;
 }
+.title-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}

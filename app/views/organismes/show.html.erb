@@ -20,6 +20,12 @@
           </li>
           <li>
             <div class="fr-toggle fr-toggle--border-bottom fr-toggle--label-left">
+              <input type="checkbox" checked="true" class="fr-toggle__input" id="group-4-toggle-op" data-action="change->toggle#toggle" data-section="operateur">
+              <label class="fr-toggle__label" for="group-4-toggle-op" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Opérateur</label>
+            </div>
+          </li>
+          <li>
+            <div class="fr-toggle fr-toggle--border-bottom fr-toggle--label-left">
               <input type="checkbox" checked="true" class="fr-toggle__input" id="group-4-toggle-1" data-action="change->toggle#toggle" data-section="regime_budgetaire">
               <label class="fr-toggle__label" for="group-4-toggle-1" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Régime budgétaire et comptable</label>
             </div>
@@ -53,7 +59,7 @@
 
       <div class="fr-col-12 fr-col-lg-8">
         <div id="fiche_identite" class="fr-mb-4w">
-          <h2>Fiche d'identité <%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %></h2>
+          <h2 class="title-btn">Fiche d'identité <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
 
           <div class="fr-card">
             <div class="fr-card__body">
@@ -61,10 +67,18 @@
               <h3 class="fr-card__title">
                 <% if !@organisme.acronyme.nil? %><%= @organisme.acronyme %> - <%end %><%= @organisme.nom %>
               </h3>
+              <p class="fr-card__desc">Date de création : <b><%= format_boolean(format_date(@organisme.date_creation)) %></b></p>
               <p class="fr-card__desc">Siren : <b><%= format_boolean(@organisme.siren) %></b></p>
               <p class="fr-card__desc">Famille : <b><%= format_boolean(@organisme.famille) %></b></p>
               <p class="fr-card__desc">Nature juridique : <b><%= format_boolean(@organisme.nature) %></b></p>
-              <p class="fr-card__desc">Date de création : <b><%= format_boolean(format_date(@organisme.date_creation)) %></b></p>
+              <% if @organisme.nature == "GIP" %><p class="fr-card__desc">Date prévisionnelle de dissolution : <b><%= format_boolean(format_date(@organisme.date_previsionnelle_dissolution))%></b></p><%end %>
+              <% if @organisme.etat == "Inactif" %>
+                <p class="fr-card__desc">Date de dissolution : <b><%= format_boolean(format_date(@organisme.date_dissolution))%></b></p>
+                <p class="fr-card__desc">Effet de dissolution : <b><%= format_boolean(@organisme.effet_dissolution) %></b></p>
+                <% if @organisme.effet_dissolution == "Rattachement" || @organisme.effet_dissolution == "Création" %>
+                  <p class="fr-card__desc">Organisme•s de rattachement : <b><% @organisme.organisme_rattachements.each do |orga|%><%= orga.organisme_destination.nom %> <%end %></b></p>
+                <%end %>
+              <%end %>
               <p class="fr-card__desc">Bureau DB de rattachement : <b><%= @organisme.bureau.nom %></b></p>
               <p class="fr-card__desc">Texte institutif: <b><%= auto_link(simple_format(format_boolean(@organisme.texte_institutif),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
               <p class="fr-card__desc">Commentaires : <b><%= format_boolean(@organisme.commentaire) %></b></p>
@@ -72,7 +86,7 @@
                 <div class="fr-card__start">
                   <ul class="fr-tags-group">
                     <li>
-                      <p class="fr-badge fr-badge--green-menthe"><%= @organisme.etat %></p>
+                      <% if @organisme.etat == "Inactif" %><p class="fr-badge"><%else %><p class="fr-badge fr-badge--green-menthe"><%end %><%= @organisme.etat %></p>
                     </li>
                   </ul>
                 </div>
@@ -81,8 +95,28 @@
           </div>
         </div>
 
+        <div id="operateur" class="fr-mb-4w">
+          <h2 class="title-btn">Opérateur <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 7), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+
+          <div class="fr-card">
+            <div class="fr-card__body">
+              <div class="fr-card__content">
+                <h3 class="fr-card__title">
+                  Opérateur N :
+                </h3>
+                <p class="fr-card__desc">Opérateur N-1 : <b></b></p>
+                <p class="fr-card__desc">Opérateur N-2 : <b></b></p>
+                <p class="fr-card__desc">Appartenance catégorie d'opérateur : <b></b></p>
+                <p class="fr-card__desc">Mission programme chef de pile : <b></b></p>
+                <p class="fr-card__desc">Programme chef de file : <b></b></p>
+                <p class="fr-card__desc">Programmes annexes : <b></b></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <div id="regime_budgetaire" class="fr-mb-4w">
-          <h2>Régime budgétaire et comptable</h2>
+          <h2 class="title-btn">Régime budgétaire et comptable <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 2), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
           <% if @organisme.statut.to_i > 1 || @organisme.statut == "valide"%>
             <div class="fr-card">
             <div class="fr-card__body">
@@ -104,7 +138,7 @@
         </div>
 
         <div id="controle" class="fr-mb-4w">
-          <h2>Contrôle</h2>
+          <h2 class="title-btn">Contrôle <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 3), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
           <% if @organisme.statut.to_i > 2 || @organisme.statut == "valide"%>
           <div class="fr-card">
             <div class="fr-card__body">
@@ -131,7 +165,7 @@
         </div>
 
         <div id="tutelles" class="fr-mb-4w">
-          <h2>Tutelles financière et technique</h2>
+          <h2 class="title-btn">Tutelles financière et technique <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 4), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
           <% if @organisme.statut.to_i > 3 || @organisme.statut == "valide"%>
           <div class="fr-card">
             <div class="fr-card__body">
@@ -152,7 +186,7 @@
         </div>
 
         <div id="gouvernance" class="fr-mb-4w">
-          <h2>Gouvernance DB</h2>
+          <h2 class="title-btn">Gouvernance DB <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 5), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
           <% if @organisme.statut.to_i > 4 || @organisme.statut == "valide"%>
           <div class="fr-card">
             <div class="fr-card__body">
@@ -174,7 +208,7 @@
         </div>
 
         <div id="categories" class="fr-mb-4w">
-          <h2>Catégories</h2>
+          <h2 class="title-btn">Catégories <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 6), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
           <% if @organisme.statut == "valide" %>
           <div class="fr-card">
             <div class="fr-card__body">

@@ -1,2 +1,20 @@
-<h1>App test</h1>
-<p>Test déploiement</p>
+<% content_for :title do %>Accueil | [NOM] <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container">
+    <h1 class="fr-my-6w">Accueil</h1>
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h2>Liste des organismes [N]</h2>
+        <div class="fr-search-bar fr-mb-4w" id="header-search" role="search">
+          <label class="fr-label" for="search-784-input">
+            Recherche un organisme par son nom ou son acronyme
+          </label>
+          <input class="fr-input" placeholder="Rechercher" type="search" id="search-784-input" name="search-784-input">
+          <button class="fr-btn" title="Rechercher">
+            Recherche un organisme par son nom ou son acronyme
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -14,7 +14,7 @@
   <h1 class="fr-my-6w">Modification</h1>
 <%end %>
 <div class="fr-mt-4w" data-controller="form">
-  <%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateFormStep3 input->form#validateFormStep3 turbo:before-fetch-request->form#validateFormStep3"}) do |f|%>
+  <%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
     <% if @organisme.statut != "valide" %>
       <%= f.hidden_field :statut, value: "3" %>
     <%end %>
@@ -41,7 +41,7 @@
         <div class="fr-col-12 fr-col-lg-4">
           <div class="fr-select-group">
             <label for="controleur" class="fr-label">Contrôleur référent*</label>
-            <%= f.select :controleur_id,options_for_select([["- sélectionner -", ""], *@controleurs.map { |controleur| [controleur.nom, controleur.id] }]),{selected: @organisme.controleur_id}, {data: {'form-target': 'fieldRequire'}, id:"controleur",class:"fr-select"}%>
+            <%= f.select :controleur_id,options_for_select([["- sélectionner -", ""], *@controleurs.map { |controleur| [controleur.nom, controleur.id] }], selected: @organisme.controleur_id),{}, {data: {'form-target': 'fieldRequire'}, id:"controleur",class:"fr-select"}%>
           </div>
         </div>
       </div>
