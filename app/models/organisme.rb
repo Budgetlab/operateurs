@@ -7,6 +7,7 @@ class Organisme < ApplicationRecord
   belongs_to :ministere
   has_many :organisme_rattachements
   has_many :organisme_destinations, through: :organisme_rattachements
+  has_many :organisme_ministeres
 
   def self.import(file)
     data = Roo::Spreadsheet.open(file.path)

@@ -1,5 +1,5 @@
 <% if @organisme.statut != "valide" %>
-  <h1 class="fr-my-6w">Création d'un organisme</h1>
+  <h1 class="fr-my-4w">Création d'un organisme</h1>
   <div class="fr-stepper">
     <h2 class="fr-stepper__title">
       <span class="fr-stepper__state">Étape 4 sur 6</span>
@@ -11,71 +11,134 @@
     </p>
   </div>
 <%else %>
-  <h1 class="fr-my-6w">Modification</h1>
+  <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
+    <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+    <div class="fr-collapse" id="breadcrumb-1">
+      <ol class="fr-breadcrumb__list">
+        <li>
+          <%= link_to root_path, class:"fr-breadcrumb__link" do %>Accueil<%end %>
+        </li>
+        <li>
+          <%= link_to organisme_path(@organisme), class:"fr-breadcrumb__link" do %><%= @organisme.nom %><%end %>
+        </li>
+        <li>
+          <a class="fr-breadcrumb__link" aria-current="page">Modification tutelles financière et technique</a>
+        </li>
+      </ol>
+    </div>
+  </nav>
+  <h1 class="fr-mb-4w">Modification tutelles financière et technique</h1>
 <%end %>
-<div class="fr-mt-4w" data-controller="form">
-<%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
-  <% if @organisme.statut != "valide" %>
-    <%= f.hidden_field :statut, value: "4" %>
-  <%end %>
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12 fr-col-lg-12">
-        <fieldset class="fr-fieldset">
-          <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w">
-            Tutelle financière*<span class="fr-hint-text">La tutelle financière MCP découle de l'article 174 du décret GBCP. Les GIP n'ont pas de tutelle.</span>
-          </legend>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :tutelle_financiere, true, id: "radio-tutelle-1", checked: @organisme.tutelle_financiere, data: {'form-target': 'checkRequire', action: "change->form#ChangeTutelle" }  %>
-              <label class="fr-label" for="radio-tutelle-1">Oui</label>
+<div class="fr-mb-6w">
+  <div class="fr-card fr-card--shadow fr-card--no-arrow">
+    <div class="fr-card__body" data-controller="form">
+      <div class="fr-card__content">
+      <%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
+        <% if @organisme.statut != "valide" %>
+          <%= f.hidden_field :statut, value: "4" %>
+        <%end %>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-12">
+              <fieldset class="fr-fieldset">
+                <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w">
+                  Tutelle financière*<span class="fr-hint-text">La tutelle financière MCP découle de l'article 174 du décret GBCP. Les GIP n'ont pas de tutelle.</span>
+                </legend>
+                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                  <div class="fr-radio-group">
+                    <%= f.radio_button :tutelle_financiere, true, id: "radio-tutelle-1", checked: @organisme.tutelle_financiere, data: {'form-target': 'checkRequire', action: "change->form#ChangeTutelle" }  %>
+                    <label class="fr-label" for="radio-tutelle-1">Oui</label>
+                  </div>
+                </div>
+                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                  <div class="fr-radio-group">
+                    <%= f.radio_button :tutelle_financiere, false, checked: @organisme.tutelle_financiere == false, id:"radio-tutelle", data: {'form-target': 'checkRequire', action: "change->form#ChangeTutelle" } %>
+                    <label class="fr-label" for="radio-tutelle">Non</label>
+                  </div>
+                </div>
+              </fieldset>
             </div>
           </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :tutelle_financiere, false, checked: @organisme.tutelle_financiere == false, id:"radio-tutelle", data: {'form-target': 'checkRequire', action: "change->form#ChangeTutelle" } %>
-              <label class="fr-label" for="radio-tutelle">Non</label>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <fieldset class="fr-fieldset" disabled>
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w">
+                Délégation de l'approbation des BI / BR / comptes financiers<span class="fr-hint-text">Référence des derniers arrêtés de délégation.</span>
+              </legend>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :delegation_approbation, true, id: "radio-approbation-1", checked: @organisme.delegation_approbation, data: {action: "change->form#ChangeApprobation" }  %>
+                  <label class="fr-label" for="radio-approbation-1">Oui</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :delegation_approbation, false, checked: @organisme.delegation_approbation == false, id:"radio-approbation", data: {action: "change->form#ChangeApprobation" } %>
+                  <label class="fr-label" for="radio-approbation">Non</label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-select-group fr-select-group--disabled">
+              <label for="autorite" class="fr-label">Autorité chargée de l'approbation*</label>
+              <%= f.select :autorite_approbation,options_for_select([["- sélectionner -", ""], *@controleurs.map { |controleur| [controleur.nom, controleur.id] }]),{selected: @organisme.autorite_approbation}, {data: {'form-target': 'fieldRequire'}, id:"autorite",class:"fr-select", disabled: true}%>
             </div>
           </div>
-        </fieldset>
-      </div>
-    </div>
-  <div class="fr-grid-row fr-grid-row--gutters">
-    <div class="fr-col-12 fr-col-lg-6">
-      <fieldset class="fr-fieldset" disabled>
-        <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w">
-          Délégation de l'approbation des BI / BR / comptes financiers<span class="fr-hint-text">Référence des derniers arrêtés de délégation.</span>
-        </legend>
-        <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-          <div class="fr-radio-group">
-            <%= f.radio_button :delegation_approbation, true, id: "radio-approbation-1", checked: @organisme.delegation_approbation, data: {action: "change->form#ChangeApprobation" }  %>
-            <label class="fr-label" for="radio-approbation-1">Oui</label>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-select-group">
+              <label for="ministere" class="fr-label">Ministère de tutelle (tutelle principale)*</label>
+              <%= f.select :ministere_id,options_for_select([["- sélectionner -", ""], *@ministeres.map { |ministere| [ministere.nom, ministere.id] }], selected: @organisme.ministere_id),{}, {data: {'form-target': 'fieldRequire'}, id:"ministere",class:"fr-select"}%>
+            </div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-select-group">
+              <label for="cotutelle" class="fr-label">Ministère•s de co-tutelle</label>
+              <button class="fr-select fr-btns-group--left" aria-controls="translate-1295" aria-expanded="false" title="Sélectionner un ou plusieurs ministères" data-action="click->form#Dropdown" id="BtnRattachement">
+                - sélectionner -
+              </button>
+              <div class="div-dropdown">
+                <div class="fr-collapse fr-menu" id="translate-1295">
+                  <fieldset class="fr-fieldset" id="checkboxes-" aria-labelledby="checkboxes-legend checkboxes-messages">
+                    <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="checkboxes-legend">
+                      Sélectionner un ou plusieurs ministères
+                    </legend>
+                    <% @ministeres.each_with_index do |ministere, i|%>
+                      <div class="fr-fieldset__element">
+                        <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                          <%= f.check_box :ministeres, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @organisme.organisme_ministeres.pluck(:ministere_id).include?(ministere.id) }, ministere.id%>
+                          <label class="fr-label" for="checkboxes-<%=i %>">
+                            <%= ministere.nom %>
+                          </label>
+
+                        </div>
+                      </div>
+                    <%end %>
+                  </fieldset>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-          <div class="fr-radio-group">
-            <%= f.radio_button :delegation_approbation, false, checked: @organisme.delegation_approbation == false, id:"radio-approbation", data: {action: "change->form#ChangeApprobation" } %>
-            <label class="fr-label" for="radio-approbation">Non</label>
-          </div>
-        </div>
-      </fieldset>
-    </div>
-    <div class="fr-col-12 fr-col-lg-4">
-      <div class="fr-select-group fr-select-group--disabled">
-        <label for="autorite" class="fr-label">Autorité chargée de l'approbation*</label>
-        <%= f.select :autorite_approbation,options_for_select([["- sélectionner -", ""], *@controleurs.map { |controleur| [controleur.nom, controleur.id] }]),{selected: @organisme.autorite_approbation}, {data: {'form-target': 'fieldRequire'}, id:"autorite",class:"fr-select", disabled: true}%>
+
+        <div class="fr-my-4w">
+          <ul class="fr-btns-group fr-btns-group--icon-left fr-btns-group--inline fr-btns-group--right">
+            <li>
+              <% if @organisme.statut == 'valide' %>
+                <%=link_to organisme_path(@organisme), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %>
+              <%else %>
+                <%=link_to edit_organisme_path(@organisme, step: 3), class: "fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line" do %>
+                  Étape précédente
+                <%end %>
+              <%end %>
+            </li>
+            <li>
+              <%= f.submit("#{@organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
+            </li>
+          </ul></div>
+      <%end %>
       </div>
     </div>
   </div>
-  <div class="fr-grid-row fr-grid-row--gutters">
-    <div class="fr-col-12 fr-col-lg-6">
-      <div class="fr-select-group">
-        <label for="ministere" class="fr-label">Ministère de tutelle (tutelle principale)*</label>
-        <%= f.select :ministere_id,options_for_select([["- sélectionner -", ""], *@ministeres.map { |ministere| [ministere.nom, ministere.id] }], selected: @organisme.ministere_id),{}, {data: {'form-target': 'fieldRequire'}, id:"ministere",class:"fr-select"}%>
-      </div>
-    </div>
-  </div>
-  <div class="fr-my-4w">
-    <%= f.submit "Valider et passer à l'étape suivante", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"},id:'submitBouton', disabled: true %>
-  </div>
-<%end %>
 </div>

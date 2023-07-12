@@ -13,7 +13,7 @@ class OrganismesController < ApplicationController
 
   def new
     @organisme = Organisme.new
-    @bureaux = User.where(statut: "Bureau Sectiorel").order(nom: :asc)
+    @bureaux = User.where(statut: 'Bureau Sectiorel').order(nom: :asc)
     @organismes = Organisme.all.order(nom: :asc).pluck(:nom, :id, :siren)
     @noms_organismes = @organismes.map { |el| el[0] }
     @siren_organismes = @organismes.map { |el| el[2] }
@@ -39,23 +39,33 @@ class OrganismesController < ApplicationController
   def edit
     @organisme = Organisme.find(params[:id])
     if params[:step].to_i == 1
-      @bureaux = User.where(statut: "Bureau Sectiorel").order(nom: :asc)
+      @bureaux = User.where(statut: 'Bureau Sectiorel').order(nom: :asc)
       @organismes = Organisme.where.not(id: @organisme.id).order(nom: :asc).pluck(:nom, :id, :siren)
       @noms_organismes = @organismes.map { |el| el[0] }
       @siren_organismes = @organismes.map { |el| el[2] }
     end
-    @controleurs = User.where(statut: "Controleur").order(nom: :asc)
+    @controleurs = User.where(statut: 'Controleur').order(nom: :asc)
     @ministeres = Ministere.order(nom: :asc)
   end
 
   def update
     @organisme = Organisme.find(params[:id])
     if @organisme.update(organisme_params)
+      @organisme.update(date_previsionnelle_dissolution: nil) if @organisme.nature != 'GIP'
+      @organisme.update(date_dissolution: nil, effet_dissolution: nil) if @organisme.etat != 'Inactif'
+      @organisme.organisme_rattachements.destroy_all if @organisme.etat != 'Inactif'
       if params[:organisme][:organismes] && @organisme.etat == 'Inactif' && (@organisme.effet_dissolution == 'Création' || @organisme.effet_dissolution == 'Rattachement')
         @organisme.organisme_rattachements.destroy_all
         selected_organismes = params[:organisme][:organismes] || [] # Récupérer les valeurs cochées
         selected_organismes.each do |organisme_id|
           @organisme.organisme_rattachements.create(organisme_destination_id: organisme_id)
+        end
+      end
+      if params[:organisme][:ministeres]
+        @organisme.organisme_ministeres.destroy_all
+        selected_ministeres = params[:organisme][:ministeres] || []
+        selected_ministeres.each do |ministere_id|
+          @organisme.organisme_ministeres.create(ministere_id: ministere_id)
         end
       end
       if @organisme.statut == 'valide'
@@ -82,6 +92,7 @@ class OrganismesController < ApplicationController
       format.turbo_stream { redirect_to organismes_path }
     end
   end
+
   private
 
   def organisme_params

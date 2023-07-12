@@ -6,21 +6,38 @@ export default class extends Controller {
     }
     connect() {
         this.validateForm(this.formTarget);
+        if (this.data.get("nomsorganismes")!= null) {
+            this.changeEtat();
+            this.changeNature();
+            this.changeEffetDissolution();
+            this.checkBox();
+        }
+        if (this.element.querySelector('#radio-gbcp-1') != null){
+            this.ChangeGBCP1();
+            this.ChangeGBCP3();
+        }
+        if (this.element.querySelector('#radio-controle-1') != null){
+            this.ChangeControle();
+            this.ChangePresenceDocument();
+        }
+        if (this.element.querySelector('#radio-tutelle-1') != null){
+            this.ChangeTutelle();
+            this.ChangeApprobation();
+            this.checkBox();
+        }
+        if (this.element.querySelector('#radio-admin-1') != null){
+            this.ChangeAdmin();
+        }
     }
     validateBtn(isValid){
-        if (isValid == true) {
-            this.submitBoutonTarget.disabled = false;
-        } else {
-            this.submitBoutonTarget.disabled = true;
-        }
+        this.submitBoutonTarget.disabled = !isValid;
     }
     validateForm(){
         let isValid = true;
-        const inputFields = this.formTarget.querySelectorAll('input:not([type="hidden"]), select');
+        const inputFields = Array.from(this.formTarget.querySelectorAll('input:not([type="hidden"]):not([type="radio"]), select'));
         inputFields.forEach((field) => {
             if (field.value != "") {
-                field.disabled = false;
-                field.parentNode.classList.remove('fr-select-group--disabled');
+                this.enableInput(field);
             }
         })
         this.fieldRequireTargets.forEach((field) => {
@@ -28,64 +45,72 @@ export default class extends Controller {
                 isValid = false;
             }
         })
-        if (this.data.get("nomsorganismes")!= null){
-            this.changeEtat();
-            this.changeNature();
-            this.changeEffetDissolution();
-            this.checkBox();
-            const nom_orga = document.getElementById("nom").value;
-            const noms_organismes = JSON.parse(this.data.get("nomsorganismes"));
-            noms_organismes.forEach((nom) => {
-                if (nom_orga == nom){
-                    isValid = false;
-                }
-            })
-        }
         if (this.checkRequireTargets != []){
             const checkRequireTargetschecked = this.checkRequireTargets.filter(target => target.checked);
             if (this.checkRequireTargets.length > 0 && checkRequireTargetschecked.length < Math.floor(this.checkRequireTargets.length/2)) {
                 isValid = false;
             }
         }
-
         this.validateBtn(isValid);
         return isValid;
     }
+    addErreurInput(input){
+        input.classList.add('fr-select--error');
+        input.parentNode.classList.add('fr-select-group--error');
+    }
+    removeErreurInput(input){
+        input.classList.remove('fr-select--error');
+        input.parentNode.classList.remove('fr-select-group--error');
+    }
+    hideField(field){
+        field.classList.add("fr-hidden");
+    }
+    showField(field){
+        field.classList.remove("fr-hidden");
+    }
+    disableInput(input){
+        input.disabled = true;
+        input.parentNode.classList.add('fr-select-group--disabled');
+        if (input.nodeName === 'INPUT') {
+            input.value = null;
+        }else if (input.nodeName === 'SELECT') {
+            input.selectedIndex = 0;
+        }
+    }
+    enableInput(input){
+        input.disabled = false;
+        input.parentNode.classList.remove('fr-select-group--disabled');
+    }
 
     ChangeNom(event){
-        document.getElementById("nom").classList.remove('fr-input--error');
-        document.getElementById("nom").parentNode.classList.remove('fr-input-group--error');
-        document.getElementById("ErreurNom").classList.add("fr-hidden");
+        const nom_input = document.getElementById("nom");
+        const text_erreur = document.getElementById("ErreurNom")
         const result = event.target.value;
         const noms_organismes = JSON.parse(this.data.get("nomsorganismes"));
-        noms_organismes.forEach((nom) => {
-            if (result == nom){
-                document.getElementById("nom").classList.add('fr-input--error');
-                document.getElementById("nom").parentNode.classList.add('fr-input-group--error');
-                document.getElementById("ErreurNom").classList.remove("fr-hidden");
-            }
-        })
+        this.removeErreurInput(nom_input);
+        this.hideField(text_erreur);
+        if (noms_organismes.includes(result)) {
+            this.addErreurInput(nom_input);
+            this.showField(text_erreur);
+            this.validateBtn(false);
+        }
     }
     ChangeSiren(event){
-        document.getElementById("alertSiren").classList.add("fr-hidden");
-        const result = event.target.value;
+        const text_siren_alert = document.getElementById("alertSiren")
+        const result = parseInt(event.target.value);
         const siren_organismes = JSON.parse(this.data.get("sirenorganismes"));
-        siren_organismes.forEach((siren) => {
-            if (result == siren){
-                document.getElementById("alertSiren").classList.remove("fr-hidden");
-            }
-        })
+        this.hideField(text_siren_alert);
+        if (siren_organismes.includes(result)) {
+            this.showField(text_siren_alert);
+        }
     }
     changeNature(){
         const nature= document.getElementById("nature")
         const date_previsionnelle= document.getElementById("date_previsionnelle_dissolution")
-        if (nature.value == "GIP"){
-            date_previsionnelle.disabled = false;
-            date_previsionnelle.parentNode.classList.remove('fr-select-group--disabled');
+        if (nature.value === "GIP"){
+            this.enableInput(date_previsionnelle);
         }else{
-            date_previsionnelle.disabled = true;
-            date_previsionnelle.parentNode.classList.add('fr-select-group--disabled');
-            date_previsionnelle.value = null;
+            this.disableInput(date_previsionnelle);
         }
     }
     changeEtat(){
@@ -93,35 +118,33 @@ export default class extends Controller {
         const date_dissolution= document.getElementById("date_dissolution");
         const effet_dissolution= document.getElementById("effet_dissolution");
         const btn_rattachement= document.getElementById("BtnRattachement");
-        const checkedFields = this.formTarget.querySelectorAll("input[type=\'checkbox\']");
-        if (etat.value == "Inactif"){
+        const checkedFields = Array.from(this.formTarget.querySelectorAll("input[type=\'checkbox\']"));
+        if (etat.value === "Inactif"){
             [date_dissolution,effet_dissolution].forEach((field) =>{
-                field.disabled = false;
-                field.parentNode.classList.remove('fr-select-group--disabled');
+                this.enableInput(field);
             })
         }else{
             [date_dissolution,effet_dissolution, btn_rattachement].forEach((field) =>{
-                field.disabled = true;
-                field.parentNode.classList.add('fr-select-group--disabled');
+                this.disableInput(field);
             })
             checkedFields.forEach((field) =>{
                 field.checked = false;
             })
-            date_dissolution.value = null;
-            effet_dissolution.selectedIndex = 0;
             btn_rattachement.setAttribute("aria-expanded", "false");
         }
     }
     changeEffetDissolution(){
-        const effet= document.getElementById("effet_dissolution")
-        const btn_rattachement= document.getElementById("BtnRattachement")
-        if (effet.value == "Rattachement" || effet.value == "Création"){
-            btn_rattachement.disabled = false;
-            btn_rattachement.parentNode.classList.remove('fr-select-group--disabled');
+        const effet= document.getElementById("effet_dissolution");
+        const btn_rattachement= document.getElementById("BtnRattachement");
+        const checkedFields = Array.from(this.formTarget.querySelectorAll("input[type=\'checkbox\']"));
+        if (effet.value === "Rattachement" || effet.value === "Création"){
+            this.enableInput(btn_rattachement);
 
         }else{
-            btn_rattachement.disabled = true;
-            btn_rattachement.parentNode.classList.add('fr-select-group--disabled');
+            this.disableInput(btn_rattachement);
+            checkedFields.forEach((field) =>{
+                field.checked = false;
+            })
             btn_rattachement.setAttribute("aria-expanded", "false");
         }
     }
@@ -141,7 +164,7 @@ export default class extends Controller {
         }
     }
 
-    ChangeGBCP1(event){
+    ChangeGBCP1(){
         const agent_comptable_no= document.getElementById("radio-agent");
         const agent_comptable_oui= document.getElementById("radio-agent-1");
         const gbcp_3_oui= document.getElementById("radio-gbcp-3");
@@ -150,27 +173,48 @@ export default class extends Controller {
         const comptabilite_oui= document.getElementById("radio-compta-1");
         const comptabilite_adapte= document.getElementById("radio-compta-b");
         const degre= document.getElementById("degre_gbcp");
-        const value = JSON.parse(event.target.value);
-        if (value == true){
+
+        const gbcp= this.element.querySelector('#radio-gbcp-1').checked;
+        const gbcp_no= this.element.querySelector('#radio-gbcp').checked;
+        if (gbcp === true){
             agent_comptable_no.disabled = true;
             agent_comptable_oui.checked = true;
             gbcp_3_oui.disabled = false;
-        }else{
+            this.resetChamp(degre);
+            ['3°','4°','5°','6°'].forEach((deg)=>{
+                const option = document.createElement("option");
+                option.value = deg;
+                option.innerHTML = deg;
+                degre.appendChild(option);
+            })
+
+        }else if (gbcp_no == true) {
             agent_comptable_no.disabled = false;
             gbcp_3_no.checked = true;
             gbcp_3_oui.disabled = true;
             comptabilite_non.checked = true;
             comptabilite_oui.disabled = true;
             comptabilite_adapte.disabled = true;
-            degre.selectedIndex = 5;
+            degre.innerHTML = "";
+            const option = document.createElement("option");
+            option.value = "Exclusion";
+            option.innerHTML = "Exclusion";
+            degre.appendChild(option);
         }
     }
-    ChangeGBCP3(event){
-        const value = JSON.parse(event.target.value);
+    resetChamp(target){
+        target.innerHTML = "";
+        const option = document.createElement("option");
+        option.value = "";
+        option.innerHTML = "- sélectionner -";
+        target.appendChild(option);
+    }
+    ChangeGBCP3(){
+        const gbcp3= this.element.querySelector('#radio-gbcp-3').checked;
         const comptabilite_non= document.getElementById("radio-compta");
         const comptabilite_oui= document.getElementById("radio-compta-1");
         const comptabilite_adapte= document.getElementById("radio-compta-b");
-        if (value == false){
+        if (gbcp3 == false){
             comptabilite_non.checked = true;
             comptabilite_oui.disabled = true;
             comptabilite_adapte.disabled = true;
@@ -180,96 +224,75 @@ export default class extends Controller {
         }
     }
 
-    ChangeControle(event){
-        const value = JSON.parse(event.target.value);
-        const inputFields = this.formTarget.querySelectorAll('input:not([type="hidden"]), select');
+    ChangeControle(){
+        const controle= this.element.querySelector('#radio-controle-1').checked;
+        const inputFields = this.formTarget.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), select');
         inputFields.forEach((field) => {
-            if (value == false){
+            if (controle == false){
                 if (field.name != "organisme[presence_controle]"&& field.id != "controleur" &&
-                    field.id != "submitBouton" && field.name != "organisme[document_controle_present]"){
-                    field.disabled = true;
-                    console.log(field);
-                    console.log(field.parentNode)
-                    if (field.nodeName === 'INPUT') {
-                        field.value = null;
-                        field.parentNode.classList.add('fr-input-group--disabled');
-                    }else if (field.nodeName === 'SELECT') {
-                        field.selectedIndex = 0;
-                        field.parentNode.classList.add('fr-select-group--disabled');
-                    }
+                    field.name != "organisme[document_controle_present]"){
+                    this.disableInput(field)
+
                 }else if (field.name == "organisme[document_controle_present]"){
                     field.closest('fieldset').disabled = true;
                     if (field.id == "radio-document"){
                         field.checked = true;
                     }
-
                 }
             }else{
                 if (field.nodeName === 'INPUT') {
                     if (field.name == "organisme[document_controle_present]"){
                         field.closest('fieldset').disabled = false;
                     }else if (field.id != "date_signature" && field.id != "document_controle_lien"){
-                        field.disabled = false;
-                        field.parentNode.classList.remove('fr-input-group--disabled');
+                        this.enableInput(field);
                     }
                 }else if (field.nodeName === 'SELECT') {
-                    field.disabled = false;
-                    field.parentNode.classList.remove('fr-select-group--disabled');
+                    this.enableInput(field);
                 }
             }
 
         })
     }
-    ChangePresenceDocument(event){
+    ChangePresenceDocument(){
+        const doc = this.element.querySelector('#radio-document-1').checked;
         const date = document.getElementById("date_signature");
         const lien = document.getElementById("document_controle_lien");
-        if (event.target.value == 'true'){
-            date.disabled = false;
-            date.parentNode.classList.remove('fr-input-group--disabled');
-            lien.disabled = false;
-            lien.parentNode.classList.remove('fr-input-group--disabled');
+        if (doc === true){
+            this.enableInput(date);
+            this.enableInput(lien);
         }else{
-            date.disabled = true;
-            date.parentNode.classList.add('fr-input-group--disabled');
-            lien.disabled = true;
-            lien.parentNode.classList.add('fr-input-group--disabled');
+            this.disableInput(date);
+            this.disableInput(lien);
         }
     }
 
-    ChangeTutelle(event){
-        const value = JSON.parse(event.target.value);
-        if (value == true){
+    ChangeTutelle(){
+        const tutelle = this.element.querySelector('#radio-tutelle-1').checked;
+        if (tutelle === true){
             document.getElementById("radio-approbation-1").closest('fieldset').disabled = false;
         }else{
             document.getElementById("radio-approbation-1").closest('fieldset').disabled = true;
             document.getElementById("radio-approbation-1").checked = false;
             document.getElementById("radio-approbation").checked = false;
-            document.getElementById("autorite").selectedIndex = 0;
-            document.getElementById("autorite").disabled = true;
-            document.getElementById("autorite").parentNode.classList.add('fr-select-group--disabled');
+            this.disableInput(document.getElementById("autorite"));
         }
     }
-    ChangeApprobation(event){
+    ChangeApprobation(){
         const autorite = document.getElementById("autorite");
-        const value = JSON.parse(event.target.value);
-        if (value == true){
-            autorite.disabled = false;
-            autorite.parentNode.classList.remove('fr-select-group--disabled');
+        const approbation = this.element.querySelector('#radio-approbation-1').checked;
+        if (approbation === true){
+            this.enableInput(autorite);
         }else{
-            autorite.selectedIndex = 0;
-            autorite.disabled = true;
-            autorite.parentNode.classList.add('fr-select-group--disabled');
+            this.disableInput(autorite);
         }
     }
-    ChangeAdmin(event){
+    ChangeAdmin(){
+        const admin = this.element.querySelector('#radio-admin-1').checked;
         const admin_db_fonction = document.getElementById("admin_db_fonction");
-        if (event.target.value == 'true'){
-            admin_db_fonction.disabled = false;
-            admin_db_fonction.parentNode.classList.remove('fr-input-group--disabled');
+        if (admin === true){
+            this.enableInput(admin_db_fonction);
         }else{
-            admin_db_fonction.value = null;
-            admin_db_fonction.disabled = true;
-            admin_db_fonction.parentNode.classList.add('fr-input-group--disabled');
+            this.disableInput(admin_db_fonction);
         }
     }
     submitForm(event){

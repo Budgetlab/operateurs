@@ -1,5 +1,5 @@
 <% if @organisme.statut != "valide" %>
-  <h1 class="fr-my-6w">Création d'un organisme</h1>
+  <h1 class="fr-my-4w">Création d'un organisme</h1>
   <div class="fr-stepper">
     <h2 class="fr-stepper__title">
       <span class="fr-stepper__state">Étape 1 sur 6</span>
@@ -27,146 +27,148 @@
       </ol>
     </div>
   </nav>
-  <h1 class="fr-mb-6w">Modification fiche d'identité</h1>
+  <h1 class="fr-mb-4w">Modification fiche d'identité</h1>
 <%end %>
-<div class="fr-mt-4w" data-controller="form" data-form-nomsorganismes="<%= @noms_organismes %>" data-form-sirenorganismes="<%= @siren_organismes %>">
-  <%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
-    <% if @organisme.statut != "valide" %>
-    <%= f.hidden_field :statut, value: "1" %>
-    <%end %>
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-select-group">
-          <label for="etat" class="fr-label">État de l'organisme*</label>
-          <%= f.select :etat,[["- sélectionner -",""],['Actif','Actif'],['En cours de création','En cours de création'],['En cours de modification','En cours de modification'], ['Inactif','Inactif']],{selected: @organisme.etat}, {data: {'form-target': 'fieldRequire', action: "change->form#changeEtat" }, id:"etat",class:"fr-select"}%>
-        </div>
-      </div>
-      <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-select-group">
-          <label for="datecreation" class="fr-label">Date de création</label>
-          <%= f.text_field :date_creation, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.date_creation)}, value: @organisme.date_creation, id: "datecreation", placeholder: "- sélectionner -"%>
-        </div>
-      </div>
-      <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-select-group">
-          <label for="siren" class="fr-label">Numéro SIREN</label>
-          <%= f.number_field :siren, data: { action: "input->form#ChangeSiren" }, value: @organisme.siren, id:"siren", class:"fr-input"%>
-          <p class="fr-message fr-message--info fr-mt-1w cwarning fr-hidden" id="alertSiren">Ce numéro SIREN existe déjà.</p>
-
-        </div>
-      </div>
-      <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-input-group">
-          <label for="acronyme" class="fr-label">Acronyme</label>
-          <%= f.text_field :acronyme, value: @organisme.acronyme, id:"acronyme", class:"fr-input"%>
-        </div>
-      </div>
-
-    </div>
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12 fr-col-lg-6">
-        <div class="fr-input-group">
-          <label for="nom" class="fr-label">Nom de l'entité*</label>
-          <%= f.text_field :nom, data: {'form-target': 'fieldRequire', action: "input->form#ChangeNom" }, value: @organisme.nom, id:"nom", class:"fr-input"%>
-          <p id="ErreurNom" class="fr-error-text fr-hidden">Ce nom existe déjà pour un autre organisme</p>
-        </div>
-      </div>
-      <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-select-group">
-          <label for="famille" class="fr-label">Famille*</label>
-          <%= f.select :famille,[["- sélectionner -",""],['FamilleA','FamilleA'],['FamilleB','FamilleB']],{selected: @organisme.famille}, {data: {'form-target': 'fieldRequire' }, id:"famille",class:"fr-select"}%>
-        </div>
-      </div>
-      <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-select-group">
-          <label for="nature" class="fr-label">Nature juridique*</label>
-          <%= f.select :nature,[["- sélectionner -",""],['NatureA','NatureA'],['GIP','GIP']],{selected: @organisme.nature}, {data: {'form-target': 'fieldRequire', action: "change->form#changeNature" }, id:"nature",class:"fr-select"}%>
-        </div>
-      </div>
-    </div>
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-select-group fr-select-group--disabled">
-          <label for="date_previsionnelle_dissolution" class="fr-label ">Date prévisionnelle de dissolution</label>
-          <%= f.text_field :date_previsionnelle_dissolution, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.date_previsionnelle_dissolution)}, value: @organisme.date_previsionnelle_dissolution, id: "date_previsionnelle_dissolution", placeholder: "- sélectionner -", disabled: true%>
-        </div>
-      </div>
-      <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-input-group fr-select-group--disabled">
-          <label for="date_previsionnelle_dissolution" class="fr-label">Date de dissolution*</label>
-          <%= f.text_field :date_dissolution, class:"fr-select", data: { 'form-target': 'fieldRequire', controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.date_dissolution)}, value: @organisme.date_dissolution, id: "date_dissolution", placeholder: "- sélectionner -", disabled: true%>
-        </div>
-      </div>
-      <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-select-group fr-select-group--disabled">
-          <label for="effet_dissolution" class="fr-label">Effet dissolution*</label>
-          <%= f.select :effet_dissolution,[["- sélectionner -",""],['Suppression','Suppression'],['Rattachement à un ou plusieurs organismes','Rattachement'],["Création d'un ou plusieurs organismes",'Création']],{selected: @organisme.effet_dissolution}, {data: {'form-target': 'fieldRequire', action: "change->form#changeEffetDissolution" }, id:"effet_dissolution",class:"fr-select", disabled: true}%>
-        </div>
-      </div>
-      <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-select-group fr-select-group--disabled">
-          <label for="effet_dissolution" class="fr-label">Organisme de rattachement*</label>
-          <button class="fr-select fr-btns-group--left" aria-controls="translate-1295" aria-expanded="false" title="Sélectionner un ou plusieurs organismes" data-action="click->form#Dropdown" id="BtnRattachement" disabled>
-            - sélectionner -
-          </button>
-          <div class="div-dropdown">
-          <div class="fr-collapse fr-menu" id="translate-1295">
-            <fieldset class="fr-fieldset" id="checkboxes-" aria-labelledby="checkboxes-legend checkboxes-messages">
-              <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="checkboxes-legend">
-                Sélectionner un ou plusieurs organismes de rattachement
-              </legend>
-              <% @organismes.each_with_index do |organisme, i|%>
-                <div class="fr-fieldset__element">
-                  <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
-                    <%= f.check_box :organismes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @organisme.organisme_rattachements.pluck(:organisme_destination_id).include?(organisme[1]) }, organisme[1]%>
-                    <label class="fr-label" for="checkboxes-<%=i %>">
-                      <%= organisme[0]%>
-                    </label>
-
-                  </div>
-                </div>
-              <%end %>
-            </fieldset>
-          </div>
-          </div>
-         </div>
-      </div>
-    </div>
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-select-group">
-          <label for="bureau" class="fr-label">Bureau DB de rattachement*</label>
-          <%= f.select :bureau_id, options_for_select([["- sélectionner -", ""]] + @bureaux.map { |bureau| [bureau.nom, bureau.id] }, selected: @organisme.bureau_id),{}, {data: {'form-target': 'fieldRequire' }, id:"bureau",class:"fr-select"}%>
-        </div>
-      </div>
-      <div class="fr-col-12 fr-col-lg-9">
-        <div class="fr-input-group">
-          <label for="texte_institutif" class="fr-label">Texte institutif</label>
-          <%= f.text_field :texte_institutif, value: @organisme.texte_institutif, id:"texte_institutif", class:"fr-input"%>
-        </div>
-      </div>
-    </div>
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12">
-        <div class="fr-input-group">
-          <label for="commentaire" class="fr-label">Commentaires</label>
-          <%= f.text_area :commentaire,rows: 4, value: @organisme.commentaire, id:"commentaire", class:"fr-input"%>
-        </div>
-      </div>
-    </div>
-    <div class="fr-my-4w">
-      <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
-        <% if @organisme.statut == 'valide' %>
-        <li>
-          <%=link_to organisme_path(@organisme), class: "fr-btn fr-btn--secondary" do %>
-            Annuler
-          <%end %>
-        </li>
+<div class="fr-mb-6w">
+  <div class="fr-card fr-card--shadow fr-card--no-arrow">
+    <div class="fr-card__body" data-controller="form" data-form-nomsorganismes="<%= @noms_organismes %>" data-form-sirenorganismes="<%= @siren_organismes %>">
+      <div class="fr-card__content">
+      <%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
+        <% if @organisme.statut != "valide" %>
+          <%= f.hidden_field :statut, value: "1" %>
         <%end %>
-        <li>
-          <%= f.submit("#{@organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
-        </li>
-      </ul>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-3">
+            <div class="fr-select-group">
+              <label for="etat" class="fr-label">État de l'organisme*</label>
+              <%= f.select :etat,[["- sélectionner -",""],['Actif','Actif'],['En cours de création','En cours de création'], ['Inactif','Inactif']],{selected: @organisme.etat}, {data: {'form-target': 'fieldRequire', action: "change->form#changeEtat" }, id:"etat",class:"fr-select"}%>
+            </div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-3">
+            <div class="fr-select-group">
+              <label for="datecreation" class="fr-label">Date de création</label>
+              <%= f.text_field :date_creation, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_default_date: format_date(@organisme.date_creation)}, value: @organisme.date_creation, id: "datecreation", placeholder: "- sélectionner -"%>
+            </div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-3">
+            <div class="fr-input-group">
+              <label for="siren" class="fr-label">Numéro SIREN</label>
+              <%= f.number_field :siren, data: { action: "input->form#ChangeSiren" }, value: @organisme.siren, id:"siren", class:"fr-input"%>
+              <p class="fr-message fr-message--info fr-mt-1w cwarning fr-hidden" id="alertSiren">Ce numéro SIREN existe déjà.</p>
+            </div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-3">
+            <div class="fr-input-group">
+              <label for="acronyme" class="fr-label">Acronyme</label>
+              <%= f.text_field :acronyme, value: @organisme.acronyme, id:"acronyme", class:"fr-input"%>
+            </div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-input-group">
+              <label for="nom" class="fr-label">Nom de l'entité*</label>
+              <%= f.text_field :nom, data: {'form-target': 'fieldRequire', action: "input->form#ChangeNom" }, value: @organisme.nom, id:"nom", class:"fr-input"%>
+              <p id="ErreurNom" class="fr-error-text fr-hidden">Ce nom existe déjà pour un autre organisme</p>
+            </div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-3">
+            <div class="fr-select-group">
+              <label for="famille" class="fr-label">Famille*</label>
+              <%= f.select :famille,[["- sélectionner -",""],['FamilleA','FamilleA'],['FamilleB','FamilleB']],{selected: @organisme.famille}, {data: {'form-target': 'fieldRequire' }, id:"famille",class:"fr-select"}%>
+            </div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-3">
+            <div class="fr-select-group">
+              <label for="nature" class="fr-label">Nature juridique*</label>
+              <%= f.select :nature,[["- sélectionner -",""],['NatureA','NatureA'],['GIP','GIP']],{selected: @organisme.nature}, {data: {'form-target': 'fieldRequire', action: "change->form#changeNature" }, id:"nature",class:"fr-select"}%>
+            </div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-3">
+            <div class="fr-input-group fr-select-group--disabled">
+              <label for="date_previsionnelle_dissolution" class="fr-label ">Date prévisionnelle de dissolution</label>
+              <%= f.text_field :date_previsionnelle_dissolution, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.date_previsionnelle_dissolution)}, value: @organisme.date_previsionnelle_dissolution, id: "date_previsionnelle_dissolution", placeholder: "- sélectionner -", disabled: true%>
+            </div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-3">
+            <div class="fr-input-group fr-select-group--disabled">
+              <label for="date_previsionnelle_dissolution" class="fr-label">Date de dissolution*</label>
+              <%= f.text_field :date_dissolution, class:"fr-select", data: { 'form-target': 'fieldRequire', controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.date_dissolution)}, value: @organisme.date_dissolution, id: "date_dissolution", placeholder: "- sélectionner -", disabled: true%>
+            </div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-3">
+            <div class="fr-select-group fr-select-group--disabled">
+              <label for="effet_dissolution" class="fr-label">Effet dissolution*</label>
+              <%= f.select :effet_dissolution,[["- sélectionner -",""],['Suppression','Suppression'],['Rattachement à un ou plusieurs organismes','Rattachement'],["Création d'un ou plusieurs organismes",'Création']],{selected: @organisme.effet_dissolution}, {data: {'form-target': 'fieldRequire', action: "change->form#changeEffetDissolution" }, id:"effet_dissolution",class:"fr-select", disabled: true}%>
+            </div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-3">
+            <div class="fr-select-group fr-select-group--disabled">
+              <label for="rattachement" class="fr-label">Organisme•s de rattachement*</label>
+              <button class="fr-select fr-btns-group--left" aria-controls="translate-1295" aria-expanded="false" title="Sélectionner un ou plusieurs organismes" data-action="click->form#Dropdown" id="BtnRattachement" disabled>
+                - sélectionner -
+              </button>
+              <div class="div-dropdown">
+              <div class="fr-collapse fr-menu" id="translate-1295">
+                <fieldset class="fr-fieldset" id="checkboxes-" aria-labelledby="checkboxes-legend checkboxes-messages">
+                  <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="checkboxes-legend">
+                    Sélectionner un ou plusieurs organismes de rattachement
+                  </legend>
+                  <% @organismes.each_with_index do |organisme, i|%>
+                    <div class="fr-fieldset__element">
+                      <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                        <%= f.check_box :organismes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @organisme.organisme_rattachements.pluck(:organisme_destination_id).include?(organisme[1]) }, organisme[1]%>
+                        <label class="fr-label" for="checkboxes-<%=i %>">
+                          <%= organisme[0]%>
+                        </label>
+
+                      </div>
+                    </div>
+                  <%end %>
+                </fieldset>
+              </div>
+              </div>
+             </div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-3">
+            <div class="fr-select-group">
+              <label for="bureau" class="fr-label">Bureau DB de rattachement*</label>
+              <%= f.select :bureau_id, options_for_select([["- sélectionner -", ""]] + @bureaux.map { |bureau| [bureau.nom, bureau.id] }, selected: @organisme.bureau_id),{}, {data: {'form-target': 'fieldRequire' }, id:"bureau",class:"fr-select"}%>
+            </div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-9">
+            <div class="fr-input-group">
+              <label for="texte_institutif" class="fr-label">Texte institutif</label>
+              <%= f.text_field :texte_institutif, value: @organisme.texte_institutif, id:"texte_institutif", class:"fr-input"%>
+            </div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12">
+            <div class="fr-input-group">
+              <label for="commentaire" class="fr-label">Commentaires</label>
+              <%= f.text_area :commentaire,rows: 4, value: @organisme.commentaire, id:"commentaire", class:"fr-input"%>
+            </div>
+          </div>
+        </div>
+        <div class="fr-my-4w">
+          <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
+            <% if @organisme.statut == 'valide' %>
+            <li>
+              <%=link_to organisme_path(@organisme), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %>
+            </li>
+            <%end %>
+            <li>
+              <%= f.submit("#{@organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
+            </li>
+          </ul>
+        </div>
+      <%end %>
+      </div>
     </div>
-  <%end %>
+  </div>
 </div>

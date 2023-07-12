@@ -3,7 +3,7 @@
 # Model Ministere
 class Ministere < ApplicationRecord
   has_many :organismes
-
+  has_many :organisme_ministeres
   def self.import(file)
     data = Roo::Spreadsheet.open(file.path)
     headers = data.row(1) # get header row

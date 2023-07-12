@@ -1,5 +1,5 @@
 <% if @organisme.statut != "valide" %>
-  <h1 class="fr-my-6w">Création d'un organisme</h1>
+  <h1 class="fr-my-4w">Création d'un organisme</h1>
   <div class="fr-stepper">
     <h2 class="fr-stepper__title">
       <span class="fr-stepper__state">Étape 6 sur 6</span>
@@ -8,203 +8,238 @@
     <div class="fr-stepper__steps" data-fr-current-step="6" data-fr-steps="6"></div>
   </div>
 <%else %>
-  <h1 class="fr-my-6w">Modification</h1>
+  <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
+    <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+    <div class="fr-collapse" id="breadcrumb-1">
+      <ol class="fr-breadcrumb__list">
+        <li>
+          <%= link_to root_path, class:"fr-breadcrumb__link" do %>Accueil<%end %>
+        </li>
+        <li>
+          <%= link_to organisme_path(@organisme), class:"fr-breadcrumb__link" do %><%= @organisme.nom %><%end %>
+        </li>
+        <li>
+          <a class="fr-breadcrumb__link" aria-current="page">Modification catégories</a>
+        </li>
+      </ol>
+    </div>
+  </nav>
+  <h1 class="fr-mb-4w">Modification catégories</h1>
 <%end %>
-<div class="fr-mt-4w" data-controller="form">
-  <%= form_with(model: @organisme, data: {'form-target': "form"}) do |f|%>
-    <% if @organisme.statut != "valide" %>
-      <%= f.hidden_field :statut, value: "valide" %>
-    <%end %>
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12 fr-col-lg-4">
-        <fieldset class="fr-fieldset">
-          <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
-            APU
-          </legend>
+<div class="fr-mb-6w">
+  <div class="fr-card fr-card--shadow fr-card--no-arrow">
+    <div class="fr-card__body" data-controller="form">
+      <div class="fr-card__content">
+      <%= form_with(model: @organisme, data: {'form-target': "form"}) do |f|%>
+        <% if @organisme.statut != "valide" %>
+          <%= f.hidden_field :statut, value: "valide" %>
+        <%end %>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-4">
+            <fieldset class="fr-fieldset">
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
+                APU
+              </legend>
 
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :apu, true, id: "radio-apu-n-1", checked: @organisme.apu == true%>
-              <label class="fr-label" for="radio-apu-n-1">Oui</label>
-            </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :apu, true, id: "radio-apu-n-1", checked: @organisme.apu == true%>
+                  <label class="fr-label" for="radio-apu-n-1">Oui</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :apu, false, checked: @organisme.apu == false, id:"radio-apu-n-b" %>
+                  <label class="fr-label" for="radio-apu-n-b">Non</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :apu, "", checked: @organisme.apu.nil? , id:"radio-apu-n" %>
+                  <label class="fr-label" for="radio-apu-n">Non renseigné</label>
+                </div>
+              </div>
+            </fieldset>
           </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :apu, false, checked: @organisme.apu == false, id:"radio-apu-n-b" %>
-              <label class="fr-label" for="radio-apu-n-b">Non</label>
-            </div>
-          </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :apu, nil, checked: @organisme.apu.nil? , id:"radio-apu-n" %>
-              <label class="fr-label" for="radio-apu-n">Non renseigné</label>
-            </div>
-          </div>
-        </fieldset>
-      </div>
-      <div class="fr-col-12 fr-col-lg-4">
-        <fieldset class="fr-fieldset">
-          <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
-            Soumission à la CIASSP année [N]<span class="fr-hint-text">Il est indispensable de renseigner cette donnée sur la base de l'annexe à la note annuelle de cadrage préparée par 2BPSS.</span>
-          </legend>
+          <div class="fr-col-12 fr-col-lg-4">
+            <fieldset class="fr-fieldset">
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
+                Soumission à la CIASSP année <%= Date.today.year-2 %><span class="fr-hint-text">Il est indispensable de renseigner cette donnée sur la base de l'annexe à la note annuelle de cadrage préparée par 2BPSS.</span>
+              </legend>
 
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :ciassp_n, true, id: "radio-ciassp-n-1", checked: @organisme.ciassp_n == true%>
-              <label class="fr-label" for="radio-ciassp-n-1">Oui</label>
-            </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :ciassp_n, true, id: "radio-ciassp-n-1", checked: @organisme.ciassp_n == true%>
+                  <label class="fr-label" for="radio-ciassp-n-1">Oui</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :ciassp_n, false, checked: @organisme.ciassp_n == false, id:"radio-ciassp-n-b" %>
+                  <label class="fr-label" for="radio-ciassp-n-b">Non</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :ciassp_n, "", checked: @organisme.ciassp_n.nil? , id:"radio-ciassp-n" %>
+                  <label class="fr-label" for="radio-ciassp-n">Non renseigné</label>
+                </div>
+              </div>
+            </fieldset>
           </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :ciassp_n, false, checked: @organisme.ciassp_n == false, id:"radio-ciassp-n-b" %>
-              <label class="fr-label" for="radio-ciassp-n-b">Non</label>
-            </div>
-          </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :ciassp_n, nil, checked: @organisme.ciassp_n.nil? , id:"radio-ciassp-n" %>
-              <label class="fr-label" for="radio-ciassp-n">Non renseigné</label>
-            </div>
-          </div>
-        </fieldset>
-      </div>
-      <div class="fr-col-12 fr-col-lg-4">
-        <fieldset class="fr-fieldset">
-          <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
-            Soumission à la CIASSP année [N-1]
-          </legend>
+          <div class="fr-col-12 fr-col-lg-4">
+            <fieldset class="fr-fieldset">
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
+                Soumission à la CIASSP année <%= Date.today.year-3 %>
+              </legend>
 
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :ciassp_n1, true, id: "radio-ciassp-n1-1", checked: @organisme.ciassp_n1 == true%>
-              <label class="fr-label" for="radio-ciassp-n1-1">Oui</label>
-            </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :ciassp_n1, true, id: "radio-ciassp-n1-1", checked: @organisme.ciassp_n1 == true%>
+                  <label class="fr-label" for="radio-ciassp-n1-1">Oui</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :ciassp_n1, false, checked: @organisme.ciassp_n1 == false, id:"radio-ciassp-n1-b" %>
+                  <label class="fr-label" for="radio-ciassp-n1-b">Non</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :ciassp_n1, "", checked: @organisme.ciassp_n1.nil? , id:"radio-ciassp-n1" %>
+                  <label class="fr-label" for="radio-ciassp-n1">Non renseigné</label>
+                </div>
+              </div>
+            </fieldset>
           </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :ciassp_n1, false, checked: @organisme.ciassp_n1 == false, id:"radio-ciassp-n1-b" %>
-              <label class="fr-label" for="radio-ciassp-n1-b">Non</label>
-            </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-4">
+            <fieldset class="fr-fieldset">
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
+                ODAC Liste INSEE année <%= Date.today.year-2 %>
+              </legend>
+
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :odac_n, true, id: "radio-odac-n-1", checked: @organisme.odac_n == true%>
+                  <label class="fr-label" for="radio-odac-n-1">Oui</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :odac_n, false, checked: @organisme.odac_n == false, id:"radio-odac-n-b" %>
+                  <label class="fr-label" for="radio-odac-n-b">Non</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :odac_n, "", checked: @organisme.odac_n.nil? , id:"radio-odac-n" %>
+                  <label class="fr-label" for="radio-odac-n">Non renseigné</label>
+                </div>
+              </div>
+            </fieldset>
           </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :ciassp_n1, nil, checked: @organisme.ciassp_n1.nil? , id:"radio-ciassp-n1" %>
-              <label class="fr-label" for="radio-ciassp-n1">Non renseigné</label>
-            </div>
+          <div class="fr-col-12 fr-col-lg-4">
+            <fieldset class="fr-fieldset">
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
+                ODAC Liste INSEE année <%= Date.today.year-3 %>
+              </legend>
+
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :odac_n1, true, id: "radio-odac-n1-1", checked: @organisme.odac_n1 == true%>
+                  <label class="fr-label" for="radio-odac-n1-1">Oui</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :odac_n1, false, checked: @organisme.odac_n1 == false, id:"radio-odac-n1-b" %>
+                  <label class="fr-label" for="radio-odac-n1-b">Non</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :odac_n1, "", checked: @organisme.odac_n1.nil? , id:"radio-odac-n1" %>
+                  <label class="fr-label" for="radio-odac-n1">Non renseigné</label>
+                </div>
+              </div>
+            </fieldset>
           </div>
-        </fieldset>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-4">
+            <fieldset class="fr-fieldset">
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
+                ODAL Liste INSEE année <%= Date.today.year-2 %>
+              </legend>
+
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :odal_n, true, id: "radio-odal-n-1", checked: @organisme.odal_n == true%>
+                  <label class="fr-label" for="radio-odal-n-1">Oui</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :odal_n, false, checked: @organisme.odal_n == false, id:"radio-odal-n-b" %>
+                  <label class="fr-label" for="radio-odal-n-b">Non</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :odal_n, "", checked: @organisme.odal_n.nil? , id:"radio-odal-n" %>
+                  <label class="fr-label" for="radio-odal-n">Non renseigné</label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="fr-col-12 fr-col-lg-4">
+            <fieldset class="fr-fieldset">
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
+                ODAL Liste INSEE année <%= Date.today.year-3 %>
+              </legend>
+
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :odal_n1, true, id: "radio-odal-n1-1", checked: @organisme.odal_n1 == true%>
+                  <label class="fr-label" for="radio-odal-n1-1">Oui</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :odal_n1, false, checked: @organisme.odal_n1 == false, id:"radio-odal-n1-b" %>
+                  <label class="fr-label" for="radio-odal-n1-b">Non</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :odal_n1, "", checked: @organisme.odal_n1.nil? , id:"radio-odal-n1" %>
+                  <label class="fr-label" for="radio-odal-n1">Non renseigné</label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
+        </div>
+        <div class="fr-my-4w">
+          <ul class="fr-btns-group fr-btns-group--icon-left fr-btns-group--inline fr-btns-group--right">
+            <li>
+              <% if @organisme.statut == 'valide' %>
+                <%=link_to organisme_path(@organisme), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %>
+              <%else %>
+                <%=link_to edit_organisme_path(@organisme, step: 5), class: "fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line" do %>
+                  Étape précédente
+                <%end %>
+              <%end %>
+            </li>
+            <li>
+              <%= f.submit("#{@organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
+            </li>
+          </ul>
+        </div>
+      <%end %>
       </div>
     </div>
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12 fr-col-lg-4">
-        <fieldset class="fr-fieldset">
-          <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
-            ODAC Liste INSEE année [N]
-          </legend>
-
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :odac_n, true, id: "radio-odac-n-1", checked: @organisme.odac_n == true%>
-              <label class="fr-label" for="radio-odac-n-1">Oui</label>
-            </div>
-          </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :odac_n, false, checked: @organisme.odac_n == false, id:"radio-odac-n-b" %>
-              <label class="fr-label" for="radio-odac-n-b">Non</label>
-            </div>
-          </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :odac_n, nil, checked: @organisme.odac_n.nil? , id:"radio-odac-n" %>
-              <label class="fr-label" for="radio-odac-n">Non renseigné</label>
-            </div>
-          </div>
-        </fieldset>
-      </div>
-      <div class="fr-col-12 fr-col-lg-4">
-        <fieldset class="fr-fieldset">
-          <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
-            ODAC Liste INSEE année [N-1]
-          </legend>
-
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :odac_n1, true, id: "radio-odac-n1-1", checked: @organisme.odac_n1 == true%>
-              <label class="fr-label" for="radio-odac-n1-1">Oui</label>
-            </div>
-          </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :odac_n1, false, checked: @organisme.odac_n1 == false, id:"radio-odac-n1-b" %>
-              <label class="fr-label" for="radio-odac-n1-b">Non</label>
-            </div>
-          </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :odac_n1, nil, checked: @organisme.odac_n1.nil? , id:"radio-odac-n1" %>
-              <label class="fr-label" for="radio-odac-n1">Non renseigné</label>
-            </div>
-          </div>
-        </fieldset>
-      </div>
-    </div>
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12 fr-col-lg-4">
-        <fieldset class="fr-fieldset">
-          <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
-            ODAL Liste INSEE année [N]
-          </legend>
-
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :odal_n, true, id: "radio-odal-n-1", checked: @organisme.odal_n == true%>
-              <label class="fr-label" for="radio-odal-n-1">Oui</label>
-            </div>
-          </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :odal_n, false, checked: @organisme.odal_n == false, id:"radio-odal-n-b" %>
-              <label class="fr-label" for="radio-odal-n-b">Non</label>
-            </div>
-          </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :odal_n, nil, checked: @organisme.odal_n.nil? , id:"radio-odal-n" %>
-              <label class="fr-label" for="radio-odal-n">Non renseigné</label>
-            </div>
-          </div>
-        </fieldset>
-      </div>
-      <div class="fr-col-12 fr-col-lg-4">
-        <fieldset class="fr-fieldset">
-          <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
-            ODAL Liste INSEE année [N-1]
-          </legend>
-
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :odal_n1, true, id: "radio-odal-n1-1", checked: @organisme.odal_n1 == true%>
-              <label class="fr-label" for="radio-odal-n1-1">Oui</label>
-            </div>
-          </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :odal_n1, false, checked: @organisme.odal_n1 == false, id:"radio-odal-n1-b" %>
-              <label class="fr-label" for="radio-odal-n1-b">Non</label>
-            </div>
-          </div>
-          <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
-            <div class="fr-radio-group">
-              <%= f.radio_button :odal_n1, nil, checked: @organisme.odal_n1.nil? , id:"radio-odal-n1" %>
-              <label class="fr-label" for="radio-odal-n1">Non renseigné</label>
-            </div>
-          </div>
-        </fieldset>
-      </div>
-    </div>
-    <div class="fr-my-4w">
-      <%= f.submit "Valider et passer à l'étape suivante", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"},id:'submitBouton' %>
-    </div>
-  <%end %>
+  </div>
 </div>

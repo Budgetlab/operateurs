@@ -147,15 +147,19 @@
                   Présence contrôle : <%= format_boolean(@organisme.presence_controle) %>
                 </h3>
                 <p class="fr-card__desc">Controleur référent : <b><%= @organisme.controleur.nom %></b></p>
-                <p class="fr-card__desc">Nature contrôle : <b><%= format_boolean(@organisme.nature_controle) %></b></p>
-                <p class="fr-card__desc">Référence du texte de soumission au contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_soumission_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-                <p class="fr-card__desc">Autorité de contrôle : <b><%= format_boolean(@organisme.autorite_controle) %></b></p>
-                <p class="fr-card__desc">Texte reglementaire de désignation de l'autorité de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_reglementaire_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-                <p class="fr-card__desc">Référence de l’arrêté de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-                <p class="fr-card__desc">Document de contrôle : <b><%= format_boolean(@organisme.document_controle_present) %></b></p>
-                <p class="fr-card__desc">Date de signature du document : <b><%= format_boolean(format_date(@organisme.document_controle_date)) %></b></p>
-                <p class="fr-card__desc">Lien du document de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.document_controle_lien),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-                <p class="fr-card__desc">Référence de l’arrêté de nomination du commissaire du gouvernement : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_nomination),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
+                <%  if @organisme.presence_controle %>
+                  <p class="fr-card__desc">Nature contrôle : <b><%= format_boolean(@organisme.nature_controle) %></b></p>
+                  <p class="fr-card__desc">Référence du texte de soumission au contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_soumission_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
+                  <p class="fr-card__desc">Autorité de contrôle : <b><%= format_boolean(@organisme.autorite_controle) %></b></p>
+                  <p class="fr-card__desc">Texte reglementaire de désignation de l'autorité de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_reglementaire_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
+                  <p class="fr-card__desc">Référence de l’arrêté de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
+                  <p class="fr-card__desc">Document de contrôle : <b><%= format_boolean(@organisme.document_controle_present) %></b></p>
+                  <%  if @organisme.document_controle_present %>
+                    <p class="fr-card__desc">Date de signature du document : <b><%= format_boolean(format_date(@organisme.document_controle_date)) %></b></p>
+                    <p class="fr-card__desc">Lien du document de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.document_controle_lien),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
+                  <%end %>
+                  <p class="fr-card__desc">Référence de l’arrêté de nomination du commissaire du gouvernement : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_nomination),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
+                <%end %>
               </div>
             </div>
           </div>
@@ -173,10 +177,14 @@
                 <h3 class="fr-card__title">
                   Tutelle financière : <%= format_boolean(@organisme.tutelle_financiere) %>
                 </h3>
-                <p class="fr-card__desc">Délégation de l'approbation des BI / BR / comptes financiers : <b><%= format_boolean(@organisme.delegation_approbation) %></b></p>
-                <p class="fr-card__desc">Autorité chargée de l’approbation : <b><%= format_boolean(@organisme.autorite_approbation) %></b></p>
+                <% if @organisme.tutelle_financiere %>
+                  <p class="fr-card__desc">Délégation de l'approbation des BI / BR / comptes financiers : <b><%= format_boolean(@organisme.delegation_approbation) %></b></p>
+                  <% if @organisme.delegation_approbation %>
+                    <p class="fr-card__desc">Autorité chargée de l’approbation : <b><%= format_boolean(@organisme.autorite_approbation) %></b></p>
+                  <%end %>
+                <%end %>
                 <p class="fr-card__desc">Ministère de tutelle principale : <b><%= @organisme.ministere.nom %></b></p>
-                <p class="fr-card__desc">Ministère•s de co-tutelle : <b></b></p>
+                <p class="fr-card__desc">Ministère•s de co-tutelle : <b><% if @organisme.organisme_ministeres.count > 0 %><% @organisme.organisme_ministeres.each do |orga|%><%= orga.ministere.nom %> <%end %><%else %>Aucun<%end %></b></p>
                </div>
             </div>
           </div>
@@ -194,7 +202,9 @@
                 <h3 class="fr-card__title">
                   Admin DB : <%= format_boolean(@organisme.admin_db_present) %>
                 </h3>
-                <p class="fr-card__desc">Fonction Admin DB : <b><%= format_boolean(@organisme.admin_db_fonction) %></b></p>
+                <% if @organisme.admin_db_present %>
+                  <p class="fr-card__desc">Fonction Admin DB : <b><%= format_boolean(@organisme.admin_db_fonction) %></b></p>
+                <% end %>
                 <p class="fr-card__desc">Présence DB au préCA : <b><%= format_boolean(@organisme.admin_preca) %></b></p>
                 <p class="fr-card__desc">Présence contrôleur au pré-CA : <b><%= format_boolean(@organisme.controleur_preca) %></b></p>
                 <p class="fr-card__desc">Présence contrôleur au CA : <b><%= format_boolean(@organisme.controleur_ca) %></b></p>
