@@ -9,6 +9,7 @@ class OrganismesController < ApplicationController
 
   def show
     @organisme = Organisme.find(params[:id])
+    @operateur = @organisme.operateur
   end
 
   def new
@@ -16,7 +17,7 @@ class OrganismesController < ApplicationController
     @bureaux = User.where(statut: 'Bureau Sectiorel').order(nom: :asc)
     @organismes = Organisme.all.order(nom: :asc).pluck(:nom, :id, :siren)
     @noms_organismes = @organismes.map { |el| el[0] }
-    @siren_organismes = @organismes.map { |el| el[2] }
+    @siren_organismes = @organismes.where.not(siren: nil).map { |el| el[2] }
   end
 
   def create
@@ -42,7 +43,7 @@ class OrganismesController < ApplicationController
       @bureaux = User.where(statut: 'Bureau Sectiorel').order(nom: :asc)
       @organismes = Organisme.where.not(id: @organisme.id).order(nom: :asc).pluck(:nom, :id, :siren)
       @noms_organismes = @organismes.map { |el| el[0] }
-      @siren_organismes = @organismes.map { |el| el[2] }
+      @siren_organismes = @organismes.map { |el| el[2] }.compact
     end
     @controleurs = User.where(statut: 'Controleur').order(nom: :asc)
     @ministeres = Ministere.order(nom: :asc)
@@ -50,9 +51,11 @@ class OrganismesController < ApplicationController
 
   def update
     @organisme = Organisme.find(params[:id])
+    reset_values([:date_previsionnelle_dissolution, :date_dissolution, :effet_dissolution]) if params[:organisme][:etat]
+    reset_values([:nature_controle, :texte_soumission_controle, :autorite_controle, :texte_reglementaire_controle, :arrete_controle, :document_controle_present, :document_controle_lien, :document_controle_date, :arrete_nomination]) if params[:organisme][:presence_controle]
+    reset_values([:admin_db_fonction]) if params[:organisme][:admin_db_present]
+    reset_values([:delegation_approbation, :autorite_approbation]) if params[:organisme][:tutelle_financiere]
     if @organisme.update(organisme_params)
-      @organisme.update(date_previsionnelle_dissolution: nil) if @organisme.nature != 'GIP'
-      @organisme.update(date_dissolution: nil, effet_dissolution: nil) if @organisme.etat != 'Inactif'
       @organisme.organisme_rattachements.destroy_all if @organisme.etat != 'Inactif'
       if params[:organisme][:organismes] && @organisme.etat == 'Inactif' && (@organisme.effet_dissolution == 'Création' || @organisme.effet_dissolution == 'Rattachement')
         @organisme.organisme_rattachements.destroy_all
@@ -107,5 +110,11 @@ class OrganismesController < ApplicationController
                                       :admin_db_present, :admin_db_fonction, :admin_preca, :controleur_preca,
                                       :controleur_ca, :comite_audit, :apu, :ciassp_n, :ciassp_n1, :odac_n, :odac_n1,
                                       :odal_n, :odal_n1)
+  end
+
+  def reset_values(param_names)
+    param_names.each do |param|
+      params[:organisme][param.to_sym] = params[:organisme].fetch(param.to_sym, nil)
+    end
   end
 end

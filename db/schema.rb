@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_12_100851) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_13_073306) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -18,6 +18,39 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_12_100851) do
     t.string "nom"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "missions", force: :cascade do |t|
+    t.string "nom"
+    t.bigint "programme_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["programme_id"], name: "index_missions_on_programme_id"
+  end
+
+  create_table "operateur_programmes", force: :cascade do |t|
+    t.bigint "operateur_id", null: false
+    t.bigint "programme_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["operateur_id"], name: "index_operateur_programmes_on_operateur_id"
+    t.index ["programme_id"], name: "index_operateur_programmes_on_programme_id"
+  end
+
+  create_table "operateurs", force: :cascade do |t|
+    t.bigint "organisme_id", null: false
+    t.boolean "operateur_n"
+    t.boolean "operateur_n1"
+    t.boolean "operateur_n2"
+    t.boolean "presence_categorie"
+    t.string "nom_categorie"
+    t.bigint "mission_id", null: false
+    t.bigint "programme_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["mission_id"], name: "index_operateurs_on_mission_id"
+    t.index ["organisme_id"], name: "index_operateurs_on_organisme_id"
+    t.index ["programme_id"], name: "index_operateurs_on_programme_id"
   end
 
   create_table "organisme_ministeres", force: :cascade do |t|
@@ -93,6 +126,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_12_100851) do
     t.index ["ministere_id"], name: "index_organismes_on_ministere_id"
   end
 
+  create_table "programmes", force: :cascade do |t|
+    t.integer "numero"
+    t.string "nom"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -107,6 +147,12 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_12_100851) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "missions", "programmes"
+  add_foreign_key "operateur_programmes", "operateurs"
+  add_foreign_key "operateur_programmes", "programmes"
+  add_foreign_key "operateurs", "missions"
+  add_foreign_key "operateurs", "organismes"
+  add_foreign_key "operateurs", "programmes"
   add_foreign_key "organisme_ministeres", "ministeres"
   add_foreign_key "organisme_ministeres", "organismes"
   add_foreign_key "organisme_rattachements", "organismes"

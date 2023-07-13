@@ -1,0 +1,21 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  organisme: one
+  operateur_n: false
+  operateur_n1: false
+  operateur_n2: false
+  presence_categorie: false
+  nom_categorie: MyString
+  mission: one
+  programme: one
+
+two:
+  organisme: two
+  operateur_n: false
+  operateur_n1: false
+  operateur_n2: false
+  presence_categorie: false
+  nom_categorie: MyString
+  mission: two
+  programme: two

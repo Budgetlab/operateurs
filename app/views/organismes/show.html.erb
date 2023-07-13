@@ -65,7 +65,7 @@
             <div class="fr-card__body">
             <div class="fr-card__content">
               <h3 class="fr-card__title">
-                <% if !@organisme.acronyme.nil? %><%= @organisme.acronyme %> - <%end %><%= @organisme.nom %>
+                <% if @organisme.acronyme && !@organisme.acronyme.blank? %><%= @organisme.acronyme %> - <%end %><%= @organisme.nom %>
               </h3>
               <p class="fr-card__desc">Date de création : <b><%= format_boolean(format_date(@organisme.date_creation)) %></b></p>
               <p class="fr-card__desc">Siren : <b><%= format_boolean(@organisme.siren) %></b></p>
@@ -80,13 +80,13 @@
                 <%end %>
               <%end %>
               <p class="fr-card__desc">Bureau DB de rattachement : <b><%= @organisme.bureau.nom %></b></p>
-              <p class="fr-card__desc">Texte institutif: <b><%= auto_link(simple_format(format_boolean(@organisme.texte_institutif),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
+              <p class="fr-card__desc">Texte institutif : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_institutif),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
               <p class="fr-card__desc">Commentaires : <b><%= format_boolean(@organisme.commentaire) %></b></p>
 
                 <div class="fr-card__start">
                   <ul class="fr-tags-group">
                     <li>
-                      <% if @organisme.etat == "Inactif" %><p class="fr-badge"><%else %><p class="fr-badge fr-badge--green-menthe"><%end %><%= @organisme.etat %></p>
+                      <% if @organisme.etat == "Inactif" %><p class="fr-badge"><%elsif @organisme.etat == "Actif" %><p class="fr-badge fr-badge--green-menthe"><%elsif @organisme.etat == "En cours de création" %><p class="fr-badge fr-badge--warning fr-badge--no-icon"><%end %><%= @organisme.etat %></p>
                     </li>
                   </ul>
                 </div>
@@ -96,20 +96,29 @@
         </div>
 
         <div id="operateur" class="fr-mb-4w">
-          <h2 class="title-btn">Opérateur <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 7), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <h2 class="title-btn">Opérateur <% if @organisme.statut == "valide" %>
+              <% if @operateur.nil? %><%= link_to new_operateur_path(organisme_id: @organisme.id), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %>
+                <%else %><%= link_to edit_operateur_path(id: @operateur, organisme_id: @organisme.id), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %>
+              <%end %>
+            <%end %></h2>
 
           <div class="fr-card">
             <div class="fr-card__body">
               <div class="fr-card__content">
                 <h3 class="fr-card__title">
-                  Opérateur N :
+                  Opérateur <%= Date.today.year %> : <% if @operateur %><%= format_boolean(@operateur.operateur_n) %><%else %>Non<%end %>
                 </h3>
-                <p class="fr-card__desc">Opérateur N-1 : <b></b></p>
-                <p class="fr-card__desc">Opérateur N-2 : <b></b></p>
-                <p class="fr-card__desc">Appartenance catégorie d'opérateur : <b></b></p>
-                <p class="fr-card__desc">Mission programme chef de pile : <b></b></p>
-                <p class="fr-card__desc">Programme chef de file : <b></b></p>
-                <p class="fr-card__desc">Programmes annexes : <b></b></p>
+                <p class="fr-card__desc">Opérateur <%= Date.today.year-1 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n1) %><%else %>Non<%end %></b></p>
+                <p class="fr-card__desc">Opérateur <%= Date.today.year-2 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n2) %><%else %>Non<%end %></b></p>
+                <% if @operateur %>
+                  <p class="fr-card__desc">Appartenance catégorie d'opérateur : <b><%= format_boolean(@operateur.presence_categorie) %></b></p>
+                  <% if @operateur.presence_categorie  %>
+                    <p class="fr-card__desc">Catégorie d'opérateur : <b><%= format_boolean(@operateur.nom_categorie) %></b></p>
+                  <%end %>
+                  <p class="fr-card__desc">Mission programme chef de pile : <b><%= format_boolean(@operateur.mission.nom) %></b></p>
+                  <p class="fr-card__desc">Programme chef de file : <b><% if @operateur.programme %><%= @operateur.programme.numero %> - <%= @operateur.programme.nom %><%end %></b></p>
+                  <p class="fr-card__desc">Programmes annexes : <b><% if @operateur.operateur_programmes.count > 0 %><% @operateur.operateur_programmes.each do |el|%><%= el.programme.nom %><%end %><%else %>Aucun<%end %></b></p>
+                <%end %>
               </div>
             </div>
           </div>
@@ -126,7 +135,7 @@
                 </h3>
                 <p class="fr-card__desc">Partie I GBCP : <b><%= format_boolean(@organisme.gbcp_1) %></b></p>
                 <p class="fr-card__desc">Présence d’un agent comptable : <b><%= format_boolean(@organisme.agent_comptable_present) %></b></p>
-                <p class="fr-card__desc">Champs application degré GBCP : <b><%= format_boolean(@organisme.degre_gbcp) %></b></p>
+                <p class="fr-card__desc">Champ d'application du degré GBCP : <b><%= format_boolean(@organisme.degre_gbcp) %></b></p>
                 <p class="fr-card__desc">Partie III GBCP : <b><%= format_boolean(@organisme.gbcp_3) %></b></p>
                 <p class="fr-card__desc">Comptabilité budgétaire : <b><%= format_boolean(@organisme.comptabilite_budgetaire) %></b></p>
               </div>
@@ -146,20 +155,21 @@
                 <h3 class="fr-card__title">
                   Présence contrôle : <%= format_boolean(@organisme.presence_controle) %>
                 </h3>
-                <p class="fr-card__desc">Controleur référent : <b><%= @organisme.controleur.nom %></b></p>
+                <p class="fr-card__desc">Contrôleur référent : <b><%= @organisme.controleur.nom %></b></p>
                 <%  if @organisme.presence_controle %>
                   <p class="fr-card__desc">Nature contrôle : <b><%= format_boolean(@organisme.nature_controle) %></b></p>
                   <p class="fr-card__desc">Référence du texte de soumission au contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_soumission_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
                   <p class="fr-card__desc">Autorité de contrôle : <b><%= format_boolean(@organisme.autorite_controle) %></b></p>
-                  <p class="fr-card__desc">Texte reglementaire de désignation de l'autorité de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_reglementaire_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
+                  <p class="fr-card__desc">Texte réglementaire de désignation de l'autorité de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_reglementaire_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
                   <p class="fr-card__desc">Référence de l’arrêté de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
                   <p class="fr-card__desc">Document de contrôle : <b><%= format_boolean(@organisme.document_controle_present) %></b></p>
                   <%  if @organisme.document_controle_present %>
                     <p class="fr-card__desc">Date de signature du document : <b><%= format_boolean(format_date(@organisme.document_controle_date)) %></b></p>
                     <p class="fr-card__desc">Lien du document de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.document_controle_lien),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
                   <%end %>
-                  <p class="fr-card__desc">Référence de l’arrêté de nomination du commissaire du gouvernement : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_nomination),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
                 <%end %>
+                <p class="fr-card__desc">Référence de l’arrêté de nomination du commissaire du gouvernement : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_nomination),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
+
               </div>
             </div>
           </div>
@@ -226,12 +236,12 @@
                 <h3 class="fr-card__title">
                   APU : <b><%= format_boolean(@organisme.apu) %></b>
                 </h3>
-                <p class="fr-card__desc">Soumission à la CIASSP année [N] : <b><%= format_boolean(@organisme.ciassp_n) %></b></p>
-                <p class="fr-card__desc">Soumission à la CIASSP année [N-1] : <b><%= format_boolean(@organisme.ciassp_n1) %></b></p>
-                <p class="fr-card__desc">ODAC Liste INSEE année [N] : <b><%= format_boolean(@organisme.odac_n) %></b></p>
-                <p class="fr-card__desc">ODAC Liste INSEE année [N-1] : <b><%= format_boolean(@organisme.odac_n1) %></b></p>
-                <p class="fr-card__desc">ODAL Liste INSEE année [N] : <b><%= format_boolean(@organisme.odal_n) %></b></p>
-                <p class="fr-card__desc">ODAL Liste INSEE année [N-1] : <b><%= format_boolean(@organisme.odal_n1) %></b></p>
+                <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year-2 %> : <b><%= format_boolean(@organisme.ciassp_n) %></b></p>
+                <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year-3 %> : <b><%= format_boolean(@organisme.ciassp_n1) %></b></p>
+                <p class="fr-card__desc">ODAC Liste INSEE année <%= Date.today.year-2 %> : <b><%= format_boolean(@organisme.odac_n) %></b></p>
+                <p class="fr-card__desc">ODAC Liste INSEE année <%= Date.today.year-3 %> : <b><%= format_boolean(@organisme.odac_n1) %></b></p>
+                <p class="fr-card__desc">ODAL Liste INSEE année <%= Date.today.year-2 %> : <b><%= format_boolean(@organisme.odal_n) %></b></p>
+                <p class="fr-card__desc">ODAL Liste INSEE année <%= Date.today.year-3 %> : <b><%= format_boolean(@organisme.odal_n1) %></b></p>
               </div>
             </div>
           </div>

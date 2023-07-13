@@ -5,10 +5,10 @@ class Organisme < ApplicationRecord
   belongs_to :bureau, class_name: 'User'
   belongs_to :controleur, class_name: 'User'
   belongs_to :ministere
-  has_many :organisme_rattachements
+  has_many :organisme_rattachements, dependent: :destroy
   has_many :organisme_destinations, through: :organisme_rattachements
-  has_many :organisme_ministeres
-
+  has_many :organisme_ministeres, dependent: :destroy
+  has_one :operateur
   def self.import(file)
     data = Roo::Spreadsheet.open(file.path)
     headers = data.row(1) # get header row

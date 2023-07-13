@@ -5,7 +5,7 @@ export default class extends Controller {
         return ['form','submitBouton','fieldRequire', 'checkRequire','checklist'];
     }
     connect() {
-        this.validateForm(this.formTarget);
+
         if (this.data.get("nomsorganismes")!= null) {
             this.changeEtat();
             this.changeNature();
@@ -28,6 +28,11 @@ export default class extends Controller {
         if (this.element.querySelector('#radio-admin-1') != null){
             this.ChangeAdmin();
         }
+        if (this.element.querySelector('#radio-presence-1') != null){
+            this.ChangeCategorie();
+            this.ChangeOperateur();
+        }
+        this.validateForm(this.formTarget);
     }
     validateBtn(isValid){
         this.submitBoutonTarget.disabled = !isValid;
@@ -81,6 +86,32 @@ export default class extends Controller {
         input.disabled = false;
         input.parentNode.classList.remove('fr-select-group--disabled');
     }
+    resetChamp(target){
+        target.innerHTML = "";
+        const option = document.createElement("option");
+        option.value = "";
+        option.innerHTML = "- sélectionner -";
+        target.appendChild(option);
+    }
+    changeDropdown(input, button, checkedFields){
+        if (input === true){
+            this.enableInput(button);
+
+        }else{
+            this.disableInput(button);
+            checkedFields.forEach((field) =>{
+                field.checked = false;
+            })
+            button.setAttribute("aria-expanded", "false");
+        }
+    }
+    changeField(input, field){
+        if (input === true){
+            this.enableInput(field);
+        }else{
+            this.disableInput(field);
+        }
+    }
 
     ChangeNom(event){
         const nom_input = document.getElementById("nom");
@@ -96,6 +127,7 @@ export default class extends Controller {
         }
     }
     ChangeSiren(event){
+        const maxLength = 9;
         const text_siren_alert = document.getElementById("alertSiren")
         const result = parseInt(event.target.value);
         const siren_organismes = JSON.parse(this.data.get("sirenorganismes"));
@@ -103,50 +135,34 @@ export default class extends Controller {
         if (siren_organismes.includes(result)) {
             this.showField(text_siren_alert);
         }
+
+        if (event.target.value.length > maxLength) {
+            event.target.value = event.target.value.slice(0, maxLength);
+        }
     }
     changeNature(){
         const nature= document.getElementById("nature")
-        const date_previsionnelle= document.getElementById("date_previsionnelle_dissolution")
-        if (nature.value === "GIP"){
-            this.enableInput(date_previsionnelle);
-        }else{
-            this.disableInput(date_previsionnelle);
-        }
+        const date_previsionnelle= document.getElementById("date_previsionnelle_dissolution");
+        const isTrue = nature.value === "GIP"
+        this.changeField(isTrue,date_previsionnelle);
     }
     changeEtat(){
         const etat= document.getElementById("etat");
         const date_dissolution= document.getElementById("date_dissolution");
         const effet_dissolution= document.getElementById("effet_dissolution");
-        const btn_rattachement= document.getElementById("BtnRattachement");
-        const checkedFields = Array.from(this.formTarget.querySelectorAll("input[type=\'checkbox\']"));
-        if (etat.value === "Inactif"){
-            [date_dissolution,effet_dissolution].forEach((field) =>{
-                this.enableInput(field);
-            })
-        }else{
-            [date_dissolution,effet_dissolution, btn_rattachement].forEach((field) =>{
-                this.disableInput(field);
-            })
-            checkedFields.forEach((field) =>{
-                field.checked = false;
-            })
-            btn_rattachement.setAttribute("aria-expanded", "false");
-        }
+        const isTrue = etat.value === "Inactif"
+        this.changeField(isTrue,date_dissolution);
+        this.changeField(isTrue,effet_dissolution);
+        this.changeEffetDissolution();
+
     }
     changeEffetDissolution(){
         const effet= document.getElementById("effet_dissolution");
         const btn_rattachement= document.getElementById("BtnRattachement");
         const checkedFields = Array.from(this.formTarget.querySelectorAll("input[type=\'checkbox\']"));
-        if (effet.value === "Rattachement" || effet.value === "Création"){
-            this.enableInput(btn_rattachement);
-
-        }else{
-            this.disableInput(btn_rattachement);
-            checkedFields.forEach((field) =>{
-                field.checked = false;
-            })
-            btn_rattachement.setAttribute("aria-expanded", "false");
-        }
+        const isTrue = effet.value === "Rattachement" || effet.value === "Création"
+        this.changeDropdown(isTrue, btn_rattachement, checkedFields)
+        this.checkBox();
     }
     checkBox(){
         const btn_rattachement= document.getElementById("BtnRattachement");
@@ -169,9 +185,6 @@ export default class extends Controller {
         const agent_comptable_oui= document.getElementById("radio-agent-1");
         const gbcp_3_oui= document.getElementById("radio-gbcp-3");
         const gbcp_3_no= document.getElementById("radio-gbcp-3N");
-        const comptabilite_non= document.getElementById("radio-compta");
-        const comptabilite_oui= document.getElementById("radio-compta-1");
-        const comptabilite_adapte= document.getElementById("radio-compta-b");
         const degre= document.getElementById("degre_gbcp");
 
         const gbcp= this.element.querySelector('#radio-gbcp-1').checked;
@@ -192,29 +205,20 @@ export default class extends Controller {
             agent_comptable_no.disabled = false;
             gbcp_3_no.checked = true;
             gbcp_3_oui.disabled = true;
-            comptabilite_non.checked = true;
-            comptabilite_oui.disabled = true;
-            comptabilite_adapte.disabled = true;
             degre.innerHTML = "";
             const option = document.createElement("option");
             option.value = "Exclusion";
             option.innerHTML = "Exclusion";
             degre.appendChild(option);
         }
-    }
-    resetChamp(target){
-        target.innerHTML = "";
-        const option = document.createElement("option");
-        option.value = "";
-        option.innerHTML = "- sélectionner -";
-        target.appendChild(option);
+        this.ChangeGBCP3();
     }
     ChangeGBCP3(){
-        const gbcp3= this.element.querySelector('#radio-gbcp-3').checked;
+        const gbcp3_no= this.element.querySelector('#radio-gbcp-3N').checked;
         const comptabilite_non= document.getElementById("radio-compta");
         const comptabilite_oui= document.getElementById("radio-compta-1");
         const comptabilite_adapte= document.getElementById("radio-compta-b");
-        if (gbcp3 == false){
+        if (gbcp3_no == true){
             comptabilite_non.checked = true;
             comptabilite_oui.disabled = true;
             comptabilite_adapte.disabled = true;
@@ -224,13 +228,14 @@ export default class extends Controller {
         }
     }
 
+
     ChangeControle(){
         const controle= this.element.querySelector('#radio-controle-1').checked;
         const inputFields = this.formTarget.querySelectorAll('input:not([type="hidden"]):not([type="submit"]), select');
         inputFields.forEach((field) => {
             if (controle == false){
                 if (field.name != "organisme[presence_controle]"&& field.id != "controleur" &&
-                    field.name != "organisme[document_controle_present]"){
+                    field.name != "organisme[document_controle_present]" && field.name != "organisme[arrete_nomination]"){
                     this.disableInput(field)
 
                 }else if (field.name == "organisme[document_controle_present]"){
@@ -257,44 +262,65 @@ export default class extends Controller {
         const doc = this.element.querySelector('#radio-document-1').checked;
         const date = document.getElementById("date_signature");
         const lien = document.getElementById("document_controle_lien");
-        if (doc === true){
-            this.enableInput(date);
-            this.enableInput(lien);
-        }else{
-            this.disableInput(date);
-            this.disableInput(lien);
-        }
+        this.changeField(doc,date);
+        this.changeField(doc,lien);
     }
 
     ChangeTutelle(){
         const tutelle = this.element.querySelector('#radio-tutelle-1').checked;
+        const autorite = document.getElementById("autorite");
         if (tutelle === true){
             document.getElementById("radio-approbation-1").closest('fieldset').disabled = false;
         }else{
             document.getElementById("radio-approbation-1").closest('fieldset').disabled = true;
             document.getElementById("radio-approbation-1").checked = false;
             document.getElementById("radio-approbation").checked = false;
-            this.disableInput(document.getElementById("autorite"));
+            this.disableInput(autorite);
         }
     }
     ChangeApprobation(){
         const autorite = document.getElementById("autorite");
         const approbation = this.element.querySelector('#radio-approbation-1').checked;
-        if (approbation === true){
-            this.enableInput(autorite);
-        }else{
-            this.disableInput(autorite);
-        }
+        this.changeField(approbation,autorite);
     }
     ChangeAdmin(){
         const admin = this.element.querySelector('#radio-admin-1').checked;
         const admin_db_fonction = document.getElementById("admin_db_fonction");
-        if (admin === true){
-            this.enableInput(admin_db_fonction);
+        this.changeField(admin,admin_db_fonction);
+    }
+
+    ChangeOperateur(){
+        const operateurRadios = Array.from(this.element.querySelectorAll('[id^="radio-operateurn"]'));
+        const mission = document.getElementById("mission");
+        const programme = document.getElementById("programme");
+        const btn_rattachement= document.getElementById("BtnRattachement");
+        const presenceRadios = Array.from(this.element.querySelectorAll('[id^="radio-presence"]'));
+        const checkedFields = Array.from(this.formTarget.querySelectorAll("input[type=\'checkbox\']"));
+        const is_checked = operateurRadios.some(radio => radio.checked);
+
+        this.changeCheckDisable(!is_checked,...presenceRadios);
+        this.ChangeCategorie();
+        this.changeField(is_checked,mission);
+        this.changeField(is_checked,programme);
+        this.changeDropdown(is_checked, btn_rattachement, checkedFields)
+        this.checkBox();
+
+    }
+    ChangeCategorie(){
+        const presence_categorie = this.element.querySelector('#radio-presence-1').checked;
+        const nom_categorie = document.getElementById("nom_categorie");
+        this.changeField(presence_categorie,nom_categorie);
+    }
+    changeCheckDisable(isdisabled, field, field_to_check){
+        if (isdisabled){
+            field.checked = false;
+            field.disabled = true;
+            field_to_check.checked = true
         }else{
-            this.disableInput(admin_db_fonction);
+            field.disabled = false;
         }
     }
+
     submitForm(event){
         let isValid = this.validateForm(this.formTarget);
         if (!isValid) {

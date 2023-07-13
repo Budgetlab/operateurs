@@ -81,7 +81,7 @@
           <div class="fr-col-12 fr-col-lg-4">
             <div class="fr-select-group fr-select-group--disabled">
               <label for="autorite" class="fr-label">Autorité chargée de l'approbation*</label>
-              <%= f.select :autorite_approbation,options_for_select([["- sélectionner -", ""], *@controleurs.map { |controleur| [controleur.nom, controleur.id] }]),{selected: @organisme.autorite_approbation}, {data: {'form-target': 'fieldRequire'}, id:"autorite",class:"fr-select", disabled: true}%>
+              <%= f.select :autorite_approbation,options_for_select([["- sélectionner -", ""]] + @controleurs.map { |controleur| [controleur.nom, controleur.nom] }, selected: @organisme.autorite_approbation),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite",class:"fr-select", disabled: true}%>
             </div>
           </div>
         </div>
@@ -89,7 +89,7 @@
           <div class="fr-col-12 fr-col-lg-6">
             <div class="fr-select-group">
               <label for="ministere" class="fr-label">Ministère de tutelle (tutelle principale)*</label>
-              <%= f.select :ministere_id,options_for_select([["- sélectionner -", ""], *@ministeres.map { |ministere| [ministere.nom, ministere.id] }], selected: @organisme.ministere_id),{}, {data: {'form-target': 'fieldRequire'}, id:"ministere",class:"fr-select"}%>
+              <%= f.select :ministere_id,options_for_select([["- sélectionner -", ""]] + @ministeres.map { |ministere| [ministere.nom, ministere.id] }, selected: @organisme.statut != 'valide' ? nil : @organisme.ministere_id),{}, {data: {'form-target': 'fieldRequire'}, id:"ministere",class:"fr-select"}%>
             </div>
           </div>
           <div class="fr-col-12 fr-col-lg-6">
