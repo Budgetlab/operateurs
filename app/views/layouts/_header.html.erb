@@ -51,6 +51,9 @@
           <li class="fr-nav__item">
             <%= active_link_to root_path, class: "fr-nav__link", target: "_self", :active => [['pages'],['index']] do%>Accueil<%end%>
           </li>
+          <li class="fr-nav__item">
+            <%= active_link_to organismes_path, class: "fr-nav__link", target: "_self" do%>Organismes<%end%>
+          </li>
         </ul>
       </nav>
     </div>

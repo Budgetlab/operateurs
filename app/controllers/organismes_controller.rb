@@ -4,6 +4,15 @@
 class OrganismesController < ApplicationController
   before_action :authenticate_user!
   def index
+    @organismes = Organisme.all.pluck(:id, :nom, :statut, :etat)
+    @organismes_actifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Actif' }
+    @organismes_inactifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Inactif' }
+    @organismes_creation = @organismes.select { |el| el[2] == 'valide' && el[3] == 'En cours de création' }
+    @organismes_brouillon = @organismes.reject { |el| el[2] == 'valide' }
+
+  end
+
+  def organismes_ajout
     @organismes_noms = Organisme.all.pluck(:nom)
   end
 
@@ -17,7 +26,7 @@ class OrganismesController < ApplicationController
     @bureaux = User.where(statut: 'Bureau Sectiorel').order(nom: :asc)
     @organismes = Organisme.all.order(nom: :asc).pluck(:nom, :id, :siren)
     @noms_organismes = @organismes.map { |el| el[0] }
-    @siren_organismes = @organismes.where.not(siren: nil).map { |el| el[2] }
+    @siren_organismes = @organismes.map { |el| el[2] }.compact
   end
 
   def create

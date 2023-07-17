@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   resources :organismes
   post '/import_organismes' => 'organismes#import'
+  get '/organismes_ajout' => 'organismes#organismes_ajout'
   get '/ministeres' => 'ministeres#index'
   post '/import_ministeres' => 'ministeres#import'
   resources :operateurs
