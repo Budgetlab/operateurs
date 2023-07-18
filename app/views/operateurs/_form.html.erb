@@ -6,6 +6,9 @@
         <%= link_to root_path, class:"fr-breadcrumb__link" do %>Accueil<%end %>
       </li>
       <li>
+        <%= link_to organismes_path, class:"fr-breadcrumb__link" do %>Liste des organismes<%end %>
+      </li>
+      <li>
         <%= link_to organisme_path(@organisme), class:"fr-breadcrumb__link" do %><%= @organisme.nom %><%end %>
       </li>
       <li>

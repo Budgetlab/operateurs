@@ -2,7 +2,9 @@
 
 # Controller Modifications
 class ModificationsController < ApplicationController
-
+  def index
+    @modifications = Modification.all.order(created_at: :desc)
+  end
   def update
     @modification = Modification.find(params[:id])
     @organisme = @modification.organisme
