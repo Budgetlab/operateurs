@@ -1,0 +1,17 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  organisme: one
+  user: one
+  champ: MyString
+  statut: MyString
+  ancienne_valeur: MyString
+  nouvelle_valeur: MyString
+
+two:
+  organisme: two
+  user: two
+  champ: MyString
+  statut: MyString
+  ancienne_valeur: MyString
+  nouvelle_valeur: MyString

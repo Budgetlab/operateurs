@@ -11,9 +11,11 @@ Rails.application.routes.draw do
   resources :organismes
   post '/import_organismes' => 'organismes#import'
   get '/organismes_ajout' => 'organismes#organismes_ajout'
+  post '/recherche_organismes' => 'organismes#recherche_organismes'
   get '/ministeres' => 'ministeres#index'
   post '/import_ministeres' => 'ministeres#import'
   resources :operateurs
+  resources :modifications
   # routes statiques
   get '/mentions-legales', to: 'pages#mentions_legales'
   get '/donnees-personnelles', to: 'pages#donnees_personnelles'

@@ -1,13 +1,61 @@
 <main role="main">
   <div class="fr-container" data-controller="toggle">
+    <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
+      <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+      <div class="fr-collapse" id="breadcrumb-1">
+        <ol class="fr-breadcrumb__list">
+          <li>
+            <%= link_to organismes_path, class:"fr-breadcrumb__link" do %>Organismes<%end %>
+          </li>
+          <li>
+            <a class="fr-breadcrumb__link" aria-current="page"><%= @organisme.nom %></a>
+          </li>
+        </ol>
+      </div>
+    </nav>
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-9">
-        <h1 class="fr-my-6w"><%= @organisme.nom %> <% if @organisme.statut != "valide" %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><% end %></h1>
+        <h1 class="fr-mb-4w"><%= @organisme.nom %> <% if @organisme.statut != "valide" %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><% end %></h1>
       </div>
       <div class="fr-col-12 fr-col-lg-3">
         <% if @organisme.statut != "valide" %><div class="fr-my-6w"><%= link_to edit_organisme_path(@organisme.id), class: "fr-btn" do %>Reprendre le brouillon<%end %></div><%end %>
       </div>
     </div>
+    <% if @modifications_attente.length > 0 %>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-12">
+          <h2>Modifications en attente de validation [<%= @modifications_attente.length%>]</h2>
+          <div class="fr-table fr-table--bordered fr-table--no-caption">
+            <table>
+              <caption>Tableau des modifications </caption>
+              <thead>
+              <tr>
+                <th scope="col">Date de saisie</th>
+                <th scope="col">Champ</th>
+                <th scope="col">Valeur</th>
+                <th scope="col">Action</th>
+              </tr>
+              </thead>
+              <tbody>
+              <% @modifications_attente.each do |modification| %>
+                <tr>
+                  <td><%= format_date(modification.created_at) %></td>
+                  <td><%= modification.champ %></td>
+                  <td><span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span> <b><%= format_boolean(modification.nouvelle_valeur) %></b></td>
+                  <td>
+                    <ul class="fr-btns-group fr-btns-group--inline">
+                    <li><%= link_to modification_path(modification, statut: "validée"), data: { "turbo-method": :patch}, class:"fr-btn" do %> Valider <%end %></li>
+                    <li><%= link_to modification_path(modification, statut: "refusée"), data: { "turbo-method": :patch}, class:"fr-btn fr-btn--secondary" do%> Refuser <%end %></li>
+                  </ul>
+                  </td>
+                </tr>
+              <%end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    <%end %>
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-4">
         <p class="fr-hint-text">Cliquez sur les interrupteurs ci-dessous pour faire apparaître ou disparaître des sections.</p>
@@ -54,10 +102,26 @@
               <label class="fr-toggle__label" for="group-4-toggle-5" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Catégories</label>
             </div>
           </li>
+          <li>
+            <div class="fr-toggle fr-toggle--border-bottom fr-toggle--label-left">
+              <input type="checkbox" checked="true" class="fr-toggle__input" id="group-4-toggle-6" data-action="change->toggle#toggle" data-section="modifications">
+              <label class="fr-toggle__label" for="group-4-toggle-6" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Historique des modifications</label>
+            </div>
+          </li>
         </ul>
       </div>
 
       <div class="fr-col-12 fr-col-lg-8">
+        <div class="fr-download">
+          <p>
+            <%= link_to "/organismes/#{@organisme.id}.xlsx", format: :xslx, class: "fr-download__link" do %>Télécharger la fiche de l'organisme
+              <span class="fr-download__detail">
+                Format .xlsx
+            </span>
+            <%end %>
+          </p>
+        </div>
+
         <div id="fiche_identite" class="fr-mb-4w">
           <h2 class="title-btn">Fiche d'identité <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
 
@@ -117,7 +181,7 @@
                   <%end %>
                   <p class="fr-card__desc">Mission programme chef de pile : <b><%= format_boolean(@operateur.mission.nom) %></b></p>
                   <p class="fr-card__desc">Programme chef de file : <b><% if @operateur.programme %><%= @operateur.programme.numero %> - <%= @operateur.programme.nom %><%end %></b></p>
-                  <p class="fr-card__desc">Programmes annexes : <b><% if @operateur.operateur_programmes.count > 0 %><% @operateur.operateur_programmes.each do |el|%><%= el.programme.nom %><%end %><%else %>Aucun<%end %></b></p>
+                  <p class="fr-card__desc">Programmes annexes : <b><% if @operateur_programmes %><% @operateur_programmes.each do |el|%><%= el.programme.numero %><%end %><%else %>Aucun<%end %></b></p>
                 <%end %>
               </div>
             </div>
@@ -194,7 +258,7 @@
                   <%end %>
                 <%end %>
                 <p class="fr-card__desc">Ministère de tutelle principale : <b><%= @organisme.ministere.nom %></b></p>
-                <p class="fr-card__desc">Ministère•s de co-tutelle : <b><% if @organisme.organisme_ministeres.count > 0 %><% @organisme.organisme_ministeres.each do |orga|%><%= orga.ministere.nom %> <%end %><%else %>Aucun<%end %></b></p>
+                <p class="fr-card__desc">Ministère•s de co-tutelle : <b><% if @organisme_ministeres %><% @organisme_ministeres.each do |orga|%><%= orga.ministere.nom %> <%end %><%else %>Aucun<%end %></b></p>
                </div>
             </div>
           </div>
@@ -250,6 +314,74 @@
           <%end %>
         </div>
 
+        <div id="modifications" class="fr-mb-4w">
+          <h2>Historique des modifications [<%= @modifications.length %>]</h2>
+          <div class="fr-tabs fr-mb-2w">
+            <ul class="fr-tabs__list" role="tablist" aria-label="Onglets Organismes actifs">
+              <li role="presentation">
+                <button id="tabpanel-1177" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-1177-panel">Modifications validées (<%= @modifications_valides.length %>)</button>
+              </li>
+              <li role="presentation">
+                <button id="tabpanel-1178" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-1178-panel">Modifications rejetées (<%= @modifications_rejetees.length %>)</button>
+              </li>
+            </ul>
+            <div id="tabpanel-1177-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-1177" tabindex="0">
+              <div class="fr-table fr-table--bordered fr-table--no-caption">
+                <table>
+                  <caption>Tableau des modifications </caption>
+                  <thead>
+                  <tr>
+                    <th scope="col">Date de saisie</th>
+                    <th scope="col">Auteur</th>
+                    <th scope="col">Champ</th>
+                    <th scope="col">Valeur</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% @modifications_valides.each do |modification| %>
+                  <tr>
+                    <td><%= format_date(modification.created_at) %></td>
+                    <td><%= modification.user.nom %></td>
+                    <td><%= modification.champ %></td>
+                    <td><b><%= format_boolean(modification.nouvelle_valeur) %></b> <span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span></td>
+                  </tr>
+                    <%end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div id="tabpanel-1178-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1178" tabindex="0">
+              <div class="fr-table fr-table--bordered fr-table--no-caption">
+                <table>
+                  <caption>Tableau des modifications </caption>
+                  <thead>
+                  <tr>
+                    <th scope="col">Date de saisie</th>
+                    <th scope="col">Auteur</th>
+                    <th scope="col">Champ</th>
+                    <th scope="col">Valeur</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <% @modifications_rejetees.each do |modification| %>
+                    <tr>
+                      <td><%= format_date(modification.created_at) %></td>
+                      <td><%= modification.user.nom %></td>
+                      <td><%= modification.champ %></td>
+                      <td><b><%= format_boolean(modification.nouvelle_valeur) %></b> <span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span></td>
+                    </tr>
+                  <%end %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--right fr-mb-4w">
+          <a class="fr-link fr-icon-arrow-up-fill fr-link--icon-left" href="#top">
+            Haut de page
+          </a>
+        </div>
       </div>
     </div>
   </div>

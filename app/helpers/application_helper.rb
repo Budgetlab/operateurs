@@ -6,9 +6,9 @@ module ApplicationHelper
     case string
     when nil, ''
       'Non renseigné'
-    when true
+    when true, 'true'
       'Oui'
-    when false
+    when false, 'false'
       'Non'
     else
       string

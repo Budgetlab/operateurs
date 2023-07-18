@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_13_073306) do
+ActiveRecord::Schema[7.0].define(version: 2023_07_17_091920) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -26,6 +26,19 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_13_073306) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["programme_id"], name: "index_missions_on_programme_id"
+  end
+
+  create_table "modifications", force: :cascade do |t|
+    t.bigint "organisme_id", null: false
+    t.bigint "user_id", null: false
+    t.string "champ"
+    t.string "statut"
+    t.string "ancienne_valeur"
+    t.string "nouvelle_valeur"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisme_id"], name: "index_modifications_on_organisme_id"
+    t.index ["user_id"], name: "index_modifications_on_user_id"
   end
 
   create_table "operateur_programmes", force: :cascade do |t|
@@ -148,6 +161,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_13_073306) do
   end
 
   add_foreign_key "missions", "programmes"
+  add_foreign_key "modifications", "organismes"
+  add_foreign_key "modifications", "users"
   add_foreign_key "operateur_programmes", "operateurs"
   add_foreign_key "operateur_programmes", "programmes"
   add_foreign_key "operateurs", "missions"

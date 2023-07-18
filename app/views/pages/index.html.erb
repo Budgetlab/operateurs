@@ -1,20 +1,69 @@
 <% content_for :title do %>Accueil | [NOM] <% end %>
-<main role="main" class="containtAll">
+<main role="main" class="containtAll" data-controller="search">
   <div class="fr-container">
-    <h1 class="fr-my-6w">Accueil</h1>
-    <div class="fr-grid-row fr-grid-row--gutters">
+    <h1 class="fr-my-6w"><%= current_user.nom%></h1>
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
       <div class="fr-col-12 fr-col-lg-12">
-        <h2>Liste des organismes [N]</h2>
-        <div class="fr-search-bar fr-mb-4w" id="header-search" role="search">
+        <h2>Rechercher un organisme</h2>
+        <%= form_with(url: recherche_organismes_path, method: :post, data: {'search-target': "form"}) do |f|%>
+        <div class="fr-search-bar" id="header-search" role="search" >
           <label class="fr-label" for="search-784-input">
             Recherche un organisme par son nom ou son acronyme
           </label>
-          <input class="fr-input" placeholder="Rechercher" type="search" id="search-784-input" name="search-784-input">
-          <button class="fr-btn" title="Rechercher">
+          <%= f.text_field :search, class:"fr-input", id: "search-784-input", placeholder: "Rechercher", data: {'search-target': "input", action: "keyup->search#autocomplete"}%>
+          <button class="fr-btn" title="Rechercher" aria-controls="modal-autocomplete" aria-expanded="false" data-search-target="button">
             Recherche un organisme par son nom ou son acronyme
           </button>
         </div>
+        <%end %>
+
+        <div id="modal-autocomplete" class="fr-collapse shadow" role="dialog" >
+          <div class="fr-container fr-p-0">
+            <div class="fr-grid-row">
+              <div class="fr-col-12">
+                <div class="fr-modal__body">
+                  <div class="fr-modal__content fr-mb-4w">
+                    <div class="fr-text--xs fr-my-2w">Résultats de recherche</div>
+                    <div id="resultats">
+                      <%= render 'recherche_organismes' %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
       </div>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h2>Derniers organismes modifiés</h2>
+      </div>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+      <% @organismes_last.each do |organisme| %>
+      <div class="fr-col-12 fr-col-lg-4">
+        <div class="fr-card fr-enlarge-link">
+          <div class="fr-card__body">
+            <div class="fr-card__content">
+              <h3 class="fr-card__title"><%= link_to organisme_path(organisme) do %><%= organisme.nom %><%end %></h3>
+              <p class="fr-card__desc"><%= organisme.nature %></p>
+              <p class="fr-card__desc"><%= organisme.famille %></p>
+              <div class="fr-card__start">
+                <ul class="fr-tags-group">
+                  <li>
+                    <% if organisme.etat == "Inactif" %><p class="fr-badge"><%elsif organisme.etat == "Actif" %><p class="fr-badge fr-badge--green-menthe"><%elsif organisme.etat == "En cours de création" %><p class="fr-badge fr-badge--warning fr-badge--no-icon"><%end %><%= organisme.etat %></p>
+                  </li>
+                </ul>
+                <p class="fr-card__detail fr-icon-arrow-right-line">Modifié le <%= format_date(organisme.updated_at)%></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%end %>
     </div>
   </div>
 </main>

@@ -9,6 +9,7 @@ class Organisme < ApplicationRecord
   has_many :organisme_destinations, through: :organisme_rattachements
   has_many :organisme_ministeres, dependent: :destroy
   has_one :operateur
+  has_many :modifications, dependent: :destroy
   def self.import(file)
     data = Roo::Spreadsheet.open(file.path)
     headers = data.row(1) # get header row

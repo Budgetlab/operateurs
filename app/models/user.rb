@@ -6,7 +6,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
-
+  has_many :modifications
   has_many :bureau_organismes,
            foreign_key: :bureau_id,
            class_name: 'Organisme'

@@ -12,19 +12,41 @@ class OrganismesController < ApplicationController
 
   end
 
+  def recherche_organismes
+    search = params[:search]
+    @organismes = Organisme.where("nom ILIKE :search OR acronyme ILIKE :search", search: "%#{search}%")
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.update('resultats', partial: 'pages/recherche_organismes')
+        ]
+      end
+    end
+  end
+
   def organismes_ajout
     @organismes_noms = Organisme.all.pluck(:nom)
   end
 
   def show
-    @organisme = Organisme.find(params[:id])
-    @operateur = @organisme.operateur
+    @organisme = Organisme.includes(:ministere, :bureau, :controleur, :organisme_ministeres).find(params[:id])
+    @organisme_ministeres = @organisme.organisme_ministeres.includes(:ministere)
+    @operateur = Operateur.includes(:mission, :programme, :operateur_programmes).find_by(organisme_id: @organisme.id)
+    @operateur_programmes = @operateur.operateur_programmes.includes(:programme) if @operateur
+    @modifications = @organisme.modifications.includes(:user)
+    @modifications_valides = @modifications.select { |modification| modification.statut == 'validée' }
+    @modifications_rejetees = @modifications.select { |modification| modification.statut == 'refusée' }
+    @modifications_attente = @modifications.select { |modification| modification.statut == 'En attente' }
+    respond_to do |format|
+      format.html
+      format.xlsx
+    end
   end
 
   def new
     @organisme = Organisme.new
     @bureaux = User.where(statut: 'Bureau Sectiorel').order(nom: :asc)
-    @organismes = Organisme.all.order(nom: :asc).pluck(:nom, :id, :siren)
+    @organismes = Organisme.where.not(id: @organisme.id).order(nom: :asc).pluck(:nom, :id, :siren)
     @noms_organismes = @organismes.map { |el| el[0] }
     @siren_organismes = @organismes.map { |el| el[2] }.compact
   end
@@ -64,6 +86,36 @@ class OrganismesController < ApplicationController
     reset_values([:nature_controle, :texte_soumission_controle, :autorite_controle, :texte_reglementaire_controle, :arrete_controle, :document_controle_present, :document_controle_lien, :document_controle_date, :arrete_nomination]) if params[:organisme][:presence_controle]
     reset_values([:admin_db_fonction]) if params[:organisme][:admin_db_present]
     reset_values([:delegation_approbation, :autorite_approbation]) if params[:organisme][:tutelle_financiere]
+    if @organisme.statut == 'valide'
+      modifications = []
+      champs_a_surveiller = [:nom, :etat, :acronyme, :siren, :nature, :texte_institutif, :gbcp_1, :gbcp_3,
+                             :comptabilite_budgetaire, :nature_controle, :texte_soumission_controle, :autorite_controle,
+                             :texte_reglementaire_controle, :arrete_controle, :document_controle_date, :comite_audit,
+                             :arrete_nomination, :ciassp_n, :ciassp_n1, :odal_n, :odal_n1, :odac_n, :odac_n1]
+      champs_texte = ['Nom', 'État', 'Acronyme', 'Siren', 'Nature juridique', 'Texte institutif', 'Partie I GBCP',
+                      'Partie III GBCP', 'Comptabilité budgétaire', 'Nature contrôle', 'Texte soumission au contrôle',
+                      'Autorité de contrôle', "Texte réglementaire de désignation de l'autorité decontrôle",
+                      'Arrêté de contrôle', 'Date signature document contrôle ', 'Comité audit et risques',
+                      'Arrêté de nomination comissaire du gouvernement', "CIASSP #{(Date.today.year - 2).to_s}",
+                      "CIASSP #{(Date.today.year - 3).to_s}", "ODAL #{(Date.today.year - 2).to_s}",
+                      "ODAL #{(Date.today.year - 3).to_s}", "ODAC #{(Date.today.year - 2).to_s}",
+                      "ODAC #{(Date.today.year - 3).to_s}"]
+      champs_a_surveiller.each_with_index do |champ, i|
+        if !organisme_params[champ].blank? && organisme_params[champ].to_s != @organisme[champ].to_s
+          modifications << { champ: champs_texte[i], ancienne_valeur: @organisme[champ].to_s, nouvelle_valeur: organisme_params[champ].to_s }
+        end
+      end
+      statut = current_user.nom == '2B2O' ? 'validée' : 'En attente'
+      modifications.each do |modification|
+        @organisme.modifications.create(
+          champ: modification[:champ],
+          ancienne_valeur: modification[:ancienne_valeur],
+          nouvelle_valeur: modification[:nouvelle_valeur],
+          user_id: current_user.id,
+          statut: statut
+        )
+      end
+    end
     if @organisme.update(organisme_params)
       @organisme.organisme_rattachements.destroy_all if @organisme.etat != 'Inactif'
       if params[:organisme][:organismes] && @organisme.etat == 'Inactif' && (@organisme.effet_dissolution == 'Création' || @organisme.effet_dissolution == 'Rattachement')
@@ -111,7 +163,7 @@ class OrganismesController < ApplicationController
     params.require(:organisme).permit(:statut, :etat, :nom, :siren, :acronyme, :date_creation, :famille, :nature,
                                       :date_previsionnelle_dissolution, :date_dissolution, :effet_dissolution,
                                       :bureau_id, :texte_institutif, :commentaire, :gbcp_1, :agent_comptable_present,
-                                      :degre_gbcp, :gbcp_3, :comptabilite_budgetaire, :presence_controle,:controleur_id,
+                                      :degre_gbcp, :gbcp_3, :comptabilite_budgetaire, :presence_controle, :controleur_id,
                                       :nature_controle, :texte_soumission_controle, :autorite_controle,
                                       :texte_reglementaire_controle, :arrete_controle, :document_controle_present,
                                       :document_controle_lien, :document_controle_date, :arrete_nomination,

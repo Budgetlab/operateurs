@@ -24,3 +24,11 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.fr-text--barre{
+  text-decoration : line-through;
+}
+
+.shadow{
+  filter: drop-shadow(var(--lifted-shadow)) !important;
+}

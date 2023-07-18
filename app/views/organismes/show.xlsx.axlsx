@@ -1,0 +1,68 @@
+
+    wb = xlsx_package.workbook
+  	wb.add_worksheet(name: "Fiche identité") do |sheet| 	
+    	sheet.add_row %W{ Nom Acronyme État Date\ création Siren Famille Nature\ juridique Date\ prévisionnelle\ dissolution Date\ dissolution Effet\ dissolution Organismes\ Rattachement Bureau\ rattachement texte\ institutif commentaire}
+      @array_orga = []
+      if @organisme.effet_dissolution == "Rattachement" || @organisme.effet_dissolution == "Création"
+        @organisme.organisme_rattachements.each do |orga|
+        @array_orga << orga.organisme_destination.nom
+        end
+      end
+
+      sheet.add_row [@organisme.nom, format_boolean(@organisme.acronyme), @organisme.etat, format_boolean(@organisme.date_creation), format_boolean(@organisme.siren), format_boolean(@organisme.famille), format_boolean(@organisme.nature), format_boolean(@organisme.date_previsionnelle_dissolution), format_boolean(@organisme.date_dissolution), format_boolean(@organisme.effet_dissolution), @array_orga, format_boolean(@organisme.bureau.nom), format_boolean(@organisme.texte_institutif), format_boolean(@organisme.commentaire)]
+           
+  	end
+    if @operateur
+    wb.add_worksheet(name: "Opérateur") do |sheet|
+      sheet.add_row %W{ Opérateur\ #{Date.today.year} Opérateur\ #{Date.today.year-1} Opérateur\ #{Date.today.year-2} Appartenance\ catégorie\ opérateur Nom\ catégorie Mission Programme\ chef\ file Programmes\ Annexes}
+    
+      @array_prog = []
+      if @operateur_programmes
+        @operateur_programmes.each do |el|
+         @array_prog << el.programme.numero
+        end
+      end
+
+      sheet.add_row [format_boolean(@operateur.operateur_n), format_boolean(@operateur.operateur_n1), format_boolean(@operateur.operateur_n2),format_boolean(@operateur.presence_categorie),format_boolean(@operateur.nom_categorie),format_boolean(@operateur.mission.nom), format_boolean(@operateur.programme.numero), @array_prog ]
+         
+    end
+    end
+  	wb.add_worksheet(name: "Régime budgétaire") do |sheet|
+    	sheet.add_row %W{ GBCP\ I Agent\ comptable Degré GBCP\ III Comptabilité\ budgétaire}
+    
+    	sheet.add_row [format_boolean(@organisme.gbcp_1), format_boolean(@organisme.agent_comptable_present), format_boolean(@organisme.degre_gbcp), format_boolean(@organisme.gbcp_3), format_boolean(@organisme.comptabilite_budgetaire) ]
+         
+  	end
+    wb.add_worksheet(name: "Contrôle") do |sheet|
+      sheet.add_row %W{ Présence\ contrôle Contrôleur Nature\ contrôle Référence\ texte\ soumission\ contrôle Autorité\ contrôle Texte\ réglementaire\ désignation\ autorité\ contrôle référence\ arrêté\ contrôle document\ contrôle date\ signature\ document lien\ document Référence\ arrêté\ nomination\ comissaire\ gouvernement}
+    
+      sheet.add_row [format_boolean(@organisme.presence_controle), @organisme.controleur.nom, format_boolean(@organisme.nature_controle), format_boolean(@organisme.texte_soumission_controle), format_boolean(@organisme.autorite_controle), format_boolean(@organisme.texte_reglementaire_controle),format_boolean(@organisme.arrete_controle), format_boolean(@organisme.document_controle_present), format_boolean(@organisme.document_controle_date), format_boolean(@organisme.document_controle_lien), format_boolean(@organisme.arrete_nomination)]
+         
+    end
+    wb.add_worksheet(name: "Tutelles") do |sheet|
+      sheet.add_row %W{ Tutelle\ financière Délégation\ approbation\ BI/BR/comptes  Autorité\ chargée\ approbation Ministère\ tutelle Ministeres\ co-tutelle}
+      
+      @array_ministeres = []
+      if @organisme_ministeres
+        @organisme_ministeres.each do |orga|
+          @array_ministeres << orga.ministere.nom
+        end
+      end
+
+      sheet.add_row [format_boolean(@organisme.tutelle_financiere), format_boolean(@organisme.delegation_approbation), format_boolean(@organisme.autorite_approbation),format_boolean(@organisme.ministere.nom), @array_ministeres]
+         
+    end
+    wb.add_worksheet(name: "Gouvernance DB") do |sheet|
+      sheet.add_row %W{ Admin\ DB Fonctio\ Admin Présence\ DB\ préCA Présence\ Controleur\ préCA Présence\ Controleur\ CA Comité\ Audit\ Risques}
+    
+      sheet.add_row [format_boolean(@organisme.admin_db_present), format_boolean(@organisme.admin_db_fonction), format_boolean(@organisme.admin_preca),format_boolean(@organisme.controleur_preca), format_boolean(@organisme.controleur_ca), format_boolean(@organisme.comite_audit)]
+         
+    end
+    wb.add_worksheet(name: "Catégories") do |sheet|
+    @date_n2 = Date.today.year-2
+    @date_n3 = Date.today.year-3
+      sheet.add_row %W{ APU CIASSP\ #{@date_n2} CIASSP\ #{@date_n3} ODAL\ #{@date_n2} ODAL\ #{@date_n3} ODAC\ #{@date_n2} ODAC\ #{@date_n3}}
+    
+      sheet.add_row [format_boolean(@organisme.apu),format_boolean(@organisme.ciassp_n),format_boolean(@organisme.ciassp_n1), format_boolean(@organisme.odal_n), format_boolean(@organisme.odal_n1), format_boolean(@organisme.odac_n), format_boolean(@organisme.odac_n1)]
+         
+    end
