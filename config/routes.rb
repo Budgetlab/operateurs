@@ -16,6 +16,7 @@ Rails.application.routes.draw do
   post '/import_ministeres' => 'ministeres#import'
   resources :operateurs
   resources :modifications
+  post 'open_modal' => 'modifications#open_modal'
   # routes statiques
   get '/mentions-legales', to: 'pages#mentions_legales'
   get '/donnees-personnelles', to: 'pages#donnees_personnelles'

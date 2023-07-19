@@ -4,42 +4,115 @@
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-12">
         <h1 class="fr-my-4w">Historique des modifications [<%= @modifications.length %>]</h1>
-
-        <div class="fr-table fr-table--bordered fr-table--no-caption">
-          <table>
-            <caption>Tableau des modifications </caption>
-            <thead>
-            <tr>
-              <th scope="col">Date de saisie</th>
-              <th scope="col">Contrôleur</th>
-              <th scope="col">Organisme</th>
-              <th scope="col">Champ</th>
-              <th scope="col">Valeur</th>
-              <th scope="col">Statut</th>
-              <th scope="col">Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <% @modifications.each do |modification| %>
-              <tr>
-                <td><%= format_date(modification.created_at) %></td>
-                <td><%= modification.user.nom %></td>
-                <td><%= link_to organisme_path(modification.organisme) do %><%= modification.organisme.nom %><%end %></td>
-                <td><%= modification.champ %></td>
-                <td><b><%= format_boolean(modification.nouvelle_valeur) %></b> <span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span></td>
-                <td><% if modification.statut == "validée"%> <p class="fr-badge fr-badge--info fr-badge--no-icon"> <% elsif modification.statut == "refusée"%> <p class="fr-badge fr-badge--error fr-badge--no-icon"><% else %><p class="fr-badge fr-badge--new fr-badge--no-icon"></p><%end %><%= modification.statut %></td>
-                <td>
-                  <% if modification.statut == "En attente" %>
-                  <ul class="fr-btns-group fr-btns-group--inline">
-                  <li><%= link_to modification_path(modification, statut: "validée"), data: { "turbo-method": :patch}, class:"fr-btn" do %> Valider <%end %></li>
-                  <li><%= link_to modification_path(modification, statut: "refusée"), data: { "turbo-method": :patch}, class:"fr-btn fr-btn--secondary" do%> Refuser <%end %></li>
-                  </ul>
-                  <%end %>
-                </td>
-              </tr>
-            <%end %>
-            </tbody>
-          </table>
+        <%= render 'modifications/success'%>
+        <div class="fr-tabs fr-mb-2w">
+          <ul class="fr-tabs__list" role="tablist" aria-label="Onglets Organismes actifs">
+            <li role="presentation">
+              <button id="tabpanel-1177" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-1177-panel">Modifications en attente (<%= @modifications_attente.length %>)</button>
+            </li>
+            <li role="presentation">
+              <button id="tabpanel-1178" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-1178-panel">Modifications validées (<%= @modifications_valides.length %>)</button>
+            </li>
+            <li role="presentation">
+              <button id="tabpanel-1179" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-1179-panel">Modifications rejetées (<%= @modifications_rejetees.length %>)</button>
+            </li>
+          </ul>
+          <div id="tabpanel-1177-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-1177" tabindex="0">
+            <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg">
+              <table>
+                <caption>Tableau des modifications en attente</caption>
+                <thead>
+                <tr>
+                  <th scope="col">Date de saisie</th>
+                  <th scope="col">Contrôleur</th>
+                  <th scope="col">Organisme</th>
+                  <th scope="col">Champ</th>
+                  <th scope="col">Valeur</th>
+                  <th scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @modifications_attente.each do |modification| %>
+                  <tr>
+                    <td><%= format_date(modification.created_at) %></td>
+                    <td><%= modification.user.nom %></td>
+                    <td><%= link_to organisme_path(modification.organisme) do %><%= modification.organisme.nom %><%end %></td>
+                    <td><%= modification.champ %></td>
+                    <td><b><%= format_boolean(modification.nouvelle_valeur) %></b> <span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span></td>
+                    <td>
+                      <ul class="fr-btns-group fr-btns-group--inline">
+                      <li><%= link_to modification_path(modification, params: { modification: { statut: "validée" } }), data: { "turbo-method": :patch}, class:"fr-btn" do %> Valider <%end %></li>
+                      <li>
+                        <%= link_to open_modal_path(id: modification.id), class:"fr-btn fr-btn--secondary fr-icon-error-fill","data-fr-opened": false,"aria-controls":"modal-1",data: { "turbo_method": :post} do %>Consulter<%end %>
+                     </ul>
+                    </td>
+                  </tr>
+                <%end %>
+                </tbody>
+              </table>
+              <dialog id="modal-1" class="fr-modal" aria-labelledby="modal-1-title">
+                <div id="modal_refus">
+                  <%= render partial: 'modifications/motif_refus',locals: {modification: nil} %>
+                </div>
+              </dialog>
+            </div>
+          </div>
+          <div id="tabpanel-1178-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1178" tabindex="0">
+            <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg">
+              <table>
+                <caption>Tableau des modifications validées</caption>
+                <thead>
+                <tr>
+                  <th scope="col">Date de saisie</th>
+                  <th scope="col">Contrôleur</th>
+                  <th scope="col">Organisme</th>
+                  <th scope="col">Champ</th>
+                  <th scope="col">Valeur</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @modifications_valides.each do |modification| %>
+                  <tr>
+                    <td><%= format_date(modification.created_at) %></td>
+                    <td><%= modification.user.nom %></td>
+                    <td><%= link_to organisme_path(modification.organisme) do %><%= modification.organisme.nom %><%end %></td>
+                    <td><%= modification.champ %></td>
+                    <td><b><%= format_boolean(modification.nouvelle_valeur) %></b> <span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span></td>
+                  </tr>
+                <%end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div id="tabpanel-1179-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1179" tabindex="0">
+            <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg">
+              <table>
+                <caption>Tableau des modifications rejetées</caption>
+                <thead>
+                <tr>
+                  <th scope="col">Date de saisie</th>
+                  <th scope="col">Contrôleur</th>
+                  <th scope="col">Organisme</th>
+                  <th scope="col">Champ</th>
+                  <th scope="col">Valeur</th>
+                  <th scope="col">Commentaire</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @modifications_rejetees.each do |modification| %>
+                  <tr>
+                    <td><%= format_date(modification.created_at) %></td>
+                    <td><%= modification.user.nom %></td>
+                    <td><%= link_to organisme_path(modification.organisme) do %><%= modification.organisme.nom %><%end %></td>
+                    <td><%= modification.champ %></td>
+                    <td><b><%= format_boolean(modification.nouvelle_valeur) %></b> <span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span></td>
+                    <td><%= modification.commentaire %></td>
+                  </tr>
+                <%end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>

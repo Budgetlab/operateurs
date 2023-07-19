@@ -1,0 +1,9 @@
+<% if flash.any? %>
+  <% flash.each do |type, msg| %>
+    <% if msg == "modification" %>
+      <div class="fr-alert fr-alert--success fr-mb-2w">
+        <h3 class="fr-alert__title">Modification mise à jour avec succès.</h3>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

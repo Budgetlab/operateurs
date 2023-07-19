@@ -24,6 +24,7 @@
         <% if @organisme.statut != "valide" %><div class="fr-my-6w"><%= link_to edit_organisme_path(@organisme.id), class: "fr-btn" do %>Reprendre le brouillon<%end %></div><%end %>
       </div>
     </div>
+    <%= render 'modifications/success'%>
     <% if @modifications_attente.length > 0 %>
       <div class="fr-grid-row fr-grid-row--gutters">
         <div class="fr-col-12 fr-col-lg-12">
@@ -47,14 +48,19 @@
                   <td><span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span> <b><%= format_boolean(modification.nouvelle_valeur) %></b></td>
                   <td>
                     <ul class="fr-btns-group fr-btns-group--inline">
-                    <li><%= link_to modification_path(modification, statut: "validée"), data: { "turbo-method": :patch}, class:"fr-btn" do %> Valider <%end %></li>
-                    <li><%= link_to modification_path(modification, statut: "refusée"), data: { "turbo-method": :patch}, class:"fr-btn fr-btn--secondary" do%> Refuser <%end %></li>
+                    <li><%= link_to modification_path(modification, params: { modification: { statut: "validée" } }), data: { "turbo-method": :patch}, class:"fr-btn" do %> Valider <%end %></li>
+                    <li><%= link_to open_modal_path(id: modification.id), class:"fr-btn fr-btn--secondary fr-icon-error-fill","data-fr-opened": false,"aria-controls":"modal-1",data: { "turbo_method": :post} do %>Consulter<%end %></li>
                   </ul>
                   </td>
                 </tr>
               <%end %>
               </tbody>
             </table>
+            <dialog id="modal-1" class="fr-modal" aria-labelledby="modal-1-title">
+              <div id="modal_refus">
+                <%= render partial: 'modifications/motif_refus',locals: {modification: nil} %>
+              </div>
+            </dialog>
           </div>
         </div>
       </div>
@@ -363,6 +369,7 @@
                     <th scope="col">Auteur</th>
                     <th scope="col">Champ</th>
                     <th scope="col">Valeur</th>
+                    <th scope="col">Commentaire</th>
                   </tr>
                   </thead>
                   <tbody>
@@ -372,6 +379,7 @@
                       <td><%= modification.user.nom %></td>
                       <td><%= modification.champ %></td>
                       <td><b><%= format_boolean(modification.nouvelle_valeur) %></b> <span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span></td>
+                      <td><%= modification.commentaire %></td>
                     </tr>
                   <%end %>
                   </tbody>

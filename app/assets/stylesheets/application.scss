@@ -32,3 +32,10 @@
 .shadow{
   filter: drop-shadow(var(--lifted-shadow)) !important;
 }
+
+@media (min-width: 62em) {
+  .fr-table--layout-fixed--lg table {
+    display: table !important;
+    table-layout: fixed !important;
+  }
+}
