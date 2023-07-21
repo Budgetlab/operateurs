@@ -14,6 +14,9 @@ Rails.application.routes.draw do
   post '/recherche_organismes' => 'organismes#recherche_organismes'
   get '/ministeres' => 'ministeres#index'
   post '/import_ministeres' => 'ministeres#import'
+  get '/missions' => 'missions#index'
+  post '/import_missions' => 'missions#import_missions'
+  post '/select_mission' => 'missions#select_mission'
   resources :operateurs
   resources :modifications
   post 'open_modal' => 'modifications#open_modal'

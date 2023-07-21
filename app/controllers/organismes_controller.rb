@@ -3,18 +3,18 @@
 # Controller Pages organismes
 class OrganismesController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_famille
   def index
-    @organismes = Organisme.all.pluck(:id, :nom, :statut, :etat)
+    @organismes = @familles.nil? ? Organisme.all.pluck(:id, :nom, :statut, :etat) : Organisme.where(famille: @familles).pluck(:id, :nom, :statut, :etat)
     @organismes_actifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Actif' }
     @organismes_inactifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Inactif' }
     @organismes_creation = @organismes.select { |el| el[2] == 'valide' && el[3] == 'En cours de création' }
     @organismes_brouillon = @organismes.reject { |el| el[2] == 'valide' }
-
   end
 
   def recherche_organismes
     search = params[:search]
-    @organismes = Organisme.where("nom ILIKE :search OR acronyme ILIKE :search", search: "%#{search}%")
+    @organismes = @familles.nil? ? Organisme.where("nom ILIKE :search OR acronyme ILIKE :search", search: "%#{search}%") : Organisme.where(famille: @familles).where("nom ILIKE :search OR acronyme ILIKE :search", search: "%#{search}%")
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -25,11 +25,16 @@ class OrganismesController < ApplicationController
   end
 
   def organismes_ajout
+    redirect_to root_path and return unless current_user.statut == '2B2O'
+
     @organismes_noms = Organisme.all.pluck(:nom)
   end
 
   def show
     @organisme = Organisme.includes(:ministere, :bureau, :controleur, :organisme_ministeres).find(params[:id])
+    redirect_to root_path and return unless current_user.statut == '2B2O' || @familles.include?(@organisme.famille)
+
+    @admin = current_user.statut == '2B2O' || current_user == @organisme.controleur ? true : false
     @organisme_ministeres = @organisme.organisme_ministeres.includes(:ministere)
     @operateur = Operateur.includes(:mission, :programme, :operateur_programmes).find_by(organisme_id: @organisme.id)
     @operateur_programmes = @operateur.operateur_programmes.includes(:programme) if @operateur
@@ -44,6 +49,8 @@ class OrganismesController < ApplicationController
   end
 
   def new
+    redirect_to root_path and return unless current_user.statut == '2B2O'
+
     @organisme = Organisme.new
     @bureaux = User.where(statut: 'Bureau Sectiorel').order(nom: :asc)
     @organismes = Organisme.where.not(id: @organisme.id).order(nom: :asc).pluck(:nom, :id, :siren)
@@ -52,6 +59,8 @@ class OrganismesController < ApplicationController
   end
 
   def create
+    redirect_to root_path and return unless current_user.statut == '2B2O'
+
     @organisme = params[:organisme][:id] ? Organisme.find(:id).assign_attributes(organisme_params) : Organisme.new(organisme_params)
     @organisme.controleur = User.where(statut: '2B2O').first if @organisme.controleur_id.nil?
     @organisme.ministere = Ministere.first if @organisme.ministere_id.nil?
@@ -70,6 +79,8 @@ class OrganismesController < ApplicationController
 
   def edit
     @organisme = Organisme.find(params[:id])
+    redirect_to root_path and return unless current_user.statut == '2B2O' || current_user == @organisme.controleur
+
     if params[:step].to_i == 1
       @bureaux = User.where(statut: 'Bureau Sectiorel').order(nom: :asc)
       @organismes = Organisme.where.not(id: @organisme.id).order(nom: :asc).pluck(:nom, :id, :siren)
@@ -82,8 +93,11 @@ class OrganismesController < ApplicationController
 
   def update
     @organisme = Organisme.find(params[:id])
+    redirect_to root_path and return unless current_user.statut == '2B2O' || current_user == @organisme.controleur
+
     reset_values([:date_previsionnelle_dissolution, :date_dissolution, :effet_dissolution]) if params[:organisme][:etat]
-    reset_values([:nature_controle, :texte_soumission_controle, :autorite_controle, :texte_reglementaire_controle, :arrete_controle, :document_controle_present, :document_controle_lien, :document_controle_date, :arrete_nomination]) if params[:organisme][:presence_controle]
+    reset_values([:nature_controle, :texte_soumission_controle, :autorite_controle, :texte_reglementaire_controle, 
+:arrete_controle, :document_controle_present, :document_controle_lien, :document_controle_date, :arrete_nomination]) if params[:organisme][:presence_controle]
     reset_values([:admin_db_fonction]) if params[:organisme][:admin_db_present]
     reset_values([:delegation_approbation, :autorite_approbation]) if params[:organisme][:tutelle_financiere]
     if @organisme.statut == 'valide'
@@ -102,13 +116,15 @@ class OrganismesController < ApplicationController
                       "ODAC #{(Date.today.year - 3).to_s}"]
       champs_a_surveiller.each_with_index do |champ, i|
         if !organisme_params[champ].blank? && organisme_params[champ].to_s != @organisme[champ].to_s
-          modifications << { champ: champs_texte[i], ancienne_valeur: @organisme[champ].to_s, nouvelle_valeur: organisme_params[champ].to_s }
+          modifications << { champ: champ.to_s, nom: champs_texte[i], ancienne_valeur: @organisme[champ].to_s, 
+nouvelle_valeur: organisme_params[champ].to_s }
         end
       end
       statut = current_user.nom == '2B2O' ? 'validée' : 'En attente'
       modifications.each do |modification|
         @organisme.modifications.create(
           champ: modification[:champ],
+          nom: modification[:nom],
           ancienne_valeur: modification[:ancienne_valeur],
           nouvelle_valeur: modification[:nouvelle_valeur],
           user_id: current_user.id,
@@ -116,7 +132,8 @@ class OrganismesController < ApplicationController
         )
       end
     end
-    if @organisme.update(organisme_params)
+    if current_user.nom == '2B2O'
+      @organisme.update(organisme_params)
       @organisme.organisme_rattachements.destroy_all if @organisme.etat != 'Inactif'
       if params[:organisme][:organismes] && @organisme.etat == 'Inactif' && (@organisme.effet_dissolution == 'Création' || @organisme.effet_dissolution == 'Rattachement')
         @organisme.organisme_rattachements.destroy_all
@@ -132,17 +149,18 @@ class OrganismesController < ApplicationController
           @organisme.organisme_ministeres.create(ministere_id: ministere_id)
         end
       end
-      if @organisme.statut == 'valide'
-        redirect_to @organisme
-      else
-        redirect_to edit_organisme_path
-      end
-    else
-      render :edit
     end
+    if @organisme.statut == 'valide'
+      redirect_to @organisme
+    else
+      redirect_to edit_organisme_path
+    end
+
   end
 
   def destroy
+    redirect_to root_path and return unless current_user.statut == '2B2O'
+
     @organisme = Organisme.find(params[:id]).destroy_all
     respond_to do |format|
       format.turbo_stream { redirect_to organismes_path }
@@ -150,6 +168,8 @@ class OrganismesController < ApplicationController
   end
 
   def import
+    redirect_to root_path and return unless current_user.statut == '2B2O'
+
     file = params[:file]
     Organisme.import(file) if file.present?
     respond_to do |format|
@@ -176,6 +196,14 @@ class OrganismesController < ApplicationController
   def reset_values(param_names)
     param_names.each do |param|
       params[:organisme][param.to_sym] = params[:organisme].fetch(param.to_sym, nil)
+    end
+  end
+
+  def set_famille
+    if current_user.statut == 'Controleur'
+      @familles = current_user.controleur_organismes.pluck(:famille).uniq
+    elsif current_user.statut == 'Bureau Sectiorel'
+      @familles = current_user.bureau_organismes.pluck(:famille).uniq
     end
   end
 end

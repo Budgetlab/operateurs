@@ -115,16 +115,17 @@
             </div>
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
+
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group">
-                <label for="mission" class="fr-label">Mission du programme chef de file*</label>
-                <%= f.select :mission_id, options_for_select([["- sélectionner -", ""]] + @missions.map { |mission| [mission.nom, mission.id] }, selected: @operateur.mission_id),{}, {data: {'form-target': 'fieldRequire'}, id:"mission",class:"fr-select"}%>
+                <label for="programme" class="fr-label">Programme chef de file*</label>
+                <%= f.select :programme_id, options_for_select([["- sélectionner -", ""]] + @programmes.map { |programme| [programme.numero.to_s + ' - ' + programme.nom, programme.id] }, selected: @operateur.programme_id),{}, {data: {'form-target': 'fieldRequire', action: "change->form#changeProgramme"}, id:"programme",class:"fr-select"}%>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group">
-                <label for="programme" class="fr-label">Programme chef de file*</label>
-                <%= f.select :programme_id, options_for_select([["- sélectionner -", ""]] + @programmes.map { |programme| [programme.numero, programme.id] }, selected: @operateur.programme_id),{}, {data: {'form-target': 'fieldRequire'}, id:"programme",class:"fr-select"}%>
+                <label for="mission" class="fr-label">Mission du programme chef de file*</label>
+                <%= f.select :mission_id, options_for_select([["- sélectionner -", ""]] + @missions.map { |mission| [mission.nom, mission.id] }, selected: @operateur.mission_id),{}, {data: {'form-target': 'fieldRequire'}, id:"mission",class:"fr-select"}%>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-4">

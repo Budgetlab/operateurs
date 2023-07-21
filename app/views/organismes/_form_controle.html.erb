@@ -71,7 +71,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group fr-select-group--disabled">
                 <label for="nature" class="fr-label">Nature du contrôle*</label>
-                <%= f.select :nature_controle,[["- sélectionner -",""],['nature3','nature3']],{selected: @organisme.nature_controle}, {data: {'form-target': 'fieldRequire'}, id:"nature",class:"fr-select", disabled: true}%>
+                <%= f.select :nature_controle,[["- sélectionner -",""],['CEF','CEF'], ['contrôle budgétaire','contrôle budgétaire'], ['Contrôle budgétaire adapté','Contrôle budgétaire adapté']],{selected: @organisme.nature_controle}, {data: {'form-target': 'fieldRequire'}, id:"nature",class:"fr-select", disabled: true}%>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-6">
@@ -85,7 +85,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group fr-select-group--disabled">
                 <label for="autorite_controle" class="fr-label">Autorité de contrôle*</label>
-                <%= f.select :autorite_controle,[["- sélectionner -",""],['autoriteA','autoriteA']],{selected: @organisme.autorite_controle}, {data: {'form-target': 'fieldRequire'}, id:"autorite_controle",class:"fr-select", disabled: true}%>
+                <%= f.select :autorite_controle,options_for_select([["- sélectionner -", ""]] + User.where(statut: 'Controleur').order(nom: :asc).pluck(:nom).map { |nom| [nom, nom] }, selected: @organisme.autorite_controle),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite_controle",class:"fr-select", disabled: true}%>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-6">

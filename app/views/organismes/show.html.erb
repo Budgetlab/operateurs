@@ -21,15 +21,15 @@
         <h1 class="fr-mb-4w"><%= @organisme.nom %> <% if @organisme.statut != "valide" %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><% end %></h1>
       </div>
       <div class="fr-col-12 fr-col-lg-3">
-        <% if @organisme.statut != "valide" %><div class="fr-my-6w"><%= link_to edit_organisme_path(@organisme.id), class: "fr-btn" do %>Reprendre le brouillon<%end %></div><%end %>
+        <% if @organisme.statut != "valide" && current_user.statut == '2B2O'%><div class="fr-my-6w"><%= link_to edit_organisme_path(@organisme.id), class: "fr-btn" do %>Reprendre le brouillon<%end %></div><%end %>
       </div>
     </div>
     <%= render 'modifications/success'%>
     <% if @modifications_attente.length > 0 %>
       <div class="fr-grid-row fr-grid-row--gutters">
         <div class="fr-col-12 fr-col-lg-12">
-          <h2>Modifications en attente de validation [<%= @modifications_attente.length%>]</h2>
-          <div class="fr-table fr-table--bordered fr-table--no-caption">
+          <h2><span class="fr-icon-alarm-warning-fill fr-icon--lg cwarning" aria-hidden="true"></span> Modifications en attente de validation [<%= @modifications_attente.length%>]</h2>
+          <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--blue-ecume fr-table--layout-fixed--lg">
             <table>
               <caption>Tableau des modifications </caption>
               <thead>
@@ -37,21 +37,23 @@
                 <th scope="col">Date de saisie</th>
                 <th scope="col">Champ</th>
                 <th scope="col">Valeur</th>
-                <th scope="col">Action</th>
+                <% if current_user.statut == "2B2O" %><th scope="col">Action</th><%end %>
               </tr>
               </thead>
               <tbody>
               <% @modifications_attente.each do |modification| %>
                 <tr>
                   <td><%= format_date(modification.created_at) %></td>
-                  <td><%= modification.champ %></td>
-                  <td><span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span> <b><%= format_boolean(modification.nouvelle_valeur) %></b></td>
+                  <td><%= modification.nom %></td>
+                  <td><b><%= format_boolean(modification.nouvelle_valeur) %></b> <span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span> </td>
+                  <% if current_user.statut == "2B2O" %>
                   <td>
                     <ul class="fr-btns-group fr-btns-group--inline">
-                    <li><%= link_to modification_path(modification, params: { modification: { statut: "validée" } }), data: { "turbo-method": :patch}, class:"fr-btn" do %> Valider <%end %></li>
-                    <li><%= link_to open_modal_path(id: modification.id), class:"fr-btn fr-btn--secondary fr-icon-error-fill","data-fr-opened": false,"aria-controls":"modal-1",data: { "turbo_method": :post} do %>Consulter<%end %></li>
+                    <li><%= link_to modification_path(modification, params: { modification: { statut: "validée" } }), data: { "turbo-method": :patch}, class:"fr-btn fr-my-0" do %> Valider <%end %></li>
+                    <li><%= link_to open_modal_path(id: modification.id), class:"fr-btn fr-btn--secondary fr-my-0","data-fr-opened": false,"aria-controls":"modal-1",data: { "turbo_method": :post} do %>Refuser<%end %></li>
                   </ul>
                   </td>
+                  <%end %>
                 </tr>
               <%end %>
               </tbody>
@@ -132,7 +134,7 @@
         </div>
 
         <div id="fiche_identite" class="fr-mb-4w">
-          <h2 class="title-btn">Fiche d'identité <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <h2 class="title-btn">Fiche d'identité <% if @organisme.statut == "valide" && @admin %><%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
 
           <div class="fr-card">
             <div class="fr-card__body">
@@ -169,7 +171,7 @@
         </div>
 
         <div id="operateur" class="fr-mb-4w">
-          <h2 class="title-btn">Opérateur <% if @organisme.statut == "valide" %>
+          <h2 class="title-btn">Opérateur <% if @organisme.statut == "valide" && current_user.statut == "2B2O" %>
               <% if @operateur.nil? %><%= link_to new_operateur_path(organisme_id: @organisme.id), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %>
                 <%else %><%= link_to edit_operateur_path(id: @operateur, organisme_id: @organisme.id), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %>
               <%end %>
@@ -198,7 +200,7 @@
         </div>
 
         <div id="regime_budgetaire" class="fr-mb-4w">
-          <h2 class="title-btn">Régime budgétaire et comptable <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 2), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <h2 class="title-btn">Régime budgétaire et comptable <% if @organisme.statut == "valide" && @admin %><%= link_to edit_organisme_path(@organisme, step: 2), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
           <% if @organisme.statut.to_i > 1 || @organisme.statut == "valide"%>
             <div class="fr-card">
             <div class="fr-card__body">
@@ -220,7 +222,7 @@
         </div>
 
         <div id="controle" class="fr-mb-4w">
-          <h2 class="title-btn">Contrôle <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 3), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <h2 class="title-btn">Contrôle <% if @organisme.statut == "valide" && @admin %><%= link_to edit_organisme_path(@organisme, step: 3), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
           <% if @organisme.statut.to_i > 2 || @organisme.statut == "valide"%>
           <div class="fr-card">
             <div class="fr-card__body">
@@ -252,7 +254,7 @@
         </div>
 
         <div id="tutelles" class="fr-mb-4w">
-          <h2 class="title-btn">Tutelles financière et technique <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 4), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <h2 class="title-btn">Tutelles financière et technique <% if @organisme.statut == "valide" && @admin %><%= link_to edit_organisme_path(@organisme, step: 4), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
           <% if @organisme.statut.to_i > 3 || @organisme.statut == "valide"%>
           <div class="fr-card">
             <div class="fr-card__body">
@@ -277,7 +279,7 @@
         </div>
 
         <div id="gouvernance" class="fr-mb-4w">
-          <h2 class="title-btn">Gouvernance DB <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 5), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <h2 class="title-btn">Gouvernance DB <% if @organisme.statut == "valide" && @admin %><%= link_to edit_organisme_path(@organisme, step: 5), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
           <% if @organisme.statut.to_i > 4 || @organisme.statut == "valide"%>
           <div class="fr-card">
             <div class="fr-card__body">
@@ -301,7 +303,7 @@
         </div>
 
         <div id="categories" class="fr-mb-4w">
-          <h2 class="title-btn">Catégories <% if @organisme.statut == "valide" %><%= link_to edit_organisme_path(@organisme, step: 6), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <h2 class="title-btn">Catégories <% if @organisme.statut == "valide" && current_user.statut == "2B2O" %><%= link_to edit_organisme_path(@organisme, step: 6), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
           <% if @organisme.statut == "valide" %>
           <div class="fr-card">
             <div class="fr-card__body">
@@ -351,7 +353,7 @@
                   <tr>
                     <td><%= format_date(modification.created_at) %></td>
                     <td><%= modification.user.nom %></td>
-                    <td><%= modification.champ %></td>
+                    <td><%= modification.nom %></td>
                     <td><b><%= format_boolean(modification.nouvelle_valeur) %></b> <span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span></td>
                   </tr>
                     <%end %>
@@ -377,7 +379,7 @@
                     <tr>
                       <td><%= format_date(modification.created_at) %></td>
                       <td><%= modification.user.nom %></td>
-                      <td><%= modification.champ %></td>
+                      <td><%= modification.nom %></td>
                       <td><b><%= format_boolean(modification.nouvelle_valeur) %></b> <span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span></td>
                       <td><%= modification.commentaire %></td>
                     </tr>

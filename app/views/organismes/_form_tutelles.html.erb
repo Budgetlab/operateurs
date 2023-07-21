@@ -84,7 +84,7 @@
           <div class="fr-col-12 fr-col-lg-4">
             <div class="fr-select-group fr-select-group--disabled">
               <label for="autorite" class="fr-label">Autorité chargée de l'approbation*</label>
-              <%= f.select :autorite_approbation,options_for_select([["- sélectionner -", ""]] + @controleurs.map { |controleur| [controleur.nom, controleur.nom] }, selected: @organisme.autorite_approbation),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite",class:"fr-select", disabled: true}%>
+              <%= f.select :autorite_approbation,options_for_select([["- sélectionner -", ""]] + @liste_approbation.map { |nom| [nom, nom] }, selected: @organisme.autorite_approbation),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite",class:"fr-select", disabled: true}%>
             </div>
           </div>
         </div>

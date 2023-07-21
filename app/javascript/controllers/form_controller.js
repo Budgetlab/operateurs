@@ -320,6 +320,32 @@ export default class extends Controller {
             field.disabled = false;
         }
     }
+    changeProgramme(){
+        const mission = document.getElementById("mission")
+        const programme = document.getElementById("programme").value;
+        const token = document.querySelector('meta[name="csrf-token"]').content;
+        const url = "/select_mission"
+        const body = { programme }
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            credentials: "include",
+            dataType: 'script',
+            headers: {
+                "X-CSRF-Token": token,
+                "Content-Type": "application/json"
+            },
+        })
+            .then(response => response.json()/*response.text()*/)
+            .then(data => {
+                mission.innerHTML = "";
+                const opt = document.createElement("option");
+                opt.value = data.mission.id;
+                opt.innerHTML = data.mission.nom;
+                mission.appendChild(opt);
+
+            });
+    }
 
     submitForm(event){
         let isValid = this.validateForm(this.formTarget);

@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
     redirect_back_or root_path
   end
   before_action :configure_permitted_parameters, if: :devise_controller?
+  before_action :set_global_variable
   def redirect_back_or(path)
     redirect_to request.referer || path
   end
@@ -26,6 +27,13 @@ class ApplicationController < ActionController::Base
 
   def devise_mapping
     @devise_mapping ||= Devise.mappings[:user]
+  end
+
+  def set_global_variable
+    @liste_familles = ['50 pas', 'Académies', "Agences de l'Eau", 'ARS', 'Autres écoles', 'Bibliothèques', 'Blanchisseries', 'CANCEROPOLES', 'CARIF OREF','CDAD', "Chambres d'agriculture", 'Cité des Métiers', "Conseils de la formation et  chambres de métiers et d'artisanat", 'CPP', 'CTI', "Écoles d'art et d'architecture", 'Écoles fonction publique / militaires', "Ecoles Françaises à l'Etranger", 'Écoles Normales, Centrales, Ingénieurs, Chimie et Techniques', 'Écoles vétérinaires', 'EPAt', 'EPF et EPFA', 'FCIP', 'Financeurs Culture', 'GRADES', 'Immobilier', 'Instituts nationaux des jeunes sourds ou aveugles et éducation inclusive', "Maisons de l’emploi", 'Maisons des adolescents', 'Musées', 'Œuvres universitaires et scolaires', 'OPCO', 'Parcs nationaux', 'Patrimoine', 'Ports, grands ports maritimes et terminaux de croisière', 'Sécurité sociale', 'Théatres, Spectacles et Opéra', 'Universités' ]
+    @liste_natures = ['API', 'Association', 'CPP', 'CTI', 'EP de Nouvelle-Calédonie', 'EP international', 'EP sui generis', 'EPA', 'EPCS', 'EPE', 'EPIC', 'EPSCP', 'EPST', 'établissement à caractère scientifique, technique et industriel', 'Fondation', 'GCS', 'GCSMS', 'GIE', 'GIP', 'OPCO', 'OSS', 'SCN', 'société']
+    @liste_approbation = ['CBCM Armées', 'CBCM Culture', 'CBCM intérieur/ Outre-mer', 'CBCM MASS', 'CBCM MEN-MESRI', 'CBCM MINEFI', 'CBCM SPM', "Conseil de surveillance de l'agence", 'DB', 'DRFiP Auvergne-Rhône-Alpes', 'DRFiP Bourgogne-Franche-Comté', 'DRFiP Bretagne', 'DRFiP Centre Val de Loire', 'DRFiP Corse', 'DRFiP Grand-Est', 'DRFiP Guadeloupe', 'DRFiP Guyane', 'DRFiP Hauts-de-France', 'DRFiP IDF', 'DRFiP Martinique', 'DRFiP Mayotte', 'DRFiP Normandie', 'DRFiP Nouvelle Aquitaine', 'DRFiP Occitanie', 'DRFiP PACA', 'DRFiP Pays de la Loire', 'DRFiP Réunion',
+                          'Mission agriculture forêt et pêche', 'Mission Aménagement des territoires, ville, logement Outre-mer', 'Mission Ecologie et développement durable', 'Mission Espace, armement et organismes divers des MEF', 'Mission Infrastructures de transports non ferroviaires', 'Mission Médias - Culture', 'Mission recherche appliquée et promotion de la qualité', "Recteur de région académique ou chancellier des universités ou ministre chargé de l'enseignement supérieur" ]
   end
 
   protected
