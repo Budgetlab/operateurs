@@ -7,13 +7,12 @@ class OperateursController < ApplicationController
   def new
     @operateur = Operateur.new
     @organisme = Organisme.find(params[:organisme_id])
-    @missions = Mission.all.order(nom: :asc)
     @programmes = Programme.all.order(numero: :asc)
     redirect_to root_path and return unless current_user.statut == '2B2O' || current_user == @organisme.controleur
   end
   def create
     @organisme = Organisme.find(params[:operateur][:organisme_id])
-    redirect_to root_path and return unless current_user.statut == '2B2O' || current_user == @organisme.controleur
+    redirect_to root_path and return unless current_user.statut == '2B2O'
 
     @operateur = Operateur.new(operateur_params)
     @operateur.save if @operateur.operateur_n == true || @operateur.operateur_n1 == true || @operateur.operateur_n2 == true
@@ -27,14 +26,13 @@ class OperateursController < ApplicationController
   def edit
     @operateur = Operateur.find(params[:id])
     @organisme = Organisme.find(params[:organisme_id])
-    @missions = @operateur.mission_id ? Mission.find(operateur.mission_id) : Mission.all.order(nom: :asc)
     @programmes = Programme.all.order(numero: :asc)
-    redirect_to root_path and return unless current_user.statut == '2B2O' || current_user == @organisme.controleur
+    redirect_to root_path and return unless current_user.statut == '2B2O'
   end
 
   def update
     @organisme = Organisme.find(params[:operateur][:organisme_id])
-    redirect_to root_path and return unless current_user.statut == '2B2O' || current_user == @organisme.controleur
+    redirect_to root_path and return unless current_user.statut == '2B2O'
 
     @operateur = Operateur.find(params[:id])
     params[:operateur][:nom_categorie] = params[:operateur][:nom_categorie]

@@ -110,7 +110,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group">
                 <label for="nom_categorie" class="fr-label">Catégorie d'opérateur*</label>
-                <%= f.select :nom_categorie,[["- sélectionner -",""],['NomA','NomA']],{selected: @operateur.nom_categorie}, {data: {'form-target': 'fieldRequire'}, id:"nom_categorie",class:"fr-select"}%>
+                <%= f.select :nom_categorie,options_for_select([["- sélectionner -", ""]] + @liste_autorites.map { |autorite| [autorite, autorite] }, selected: @operateur.nom_categorie),{}, {data: {'form-target': 'fieldRequire'}, id:"nom_categorie",class:"fr-select"}%>
               </div>
             </div>
           </div>
@@ -125,7 +125,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group">
                 <label for="mission" class="fr-label">Mission du programme chef de file*</label>
-                <%= f.select :mission_id, options_for_select([["- sélectionner -", ""]] + @missions.map { |mission| [mission.nom, mission.id] }, selected: @operateur.mission_id),{}, {data: {'form-target': 'fieldRequire'}, id:"mission",class:"fr-select"}%>
+                <%= f.select :mission_id, [["- sélectionner -", ""]], {selected: @operateur.mission_id}, {data: {'form-target': 'fieldRequire'}, id:"mission",class:"fr-select"}%>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-4">

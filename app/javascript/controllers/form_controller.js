@@ -31,6 +31,7 @@ export default class extends Controller {
         if (this.element.querySelector('#radio-presence-1') != null){
             this.ChangeCategorie();
             this.ChangeOperateur();
+            this.changeProgramme();
         }
         this.validateForm(this.formTarget);
     }
@@ -148,24 +149,33 @@ export default class extends Controller {
     }
     changeEtat(){
         const etat= document.getElementById("etat");
+        if (etat != null){
         const date_dissolution= document.getElementById("date_dissolution");
         const effet_dissolution= document.getElementById("effet_dissolution");
         const isTrue = etat.value === "Inactif"
         this.changeField(isTrue,date_dissolution);
         this.changeField(isTrue,effet_dissolution);
         this.changeEffetDissolution();
+        }
 
     }
     changeEffetDissolution(){
         const effet= document.getElementById("effet_dissolution");
-        const btn_rattachement= document.getElementById("BtnRattachement");
-        const checkedFields = Array.from(this.formTarget.querySelectorAll("input[type=\'checkbox\']"));
-        const isTrue = effet.value === "Rattachement" || effet.value === "Création"
-        this.changeDropdown(isTrue, btn_rattachement, checkedFields)
-        this.checkBox();
+        if (effet != null){
+            const btn_rattachement= document.getElementById("BtnRattachement");
+            const checkedFields = Array.from(this.formTarget.querySelectorAll("input[type=\'checkbox\']"));
+            const isTrue = effet.value === "Rattachement" || effet.value === "Création"
+            this.changeDropdown(isTrue, btn_rattachement, checkedFields)
+            this.checkBox();
+            const checkTargetschecked = this.checklistTargets.filter(target => target.checked);
+            if (checkTargetschecked.length == 0 && isTrue) {
+                this.validateBtn(false);
+            }
+        }
     }
     checkBox(){
         const btn_rattachement= document.getElementById("BtnRattachement");
+        if (btn_rattachement != null){
         const checkTargetschecked = this.checklistTargets.filter(target => target.checked);
         if (checkTargetschecked.length > 0) {
             btn_rattachement.textContent = "";
@@ -177,6 +187,7 @@ export default class extends Controller {
             })
         }else{
             btn_rattachement.textContent = "- sélectionner -"
+        }
         }
     }
 
@@ -323,6 +334,7 @@ export default class extends Controller {
     changeProgramme(){
         const mission = document.getElementById("mission")
         const programme = document.getElementById("programme").value;
+        if (programme != ""){
         const token = document.querySelector('meta[name="csrf-token"]').content;
         const url = "/select_mission"
         const body = { programme }
@@ -343,8 +355,10 @@ export default class extends Controller {
                 opt.value = data.mission.id;
                 opt.innerHTML = data.mission.nom;
                 mission.appendChild(opt);
-
+                mission.selectedIndex = 0;
+                this.validateForm();
             });
+        }
     }
 
     submitForm(event){

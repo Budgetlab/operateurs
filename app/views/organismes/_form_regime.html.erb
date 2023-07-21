@@ -141,7 +141,7 @@
                 <%end %>
               </li>
               <li>
-                <%= f.submit("#{@organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
+                <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
               </li>
             </ul>
           </div>

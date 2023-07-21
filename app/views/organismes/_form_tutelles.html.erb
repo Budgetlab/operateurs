@@ -42,6 +42,10 @@
         <%end %>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-12">
+              <% if @est_controleur %>
+                <p class="fr-mb-1w">Tutelle financière</p>
+                <p><b><%= format_boolean(@organisme.tutelle_financiere) %></b></p>
+              <%else %>
               <fieldset class="fr-fieldset">
                 <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w">
                   Tutelle financière*<span class="fr-hint-text">La tutelle financière MCP découle de l'article 174 du décret GBCP. Les GIP n'ont pas de tutelle.</span>
@@ -59,10 +63,15 @@
                   </div>
                 </div>
               </fieldset>
+              <% end  %>
             </div>
           </div>
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-6">
+            <% if @est_controleur %>
+              <p class="fr-mb-1w">Délégation de l'approbation des BI / BR / comptes financiers</p>
+              <p><b><%= format_boolean(@organisme.delegation_approbation) %></b></p>
+            <%else %>
             <fieldset class="fr-fieldset" disabled>
               <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w">
                 Délégation de l'approbation des BI / BR / comptes financiers<span class="fr-hint-text">Référence des derniers arrêtés de délégation.</span>
@@ -80,12 +89,18 @@
                 </div>
               </div>
             </fieldset>
+            <%end %>
           </div>
           <div class="fr-col-12 fr-col-lg-4">
+            <% if @est_controleur %>
+              <p class="fr-mb-1w">Autorité chargée de l'approbation</p>
+              <p><b><%= format_boolean(@organisme.autorite_approbation) %></b></p>
+            <%else %>
             <div class="fr-select-group fr-select-group--disabled">
               <label for="autorite" class="fr-label">Autorité chargée de l'approbation*</label>
               <%= f.select :autorite_approbation,options_for_select([["- sélectionner -", ""]] + @liste_approbation.map { |nom| [nom, nom] }, selected: @organisme.autorite_approbation),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite",class:"fr-select", disabled: true}%>
             </div>
+            <%end %>
           </div>
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
@@ -137,7 +152,7 @@
               <%end %>
             </li>
             <li>
-              <%= f.submit("#{@organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
+              <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
             </li>
           </ul></div>
       <%end %>

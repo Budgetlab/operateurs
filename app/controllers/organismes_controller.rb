@@ -79,7 +79,8 @@ class OrganismesController < ApplicationController
 
   def edit
     @organisme = Organisme.find(params[:id])
-    redirect_to root_path and return unless current_user.statut == '2B2O' || current_user == @organisme.controleur
+    @est_controleur = current_user == @organisme.controleur
+    redirect_to root_path and return unless current_user.statut == '2B2O' || @est_controleur
 
     if params[:step].to_i == 1
       @bureaux = User.where(statut: 'Bureau Sectiorel').order(nom: :asc)
@@ -105,12 +106,12 @@ class OrganismesController < ApplicationController
       champs_a_surveiller = [:nom, :etat, :acronyme, :siren, :nature, :texte_institutif, :gbcp_1, :gbcp_3,
                              :comptabilite_budgetaire, :nature_controle, :texte_soumission_controle, :autorite_controle,
                              :texte_reglementaire_controle, :arrete_controle, :document_controle_date, :comite_audit,
-                             :arrete_nomination, :ciassp_n, :ciassp_n1, :odal_n, :odal_n1, :odac_n, :odac_n1]
+                             :arrete_nomination, :ministere_id, :ciassp_n, :ciassp_n1, :odal_n, :odal_n1, :odac_n, :odac_n1]
       champs_texte = ['Nom', 'État', 'Acronyme', 'Siren', 'Nature juridique', 'Texte institutif', 'Partie I GBCP',
                       'Partie III GBCP', 'Comptabilité budgétaire', 'Nature contrôle', 'Texte soumission au contrôle',
                       'Autorité de contrôle', "Texte réglementaire de désignation de l'autorité decontrôle",
                       'Arrêté de contrôle', 'Date signature document contrôle ', 'Comité audit et risques',
-                      'Arrêté de nomination comissaire du gouvernement', "CIASSP #{(Date.today.year - 2).to_s}",
+                      'Arrêté de nomination comissaire du gouvernement', "Ministère", "CIASSP #{(Date.today.year - 2).to_s}",
                       "CIASSP #{(Date.today.year - 3).to_s}", "ODAL #{(Date.today.year - 2).to_s}",
                       "ODAL #{(Date.today.year - 3).to_s}", "ODAC #{(Date.today.year - 2).to_s}",
                       "ODAC #{(Date.today.year - 3).to_s}"]
@@ -120,7 +121,7 @@ class OrganismesController < ApplicationController
 nouvelle_valeur: organisme_params[champ].to_s }
         end
       end
-      statut = current_user.nom == '2B2O' ? 'validée' : 'En attente'
+      statut = current_user.statut == '2B2O' ? 'validée' : 'En attente'
       modifications.each do |modification|
         @organisme.modifications.create(
           champ: modification[:champ],

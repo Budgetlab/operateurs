@@ -42,10 +42,15 @@
         <%end %>
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-3">
+            <% if @est_controleur %>
+              <p class="fr-mb-1w">État de l'organisme</p>
+              <p><b><%= format_boolean(@organisme.etat) %></b></p>
+            <%else %>
             <div class="fr-select-group">
               <label for="etat" class="fr-label">État de l'organisme*</label>
               <%= f.select :etat,[["- sélectionner -",""],['Actif','Actif'],['En cours de création','En cours de création'], ['Inactif','Inactif']],{selected: @organisme.etat}, {data: {'form-target': 'fieldRequire', action: "change->form#changeEtat" }, id:"etat",class:"fr-select"}%>
             </div>
+            <%end %>
           </div>
           <div class="fr-col-12 fr-col-lg-3">
             <div class="fr-select-group">
@@ -54,38 +59,64 @@
             </div>
           </div>
           <div class="fr-col-12 fr-col-lg-3">
+            <% if @est_controleur %>
+              <p class="fr-mb-1w">Numéro SIREN</p>
+              <p><b><%= format_boolean(@organisme.siren) %></b></p>
+            <%else %>
             <div class="fr-input-group">
               <label for="siren" class="fr-label">Numéro SIREN</label>
               <%= f.number_field :siren, data: { action: "input->form#ChangeSiren" }, value: @organisme.siren, id:"siren", class:"fr-input" %>
               <p class="fr-message fr-message--info fr-mt-1w cwarning fr-hidden" id="alertSiren">Ce numéro SIREN existe déjà.</p>
             </div>
+            <%end %>
           </div>
           <div class="fr-col-12 fr-col-lg-3">
+            <% if @est_controleur %>
+              <p class="fr-mb-1w">Acronyme</p>
+              <p><b><%= format_boolean(@organisme.acronyme) %></b></p>
+            <%else %>
             <div class="fr-input-group">
               <label for="acronyme" class="fr-label">Acronyme</label>
               <%= f.text_field :acronyme, value: @organisme.acronyme, id:"acronyme", class:"fr-input"%>
             </div>
+            <%end %>
           </div>
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-6">
+            <% if @est_controleur %>
+              <p class="fr-mb-1w">Nom de l'entité</p>
+              <p><b><%= format_boolean(@organisme.nom) %></b></p>
+            <%else %>
             <div class="fr-input-group">
               <label for="nom" class="fr-label">Nom de l'entité*</label>
               <%= f.text_field :nom, data: {'form-target': 'fieldRequire', action: "input->form#ChangeNom" }, value: @organisme.nom, id:"nom", class:"fr-input"%>
               <p id="ErreurNom" class="fr-error-text fr-hidden">Ce nom existe déjà pour un autre organisme</p>
             </div>
+            <%end %>
           </div>
           <div class="fr-col-12 fr-col-lg-3">
+            <% if @est_controleur %>
+              <p class="fr-mb-1w">Famille</p>
+              <p><b><%= format_boolean(@organisme.famille) %></b></p>
+            <%else %>
             <div class="fr-select-group">
               <label for="famille" class="fr-label">Famille*</label>
               <%= f.select :famille, options_for_select([["- sélectionner -", ""]] + @liste_familles.map { |famille| [famille, famille] }, selected: @organisme.famille),{}, {data: {'form-target': 'fieldRequire' }, id:"famille",class:"fr-select"}%>
             </div>
+            <%end %>
           </div>
           <div class="fr-col-12 fr-col-lg-3">
+            <% if @est_controleur %>
+              <%= f.hidden_field :nature, value: @organisme.nature, id: "nature" %>
+              <p class="fr-mb-1w">Nature juridique</p>
+              <p><b><%= format_boolean(@organisme.nature) %></b></p>
+            <%else %>
             <div class="fr-select-group">
               <label for="nature" class="fr-label">Nature juridique*</label>
               <%= f.select :nature, options_for_select([["- sélectionner -", ""]] + @liste_natures.map { |nature| [nature, nature] }, selected: @organisme.nature),{}, {data: {'form-target': 'fieldRequire', action: "change->form#changeNature" }, id:"nature",class:"fr-select"}%>
             </div>
+            <%end %>
           </div>
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
@@ -96,18 +127,32 @@
             </div>
           </div>
           <div class="fr-col-12 fr-col-lg-3">
+            <% if @est_controleur && @organisme.date_dissolution.nil?%>
+              <p class="fr-mb-1w">Date de dissolution</p>
+              <p><b><%= format_boolean(@organisme.date_dissolution) %></b></p>
+            <%else %>
             <div class="fr-input-group fr-select-group--disabled">
               <label for="date_previsionnelle_dissolution" class="fr-label">Date de dissolution*</label>
               <%= f.text_field :date_dissolution, class:"fr-select", data: { 'form-target': 'fieldRequire', controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.date_dissolution)}, value: @organisme.date_dissolution, id: "date_dissolution", placeholder: "- sélectionner -", disabled: true%>
             </div>
+            <%end %>
           </div>
           <div class="fr-col-12 fr-col-lg-3">
+            <% if @est_controleur && @organisme.effet_dissolution.nil?%>
+              <p class="fr-mb-1w">Effet de dissolution</p>
+              <p><b><%= format_boolean(@organisme.effet_dissolution) %></b></p>
+            <%else %>
             <div class="fr-select-group fr-select-group--disabled">
               <label for="effet_dissolution" class="fr-label">Effet dissolution*</label>
               <%= f.select :effet_dissolution,[["- sélectionner -",""],['Suppression','Suppression'],['Rattachement à un ou plusieurs organismes','Rattachement'],["Création d'un ou plusieurs organismes",'Création']],{selected: @organisme.effet_dissolution}, {data: {'form-target': 'fieldRequire', action: "change->form#changeEffetDissolution" }, id:"effet_dissolution",class:"fr-select", disabled: true}%>
             </div>
+            <%end %>
           </div>
           <div class="fr-col-12 fr-col-lg-3">
+            <% if @est_controleur && @organisme.effet_dissolution != "Rattachement" && @organisme.effet_dissolution != "Création"%>
+              <p class="fr-mb-1w">Organisme•s de rattachement</p>
+              <p><b>Aucun</b></p>
+            <%else %>
             <div class="fr-select-group fr-select-group--disabled">
               <label for="rattachement" class="fr-label">Organisme•s de rattachement*</label>
               <button class="fr-select fr-btns-group--left" aria-controls="translate-1295" aria-expanded="false" title="Sélectionner un ou plusieurs organismes" data-action="click->form#Dropdown" id="BtnRattachement" disabled>
@@ -134,14 +179,20 @@
               </div>
               </div>
             </div>
+            <%end %>
           </div>
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-3">
+            <% if @est_controleur %>
+              <p class="fr-mb-1w">Bureau DB de rattachement</p>
+              <p><b><%= format_boolean(@organisme.bureau.nom) %></b></p>
+            <%else %>
             <div class="fr-select-group">
               <label for="bureau" class="fr-label">Bureau DB de rattachement*</label>
               <%= f.select :bureau_id, options_for_select([["- sélectionner -", ""]] + @bureaux.map { |bureau| [bureau.nom, bureau.id] }, selected: @organisme.bureau_id),{}, {data: {'form-target': 'fieldRequire' }, id:"bureau",class:"fr-select"}%>
             </div>
+            <%end %>
           </div>
           <div class="fr-col-12 fr-col-lg-9">
             <div class="fr-input-group">
@@ -152,10 +203,15 @@
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12">
+            <% if @est_controleur %>
+              <p class="fr-mb-1w">Commentaires</p>
+              <p><b><%= format_boolean(@organisme.commentaire) %></b></p>
+            <%else %>
             <div class="fr-input-group">
               <label for="commentaire" class="fr-label">Commentaires</label>
               <%= f.text_area :commentaire,rows: 4, value: @organisme.commentaire, id:"commentaire", class:"fr-input"%>
             </div>
+            <%end %>
           </div>
         </div>
         <div class="fr-my-4w">
@@ -166,7 +222,7 @@
             </li>
             <%end %>
             <li>
-              <%= f.submit("#{@organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
+              <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
             </li>
           </ul>
         </div>
