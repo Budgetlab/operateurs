@@ -33,7 +33,7 @@
   <h1 class="fr-mb-4w">Modification fiche d'identité</h1>
 <%end %>
 <div class="fr-mb-6w">
-  <div class="fr-card fr-card--shadow fr-card--no-arrow">
+  <div class="fr-card  fr-card--no-arrow">
     <div class="fr-card__body" data-controller="form" data-form-nomsorganismes="<%= @noms_organismes %>" data-form-sirenorganismes="<%= @siren_organismes %>">
       <div class="fr-card__content">
       <%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
@@ -54,9 +54,15 @@
           </div>
           <div class="fr-col-12 fr-col-lg-3">
             <div class="fr-select-group">
-              <label for="datecreation" class="fr-label">Date de création</label>
+              <label for="datecreation" class="fr-label">Date de création </label>
+
               <%= f.text_field :date_creation, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_default_date: format_date(@organisme.date_creation)}, value: @organisme.date_creation, id: "datecreation", placeholder: "- sélectionner -"%>
+              <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
+                Information contextuelle
+              </button>
+              <span class="fr-tooltip fr-placement" id="tooltip-2994" role="tooltip" aria-hidden="true">Quand la donnée est connue, elle doit nécessairement être renseignée</span>
             </div>
+
           </div>
           <div class="fr-col-12 fr-col-lg-3">
             <% if @est_controleur %>
@@ -92,6 +98,11 @@
               <label for="nom" class="fr-label">Nom de l'entité*</label>
               <%= f.text_field :nom, data: {'form-target': 'fieldRequire', action: "input->form#ChangeNom" }, value: @organisme.nom, id:"nom", class:"fr-input"%>
               <p id="ErreurNom" class="fr-error-text fr-hidden">Ce nom existe déjà pour un autre organisme</p>
+              <button class="fr-btn--tooltip fr-btn" id="button-2996" aria-describedby="tooltip-2995" data-action="form#Dropdown">
+                Information contextuelle
+              </button>
+              <span class="fr-tooltip fr-placement" id="tooltip-2995" role="tooltip" aria-hidden="true">Nom complet figurant dans le texte institutif de l'organisme</span>
+
             </div>
             <%end %>
           </div>
@@ -124,6 +135,11 @@
             <div class="fr-input-group fr-select-group--disabled">
               <label for="date_previsionnelle_dissolution" class="fr-label ">Date prévisionnelle de dissolution</label>
               <%= f.text_field :date_previsionnelle_dissolution, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.date_previsionnelle_dissolution)}, value: @organisme.date_previsionnelle_dissolution, id: "date_previsionnelle_dissolution", placeholder: "- sélectionner -", disabled: true%>
+              <button class="fr-btn--tooltip fr-btn" id="button-2997" aria-describedby="tooltip-2996" data-action="form#Dropdown">
+                Information contextuelle
+              </button>
+              <span class="fr-tooltip fr-placement" id="tooltip-2996" role="tooltip" aria-hidden="true">Pensez à renseigner cette date pour les groupements à durée de vie limitée</span>
+
             </div>
           </div>
           <div class="fr-col-12 fr-col-lg-3">

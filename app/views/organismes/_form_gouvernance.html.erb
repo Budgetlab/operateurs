@@ -33,7 +33,7 @@
   <h1 class="fr-mb-4w">Modification gouvernance DB</h1>
 <%end %>
 <div class="fr-mb-6w">
-  <div class="fr-card fr-card--shadow fr-card--no-arrow">
+  <div class="fr-card fr-card--no-arrow">
     <div class="fr-card__body" data-controller="form">
       <div class="fr-card__content">
       <%= form_with(model: @organisme, data: {'form-target': "form"}) do |f|%>
@@ -43,23 +43,26 @@
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-6">
             <fieldset class="fr-fieldset">
-              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
-                Administrateur DB au sein de l’organe de gouvernance<span class="fr-hint-text">La composition de l'instance de gouvernance est fixée par le texte statutaire de l'organisme. La représentation de la DB peut-être assurée par un contrôleur.</span>
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
+                Administrateur DB au sein de l’organe de gouvernance <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
+                Information contextuelle
+              </button>
+                <span class="fr-tooltip fr-placement" id="tooltip-2994" role="tooltip" aria-hidden="true">La composition de l'instance de gouvernance est fixée par le texte statutaire de l'organisme. La représentation de la DB peut-être assurée par un contrôleur.</span>
               </legend>
 
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :admin_db_present, true, id: "radio-admin-1", checked: @organisme.admin_db_present == true, data: {action: "change->form#ChangeAdmin" } %>
                   <label class="fr-label" for="radio-admin-1">Oui</label>
                 </div>
               </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :admin_db_present, false, checked: @organisme.admin_db_present == false, id:"radio-admin-b", data: {action: "change->form#ChangeAdmin" }  %>
                   <label class="fr-label" for="radio-admin-b">Non</label>
                 </div>
               </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :admin_db_present, "", checked: @organisme.admin_db_present.nil? , id:"radio-admin", data: {action: "change->form#ChangeAdmin" }  %>
                   <label class="fr-label" for="radio-admin">Non renseigné</label>
@@ -77,23 +80,23 @@
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-6">
             <fieldset class="fr-fieldset">
-              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
                 Présence DB au préCA
               </legend>
 
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :admin_preca, true, id: "radio-admin-preca-1", checked: @organisme.admin_preca == true%>
                   <label class="fr-label" for="radio-admin-preca-1">Oui</label>
                 </div>
               </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :admin_preca, false, checked: @organisme.admin_preca == false, id:"radio-admin-preca-b" %>
                   <label class="fr-label" for="radio-admin-preca-b">Non</label>
                 </div>
               </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :admin_preca, "", checked: @organisme.admin_preca.nil? , id:"radio-admin-preca" %>
                   <label class="fr-label" for="radio-admin-preca">Non renseigné</label>
@@ -103,23 +106,23 @@
           </div>
           <div class="fr-col-12 fr-col-lg-6">
             <fieldset class="fr-fieldset">
-              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
                 Présence contrôleur au Pré-CA
               </legend>
 
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :controleur_preca, true, id: "radio-controleur-preca-1", checked: @organisme.controleur_preca == true%>
                   <label class="fr-label" for="radio-controleur-preca-1">Oui</label>
                 </div>
               </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :controleur_preca, false, checked: @organisme.controleur_preca == false, id:"radio-controleur-preca-b" %>
                   <label class="fr-label" for="radio-controleur-preca-b">Non</label>
                 </div>
               </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :controleur_preca, "", checked: @organisme.controleur_preca.nil? , id:"radio-controleur-preca" %>
                   <label class="fr-label" for="radio-controleur-preca">Non renseigné</label>
@@ -131,23 +134,23 @@
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-6">
             <fieldset class="fr-fieldset">
-              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
                 Présence contrôleur au CA
               </legend>
 
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :controleur_ca, true, id: "radio-controleur-ca-1", checked: @organisme.controleur_ca == true%>
                   <label class="fr-label" for="radio-controleur-ca-1">Oui</label>
                 </div>
               </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :controleur_ca, false, checked: @organisme.controleur_ca == false, id:"radio-controleur-ca-b" %>
                   <label class="fr-label" for="radio-controleur-ca-b">Non</label>
                 </div>
               </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :controleur_ca, "", checked: @organisme.controleur_ca.nil? , id:"radio-controleur-ca" %>
                   <label class="fr-label" for="radio-controleur-ca">Non renseigné</label>
@@ -157,23 +160,23 @@
           </div>
           <div class="fr-col-12 fr-col-lg-6">
             <fieldset class="fr-fieldset">
-              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
                 Existence d’un comité d’audit et des risques
               </legend>
 
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :comite_audit, true, id: "radio-audit-1", checked: @organisme.comite_audit == true%>
                   <label class="fr-label" for="radio-audit-1">Oui</label>
                 </div>
               </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :comite_audit, false, checked: @organisme.comite_audit == false, id:"radio-audit-b" %>
                   <label class="fr-label" for="radio-audit-b">Non</label>
                 </div>
               </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :comite_audit, "", checked: @organisme.comite_audit.nil? , id:"radio-audit" %>
                   <label class="fr-label" for="radio-audit">Non renseigné</label>

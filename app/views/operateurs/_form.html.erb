@@ -20,7 +20,7 @@
 <h1 class="fr-mb-4w">Modification opérateur</h1>
 
 <div class="fr-mb-6w">
-  <div class="fr-card fr-card--shadow fr-card--no-arrow">
+  <div class="fr-card fr-card--no-arrow">
     <div class="fr-card__body" data-controller="form">
       <div class="fr-card__content">
         <%= form_with(model: @operateur, data: {'form-target': "form", action: "change->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>

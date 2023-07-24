@@ -33,7 +33,7 @@
   <h1 class="fr-mb-4w">Modification tutelles financière et technique</h1>
 <%end %>
 <div class="fr-mb-6w">
-  <div class="fr-card fr-card--shadow fr-card--no-arrow">
+  <div class="fr-card fr-card--no-arrow">
     <div class="fr-card__body" data-controller="form">
       <div class="fr-card__content">
       <%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
@@ -47,16 +47,19 @@
                 <p><b><%= format_boolean(@organisme.tutelle_financiere) %></b></p>
               <%else %>
               <fieldset class="fr-fieldset">
-                <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w">
-                  Tutelle financière*<span class="fr-hint-text">La tutelle financière MCP découle de l'article 174 du décret GBCP. Les GIP n'ont pas de tutelle.</span>
+                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
+                  Tutelle financière* <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
+                  Information contextuelle
+                </button>
+                  <span class="fr-tooltip fr-placement" id="tooltip-2994" role="tooltip" aria-hidden="true">La tutelle financière MCP découle de l'article 174 du décret GBCP. Les GIP n'ont pas de tutelle.</span>
                 </legend>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :tutelle_financiere, true, id: "radio-tutelle-1", checked: @organisme.tutelle_financiere, data: {'form-target': 'checkRequire', action: "change->form#ChangeTutelle" }  %>
                     <label class="fr-label" for="radio-tutelle-1">Oui</label>
                   </div>
                 </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :tutelle_financiere, false, checked: @organisme.tutelle_financiere == false, id:"radio-tutelle", data: {'form-target': 'checkRequire', action: "change->form#ChangeTutelle" } %>
                     <label class="fr-label" for="radio-tutelle">Non</label>
@@ -73,16 +76,19 @@
               <p><b><%= format_boolean(@organisme.delegation_approbation) %></b></p>
             <%else %>
             <fieldset class="fr-fieldset" disabled>
-              <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w">
-                Délégation de l'approbation des BI / BR / comptes financiers<span class="fr-hint-text">Référence des derniers arrêtés de délégation.</span>
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
+                Délégation de l'approbation des BI / BR / comptes financiers <button class="fr-btn--tooltip fr-btn" id="button-2996" aria-describedby="tooltip-2995" data-action="form#Dropdown">
+                Information contextuelle
+              </button>
+                <span class="fr-tooltip fr-placement" id="tooltip-2995" role="tooltip" aria-hidden="true">Référence des derniers arrêtés de délégation.</span>
               </legend>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :delegation_approbation, true, id: "radio-approbation-1", checked: @organisme.delegation_approbation, data: {action: "change->form#ChangeApprobation" }  %>
                   <label class="fr-label" for="radio-approbation-1">Oui</label>
                 </div>
               </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
                   <%= f.radio_button :delegation_approbation, false, checked: @organisme.delegation_approbation == false, id:"radio-approbation", data: {action: "change->form#ChangeApprobation" } %>
                   <label class="fr-label" for="radio-approbation">Non</label>

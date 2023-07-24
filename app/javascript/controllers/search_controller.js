@@ -15,4 +15,7 @@ export default class extends Controller {
             this.buttonTarget.setAttribute("aria-expanded", "false");
         }
     }
+    Dropdown(e){
+        e.preventDefault();
+    }
 }

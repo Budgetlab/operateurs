@@ -33,7 +33,7 @@
   <h1 class="fr-mb-4w">Modification régime budgétaire et comptable</h1>
 <%end %>
 <div class="fr-mb-6w">
-  <div class="fr-card fr-card--shadow fr-card--no-arrow">
+  <div class="fr-card fr-card--no-arrow">
     <div class="fr-card__body" data-controller="form">
       <div class="fr-card__content">
       <%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
@@ -42,17 +42,19 @@
         <%end %>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-5">
-              <fieldset class="fr-fieldset">
-                <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w">
-                  Partie I GBCP* <span class="fr-hint-text">Si "Non", pas de soumission à la GBCP</span>
+              <fieldset class="fr-fieldset ">
+                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
+                  Partie I GBCP* <button class="fr-btn--tooltip fr-btn" id="button-2996" aria-describedby="tooltip-2995" data-action="form#Dropdown">
+                  Information contextuelle</button>
+                  <span class="fr-tooltip fr-placement" id="tooltip-2995" role="tooltip" aria-hidden="true">Si "Non", pas de soumission à la GBCP</span>
                 </legend>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                       <%= f.radio_button :gbcp_1, true, id: "radio-gbcp-1", checked: @organisme.gbcp_1, data: {'form-target': 'checkRequire', action: "change->form#ChangeGBCP1"}  %>
                     <label class="fr-label" for="radio-gbcp-1">Oui</label>
                   </div>
                 </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :gbcp_1, false, checked: @organisme.gbcp_1 == false, id:"radio-gbcp", data: {'form-target': 'checkRequire', action: "change->form#ChangeGBCP1" } %>
                     <label class="fr-label" for="radio-gbcp">Non</label>
@@ -61,16 +63,16 @@
               </fieldset>
 
               <fieldset class="fr-fieldset" >
-                <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w">
+                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
                   Présence d'un agent comptable
                 </legend>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :agent_comptable_present, true, id: "radio-agent-1", checked: @organisme.agent_comptable_present%>
                     <label class="fr-label" for="radio-agent-1">Oui</label>
                   </div>
                 </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0" >
+                <div class="fr-fieldset__element fr-fieldset__element--inline" >
                   <div class="fr-radio-group" disabled>
                     <%= f.radio_button :agent_comptable_present, false, checked: @organisme.agent_comptable_present == false, id:"radio-agent" %>
                     <label class="fr-label" for="radio-agent">Non</label>
@@ -79,22 +81,26 @@
               </fieldset>
 
               <div class="fr-select-group">
-                <label for="degre_gbcp" class="fr-label">Champ d'application du décret GBCP<span class="fr-hint-text"> Appartenance aux bulles de l’article 1er du GBCP à retrouver sur https://www.legifrance.gouv.fr/loda/id/JORFTEXT000026597003 </span></label>
+                <label for="degre_gbcp" class="fr-label">Champ d'application du décret GBCP <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
+                  Information contextuelle
+                </button>
+                  <span class="fr-tooltip fr-placement" id="tooltip-2994" role="tooltip" aria-hidden="true">Appartenance aux bulles de l’article 1er du GBCP à retrouver sur https://www.legifrance.gouv.fr/loda/id/JORFTEXT000026597003</span>
+                </label>
                 <%= f.select :degre_gbcp,[["- sélectionner -",""],['3°','3°'],['4°','4°'],["5°",'5°'],["6°",'6°'],["Exclusion",'Exclusion']],{selected: @organisme.degre_gbcp}, {id:"degre_gbcp",class:"fr-select"}%>
               </div>
 
               <fieldset class="fr-fieldset">
-                <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w">
+                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
                   Partie III GBCP*
                 </legend>
 
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :gbcp_3, true, id: "radio-gbcp-3", checked: @organisme.gbcp_3, data: {'form-target': 'checkRequire', action: "change->form#ChangeGBCP3" }   %>
                     <label class="fr-label" for="radio-gbcp-3">Oui</label>
                   </div>
                 </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :gbcp_3, false, checked: @organisme.gbcp_3 == false, id:"radio-gbcp-3N", data: {'form-target': 'checkRequire', action: "change->form#ChangeGBCP3" }  %>
                     <label class="fr-label" for="radio-gbcp-3N">Non</label>
@@ -107,19 +113,19 @@
                   Comptabilité budgétaire*
                 </legend>
 
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :comptabilite_budgetaire, "oui", id: "radio-compta-1", checked: @organisme.comptabilite_budgetaire == "oui", data: {'form-target': 'checkRequire'}  %>
                     <label class="fr-label" for="radio-compta-1">Oui</label>
                   </div>
                 </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :comptabilite_budgetaire, "Oui mais adapté", checked: @organisme.comptabilite_budgetaire == "Oui mais adapté", id:"radio-compta-b", data: {'form-target': 'checkRequire'} %>
                     <label class="fr-label" for="radio-compta-b">Oui mais adapté</label>
                   </div>
                 </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :comptabilite_budgetaire, "non", checked: @organisme.comptabilite_budgetaire == "non", id:"radio-compta", data: {'form-target': 'checkRequire'} %>
                     <label class="fr-label" for="radio-compta">Non</label>

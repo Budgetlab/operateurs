@@ -57,6 +57,14 @@ export default class extends Controller {
                 isValid = false;
             }
         }
+        if (document.getElementById("effet_dissolution") != null){
+            const effet = document.getElementById("effet_dissolution");
+            const isTrue = effet.value === "Rattachement" || effet.value === "Création"
+            const checkTargetschecked = this.checklistTargets.filter(target => target.checked);
+            if (checkTargetschecked.length == 0 && isTrue) {
+                isValid = false;
+            }
+        }
         this.validateBtn(isValid);
         return isValid;
     }
@@ -167,10 +175,6 @@ export default class extends Controller {
             const isTrue = effet.value === "Rattachement" || effet.value === "Création"
             this.changeDropdown(isTrue, btn_rattachement, checkedFields)
             this.checkBox();
-            const checkTargetschecked = this.checklistTargets.filter(target => target.checked);
-            if (checkTargetschecked.length == 0 && isTrue) {
-                this.validateBtn(false);
-            }
         }
     }
     checkBox(){
@@ -336,7 +340,7 @@ export default class extends Controller {
         const programme = document.getElementById("programme").value;
         if (programme != ""){
         const token = document.querySelector('meta[name="csrf-token"]').content;
-        const url = "/select_mission"
+        const url = "/opera/select_mission"
         const body = { programme }
         fetch(url, {
             method: 'POST',

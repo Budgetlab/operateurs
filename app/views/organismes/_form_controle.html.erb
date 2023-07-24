@@ -33,7 +33,7 @@
   <h1 class="fr-mb-4w">Modification contrôle</h1>
 <%end %>
 <div class="fr-mb-6w">
-  <div class="fr-card fr-card--shadow fr-card--no-arrow">
+  <div class="fr-card fr-card--no-arrow">
     <div class="fr-card__body" data-controller="form">
       <div class="fr-card__content">
       <%= form_with(model: @organisme, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
@@ -42,17 +42,17 @@
         <%end %>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
-              <fieldset class="fr-fieldset">
-                <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w">
+              <fieldset class="fr-fieldset fr-mb-0">
+                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
                   Présence d'un contrôle*
                 </legend>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :presence_controle, true, id: "radio-controle-1", checked: @organisme.presence_controle, data: {'form-target': 'checkRequire', action: "change->form#ChangeControle" }  %>
                     <label class="fr-label" for="radio-controle-1">Oui</label>
                   </div>
                 </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :presence_controle, false, checked: @organisme.presence_controle == false, id:"radio-controle", data: {'form-target': 'checkRequire', action: "change->form#ChangeControle" } %>
                     <label class="fr-label" for="radio-controle">Non</label>
@@ -105,24 +105,24 @@
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
-              <fieldset class="fr-fieldset" disabled>
-                <legend class="fr-fieldset__legend--regular fr-fieldset__legend fr-mb-1w" id='radio-inline-legend'>
+              <fieldset class="fr-fieldset fr-mb-0" disabled>
+                <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
                   Document de contrôle
                 </legend>
 
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :document_controle_present, true, id: "radio-document-1", checked: @organisme.document_controle_present == true, data: {action: "change->form#ChangePresenceDocument" } %>
                     <label class="fr-label" for="radio-document-1">Oui</label>
                   </div>
                 </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :document_controle_present, false, checked: @organisme.document_controle_present == false, id:"radio-document-b", data: {action: "change->form#ChangePresenceDocument" }  %>
                     <label class="fr-label" for="radio-document-b">Non</label>
                   </div>
                 </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline fr-mb-0">
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
                     <%= f.radio_button :document_controle_present, "", checked: @organisme.document_controle_present.nil? , id:"radio-document", data: {action: "change->form#ChangePresenceDocument" }  %>
                     <label class="fr-label" for="radio-document">Non renseigné</label>

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-
+  scope(:path => '/opera') do
   devise_for :users, path: '',
                      path_names: { sign_in: 'connexion', sign_out: 'logout' },
                      controllers: { sessions: 'sessions' }
@@ -29,4 +29,6 @@ Rails.application.routes.draw do
   match '/500', via: :all, to: 'errors#error_500'
   match '/404', via: :all, to: 'errors#error_404'
   match '/503', via: :all, to: 'errors#error_503'
+  end
+  get '/', to: redirect('/opera')
 end
