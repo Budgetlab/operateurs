@@ -3,11 +3,7 @@
 # Controller Modifications
 class ModificationsController < ApplicationController
   before_action :statut
-  def index
-    admin = User.find_by(nom: '2B2O')
-    @modifications = @statut == 'Controleur' ? current_user.modifications.includes(:organisme).order(created_at: :desc) : Modification.where.not(user_id: admin.id).includes(:organisme).order(created_at: :desc)
-    modifications_classees(@modifications)
-  end
+  def index; end
 
   def open_modal
     @modification = Modification.find(params[:id])
@@ -28,11 +24,30 @@ class ModificationsController < ApplicationController
     redirect_to root_path and return unless current_user.statut == '2B2O'
 
     champ = @modification.champ
-    @organisme.update(champ => @modification.nouvelle_valeur)
+    if champ == "organisme_destination_id"
+      selected_organismes = @modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i)
+      @organisme.organisme_rattachements.destroy_all
+      selected_organismes.each do |organisme_id|
+        @organisme.organisme_rattachements.create(organisme_destination_id: organisme_id)
+      end
+    elsif champ == "ministeres"
+      selected_ministeres = @modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i)
+      @organisme.organisme_ministeres.destroy_all
+      selected_ministeres.each do |ministere_id|
+        @organisme.organisme_ministeres.create(ministere_id: ministere_id)
+      end
+    else
+      @organisme.update(champ => @modification.nouvelle_valeur)
+    end
     @operateur = @organisme.operateur
-    @modifications = @organisme.modifications.includes(:user).order(created_at: :desc)
-    modifications_classees(@modifications)
+    @modifications_organisme = @organisme.modifications.includes(:user).order(created_at: :desc)
+    modifications_classees(@modifications_organisme)
     redirect_to request.referer.presence || root_path, flash: { notice: 'modification' }
+  end
+
+  def destroy
+    @modification = Modification.find(params[:id]).destroy
+    redirect_to request.referer.presence || root_path
   end
 
   private

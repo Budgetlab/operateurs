@@ -42,6 +42,10 @@
         <%end %>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
+              <% if @est_controleur %>
+                <p class="fr-mb-1w">Présence d'un contrôle</p>
+                <p><b><%= format_boolean(@organisme.presence_controle) %></b></p>
+              <%else %>
               <fieldset class="fr-fieldset fr-mb-0">
                 <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
                   Présence d'un contrôle*
@@ -59,12 +63,18 @@
                   </div>
                 </div>
               </fieldset>
+              <%end %>
             </div>
             <div class="fr-col-12 fr-col-lg-4">
+              <% if @est_controleur %>
+                <p class="fr-mb-1w">Contrôleur référent</p>
+                <p><b><%= format_boolean(@organisme.controleur.nom) %></b></p>
+              <% else %>
               <div class="fr-select-group">
                 <label for="controleur" class="fr-label">Contrôleur référent*</label>
-                <%= f.select :controleur_id,options_for_select([["- sélectionner -", ""], *@controleurs.map { |controleur| [controleur.nom, controleur.id] }], selected: @organisme.controleur_id),{}, {data: {'form-target': 'fieldRequire'}, id:"controleur",class:"fr-select"}%>
+                <%= f.select :controleur_id,options_for_select([["- sélectionner -", ""],["2B2O",User.where(statut: "2B2O").first.id], *@controleurs.map { |controleur| [controleur.nom, controleur.id] }], selected: @organisme.controleur_id),{}, {data: {'form-target': 'fieldRequire'}, id:"controleur",class:"fr-select"}%>
               </div>
+              <%end %>
             </div>
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
@@ -85,7 +95,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group fr-select-group--disabled">
                 <label for="autorite_controle" class="fr-label">Autorité de contrôle*</label>
-                <%= f.select :autorite_controle,options_for_select([["- sélectionner -", ""]] + User.where(statut: 'Controleur').order(nom: :asc).pluck(:nom).map { |nom| [nom, nom] }, selected: @organisme.autorite_controle),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite_controle",class:"fr-select", disabled: true}%>
+                <%= f.select :autorite_controle,options_for_select([["- sélectionner -", ""], ["2B2O",User.where(statut: "2B2O").first.id]] + User.where(statut: 'Controleur').order(nom: :asc).pluck(:nom).map { |nom| [nom, nom] }, selected: @organisme.autorite_controle),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite_controle",class:"fr-select", disabled: true}%>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-6">
@@ -105,7 +115,7 @@
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
-              <fieldset class="fr-fieldset fr-mb-0" disabled>
+              <fieldset class="fr-fieldset fr-mb-0">
                 <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
                   Document de contrôle
                 </legend>
@@ -139,7 +149,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-input-group fr-select-group--disabled">
                 <label for="document_controle_lien" class="fr-label">Lien du document de contrôle</label>
-                <%= f.text_field :document_controle_lien, value: @organisme.document_controle_lien, id:"document_controle_lien", class:"fr-input", disabled: true%>
+                <%= f.text_field :document_controle_lien, value: @organisme.document_controle_lien, id:"document_controle_lien", class:"fr-input"%>
               </div>
             </div>
           </div>

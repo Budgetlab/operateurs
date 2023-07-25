@@ -8,8 +8,8 @@ export default class extends Controller {
     }
     autocomplete() {
         const query = this.inputTarget.value.trim();
+        this.formTarget.requestSubmit();
         if (query.length >= 1) {
-            this.formTarget.requestSubmit();
             this.buttonTarget.setAttribute("aria-expanded", "true");
         }else{
             this.buttonTarget.setAttribute("aria-expanded", "false");

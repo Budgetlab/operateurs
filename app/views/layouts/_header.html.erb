@@ -64,9 +64,14 @@
               </ul>
             </div>
           </li>
+          <% if current_user.statut == "2B2O" ||  current_user.statut == "Controleur"%>
           <li class="fr-nav__item">
-            <%= active_link_to modifications_path, class: "fr-nav__link", target: "_self" do%>Historique des modifications<%end%>
+            <%= active_link_to modifications_path, class: "fr-nav__link", target: "_self" do%>
+              Historique des modifications
+              <% if current_user.statut == '2B2O' && @modifications_attente.length > 0 %><p class="fr-badge fr-badge--success fr-badge--no-icon"><span class="fr-icon-alarm-warning-fill fr-icon--sm" aria-hidden="true"></span> [<%= @modifications_attente.length%>]<%end %></p>
+            <%end%>
           </li>
+          <%end %>
         </ul>
       </nav>
     </div>

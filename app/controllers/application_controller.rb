@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   end
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_global_variable
+  before_action :set_modifications
   def redirect_back_or(path)
     redirect_to request.referer || path
   end
@@ -35,6 +36,15 @@ class ApplicationController < ActionController::Base
     @liste_approbation = ['CBCM Armées', 'CBCM Culture', 'CBCM intérieur/ Outre-mer', 'CBCM MASS', 'CBCM MEN-MESRI', 'CBCM MINEFI', 'CBCM SPM', "Conseil de surveillance de l'agence", 'DB', 'DRFiP Auvergne-Rhône-Alpes', 'DRFiP Bourgogne-Franche-Comté', 'DRFiP Bretagne', 'DRFiP Centre Val de Loire', 'DRFiP Corse', 'DRFiP Grand-Est', 'DRFiP Guadeloupe', 'DRFiP Guyane', 'DRFiP Hauts-de-France', 'DRFiP IDF', 'DRFiP Martinique', 'DRFiP Mayotte', 'DRFiP Normandie', 'DRFiP Nouvelle Aquitaine', 'DRFiP Occitanie', 'DRFiP PACA', 'DRFiP Pays de la Loire', 'DRFiP Réunion',
                           'Mission agriculture forêt et pêche', 'Mission Aménagement des territoires, ville, logement Outre-mer', 'Mission Ecologie et développement durable', 'Mission Espace, armement et organismes divers des MEF', 'Mission Infrastructures de transports non ferroviaires', 'Mission Médias - Culture', 'Mission recherche appliquée et promotion de la qualité', "Recteur de région académique ou chancellier des universités ou ministre chargé de l'enseignement supérieur" ]
     @liste_autorites = ["Agences de l'eau", 'ARS - Agences régionales de santé', 'Associations de coordination technique agricole et des industries agroalimentaires', "Autres opérateurs d'enseignement supérieur et de recherche", "Communautés d'universités et d'établissements", "Ecoles d'architecture - Ecoles nationales supérieures d'architecture", "Ecoles d'art en Région", "Ecoles d'enseignement supérieur agricole et vétérinaire", "Ecoles et formations d'ingénieurs", 'Ecoles nationales des sports', 'Groupe Mines Télécom', "IRA - Instituts régionaux d'administration", "Opérateurs de soutien à l'enseignement supérieur et à la recherche", 'Parcs nationaux', 'Réseau des œuvres universitaires et scolaires', 'Universités et assimilés']
+  end
+
+  def set_modifications
+    if current_user
+    @modifications = current_user.statut == '2B2O' ? Modification.where.not(user_id: current_user.id).includes(:organisme).order(created_at: :desc) : current_user.modifications.includes(:organisme).order(created_at: :desc)
+    @modifications_valides = @modifications.select { |modification| modification.statut == 'validée' }
+    @modifications_rejetees = @modifications.select { |modification| modification.statut == 'refusée' }
+    @modifications_attente = @modifications.select { |modification| modification.statut == 'En attente' }
+    end
   end
 
   protected

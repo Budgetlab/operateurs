@@ -16,8 +16,10 @@ export default class extends Controller {
             this.ChangeGBCP1();
             this.ChangeGBCP3();
         }
-        if (this.element.querySelector('#radio-controle-1') != null){
+        if (this.element.querySelector('#radio-controle-1') != null) {
             this.ChangeControle();
+        }
+        if (this.element.querySelector('#radio-document-1') != null){
             this.ChangePresenceDocument();
         }
         if (this.element.querySelector('#radio-tutelle-1') != null){

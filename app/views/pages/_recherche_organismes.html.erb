@@ -1,3 +1,7 @@
+<div class="fr-text--xs fr-my-2w">Résultats de recherche [<%= @organismes.count %>]</div>
+<% if @organismes.count.zero? %>
+<p>Aucun résultat</p>
+<%else %>
 <% @organismes.each do |organisme| %>
   <div>
     <ul><li>
@@ -6,4 +10,5 @@
     <%end %>
     </li></ul>
   </div>
+<%end %>
 <%end %>

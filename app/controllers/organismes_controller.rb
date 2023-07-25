@@ -14,7 +14,11 @@ class OrganismesController < ApplicationController
 
   def recherche_organismes
     search = params[:search]
-    @organismes = @familles.nil? ? Organisme.where("nom ILIKE :search OR acronyme ILIKE :search", search: "%#{search}%") : Organisme.where(famille: @familles).where("nom ILIKE :search OR acronyme ILIKE :search", search: "%#{search}%")
+    if search.blank?
+      @organismes = []
+    else
+      @organismes = @familles.nil? ? Organisme.where("nom ILIKE :search OR acronyme ILIKE :search", search: "%#{search}%") : Organisme.where(famille: @familles).where("nom ILIKE :search OR acronyme ILIKE :search", search: "%#{search}%")
+    end
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -38,10 +42,10 @@ class OrganismesController < ApplicationController
     @organisme_ministeres = @organisme.organisme_ministeres.includes(:ministere)
     @operateur = Operateur.includes(:mission, :programme, :operateur_programmes).find_by(organisme_id: @organisme.id)
     @operateur_programmes = @operateur.operateur_programmes.includes(:programme) if @operateur
-    @modifications = @organisme.modifications.includes(:user).order(created_at: :desc)
-    @modifications_valides = @modifications.select { |modification| modification.statut == 'validée' }
-    @modifications_rejetees = @modifications.select { |modification| modification.statut == 'refusée' }
-    @modifications_attente = @modifications.select { |modification| modification.statut == 'En attente' }
+    @modifications_organisme = @organisme.modifications.includes(:user).order(created_at: :desc)
+    @modifications_valides_organisme = @modifications_organisme.select { |modification| modification.statut == 'validée' }
+    @modifications_rejetees_organisme = @modifications_organisme.select { |modification| modification.statut == 'refusée' }
+    @modifications_attente_organisme = @modifications_organisme.select { |modification| modification.statut == 'En attente' }
     respond_to do |format|
       format.html
       format.xlsx
@@ -106,19 +110,39 @@ class OrganismesController < ApplicationController
       champs_a_surveiller = [:nom, :etat, :acronyme, :siren, :nature, :texte_institutif, :gbcp_1, :gbcp_3,
                              :comptabilite_budgetaire, :nature_controle, :texte_soumission_controle, :autorite_controle,
                              :texte_reglementaire_controle, :arrete_controle, :document_controle_date, :comite_audit,
-                             :arrete_nomination, :ministere_id, :ciassp_n, :ciassp_n1, :odal_n, :odal_n1, :odac_n, :odac_n1]
+                             :arrete_nomination, :ciassp_n, :ciassp_n1, :odal_n, :odal_n1, :odac_n, :odac_n1]
       champs_texte = ['Nom', 'État', 'Acronyme', 'Siren', 'Nature juridique', 'Texte institutif', 'Partie I GBCP',
                       'Partie III GBCP', 'Comptabilité budgétaire', 'Nature contrôle', 'Texte soumission au contrôle',
                       'Autorité de contrôle', "Texte réglementaire de désignation de l'autorité decontrôle",
                       'Arrêté de contrôle', 'Date signature document contrôle ', 'Comité audit et risques',
-                      'Arrêté de nomination comissaire du gouvernement', "Ministère", "CIASSP #{(Date.today.year - 2).to_s}",
+                      'Arrêté de nomination comissaire du gouvernement', "CIASSP #{(Date.today.year - 2).to_s}",
                       "CIASSP #{(Date.today.year - 3).to_s}", "ODAL #{(Date.today.year - 2).to_s}",
                       "ODAL #{(Date.today.year - 3).to_s}", "ODAC #{(Date.today.year - 2).to_s}",
                       "ODAC #{(Date.today.year - 3).to_s}"]
+      champs_supp_controleur = [:date_creation, :date_previsionnelle_dissolution, :date_dissolution, :effet_dissolution,
+                                :agent_comptable_present, :degre_gbcp, :document_controle_present,
+                                :document_controle_lien, :ministere_id, :apu]
+      champs_supp_texte = ['Date création', 'Date prévisionnelle dissolution', 'Date dissolution', 'Effet dissolution',
+                           'Présence agent comptable', 'Degré GBCP', 'Présence document contrôle',
+                           'Lien document contrôle', 'Ministère', 'APU']
       champs_a_surveiller.each_with_index do |champ, i|
         if !organisme_params[champ].blank? && organisme_params[champ].to_s != @organisme[champ].to_s
-          modifications << { champ: champ.to_s, nom: champs_texte[i], ancienne_valeur: @organisme[champ].to_s, 
-nouvelle_valeur: organisme_params[champ].to_s }
+          modifications << { champ: champ.to_s, nom: champs_texte[i], ancienne_valeur: @organisme[champ].to_s, nouvelle_valeur: organisme_params[champ].to_s }
+        end
+      end
+      if current_user.statut == 'Controleur'
+        champs_supp_controleur.each_with_index do |champ, i|
+          if !organisme_params[champ].blank? && organisme_params[champ].to_s != @organisme[champ].to_s
+            modifications << { champ: champ.to_s, nom: champs_supp_texte[i], ancienne_valeur: @organisme[champ].to_s, nouvelle_valeur: organisme_params[champ].to_s }
+          end
+        end
+        if params[:organisme][:ministeres] && params[:organisme][:ministeres] != @organisme.organisme_ministeres.pluck(:ministere_id)
+          nouvelle_valeur = params[:organisme][:ministeres].map(&:to_i).reject { |element| element == 0 }
+          modifications << { champ: "ministeres", nom: "Ministère•s co-tutelle", ancienne_valeur: @organisme.organisme_ministeres.pluck(:ministere_id), nouvelle_valeur: nouvelle_valeur }
+        end
+        if params[:organisme][:organismes] && params[:organisme][:organismes] != @organisme.organisme_rattachements.pluck(:organisme_destination_id)
+          nouvelle_valeur = params[:organisme][:organismes].map(&:to_i).reject { |element| element == 0 }
+          modifications << { champ: "organisme_destination_id", nom: "Organisme•s rattachement", ancienne_valeur: @organisme.organisme_rattachements.pluck(:organisme_destination_id), nouvelle_valeur: nouvelle_valeur }
         end
       end
       statut = current_user.statut == '2B2O' ? 'validée' : 'En attente'
@@ -162,7 +186,7 @@ nouvelle_valeur: organisme_params[champ].to_s }
   def destroy
     redirect_to root_path and return unless current_user.statut == '2B2O'
 
-    @organisme = Organisme.find(params[:id]).destroy_all
+    @organisme = Organisme.find(params[:id]).destroy
     respond_to do |format|
       format.turbo_stream { redirect_to organismes_path }
     end
