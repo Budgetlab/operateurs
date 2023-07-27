@@ -39,12 +39,13 @@ class ApplicationController < ActionController::Base
   end
 
   def set_modifications
-    if current_user
+    return unless current_user
+
+    @statut_user = current_user.statut
     @modifications = current_user.statut == '2B2O' ? Modification.where.not(user_id: current_user.id).includes(:organisme).order(created_at: :desc) : current_user.modifications.includes(:organisme).order(created_at: :desc)
     @modifications_valides = @modifications.select { |modification| modification.statut == 'validée' }
     @modifications_rejetees = @modifications.select { |modification| modification.statut == 'refusée' }
     @modifications_attente = @modifications.select { |modification| modification.statut == 'En attente' }
-    end
   end
 
   protected

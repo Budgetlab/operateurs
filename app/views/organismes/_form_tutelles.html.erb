@@ -152,9 +152,9 @@
               <% if @organisme.statut == 'valide' %>
                 <%=link_to organisme_path(@organisme), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %>
               <%else %>
-                <%=link_to edit_organisme_path(@organisme, step: 3), class: "fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line" do %>
+                <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line"  data-fr-opened="false" aria-controls="fr-modal-1" data-action="form#Dropdown">
                   Étape précédente
-                <%end %>
+                </button>
               <%end %>
             </li>
             <li>
@@ -166,3 +166,7 @@
     </div>
   </div>
 </div>
+
+<dialog id="fr-modal-1" class="fr-modal">
+  <%= render partial: 'organismes/modal_retour',locals: {step: 3} %>
+</dialog>
