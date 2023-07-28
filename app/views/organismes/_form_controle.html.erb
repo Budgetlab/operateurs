@@ -72,7 +72,7 @@
               <% else %>
               <div class="fr-select-group">
                 <label for="controleur" class="fr-label">Contrôleur référent*</label>
-                <%= f.select :controleur_id,options_for_select([["- sélectionner -", ""],["2B2O",User.where(statut: "2B2O").first.id], *@controleurs.map { |controleur| [controleur.nom, controleur.id] }], selected: @organisme.controleur_id),{}, {data: {'form-target': 'fieldRequire'}, id:"controleur",class:"fr-select"}%>
+                <%= f.select :controleur_id,options_for_select([["- sélectionner -", ""],["2B2O",User.where(statut: "2B2O").first.id], *@controleurs.map { |controleur| [controleur.nom, controleur.id] }], selected: @organisme.statut != "valide" && @organisme.statut.to_i < 3 ? "" : @organisme.controleur_id ),{}, {data: {'form-target': 'fieldRequire'}, id:"controleur",class:"fr-select"}%>
               </div>
               <%end %>
             </div>

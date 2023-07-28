@@ -209,14 +209,16 @@ export default class extends Controller {
             agent_comptable_no.disabled = true;
             agent_comptable_oui.checked = true;
             gbcp_3_oui.disabled = false;
-            this.resetChamp(degre);
-            ['3°','4°','5°','6°'].forEach((deg)=>{
-                const option = document.createElement("option");
-                option.value = deg;
-                option.innerHTML = deg;
-                degre.appendChild(option);
-            })
-
+            console.log(degre.value)
+            if (degre.value == "Exclusion"){
+                this.resetChamp(degre);
+                ['3°','4°','5°','6°'].forEach((deg)=>{
+                    const option = document.createElement("option");
+                    option.value = deg;
+                    option.innerHTML = deg;
+                    degre.appendChild(option);
+                })
+            }
         }else if (gbcp_no == true) {
             agent_comptable_no.disabled = false;
             gbcp_3_no.checked = true;
@@ -317,7 +319,7 @@ export default class extends Controller {
         this.changeCheckDisable(!is_checked,...presenceRadios);
         this.ChangeCategorie();
         this.changeField(is_checked,programme);
-        this.resetChamp(mission);
+        this.changeProgramme();
         this.changeField(is_checked,mission);
         this.changeDropdown(is_checked, btn_rattachement, checkedFields)
         this.checkBox();

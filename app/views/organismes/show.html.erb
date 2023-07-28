@@ -22,7 +22,7 @@
         <h1 class="fr-mb-4w"><%= @organisme.nom %> <% if @organisme.statut != "valide" %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><% end %></h1>
       </div>
       <div class="fr-col-12 fr-col-lg-3">
-        <% if @organisme.statut != "valide" && current_user.statut == '2B2O'%><div class="fr-my-6w"><%= link_to edit_organisme_path(@organisme.id), class: "fr-btn" do %>Reprendre le brouillon<%end %></div><%end %>
+        <% if @organisme.statut != "valide" && current_user.statut == '2B2O'%><%= link_to edit_organisme_path(@organisme.id), class: "fr-btn" do %>Reprendre le brouillon<%end %><%end %>
       </div>
     </div>
     <%= render 'modifications/success'%>
@@ -154,7 +154,7 @@
                 <p class="fr-card__desc">Date de dissolution : <b><%= format_boolean(format_date(@organisme.date_dissolution))%></b></p>
                 <p class="fr-card__desc">Effet de dissolution : <b><%= format_boolean(@organisme.effet_dissolution) %></b></p>
                 <% if @organisme.effet_dissolution == "Rattachement" || @organisme.effet_dissolution == "Création" %>
-                  <p class="fr-card__desc">Organisme•s de rattachement : <b><% @organisme.organisme_rattachements.each do |orga|%><%= orga.organisme_destination.nom %> <%end %></b></p>
+                  <p class="fr-card__desc">Organisme•s de rattachement : <b><% @organisme.organisme_rattachements.each do |orga|%><%= orga.organisme_destination.nom %> - <%end %></b></p>
                 <%end %>
               <%end %>
               <p class="fr-card__desc">Bureau DB de rattachement : <b><%= @organisme.bureau.nom %></b></p>
@@ -193,9 +193,9 @@
                   <% if @operateur.presence_categorie  %>
                     <p class="fr-card__desc">Catégorie d'opérateur : <b><%= format_boolean(@operateur.nom_categorie) %></b></p>
                   <%end %>
-                  <p class="fr-card__desc">Mission programme chef de pile : <b><%= format_boolean(@operateur.mission.nom) %></b></p>
+                  <p class="fr-card__desc">Mission programme chef de file : <b><%= format_boolean(@operateur.mission.nom) %></b></p>
                   <p class="fr-card__desc">Programme chef de file : <b><% if @operateur.programme %><%= @operateur.programme.numero %> - <%= @operateur.programme.nom %><%end %></b></p>
-                  <p class="fr-card__desc">Programmes annexes : <b><% if @operateur_programmes %><% @operateur_programmes.each do |el|%><%= el.programme.numero %> <%end %><%else %>Aucun<%end %></b></p>
+                  <p class="fr-card__desc">Programmes annexes : <b><% if @operateur_programmes && !@operateur_programmes.empty? %><% @operateur_programmes.each do |el|%><%= el.programme.numero %> - <%end %><%else %>Aucun<%end %></b></p>
                 <%end %>
               </div>
             </div>
@@ -272,7 +272,7 @@
                   <%end %>
                 <%end %>
                 <p class="fr-card__desc">Ministère de tutelle principale : <b><%= @organisme.ministere.nom %></b></p>
-                <p class="fr-card__desc">Ministère•s de co-tutelle : <b><% if @organisme_ministeres %><% @organisme_ministeres.each do |orga|%><%= orga.ministere.nom %> <%end %><%else %>Aucun<%end %></b></p>
+                <p class="fr-card__desc">Ministère•s de co-tutelle : <b><% if @organisme_ministeres && !@organisme_ministeres.empty? %><% @organisme_ministeres.each do |orga|%><%= orga.ministere.nom %> - <%end %><%else %>Aucun<%end %></b></p>
                </div>
             </div>
           </div>
@@ -288,10 +288,10 @@
             <div class="fr-card__body">
               <div class="fr-card__content">
                 <h3 class="fr-card__title">
-                  Admin DB : <%= format_boolean(@organisme.admin_db_present) %>
+                  Administrateur DB : <%= format_boolean(@organisme.admin_db_present) %>
                 </h3>
                 <% if @organisme.admin_db_present %>
-                  <p class="fr-card__desc">Fonction Admin DB : <b><%= format_boolean(@organisme.admin_db_fonction) %></b></p>
+                  <p class="fr-card__desc">Fonction administrateur DB : <b><%= format_boolean(@organisme.admin_db_fonction) %></b></p>
                 <% end %>
                 <p class="fr-card__desc">Présence DB au préCA : <b><%= format_boolean(@organisme.admin_preca) %></b></p>
                 <p class="fr-card__desc">Présence contrôleur au pré-CA : <b><%= format_boolean(@organisme.controleur_preca) %></b></p>

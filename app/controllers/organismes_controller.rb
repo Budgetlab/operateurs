@@ -5,7 +5,7 @@ class OrganismesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_famille
   def index
-    @organismes = @familles.nil? ? Organisme.all.pluck(:id, :nom, :statut, :etat) : Organisme.where(famille: @familles, statut: 'valide').pluck(:id, :nom, :statut, :etat)
+    @organismes = @familles.nil? ? Organisme.all.pluck(:id, :nom, :statut, :etat, :acronyme) : Organisme.where(famille: @familles, statut: 'valide').pluck(:id, :nom, :statut, :etat, :acronyme)
     @organismes_actifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Actif' }
     @organismes_inactifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Inactif' }
     @organismes_creation = @organismes.select { |el| el[2] == 'valide' && el[3] == 'En cours de création' }
@@ -17,7 +17,7 @@ class OrganismesController < ApplicationController
     if search.blank?
       @organismes = []
     else
-      @organismes = @familles.nil? ? Organisme.where("nom ILIKE :search OR acronyme ILIKE :search", search: "%#{search}%") : Organisme.where(famille: @familles, statut: 'valide').where("nom ILIKE :search OR acronyme ILIKE :search", search: "%#{search}%")
+      @organismes = @familles.nil? ? Organisme.where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%") : Organisme.where(famille: @familles, statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
     end
     respond_to do |format|
       format.turbo_stream do
@@ -46,7 +46,7 @@ class OrganismesController < ApplicationController
     @modifications_valides_organisme = @modifications_organisme.select { |modification| modification.statut == 'validée' }
     @modifications_rejetees_organisme = @modifications_organisme.select { |modification| modification.statut == 'refusée' }
     @modifications_attente_organisme = @modifications_organisme.select { |modification| modification.statut == 'En attente' }
-    filename = "fiche_organisme.xlsx"
+    filename = 'fiche_organisme.xlsx'
     respond_to do |format|
       format.html
       format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""}
@@ -81,7 +81,7 @@ class OrganismesController < ApplicationController
 
   def edit
     @organisme = Organisme.find(params[:id])
-    @est_controleur = current_user == @organisme.controleur && @organisme.etat == "valide"
+    @est_controleur = current_user == @organisme.controleur && @organisme.statut == 'valide'
     redirect_to root_path and return unless @statut_user == '2B2O' || @est_controleur
 
     redirect_to edit_organisme_path(@organisme) if params[:step] && @organisme.statut != 'valide' && params[:step].to_i > @organisme.statut.to_i + 1
@@ -222,18 +222,18 @@ class OrganismesController < ApplicationController
       end
       if ministeres_to_link && ministeres_to_link.map(&:to_i).reject { |element| element == 0 } != @organisme.organisme_ministeres.pluck(:ministere_id)
         nouvelle_valeur = ministeres_to_link.map(&:to_i).reject { |element| element == 0 }
-        modifications << { champ: "ministeres", nom: "Ministère•s co-tutelle", ancienne_valeur: @organisme.organisme_ministeres.pluck(:ministere_id), nouvelle_valeur: nouvelle_valeur }
+        modifications << { champ: 'ministeres', nom: 'Ministère•s co-tutelle', ancienne_valeur: @organisme.organisme_ministeres.pluck(:ministere_id), nouvelle_valeur: nouvelle_valeur }
       end
       if organismes_to_link && organismes_to_link.map(&:to_i).reject { |element| element == 0 } != @organisme.organisme_rattachements.pluck(:organisme_destination_id)
         nouvelle_valeur = organismes_to_link.map(&:to_i).reject { |element| element == 0 }
-        modifications << { champ: "organisme_destination_id", nom: "Organisme•s rattachement", ancienne_valeur: @organisme.organisme_rattachements.pluck(:organisme_destination_id), nouvelle_valeur: nouvelle_valeur }
+        modifications << { champ: 'organisme_destination_id', nom: 'Organisme•s rattachement', ancienne_valeur: @organisme.organisme_rattachements.pluck(:organisme_destination_id), nouvelle_valeur: nouvelle_valeur }
       end
     end
     modifications
   end
 
   def check_format(field)
-    field = field.is_a?(Date) ? field.strftime("%d/%m/%Y") : field.to_s
+    field = field.is_a?(Date) ? field.strftime('%d/%m/%Y') : field.to_s
     field
   end
 
