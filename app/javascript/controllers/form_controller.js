@@ -25,6 +25,8 @@ export default class extends Controller {
         if (this.element.querySelector('#radio-tutelle-1') != null){
             this.ChangeTutelle();
             this.ChangeApprobation();
+        }
+        if (document.getElementById("ministere") != null ){
             this.checkBox();
         }
         if (this.element.querySelector('#radio-admin-1') != null){
@@ -159,15 +161,12 @@ export default class extends Controller {
     }
     changeEtat(){
         const etat= document.getElementById("etat");
-        if (etat != null){
         const date_dissolution= document.getElementById("date_dissolution");
         const effet_dissolution= document.getElementById("effet_dissolution");
         const isTrue = etat.value === "Inactif"
         this.changeField(isTrue,date_dissolution);
         this.changeField(isTrue,effet_dissolution);
         this.changeEffetDissolution();
-        }
-
     }
     changeEffetDissolution(){
         const effet= document.getElementById("effet_dissolution");
@@ -317,8 +316,9 @@ export default class extends Controller {
 
         this.changeCheckDisable(!is_checked,...presenceRadios);
         this.ChangeCategorie();
-        this.changeField(is_checked,mission);
         this.changeField(is_checked,programme);
+        this.resetChamp(mission);
+        this.changeField(is_checked,mission);
         this.changeDropdown(is_checked, btn_rattachement, checkedFields)
         this.checkBox();
 
@@ -338,7 +338,7 @@ export default class extends Controller {
         }
     }
     changeProgramme(){
-        const mission = document.getElementById("mission")
+        const mission = document.getElementById("mission");
         const programme = document.getElementById("programme").value;
         if (programme != ""){
         const token = document.querySelector('meta[name="csrf-token"]').content;
@@ -364,6 +364,8 @@ export default class extends Controller {
                 mission.selectedIndex = 0;
                 this.validateForm();
             });
+        }else{
+            this.resetChamp(mission);
         }
     }
 

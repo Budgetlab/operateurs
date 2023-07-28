@@ -75,7 +75,7 @@
               <p class="fr-mb-1w">Délégation de l'approbation des BI / BR / comptes financiers</p>
               <p><b><%= format_boolean(@organisme.delegation_approbation) %></b></p>
             <%else %>
-            <fieldset class="fr-fieldset" disabled>
+            <fieldset class="fr-fieldset">
               <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
                 Délégation de l'approbation des BI / BR / comptes financiers <button class="fr-btn--tooltip fr-btn" id="button-2996" aria-describedby="tooltip-2995" data-action="form#Dropdown">
                 Information contextuelle
@@ -102,9 +102,9 @@
               <p class="fr-mb-1w">Autorité chargée de l'approbation</p>
               <p><b><%= format_boolean(@organisme.autorite_approbation) %></b></p>
             <%else %>
-            <div class="fr-select-group fr-select-group--disabled">
+            <div class="fr-select-group">
               <label for="autorite" class="fr-label">Autorité chargée de l'approbation*</label>
-              <%= f.select :autorite_approbation,options_for_select([["- sélectionner -", ""]] + @liste_approbation.map { |nom| [nom, nom] }, selected: @organisme.autorite_approbation),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite",class:"fr-select", disabled: true}%>
+              <%= f.select :autorite_approbation,options_for_select([["- sélectionner -", ""]] + @liste_approbation.map { |nom| [nom, nom] }, selected: @organisme.autorite_approbation),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite",class:"fr-select"}%>
             </div>
             <%end %>
           </div>
@@ -158,7 +158,7 @@
               <%end %>
             </li>
             <li>
-              <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
+              <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}) %>
             </li>
           </ul></div>
       <%end %>

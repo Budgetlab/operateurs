@@ -71,9 +71,9 @@
             </fieldset>
           </div>
           <div class="fr-col-12 fr-col-lg-4">
-            <div class="fr-input-group fr-select-group--disabled">
+            <div class="fr-input-group">
               <label for="admin_db_fonction" class="fr-label">Fonction de l’administrateur DB</label>
-              <%= f.text_field :admin_db_fonction, value: @organisme.admin_db_fonction, id:"admin_db_fonction", class:"fr-input", disabled: true%>
+              <%= f.text_field :admin_db_fonction, value: @organisme.admin_db_fonction, id:"admin_db_fonction", class:"fr-input"%>
             </div>
           </div>
         </div>
@@ -197,7 +197,7 @@
               <%end %>
             </li>
             <li>
-              <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider' }", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
+              <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider' }", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}) %>
             </li>
           </ul></div>
       <%end %>

@@ -73,7 +73,7 @@
                   </div>
                 </div>
                 <div class="fr-fieldset__element fr-fieldset__element--inline" >
-                  <div class="fr-radio-group" disabled>
+                  <div class="fr-radio-group">
                     <%= f.radio_button :agent_comptable_present, false, checked: @organisme.agent_comptable_present == false, id:"radio-agent" %>
                     <label class="fr-label" for="radio-agent">Non</label>
                   </div>
@@ -147,7 +147,7 @@
                 <%end %>
               </li>
               <li>
-                <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
+                <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}) %>
               </li>
             </ul>
           </div>

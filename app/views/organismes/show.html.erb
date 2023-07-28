@@ -51,7 +51,7 @@
                   <td>
                     <% if current_user.statut == "2B2O" %>
                     <ul class="fr-btns-group fr-btns-group--inline">
-                    <li><%= link_to modification_path(modification, params: { modification: { statut: "validée" } }), data: { "turbo-method": :patch}, class:"fr-btn fr-my-0" do %> Valider <%end %></li>
+                    <li><%= link_to modification_path(modification, params: { modification: { statut: "validée" } }), data: { "turbo-method": :patch}, class:"fr-btn fr-my-0" do %>Valider<%end %></li>
                     <li><%= link_to open_modal_path(id: modification.id), class:"fr-btn fr-btn--secondary fr-my-0","data-fr-opened": false,"aria-controls":"modal-1",data: { "turbo_method": :post} do %>Refuser<%end %></li>
                   </ul>
                     <%else %>
@@ -130,10 +130,8 @@
       <div class="fr-col-12 fr-col-lg-8">
         <div class="fr-download">
           <p>
-            <%= link_to "/organismes/#{@organisme.id}.xlsx", format: :xslx, class: "fr-download__link" do %>Télécharger la fiche de l'organisme
-              <span class="fr-download__detail">
-                Format .xlsx
-            </span>
+            <%= link_to "/opera/organismes/#{@organisme.id}.xlsx", format: :xslx, class: "fr-download__link" do %>Télécharger la fiche de l'organisme
+              <span class="fr-download__detail">Format .xlsx</span>
             <%end %>
           </p>
         </div>
@@ -161,7 +159,7 @@
               <%end %>
               <p class="fr-card__desc">Bureau DB de rattachement : <b><%= @organisme.bureau.nom %></b></p>
               <p class="fr-card__desc">Texte institutif : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_institutif),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-              <p class="fr-card__desc">Commentaires : <b><%= format_boolean(@organisme.commentaire) %></b></p>
+              <p class="fr-card__desc">Commentaires : <b><%= auto_link(simple_format(format_boolean(@organisme.commentaire),{}, wrapper_tag: "span"), :html => { :target => '_blank' })%></b></p>
 
                 <div class="fr-card__start">
                   <ul class="fr-tags-group">
@@ -176,7 +174,7 @@
         </div>
 
         <div id="operateur" class="fr-mb-4w">
-          <h2 class="title-btn">Opérateur <% if @organisme.statut == "valide" && current_user.statut == "2B2O" %>
+          <h2 class="title-btn">Opérateur <% if @organisme.statut == "valide" && @statut_user == "2B2O" %>
               <% if @operateur.nil? %><%= link_to new_operateur_path(organisme_id: @organisme.id), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %>
                 <%else %><%= link_to edit_operateur_path(id: @operateur, organisme_id: @organisme.id), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %>
               <%end %>
@@ -197,7 +195,7 @@
                   <%end %>
                   <p class="fr-card__desc">Mission programme chef de pile : <b><%= format_boolean(@operateur.mission.nom) %></b></p>
                   <p class="fr-card__desc">Programme chef de file : <b><% if @operateur.programme %><%= @operateur.programme.numero %> - <%= @operateur.programme.nom %><%end %></b></p>
-                  <p class="fr-card__desc">Programmes annexes : <b><% if @operateur_programmes %><% @operateur_programmes.each do |el|%><%= el.programme.numero %><%end %><%else %>Aucun<%end %></b></p>
+                  <p class="fr-card__desc">Programmes annexes : <b><% if @operateur_programmes %><% @operateur_programmes.each do |el|%><%= el.programme.numero %> <%end %><%else %>Aucun<%end %></b></p>
                 <%end %>
               </div>
             </div>

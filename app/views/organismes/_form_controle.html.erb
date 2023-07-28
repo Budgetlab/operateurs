@@ -77,39 +77,40 @@
               <%end %>
             </div>
           </div>
+          <% if @statut_user == '2B2O' || (@est_controleur && @organisme.presence_controle) %>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
-              <div class="fr-select-group fr-select-group--disabled">
+              <div class="fr-select-group">
                 <label for="nature" class="fr-label">Nature du contrôle*</label>
-                <%= f.select :nature_controle,[["- sélectionner -",""],['CEF','CEF'], ['contrôle budgétaire','contrôle budgétaire'], ['Contrôle budgétaire adapté','Contrôle budgétaire adapté']],{selected: @organisme.nature_controle}, {data: {'form-target': 'fieldRequire'}, id:"nature",class:"fr-select", disabled: true}%>
+                <%= f.select :nature_controle,[["- sélectionner -",""],['CEF','CEF'], ['contrôle budgétaire','contrôle budgétaire'], ['Contrôle budgétaire adapté','Contrôle budgétaire adapté']],{selected: @organisme.nature_controle}, {data: {'form-target': 'fieldRequire'}, id:"nature",class:"fr-select"}%>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-6">
-              <div class="fr-input-group fr-select-group--disabled">
+              <div class="fr-input-group">
                 <label for="texte_soumission_controle" class="fr-label">Référence du texte de soumission au contrôle</label>
-                <%= f.text_field :texte_soumission_controle, value: @organisme.texte_soumission_controle, id:"texte_soumission_controle", class:"fr-input", disabled: true%>
+                <%= f.text_field :texte_soumission_controle, value: @organisme.texte_soumission_controle, id:"texte_soumission_controle", class:"fr-input"%>
               </div>
             </div>
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
-              <div class="fr-select-group fr-select-group--disabled">
+              <div class="fr-select-group">
                 <label for="autorite_controle" class="fr-label">Autorité de contrôle*</label>
-                <%= f.select :autorite_controle,options_for_select([["- sélectionner -", ""], ["2B2O",User.where(statut: "2B2O").first.id]] + User.where(statut: 'Controleur').order(nom: :asc).pluck(:nom).map { |nom| [nom, nom] }, selected: @organisme.autorite_controle),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite_controle",class:"fr-select", disabled: true}%>
+                <%= f.select :autorite_controle,options_for_select([["- sélectionner -", ""], ["2B2O",User.where(statut: "2B2O").first.id]] + User.where(statut: 'Controleur').order(nom: :asc).pluck(:nom).map { |nom| [nom, nom] }, selected: @organisme.autorite_controle),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite_controle",class:"fr-select"}%>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-6">
-              <div class="fr-input-group fr-select-group--disabled">
+              <div class="fr-input-group">
                 <label for="texte_reglementaire_controle" class="fr-label">Texte réglementaire de désignation de l'autorité de contrôle</label>
-                <%= f.text_field :texte_reglementaire_controle, value: @organisme.texte_reglementaire_controle, id:"texte_reglementaire_controle", class:"fr-input", disabled: true%>
+                <%= f.text_field :texte_reglementaire_controle, value: @organisme.texte_reglementaire_controle, id:"texte_reglementaire_controle", class:"fr-input"%>
               </div>
             </div>
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-10">
-              <div class="fr-input-group fr-select-group--disabled">
+              <div class="fr-input-group">
                 <label for="arrete_controle" class="fr-label">Référence de l’arrêté de contrôle</label>
-                <%= f.text_field :arrete_controle, value: @organisme.arrete_controle, id:"arrete_controle", class:"fr-input", disabled: true%>
+                <%= f.text_field :arrete_controle, value: @organisme.arrete_controle, id:"arrete_controle", class:"fr-input"%>
               </div>
             </div>
           </div>
@@ -141,18 +142,19 @@
               </fieldset>
             </div>
             <div class="fr-col-12 fr-col-lg-4">
-              <div class="fr-input-group fr-select-group--disabled">
+              <div class="fr-input-group">
                 <label for="date_signature" class="fr-label">Date de signature du document</label>
-                <%= f.text_field :document_controle_date, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.document_controle_date)}, value: @organisme.document_controle_date, id: "date_signature", placeholder: "- sélectionner -", disabled: true%>
+                <%= f.text_field :document_controle_date, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.document_controle_date)}, value: @organisme.document_controle_date, id: "date_signature", placeholder: "- sélectionner -"%>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-4">
-              <div class="fr-input-group fr-select-group--disabled">
+              <div class="fr-input-group">
                 <label for="document_controle_lien" class="fr-label">Lien du document de contrôle</label>
                 <%= f.text_field :document_controle_lien, value: @organisme.document_controle_lien, id:"document_controle_lien", class:"fr-input"%>
               </div>
             </div>
           </div>
+          <% end %>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-10">
               <div class="fr-input-group">
@@ -174,7 +176,7 @@
                 <%end %>
               </li>
               <li>
-                <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
+                <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}) %>
               </li>
             </ul>
           </div>

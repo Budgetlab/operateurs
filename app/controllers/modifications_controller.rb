@@ -24,13 +24,13 @@ class ModificationsController < ApplicationController
     redirect_to root_path and return unless current_user.statut == '2B2O'
 
     champ = @modification.champ
-    if champ == "organisme_destination_id"
+    if champ == 'organisme_destination_id'
       selected_organismes = @modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i)
       @organisme.organisme_rattachements.destroy_all
       selected_organismes.each do |organisme_id|
         @organisme.organisme_rattachements.create(organisme_destination_id: organisme_id)
       end
-    elsif champ == "ministeres"
+    elsif champ == 'ministeres'
       selected_ministeres = @modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i)
       @organisme.organisme_ministeres.destroy_all
       selected_ministeres.each do |ministere_id|

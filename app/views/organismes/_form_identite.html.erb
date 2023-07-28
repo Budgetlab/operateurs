@@ -43,6 +43,7 @@
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-3">
             <% if @est_controleur %>
+              <%= f.hidden_field :etat, value: @organisme.etat, id: "etat" %>
               <p class="fr-mb-1w">État de l'organisme</p>
               <p><b><%= format_boolean(@organisme.etat) %></b></p>
             <%else %>
@@ -55,7 +56,6 @@
           <div class="fr-col-12 fr-col-lg-3">
             <div class="fr-select-group">
               <label for="datecreation" class="fr-label">Date de création </label>
-
               <%= f.text_field :date_creation, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_default_date: format_date(@organisme.date_creation)}, value: @organisme.date_creation, id: "datecreation", placeholder: "- sélectionner -"%>
               <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
                 Information contextuelle
@@ -102,7 +102,6 @@
                 Information contextuelle
               </button>
               <span class="fr-tooltip fr-placement" id="tooltip-2995" role="tooltip" aria-hidden="true">Nom complet figurant dans le texte institutif de l'organisme</span>
-
             </div>
             <%end %>
           </div>
@@ -132,24 +131,28 @@
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-3">
-            <div class="fr-input-group fr-select-group--disabled">
+            <% if @est_controleur && @organisme.nature != "GIP"%>
+              <p class="fr-mb-1w">Date prévisionnelle de dissolution</p>
+              <p><b><%= format_boolean(@organisme.date_previsionnelle_dissolution) %></b></p>
+            <%else %>
+            <div class="fr-input-group">
               <label for="date_previsionnelle_dissolution" class="fr-label ">Date prévisionnelle de dissolution</label>
-              <%= f.text_field :date_previsionnelle_dissolution, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.date_previsionnelle_dissolution)}, value: @organisme.date_previsionnelle_dissolution, id: "date_previsionnelle_dissolution", placeholder: "- sélectionner -", disabled: true%>
+              <%= f.text_field :date_previsionnelle_dissolution, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.date_previsionnelle_dissolution)}, value: @organisme.date_previsionnelle_dissolution, id: "date_previsionnelle_dissolution", placeholder: "- sélectionner -"%>
               <button class="fr-btn--tooltip fr-btn" id="button-2997" aria-describedby="tooltip-2996" data-action="form#Dropdown">
                 Information contextuelle
               </button>
               <span class="fr-tooltip fr-placement" id="tooltip-2996" role="tooltip" aria-hidden="true">Pensez à renseigner cette date pour les groupements à durée de vie limitée</span>
-
             </div>
+            <%end %>
           </div>
           <div class="fr-col-12 fr-col-lg-3">
             <% if @est_controleur && @organisme.date_dissolution.nil?%>
               <p class="fr-mb-1w">Date de dissolution</p>
               <p><b><%= format_boolean(@organisme.date_dissolution) %></b></p>
             <%else %>
-            <div class="fr-input-group fr-select-group--disabled">
-              <label for="date_previsionnelle_dissolution" class="fr-label">Date de dissolution*</label>
-              <%= f.text_field :date_dissolution, class:"fr-select", data: { 'form-target': 'fieldRequire', controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.date_dissolution)}, value: @organisme.date_dissolution, id: "date_dissolution", placeholder: "- sélectionner -", disabled: true%>
+            <div class="fr-input-group">
+              <label for="date_dissolution" class="fr-label">Date de dissolution*</label>
+              <%= f.text_field :date_dissolution, class:"fr-select", data: { 'form-target': 'fieldRequire', controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_min_date: Date.new(2023,1,1), flatpickr_max_date: Date.new(2023,12,31), flatpickr_default_date: format_date(@organisme.date_dissolution)}, value: @organisme.date_dissolution, id: "date_dissolution", placeholder: "- sélectionner -"%>
             </div>
             <%end %>
           </div>
@@ -158,20 +161,20 @@
               <p class="fr-mb-1w">Effet de dissolution</p>
               <p><b><%= format_boolean(@organisme.effet_dissolution) %></b></p>
             <%else %>
-            <div class="fr-select-group fr-select-group--disabled">
+            <div class="fr-select-group">
               <label for="effet_dissolution" class="fr-label">Effet dissolution*</label>
-              <%= f.select :effet_dissolution,[["- sélectionner -",""],['Suppression','Suppression'],['Rattachement à un ou plusieurs organismes','Rattachement'],["Création d'un ou plusieurs organismes",'Création']],{selected: @organisme.effet_dissolution}, {data: {'form-target': 'fieldRequire', action: "change->form#changeEffetDissolution" }, id:"effet_dissolution",class:"fr-select", disabled: true}%>
+              <%= f.select :effet_dissolution,[["- sélectionner -",""],['Suppression','Suppression'],['Rattachement à un ou plusieurs organismes','Rattachement'],["Création d'un ou plusieurs organismes",'Création']],{selected: @organisme.effet_dissolution}, {data: {'form-target': 'fieldRequire', action: "change->form#changeEffetDissolution" }, id:"effet_dissolution",class:"fr-select"}%>
             </div>
             <%end %>
           </div>
           <div class="fr-col-12 fr-col-lg-3">
-            <% if @est_controleur && @organisme.effet_dissolution != "Rattachement" && @organisme.effet_dissolution != "Création"%>
+            <% if @est_controleur && @organisme.effet_dissolution.nil?%>
               <p class="fr-mb-1w">Organisme•s de rattachement</p>
               <p><b>Aucun</b></p>
             <%else %>
-            <div class="fr-select-group fr-select-group--disabled">
+            <div class="fr-select-group">
               <label for="rattachement" class="fr-label">Organisme•s de rattachement*</label>
-              <button class="fr-select fr-btns-group--left" aria-controls="translate-1295" aria-expanded="false" title="Sélectionner un ou plusieurs organismes" data-action="click->form#Dropdown" id="BtnRattachement" disabled>
+              <button class="fr-select fr-btns-group--left" aria-controls="translate-1295" aria-expanded="false" title="Sélectionner un ou plusieurs organismes" data-action="click->form#Dropdown" id="BtnRattachement">
                 - sélectionner -
               </button>
               <div class="div-dropdown">
@@ -180,14 +183,13 @@
                   <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="checkboxes-legend">
                     Sélectionner un ou plusieurs organismes de rattachement
                   </legend>
-                  <% @organismes.each_with_index do |organisme, i|%>
+                  <% @organismes_rattachement.each_with_index do |organisme, i|%>
                     <div class="fr-fieldset__element">
                       <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
                         <%= f.check_box :organismes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @organisme.organisme_rattachements.pluck(:organisme_destination_id).include?(organisme[1]) }, organisme[1]%>
                         <label class="fr-label" for="checkboxes-<%=i %>">
                           <%= organisme[0]%>
                         </label>
-
                       </div>
                     </div>
                   <%end %>
@@ -238,7 +240,7 @@
             </li>
             <%end %>
             <li>
-              <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}, disabled: true) %>
+              <%= f.submit("#{@est_controleur ? 'Soumettre' : @organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}) %>
             </li>
           </ul>
         </div>

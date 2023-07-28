@@ -39,3 +39,13 @@
     table-layout: fixed !important;
   }
 }
+.fr-card--custom-blue{
+    border-bottom-right-radius: 40px;
+    background-color: var(--background-action-high-blue-france) !important;
+  &:hover, &:active{
+    background-color: var(--background-action-high-blue-france-hover) !important;
+  }
+}
+.fr-card--custom-blue .fr-card__desc, .fr-card--custom-blue .fr-card__title a[href], .fr-card--custom-blue:before{
+  color: var(--text-inverted-blue-france) !important;
+}
