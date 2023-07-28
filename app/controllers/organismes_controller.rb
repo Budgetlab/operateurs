@@ -71,8 +71,8 @@ class OrganismesController < ApplicationController
     @organisme = Organisme.new(organisme_params)
     @organisme.controleur = current_user if @organisme.controleur_id.nil?
     @organisme.ministere = Ministere.first if @organisme.ministere_id.nil?
-    update_organisme_rattachements(organismes_to_link)
     if @organisme.save
+      update_organisme_rattachements(organismes_to_link)
       redirect_to edit_organisme_path(@organisme.id)
     else
       render :new
@@ -81,7 +81,7 @@ class OrganismesController < ApplicationController
 
   def edit
     @organisme = Organisme.find(params[:id])
-    @est_controleur = current_user == @organisme.controleur
+    @est_controleur = current_user == @organisme.controleur && @organisme.etat == "valide"
     redirect_to root_path and return unless @statut_user == '2B2O' || @est_controleur
 
     redirect_to edit_organisme_path(@organisme) if params[:step] && @organisme.statut != 'valide' && params[:step].to_i > @organisme.statut.to_i + 1

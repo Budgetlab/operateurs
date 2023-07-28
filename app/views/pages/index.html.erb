@@ -19,12 +19,12 @@
         <div class="fr-card fr-enlarge-link fr-card--shadow">
           <div class="fr-card__body">
             <div class="fr-card__content">
-              <% if @statut_user == "2B2O" %>
+
               <h3 class="fr-card__title"><%= link_to modifications_path do %>Suivi des modifications<%end %></h3>
-              <p class="fr-card__desc">Suivre les modifications effectuées sur les organismes de mon périmètre</p>
+              <% if @statut_user == "2B2O" %>
+              <p class="fr-card__desc">Suivre l'historique des modifications effectuées par les contrôleurs</p>
               <% else %>
-              <h3 class="fr-card__title"><%= link_to root_path do %>Chiffres clés<%end %></h3>
-              <p class="fr-card__desc">Renseignez les chiffres clés d’un organisme en amont du préCA ou du CA</p>
+              <p class="fr-card__desc">Suivre mes modifications effectuées sur les organismes de mon périmètre</p>
               <%end %>
             </div>
           </div>
