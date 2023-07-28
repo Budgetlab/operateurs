@@ -6,7 +6,7 @@
         <div class="fr-container fr-background-alt--grey fr-px-md-0 fr-pt-10v fr-pt-md-14v fr-pb-6v fr-pb-md-10v">
           <div class="fr-grid-row fr-grid-row-gutters fr-grid-row--center">
             <div class="fr-col-12 fr-col-md-9 fr-col-lg-8">
-              <h4>Connexion à [NOM]</h4>
+              <h4>Connexion à OPERA</h4>
 
               <div>
                 <%= form_for(resource, as: resource_name, url: session_path(resource_name),data: {'session-target': "form", action: "turbo:before-fetch-request->session#submitForm turbo:submit-end->session#resultForm change->session#changeForm input->session#changeForm"}) do |f| %>
@@ -36,7 +36,7 @@
                               Profil
                             </label>
 
-                            <%= f.select :statut , [['2B2O','2B2O'], ['Contrôleur','Controleur'], ['Bureau Sectiorel','Bureau Sectiorel']], {:include_blank => "- Sélectionner -"}, {data: {action: 'change->session#statutChange','session-target': 'statut' }, required: true, class: "fr-select", id:'username-1798'} %>
+                            <%= f.select :statut , [['2B2O','2B2O'], ['Contrôleur','Controleur'], ['Bureau Sectoriel','Bureau Sectiorel']], {:include_blank => "- Sélectionner -"}, {data: {action: 'change->session#statutChange','session-target': 'statut' }, required: true, class: "fr-select", id:'username-1798'} %>
                             <div class="fr-messages-group" id="username-1798-messages" aria-live="assertive">
                             </div>
                           </div>

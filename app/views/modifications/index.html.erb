@@ -3,7 +3,7 @@
   <div class="fr-container ">
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-12">
-        <h1 class="fr-my-4w"><% if current_user.statut == "2B2O" %>Modifications des contrôleurs<%else %>Mes modifications<%end %> [<%= @modifications.length %>]</h1>
+        <h1 class="fr-my-4w"><% if current_user.statut == "2B2O" %>Modifications des contrôleurs<%else %>Mes modifications<%end %></h1>
         <%= render 'modifications/success'%>
         <div class="fr-tabs fr-mb-2w">
           <ul class="fr-tabs__list" role="tablist" aria-label="Onglets Organismes actifs">
