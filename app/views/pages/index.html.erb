@@ -1,2 +1,112 @@
-<h1>App test</h1>
-<p>Test déploiement</p>
+<% content_for :title do %>Accueil | OPERA <% end %>
+<main role="main" class="containtAll" data-controller="search">
+  <div class="fr-container">
+    <h1 class="fr-my-6w"><%= current_user.nom%></h1>
+
+    <% if @statut_user == "2B2O" || @statut_user == "Controleur"%>
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+      <div class="fr-col-12 fr-col-lg-4">
+        <div class="fr-card fr-enlarge-link fr-card--shadow">
+          <div class="fr-card__body">
+            <div class="fr-card__content">
+              <h3 class="fr-card__title"><%= link_to organismes_path do %>Liste des organismes<%end %></h3>
+              <p class="fr-card__desc">Accéder aux fiches des organismes de mon périmètre</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fr-col-12 fr-col-lg-4">
+        <div class="fr-card fr-enlarge-link fr-card--shadow">
+          <div class="fr-card__body">
+            <div class="fr-card__content">
+              <h3 class="fr-card__title"><%= link_to modifications_path do %>Suivi des modifications<%end %></h3>
+              <% if @statut_user == "2B2O" %>
+              <p class="fr-card__desc">Suivre l'historique des modifications effectuées par les contrôleurs</p>
+              <% else %>
+              <p class="fr-card__desc">Suivre mes modifications effectuées sur les organismes de mon périmètre</p>
+              <%end %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fr-col-12 fr-col-lg-4">
+        <div class="fr-card fr-enlarge-link fr-card--no-border fr-card--custom-blue">
+          <div class="fr-card__body">
+            <div class="fr-card__content">
+              <% if @statut_user == "2B2O" %>
+              <h3 class="fr-card__title"><%= link_to new_organisme_path do %>Ajouter un organisme<%end %></h3>
+              <p class="fr-card__desc">Créer un nouvel organisme directement au sein de l'outil</p>
+              <% else %>
+              <h3 class="fr-card__title"><%= link_to root_path do %>Chiffres clés<%end %></h3>
+              <p class="fr-card__desc">Renseignez les chiffres clés d’un organisme en amont du préCA ou du CA</p>
+              <%end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%end %>
+
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h2>Rechercher un organisme</h2>
+        <%= form_with(url: recherche_organismes_path, method: :post, data: {'search-target': "form"}) do |f|%>
+        <div class="fr-search-bar" id="header-search" role="search" >
+          <label class="fr-label" for="search-784-input">
+            Rechercher un organisme par son nom ou son acronyme
+          </label>
+          <%= f.text_field :search, class:"fr-input", id: "search-784-input", placeholder: "Rechercher", data: {'search-target': "input", action: "keyup->search#autocomplete"}%>
+          <button class="fr-btn" title="Rechercher" aria-controls="modal-autocomplete" aria-expanded="false" data-search-target="button" data-action="search#Dropdown">
+            Rechercher un organisme par son nom ou son acronyme
+          </button>
+        </div>
+        <%end %>
+        <div id="modal-autocomplete" class="fr-collapse shadow">
+          <div class="fr-container fr-p-0">
+            <div class="fr-grid-row">
+              <div class="fr-col-12">
+                <div class="fr-modal__body">
+                  <div class="fr-modal__content fr-mb-4w">
+                    <div id="resultats">
+                      <%= render 'recherche_organismes' %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h2>Derniers organismes modifiés</h2>
+      </div>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+      <% @organismes_last.each do |organisme| %>
+      <div class="fr-col-12 fr-col-lg-4">
+        <div class="fr-card fr-enlarge-link">
+          <div class="fr-card__body">
+            <div class="fr-card__content">
+              <h3 class="fr-card__title"><%= link_to organisme_path(organisme) do %><% if organisme.acronyme && !organisme.acronyme.blank? %><%= organisme.acronyme %> - <%end %><%= organisme.nom %><%end %></h3>
+              <p class="fr-card__desc">Nature juridique : <%= organisme.nature %></p>
+              <p class="fr-card__desc">Famille : <%= organisme.famille %></p>
+              <div class="fr-card__start">
+                <ul class="fr-tags-group">
+                  <li>
+                    <% if organisme.etat == "Inactif" %><p class="fr-badge"><%elsif organisme.etat == "Actif" %><p class="fr-badge fr-badge--green-menthe"><%elsif organisme.etat == "En cours de création" %><p class="fr-badge fr-badge--warning fr-badge--no-icon"><%end %><%= organisme.etat %></p>
+                    <% if organisme.statut != "valide" %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><%end %>
+                  </li>
+                </ul>
+                <p class="fr-card__detail fr-icon-arrow-right-line">Modifié le <%= format_date(organisme.updated_at)%></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%end %>
+    </div>
+  </div>
+</main>

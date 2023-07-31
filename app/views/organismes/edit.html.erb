@@ -1,0 +1,22 @@
+<% content_for :title do %>Formulaire de modification de l'organisme <%= @organisme.nom %> | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+        <% if params[:step].to_i == 1 %>
+          <%= render 'form_identite' %>
+        <% elsif @organisme.statut.to_i == 1 || params[:step].to_i == 2 %>
+          <%= render 'form_regime' %>
+        <% elsif @organisme.statut.to_i == 2 || params[:step].to_i == 3 %>
+          <%= render 'form_controle' %>
+        <% elsif @organisme.statut.to_i == 3 || params[:step].to_i == 4 %>
+          <%= render 'form_tutelles' %>
+        <% elsif @organisme.statut.to_i == 4 || params[:step].to_i == 5 %>
+          <%= render 'form_gouvernance' %>
+        <% elsif @organisme.statut.to_i == 5 || params[:step].to_i == 6 %>
+          <%= render 'form_categories' %>
+        <%end %>
+      </div>
+    </div>
+  </div>
+</main>

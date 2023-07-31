@@ -1,15 +1,51 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS (and SCSS, if configured) file within this directory, lib/assets/stylesheets, or any plugin's
- * vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
- *= require_tree .
- *= require_self
- */
+.flatpickr-input::placeholder{
+  color: var(--text-title-grey) !important;
+}
+.flatpickr-input:disabled::placeholder{
+  color: var(--text-disabled-grey) !important;
+  cursor: not-allowed !important;
+}
+.div-dropdown{
+  position:relative;
+}
+.div-dropdown .fr-menu{
+  top: 0px !important;
+  margin: 0 !important;
+  background-color: var(--background-default-grey);
+  pointer-events: auto;
+  max-height:14rem;
+  overflow:auto;
+}
+.cwarning{
+  color: var(--text-default-warning) !important;
+}
+.title-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fr-text--barre{
+  text-decoration : line-through;
+}
+
+.shadow{
+  filter: drop-shadow(var(--lifted-shadow)) !important;
+}
+
+@media (min-width: 62em) {
+  .fr-table--layout-fixed--lg table {
+    display: table !important;
+    table-layout: fixed !important;
+  }
+}
+.fr-card--custom-blue{
+    border-bottom-right-radius: 40px;
+    background-color: var(--background-action-high-blue-france) !important;
+  &:hover, &:active{
+    background-color: var(--background-action-high-blue-france-hover) !important;
+  }
+}
+.fr-card--custom-blue .fr-card__desc, .fr-card--custom-blue .fr-card__title a[href], .fr-card--custom-blue:before{
+  color: var(--text-inverted-blue-france) !important;
+}

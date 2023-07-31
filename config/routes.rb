@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  scope(:path => '/opera') do
   devise_for :users, path: '',
                      path_names: { sign_in: 'connexion', sign_out: 'logout' },
                      controllers: { sessions: 'sessions' }
@@ -7,7 +8,18 @@ Rails.application.routes.draw do
   post '/select_nom' => 'users#select_nom'
   root 'pages#index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
+  resources :organismes
+  post '/import_organismes' => 'organismes#import'
+  get '/organismes_ajout' => 'organismes#organismes_ajout'
+  post '/recherche_organismes' => 'organismes#recherche_organismes'
+  get '/ministeres' => 'ministeres#index'
+  post '/import_ministeres' => 'ministeres#import'
+  get '/missions' => 'missions#index'
+  post '/import_missions' => 'missions#import_missions'
+  post '/select_mission' => 'missions#select_mission'
+  resources :operateurs
+  resources :modifications
+  post 'open_modal' => 'modifications#open_modal'
   # routes statiques
   get '/mentions-legales', to: 'pages#mentions_legales'
   get '/donnees-personnelles', to: 'pages#donnees_personnelles'
@@ -17,4 +29,6 @@ Rails.application.routes.draw do
   match '/500', via: :all, to: 'errors#error_500'
   match '/404', via: :all, to: 'errors#error_404'
   match '/503', via: :all, to: 'errors#error_503'
+  end
+  get '/', to: redirect('/opera')
 end

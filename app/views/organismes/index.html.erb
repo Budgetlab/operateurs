@@ -1,0 +1,94 @@
+<% content_for :title do %>Liste des organismes | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container ">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h1 class="fr-my-4w">Liste des organismes [<%= @organismes.length %>]</h1>
+      </div>
+    </div>
+    <div class="fr-tabs fr-mb-2w">
+      <ul class="fr-tabs__list" role="tablist" aria-label="Onglets Organismes actifs">
+        <li role="presentation">
+          <button id="tabpanel-1177" class="fr-tabs__tab fr-icon-checkbox-circle-line fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-1177-panel">Organismes actifs (<%= @organismes_actifs.length %>)</button>
+        </li>
+        <% if @statut_user == "2B2O" %>
+          <li role="presentation">
+            <button id="tabpanel-1178" class="fr-tabs__tab fr-icon-checkbox-circle-line fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-1178-panel">Organismes brouillon (<%= @organismes_brouillon.length %>)</button>
+          </li>
+        <% end %>
+        <li role="presentation">
+          <button id="tabpanel-1179" class="fr-tabs__tab fr-icon-checkbox-circle-line fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-1179-panel">Organismes en cours de création (<%= @organismes_creation.length %>)</button>
+        </li>
+        <li role="presentation">
+          <button id="tabpanel-1180" class="fr-tabs__tab fr-icon-checkbox-circle-line fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-1180-panel">Organismes inactifs (<%= @organismes_inactifs.length %>)</button>
+        </li>
+      </ul>
+      <div id="tabpanel-1177-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-1177" tabindex="0">
+        <%  @organismes_actifs.each do |organisme|%>
+          <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+            <div class="fr-col-6 fr-col-lg-3">
+              <ul><li><%= link_to organisme_path(organisme[0]) do%><% if organisme[4] && !organisme[4].blank? %><%= organisme[4] %> - <%end %><%= organisme[1]  %><%end %></li></ul>
+            </div>
+            <div class="fr-col-6 fr-col-lg-2">
+              <p class="fr-badge fr-badge--green-menthe"> <%= organisme[3] %></p>
+            </div>
+            <div class="fr-col-6 fr-col-lg-3">
+              <%= link_to organisme_path(organisme[0]), class: "fr-btn" do%>Voir l'organisme<%end %>
+            </div>
+          </div>
+        <%end %>
+      </div>
+      <% if @statut_user == "2B2O" %>
+        <div id="tabpanel-1178-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1178" tabindex="0">
+          <%  @organismes_brouillon.each do |organisme|%>
+            <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+              <div class="fr-col-6 fr-col-lg-3">
+                <ul><li><%= link_to organisme_path(organisme[0]) do%><% if organisme[4] && !organisme[4].blank? %><%= organisme[4] %> - <%end %><%= organisme[1]  %><%end %></li></ul>
+              </div>
+              <div class="fr-col-6 fr-col-lg-2">
+                <p class="fr-badge fr-badge--new fr-badge--no-icon">Étape <%= organisme[2].to_i %>/6</p>
+              </div>
+              <div class="fr-col-6 fr-col-lg-3">
+                <%= link_to edit_organisme_path(organisme[0]), class: "fr-btn" do%>Reprendre le brouillon<%end %>
+              </div>
+              <div class="fr-col-6 fr-col-lg-3">
+                <%= link_to organisme_path(organisme[0]),data: { "turbo-method": :delete}, class: "fr-btn fr-btn--secondary" do%>Supprimer l'organisme<%end %>
+              </div>
+            </div>
+          <%end %>
+        </div>
+      <% end %>
+      <div id="tabpanel-1179-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1179" tabindex="0">
+        <%  @organismes_creation.each do |organisme|%>
+          <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+            <div class="fr-col-6 fr-col-lg-3">
+              <ul><li><%= link_to organisme_path(organisme[0]) do%><% if organisme[4] && !organisme[4].blank? %><%= organisme[4] %> - <%end %><%= organisme[1]  %><%end %></li></ul>
+            </div>
+            <div class="fr-col-6 fr-col-lg-3">
+              <p class="fr-badge fr-badge--warning fr-badge--no-icon"> <%= organisme[3] %></p>
+            </div>
+            <div class="fr-col-6 fr-col-lg-3">
+              <%= link_to organisme_path(organisme[0]), class: "fr-btn" do%>Voir l'organisme<%end %>
+            </div>
+          </div>
+        <%end %>
+      </div>
+      <div id="tabpanel-1180-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1180" tabindex="0">
+        <%  @organismes_inactifs.each do |organisme|%>
+          <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+            <div class="fr-col-6 fr-col-lg-3">
+              <ul><li><%= link_to organisme_path(organisme[0]) do%><% if organisme[4] && !organisme[4].blank? %><%= organisme[4] %> - <%end %><%= organisme[1]  %><%end %></li></ul>
+            </div>
+            <div class="fr-col-6 fr-col-lg-2">
+              <p class="fr-badge"> <%= organisme[3] %></p>
+            </div>
+            <div class="fr-col-6 fr-col-lg-3">
+              <%= link_to organisme_path(organisme[0]), class: "fr-btn" do%>Voir l'organisme<%end %>
+            </div>
+          </div>
+        <%end %>
+      </div>
+    </div>
+  </div>
+</main>
+

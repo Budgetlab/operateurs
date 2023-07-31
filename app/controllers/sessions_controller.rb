@@ -5,7 +5,7 @@ class SessionsController < Devise::SessionsController
   def create
     if params[:user][:statut] == '2B2O'
       resource = User.find_for_database_authentication(statut: params[:user][:statut])
-    elsif params[:user][:statut] == 'controleur' || params[:user][:statut] == 'Bureau Sectiorel'
+    else
       resource = User.find_for_database_authentication(statut: params[:user][:statut], nom: params[:user][:nom])
     end
 
@@ -23,8 +23,8 @@ class SessionsController < Devise::SessionsController
       end
 
     else
-      # invalid_login_attempt
-      redirect_to root_path
+      invalid_login_attempt
+      #redirect_to root_path
     end
 
   end
@@ -46,7 +46,7 @@ class SessionsController < Devise::SessionsController
   protected
 
   def invalid_login_attempt
-    # render json: flash[:alert], status: 401
+    render json: flash[:alert], status: 401
   end
 
 

@@ -1,0 +1,14 @@
+<div class="fr-text--xs fr-my-2w">Résultats de recherche [<%= @organismes.count %>]</div>
+<% if @organismes.count.zero? %>
+<p>Aucun résultat</p>
+<%else %>
+<% @organismes.each do |organisme| %>
+  <div>
+    <ul><li>
+    <%= link_to organisme_path(organisme) do %>
+      <%= organisme.nom %><% if organisme.acronyme && !organisme.acronyme.blank? %> - <%= organisme.acronyme %><%end %>
+    <%end %>
+    </li></ul>
+  </div>
+<%end %>
+<%end %>

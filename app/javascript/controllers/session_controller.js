@@ -15,13 +15,13 @@ export default class extends Controller {
     if (this.statutTarget.value == "2B2O" || this.statutTarget.value == "" ){
       this.nomBlocTarget.classList.add('fr-hidden');
       this.resetChamp(this.nomTarget);
-    }else if (this.statutTarget.value == "Controleur"){
+    }else if (this.statutTarget.value == "Controleur" || this.statutTarget.value == "Bureau Sectiorel"){
       this.nomBlocTarget.classList.remove('fr-hidden');
       this.resetChamp(this.nomTarget);
       // mettre à jour les valeurs dans nom 
       const statut = this.statutTarget.value;
       const token = document.querySelector('meta[name="csrf-token"]').content;
-      const url = "/select_nom";
+      const url = "/opera/select_nom";
       const body = { statut }
       fetch(url, { 
           method: 'POST', 
@@ -69,9 +69,8 @@ export default class extends Controller {
     if (this.statutTarget.value == "" ){
       valid = false;
     }
-    if (this.statutTarget.value == "Controleur" && this.nomTarget.value == ""){
+    if ((this.statutTarget.value == "Controleur" || this.statutTarget.value == "Bureau Sectiorel") && this.nomTarget.value == ""){
       valid = false;
-
     }
     if (valid == false ){
       this.error2Target.classList.remove('fr-hidden');

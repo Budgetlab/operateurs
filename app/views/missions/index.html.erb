@@ -1,0 +1,22 @@
+<% content_for :title do %>Ajouter les missions | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container fr-mt-7w">
+    <div class="fr-col-lg-12">
+      <h1>Ajouter un nouveau document</h1>
+      <div>
+        <%= form_tag import_missions_path, multipart: true do %>
+          <div class="fr-upload-group">
+            <label class="fr-label" for="file-upload">Ajouter des fichiers
+              <span class="fr-hint-text">Taille maximale : 50 Mo. Formats supportés : xlsx. </span>
+            </label>
+            <%= file_field_tag  :file, accept: '.xlsx', class: "fr-upload", id: "file-upload" %>
+          </div>
+          <div class="fr-my-4w"><%= submit_tag "Transmettre", class:"fr-btn" %></div>
+        <% end %>
+      </div>
+      <div class="fr-my-4w"><%= @missions.length %> missions : <%= @missions %></div>
+      <div class="fr-my-4w"><%= @programmes.length %> programmes : <%= @programmes %></div>
+    </div>
+  </div>
+</main>
+
