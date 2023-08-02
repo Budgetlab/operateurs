@@ -13,7 +13,7 @@
           <div class="fr-my-4w"><%= submit_tag "Transmettre", class:"fr-btn" %></div>
         <% end %>
       </div>
-      <div class="fr-my-4w"><%= @organismes_noms.length %> organismes : <%= @organismes_noms %></div>
+      <div class="fr-my-4w"><%= @organismes_noms.length %> organismes :</div>
 
       <div class="fr-table fr-table--bordered">
         <table>
@@ -26,7 +26,7 @@
           </tr>
           </thead>
           <tbody>
-          <% Organisme.all.each do |organisme|%>
+          <% Organisme.order(nom: :asc).each do |organisme|%>
             <tr>
               <% Organisme.column_names.each do |column_name| %>
                 <td><%= organisme[column_name] %></td>

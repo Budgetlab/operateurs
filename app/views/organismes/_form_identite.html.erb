@@ -204,11 +204,11 @@
           <div class="fr-col-12 fr-col-lg-3">
             <% if @est_controleur %>
               <p class="fr-mb-1w">Bureau DB de rattachement</p>
-              <p><b><%= format_boolean(@organisme.bureau.nom) %></b></p>
+              <p><b><% if @organisme.bureau %><%= @organisme.bureau.nom %><%else %>Non renseigné<%end %></b></p>
             <%else %>
             <div class="fr-select-group">
-              <label for="bureau" class="fr-label">Bureau DB de rattachement*</label>
-              <%= f.select :bureau_id, options_for_select([["- sélectionner -", ""]] + @bureaux.map { |bureau| [bureau.nom, bureau.id] }, selected: @organisme.bureau_id),{}, {data: {'form-target': 'fieldRequire' }, id:"bureau",class:"fr-select"}%>
+              <label for="bureau" class="fr-label">Bureau DB de rattachement</label>
+              <%= f.select :bureau_id, options_for_select([["- sélectionner -", ""]] + @bureaux.map { |bureau| [bureau.nom, bureau.id] }, selected: @organisme.bureau_id),{}, {id:"bureau",class:"fr-select"}%>
             </div>
             <%end %>
           </div>

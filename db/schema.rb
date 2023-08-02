@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_07_19_095124) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_02_100940) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -97,7 +97,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_19_095124) do
     t.date "date_dissolution"
     t.date "date_previsionnelle_dissolution"
     t.string "effet_dissolution"
-    t.bigint "bureau_id", null: false
+    t.bigint "bureau_id"
     t.string "texte_institutif"
     t.string "commentaire"
     t.string "statut"
@@ -120,7 +120,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_19_095124) do
     t.boolean "tutelle_financiere"
     t.boolean "delegation_approbation"
     t.string "autorite_approbation"
-    t.bigint "ministere_id", null: false
     t.boolean "admin_db_present"
     t.string "admin_db_fonction"
     t.boolean "admin_preca"
@@ -136,6 +135,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_07_19_095124) do
     t.boolean "odal_n1"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "ministere_id"
     t.index ["bureau_id"], name: "index_organismes_on_bureau_id"
     t.index ["controleur_id"], name: "index_organismes_on_controleur_id"
     t.index ["ministere_id"], name: "index_organismes_on_ministere_id"

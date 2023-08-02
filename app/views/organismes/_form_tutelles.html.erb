@@ -112,8 +112,8 @@
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-6">
             <div class="fr-select-group">
-              <label for="ministere" class="fr-label">Ministère de tutelle (tutelle principale)*</label>
-              <%= f.select :ministere_id,options_for_select([["- sélectionner -", ""]] + @ministeres.map { |ministere| [ministere.nom, ministere.id] }, selected: @organisme.statut != 'valide' ? nil : @organisme.ministere_id),{}, {data: {'form-target': 'fieldRequire'}, id:"ministere",class:"fr-select"}%>
+              <label for="ministere" class="fr-label">Ministère de tutelle (tutelle principale)</label>
+              <%= f.select :ministere_id,options_for_select([["- sélectionner -", ""]] + @ministeres.map { |ministere| [ministere.nom, ministere.id] }, selected: @organisme.ministere_id),{}, {id:"ministere",class:"fr-select"}%>
             </div>
           </div>
           <div class="fr-col-12 fr-col-lg-6">

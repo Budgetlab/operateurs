@@ -5,7 +5,7 @@ class OrganismesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_famille
   def index
-    @organismes = @familles.nil? ? Organisme.all.pluck(:id, :nom, :statut, :etat, :acronyme) : Organisme.where(famille: @familles, statut: 'valide').pluck(:id, :nom, :statut, :etat, :acronyme)
+    @organismes = @statut_user == '2B2O' ? Organisme.all.sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:id, :nom, :statut, :etat, :acronyme) : current_user.organismes.order(nom: :asc).where(statut: 'valide').pluck(:id, :nom, :statut, :etat, :acronyme)
     @organismes_actifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Actif' }
     @organismes_inactifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Inactif' }
     @organismes_creation = @organismes.select { |el| el[2] == 'valide' && el[3] == 'En cours de création' }
@@ -70,7 +70,6 @@ class OrganismesController < ApplicationController
     organismes_to_link = params[:organisme].delete(:organismes)
     @organisme = Organisme.new(organisme_params)
     @organisme.controleur = current_user if @organisme.controleur_id.nil?
-    @organisme.ministere = Ministere.first if @organisme.ministere_id.nil?
     if @organisme.save
       update_organisme_rattachements(organismes_to_link)
       redirect_to edit_organisme_path(@organisme.id)
@@ -81,7 +80,7 @@ class OrganismesController < ApplicationController
 
   def edit
     @organisme = Organisme.find(params[:id])
-    @est_controleur = current_user == @organisme.controleur && @organisme.statut == 'valide'
+    @est_controleur = current_user == @organisme.controleur && @organisme.statut == 'valide' && @statut_user != '2B2O'
     redirect_to root_path and return unless @statut_user == '2B2O' || @est_controleur
 
     redirect_to edit_organisme_path(@organisme) if params[:step] && @organisme.statut != 'valide' && params[:step].to_i > @organisme.statut.to_i + 1
@@ -248,5 +247,9 @@ class OrganismesController < ApplicationController
         user_id: current_user.id, statut: statut
       )
     end
+  end
+  def normalize_name(name)
+    # Supprime les accents et met le texte en minuscules
+    I18n.transliterate(name).downcase
   end
 end

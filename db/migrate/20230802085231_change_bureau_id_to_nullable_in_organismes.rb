@@ -1,0 +1,5 @@
+class ChangeBureauIdToNullableInOrganismes < ActiveRecord::Migration[7.0]
+  def change
+    change_column_null :organismes, :bureau_id, true
+  end
+end
