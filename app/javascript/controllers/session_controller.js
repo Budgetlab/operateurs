@@ -15,7 +15,7 @@ export default class extends Controller {
     if (this.statutTarget.value == "2B2O" || this.statutTarget.value == "" ){
       this.nomBlocTarget.classList.add('fr-hidden');
       this.resetChamp(this.nomTarget);
-    }else if (this.statutTarget.value == "Controleur" || this.statutTarget.value == "Bureau Sectiorel"){
+    }else if (this.statutTarget.value == "Controleur" || this.statutTarget.value == "Bureau Sectoriel"){
       this.nomBlocTarget.classList.remove('fr-hidden');
       this.resetChamp(this.nomTarget);
       // mettre à jour les valeurs dans nom 
@@ -69,7 +69,7 @@ export default class extends Controller {
     if (this.statutTarget.value == "" ){
       valid = false;
     }
-    if ((this.statutTarget.value == "Controleur" || this.statutTarget.value == "Bureau Sectiorel") && this.nomTarget.value == ""){
+    if ((this.statutTarget.value == "Controleur" || this.statutTarget.value == "Bureau Sectoriel") && this.nomTarget.value == ""){
       valid = false;
     }
     if (valid == false ){

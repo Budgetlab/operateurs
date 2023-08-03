@@ -17,14 +17,9 @@
         </ol>
       </div>
     </nav>
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12 fr-col-lg-9">
-        <h1 class="fr-mb-4w"><%= @organisme.nom %> <% if @organisme.statut != "valide" %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><% end %></h1>
-      </div>
-      <div class="fr-col-12 fr-col-lg-3">
-        <% if @organisme.statut != "valide" && current_user.statut == '2B2O'%><%= link_to edit_organisme_path(@organisme.id), class: "fr-btn" do %>Reprendre le brouillon<%end %><%end %>
-      </div>
-    </div>
+    <% if !@est_valide %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><% end %>
+    <h1 class="fr-mb-4w title-btn"><%= @organisme.nom %> <% if !@est_valide && @statut_user == '2B2O'%><%= link_to edit_organisme_path(@organisme.id), class: "fr-btn" do %>Reprendre le brouillon<%end %><%end %></h1>
+
     <%= render 'modifications/success'%>
     <% if @modifications_attente_organisme.length > 0  && @admin%>
       <div class="fr-grid-row fr-grid-row--gutters">
@@ -49,7 +44,7 @@
                   <td><%= render partial: 'modifications/table_nom', locals: {modification: modification}  %></td>
 
                   <td>
-                    <% if current_user.statut == "2B2O" %>
+                    <% if @statut_user == "2B2O" %>
                     <ul class="fr-btns-group fr-btns-group--inline">
                     <li><%= link_to modification_path(modification, params: { modification: { statut: "validée" } }), data: { "turbo-method": :patch}, class:"fr-btn fr-my-0" do %>Valider<%end %></li>
                     <li><%= link_to open_modal_path(id: modification.id), class:"fr-btn fr-btn--secondary fr-my-0","data-fr-opened": false,"aria-controls":"modal-1",data: { "turbo_method": :post} do %>Refuser<%end %></li>
@@ -72,6 +67,7 @@
         </div>
       </div>
     <%end %>
+
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-4">
         <p class="fr-hint-text">Cliquez sur les interrupteurs ci-dessous pour faire apparaître ou disparaître des sections.</p>
@@ -128,16 +124,14 @@
       </div>
 
       <div class="fr-col-12 fr-col-lg-8">
+        <% if @est_valide %>
         <div class="fr-download">
-          <p>
-            <%= link_to "/opera/organismes/#{@organisme.id}.xlsx", format: :xslx, class: "fr-download__link" do %>Télécharger la fiche de l'organisme
-              <span class="fr-download__detail">Format .xlsx</span>
-            <%end %>
-          </p>
+          <p><%= link_to "/opera/organismes/#{@organisme.id}.xlsx", format: :xslx, class: "fr-download__link" do %>Télécharger la fiche de l'organisme<span class="fr-download__detail">Format .xlsx</span><%end %></p>
         </div>
+        <% end %>
 
         <div id="fiche_identite" class="fr-mb-4w">
-          <h2 class="title-btn">Fiche d'identité <% if @organisme.statut == "valide" && @admin %><%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <h2 class="title-btn">Fiche d'identité <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
 
           <div class="fr-card">
             <div class="fr-card__body">
@@ -174,7 +168,7 @@
         </div>
 
         <div id="operateur" class="fr-mb-4w">
-          <h2 class="title-btn">Opérateur <% if @organisme.statut == "valide" && @statut_user == "2B2O" %>
+          <h2 class="title-btn">Opérateur <% if @est_valide && @statut_user == "2B2O" %>
               <% if @operateur.nil? %><%= link_to new_operateur_path(organisme_id: @organisme.id), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %>
                 <%else %><%= link_to edit_operateur_path(id: @operateur, organisme_id: @organisme.id), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %>
               <%end %>
@@ -203,8 +197,8 @@
         </div>
 
         <div id="regime_budgetaire" class="fr-mb-4w">
-          <h2 class="title-btn">Régime budgétaire et comptable <% if @organisme.statut == "valide" && @admin %><%= link_to edit_organisme_path(@organisme, step: 2), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
-          <% if @organisme.statut.to_i > 1 || @organisme.statut == "valide"%>
+          <h2 class="title-btn">Régime budgétaire et comptable <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 2), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <% if @organisme.statut.to_i > 1 || @est_valide%>
             <div class="fr-card">
             <div class="fr-card__body">
               <div class="fr-card__content">
@@ -225,8 +219,8 @@
         </div>
 
         <div id="controle" class="fr-mb-4w">
-          <h2 class="title-btn">Contrôle <% if @organisme.statut == "valide" && @admin %><%= link_to edit_organisme_path(@organisme, step: 3), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
-          <% if @organisme.statut.to_i > 2 || @organisme.statut == "valide"%>
+          <h2 class="title-btn">Contrôle <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 3), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <% if @organisme.statut.to_i > 2 || @est_valide%>
           <div class="fr-card">
             <div class="fr-card__body">
               <div class="fr-card__content">
@@ -257,8 +251,8 @@
         </div>
 
         <div id="tutelles" class="fr-mb-4w">
-          <h2 class="title-btn">Tutelles financière et technique <% if @organisme.statut == "valide" && @admin %><%= link_to edit_organisme_path(@organisme, step: 4), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
-          <% if @organisme.statut.to_i > 3 || @organisme.statut == "valide"%>
+          <h2 class="title-btn">Tutelles financière et technique <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 4), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <% if @organisme.statut.to_i > 3 || @est_valide%>
           <div class="fr-card">
             <div class="fr-card__body">
               <div class="fr-card__content">
@@ -282,8 +276,8 @@
         </div>
 
         <div id="gouvernance" class="fr-mb-4w">
-          <h2 class="title-btn">Gouvernance DB <% if @organisme.statut == "valide" && @admin %><%= link_to edit_organisme_path(@organisme, step: 5), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
-          <% if @organisme.statut.to_i > 4 || @organisme.statut == "valide"%>
+          <h2 class="title-btn">Gouvernance DB <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 5), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <% if @organisme.statut.to_i > 4 || @est_valide%>
           <div class="fr-card">
             <div class="fr-card__body">
               <div class="fr-card__content">
@@ -306,8 +300,8 @@
         </div>
 
         <div id="categories" class="fr-mb-4w">
-          <h2 class="title-btn">Catégories <% if @organisme.statut == "valide" && current_user.statut == "2B2O" %><%= link_to edit_organisme_path(@organisme, step: 6), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
-          <% if @organisme.statut == "valide" %>
+          <h2 class="title-btn">Catégories <% if @est_valide && @statut_user == "2B2O" %><%= link_to edit_organisme_path(@organisme, step: 6), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <% if @est_valide %>
           <div class="fr-card">
             <div class="fr-card__body">
               <div class="fr-card__content">

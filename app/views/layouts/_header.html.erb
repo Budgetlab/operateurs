@@ -51,6 +51,8 @@
           <li class="fr-nav__item">
             <%= active_link_to root_path, class: "fr-nav__link", target: "_self", :active => [['pages'],['index']] do%>Accueil<%end%>
           </li>
+          <% if @statut_user == "2B2O" ||  @statut_user == "Controleur"%>
+
           <li class="fr-nav__item">
             <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-776" <%= current_page?(organismes_path) || current_page?(new_organisme_path) ? 'aria-current="true"' : '' %>>Organismes</button>
             <div class="fr-collapse fr-menu" id="menu-776">
@@ -58,19 +60,22 @@
                 <li>
                   <%= active_link_to organismes_path, class: "fr-nav__link", target: "_self", :active => [['organismes'],['index']] do%>Liste des organismes<%end%>
                 </li>
+                <% if @statut_user == '2B2O' %>
                 <li>
                   <%= active_link_to new_organisme_path, class: "fr-nav__link", target: "_self" do%>Créer un organisme<%end%>
                 </li>
+                <% end %>
               </ul>
             </div>
           </li>
-          <% if current_user.statut == "2B2O" ||  current_user.statut == "Controleur"%>
+
           <li class="fr-nav__item">
             <%= active_link_to modifications_path, class: "fr-nav__link", target: "_self" do%>
               Historique des modifications
-              <% if current_user.statut == '2B2O' && @modifications_attente.length > 0 %><p class="fr-badge fr-badge--success fr-badge--no-icon"><span class="fr-icon-alarm-warning-fill fr-icon--sm" aria-hidden="true"></span> [<%= @modifications_attente.length%>]<%end %></p>
+              <% if @statut_user == '2B2O' && @modifications_attente.length > 0 %><p class="fr-badge fr-badge--success fr-badge--no-icon"><span class="fr-icon-alarm-warning-fill fr-icon--sm" aria-hidden="true"></span> [<%= @modifications_attente.length%>]<%end %></p>
             <%end%>
           </li>
+
           <%end %>
         </ul>
       </nav>

@@ -5,7 +5,9 @@ class OrganismesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_famille
   def index
-    @organismes = @statut_user == '2B2O' ? Organisme.all.sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:id, :nom, :statut, :etat, :acronyme) : current_user.organismes.order(nom: :asc).where(statut: 'valide').pluck(:id, :nom, :statut, :etat, :acronyme)
+    redirect_to root_path and return unless @statut_user == '2B2O' || @statut_user == 'Controleur'
+
+    @organismes = @statut_user == '2B2O' ? Organisme.all.sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:id, :nom, :statut, :etat, :acronyme) : current_user.controleur_organismes.order(nom: :asc).where(statut: 'valide').pluck(:id, :nom, :statut, :etat, :acronyme)
     @organismes_actifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Actif' }
     @organismes_inactifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Inactif' }
     @organismes_creation = @organismes.select { |el| el[2] == 'valide' && el[3] == 'En cours de création' }
@@ -36,9 +38,10 @@ class OrganismesController < ApplicationController
 
   def show
     @organisme = Organisme.includes(:ministere, :bureau, :controleur, :organisme_ministeres).find(params[:id])
-    redirect_to root_path and return unless @statut_user == '2B2O' || @familles.include?(@organisme.famille)
+    redirect_to root_path and return unless @statut_user == '2B2O' || (@familles && @familles.include?(@organisme.famille))
 
     @admin = @statut_user == '2B2O' || current_user == @organisme.controleur ? true : false
+    @est_valide = @organisme.statut == 'valide'
     @organisme_ministeres = @organisme.organisme_ministeres.includes(:ministere)
     @operateur = Operateur.includes(:mission, :programme, :operateur_programmes).find_by(organisme_id: @organisme.id)
     @operateur_programmes = @operateur.operateur_programmes.includes(:programme) if @operateur
@@ -162,7 +165,7 @@ class OrganismesController < ApplicationController
   def set_famille
     if @statut_user == 'Controleur'
       @familles = current_user.controleur_organismes.pluck(:famille).uniq
-    elsif @statut_user == 'Bureau Sectiorel'
+    elsif @statut_user == 'Bureau Sectoriel'
       @familles = current_user.bureau_organismes.pluck(:famille).uniq
     end
   end
@@ -196,7 +199,7 @@ class OrganismesController < ApplicationController
                            :arrete_nomination, :ciassp_n, :ciassp_n1, :odal_n, :odal_n1, :odac_n, :odac_n1]
     champs_texte = ['Nom', 'État', 'Acronyme', 'Siren', 'Nature juridique', 'Texte institutif', 'Partie I GBCP',
                     'Partie III GBCP', 'Comptabilité budgétaire', 'Nature contrôle', 'Texte soumission au contrôle',
-                    'Autorité de contrôle', "Texte réglementaire de désignation de l'autorité decontrôle",
+                    'Autorité de contrôle', "Texte réglementaire de désignation de l'autorité de contrôle",
                     'Arrêté de contrôle', 'Date signature document contrôle ', 'Comité audit et risques',
                     'Arrêté de nomination comissaire du gouvernement', "CIASSP #{(Date.today.year - 2).to_s}",
                     "CIASSP #{(Date.today.year - 3).to_s}", "ODAL #{(Date.today.year - 2).to_s}",
@@ -204,10 +207,12 @@ class OrganismesController < ApplicationController
                     "ODAC #{(Date.today.year - 3).to_s}"]
     champs_supp_controleur = [:date_creation, :date_previsionnelle_dissolution, :date_dissolution, :effet_dissolution,
                               :agent_comptable_present, :degre_gbcp, :document_controle_present,
-                              :document_controle_lien, :ministere_id, :apu]
+                              :document_controle_lien, :ministere_id, :admin_db_present, :admin_db_fonction,
+                              :admin_preca, :controleur_preca, :controleur_ca]
     champs_supp_texte = ['Date création', 'Date prévisionnelle dissolution', 'Date dissolution', 'Effet dissolution',
                          'Présence agent comptable', 'Degré GBCP', 'Présence document contrôle',
-                         'Lien document contrôle', 'Ministère', 'APU']
+                         'Lien document contrôle', 'Ministère', 'Présence Admin DB', 'Fonction Admin DB',
+                         'Présence DB préCA', 'Présence contrôleur préCA', 'Présence contrôleur CA']
     champs_a_surveiller.each_with_index do |champ, i|
       if !organisme_params[champ].blank? && organisme_params[champ].to_s != check_format(@organisme[champ])
         modifications << { champ: champ.to_s, nom: champs_texte[i], ancienne_valeur: check_format(@organisme[champ]), nouvelle_valeur: organisme_params[champ].to_s }

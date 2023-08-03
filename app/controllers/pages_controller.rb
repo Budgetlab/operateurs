@@ -19,7 +19,7 @@ class PagesController < ApplicationController
   def set_famille
     if @statut_user == 'Controleur'
       @familles = current_user.controleur_organismes.pluck(:famille).uniq
-    elsif @statut_user == 'Bureau Sectiorel'
+    elsif @statut_user == 'Bureau Sectoriel'
       @familles = current_user.bureau_organismes.pluck(:famille).uniq
     end
   end
