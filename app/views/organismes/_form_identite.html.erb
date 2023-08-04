@@ -151,8 +151,8 @@
               <p><b><%= format_boolean(@organisme.date_dissolution) %></b></p>
             <%else %>
             <div class="fr-input-group">
-              <label for="date_dissolution" class="fr-label">Date de dissolution*</label>
-              <%= f.text_field :date_dissolution, class:"fr-select", data: { 'form-target': 'fieldRequire', controller: "flatpickr",flatpickr_date_format: "d/m/Y", flatpickr_default_date: format_date(@organisme.date_dissolution)}, value: @organisme.date_dissolution, id: "date_dissolution", placeholder: "- sélectionner -"%>
+              <label for="date_dissolution" class="fr-label">Date de dissolution</label>
+              <%= f.text_field :date_dissolution, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y", flatpickr_default_date: format_date(@organisme.date_dissolution)}, value: @organisme.date_dissolution, id: "date_dissolution", placeholder: "- sélectionner -"%>
             </div>
             <%end %>
           </div>

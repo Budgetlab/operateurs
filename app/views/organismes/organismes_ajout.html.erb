@@ -13,28 +13,9 @@
           <div class="fr-my-4w"><%= submit_tag "Transmettre", class:"fr-btn" %></div>
         <% end %>
       </div>
-      <div class="fr-my-4w"><%= @organismes_noms.length %> organismes :</div>
-
-      <div class="fr-table fr-table--bordered">
-        <table>
-          <caption>Résumé du tableau (accessibilité)</caption>
-          <thead>
-          <tr>
-            <% Organisme.column_names.each do |column_name| %>
-              <th scope="col"><%= column_name %></th>
-            <%end %>
-          </tr>
-          </thead>
-          <tbody>
-          <% Organisme.order(nom: :asc).each do |organisme|%>
-            <tr>
-              <% Organisme.column_names.each do |column_name| %>
-                <td><%= organisme[column_name] %></td>
-              <% end %>
-            </tr>
-          <%end %>
-          </tbody>
-        </table>
+      <div class="fr-mb-4w"><%= link_to reset_all_path, class:"fr-btn fr-btn--secondary", data: {"turbo-method": :post} do %>Tout supprimer<%end %></div>
+      <div class="fr-download">
+        <p><%= link_to "/opera/organismes_ajout.xlsx", format: :xslx, class: "fr-link fr-download__link" do %>Télécharger la liste des <%= @organismes.count %> organismes<span class="fr-download__detail">Format .xlsx - 500Ko</span><%end %></p>
       </div>
     </div>
   </div>

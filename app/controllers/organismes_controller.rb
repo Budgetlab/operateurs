@@ -7,7 +7,7 @@ class OrganismesController < ApplicationController
   def index
     redirect_to root_path and return unless @statut_user == '2B2O' || @statut_user == 'Controleur'
 
-    @organismes = @statut_user == '2B2O' ? Organisme.all.sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:id, :nom, :statut, :etat, :acronyme) : current_user.controleur_organismes.order(nom: :asc).where(statut: 'valide').pluck(:id, :nom, :statut, :etat, :acronyme)
+    @organismes = @statut_user == '2B2O' ? Organisme.all.sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:id, :nom, :statut, :etat, :acronyme) : current_user.controleur_organismes.where(statut: 'valide').sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:id, :nom, :statut, :etat, :acronyme)
     @organismes_actifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Actif' }
     @organismes_inactifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Inactif' }
     @organismes_creation = @organismes.select { |el| el[2] == 'valide' && el[3] == 'En cours de création' }
@@ -33,7 +33,12 @@ class OrganismesController < ApplicationController
   def organismes_ajout
     redirect_to root_path and return unless @statut_user == '2B2O'
 
-    @organismes_noms = Organisme.all.pluck(:nom)
+    @organismes = Organisme.all.sort_by { |organisme| normalize_name(organisme.nom) } || []
+    filename = 'liste_organismes.xlsx'
+    respond_to do |format|
+      format.html
+      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""}
+    end
   end
 
   def show

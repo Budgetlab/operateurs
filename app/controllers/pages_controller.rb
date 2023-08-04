@@ -14,6 +14,15 @@ class PagesController < ApplicationController
   def donnees_personnelles; end
   def plan; end
 
+  def reset_all
+    OrganismeRattachement.destroy_all
+    OrganismeMinistere.destroy_all
+    OperateurProgramme.destroy_all
+    Operateur.destroy_all
+    Organisme.destroy_all
+    redirect_to organismes_ajout_path
+  end
+
   private
 
   def set_famille

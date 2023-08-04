@@ -12,11 +12,6 @@ class Organisme < ApplicationRecord
   has_many :modifications, dependent: :destroy
 
   def self.import(file)
-    OrganismeRattachement.destroy_all
-    OrganismeMinistere.destroy_all
-    OperateurProgramme.destroy_all
-    Operateur.destroy_all
-    Organisme.destroy_all
     data = Roo::Spreadsheet.open(file.path)
     headers = data.row(1) # get header row
     data.each_with_index do |row, idx|
@@ -44,6 +39,7 @@ class Organisme < ApplicationRecord
       user = User.find_by(nom: row_data['Controleur'].to_s) || User.find_by(nom: '2B2O')
       organisme.controleur_id = user.id
       organisme.nom[0] = organisme.nom[0].capitalize if organisme.nom[0] == organisme.nom[0].downcase
+      organisme.texte_institutif = nil if organisme.texte_institutif == ' '
       organisme.save
       if organisme.save
       ministere_array = row_data['Cotutelle'].to_s.split(' / ') || []

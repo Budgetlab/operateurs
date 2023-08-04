@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   resources :operateurs
   resources :modifications
   post 'open_modal' => 'modifications#open_modal'
+  post 'reset_all' => 'pages#reset_all'
   # routes statiques
   get '/mentions-legales', to: 'pages#mentions_legales'
   get '/donnees-personnelles', to: 'pages#donnees_personnelles'
