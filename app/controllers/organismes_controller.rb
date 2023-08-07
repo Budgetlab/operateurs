@@ -12,19 +12,20 @@ class OrganismesController < ApplicationController
     @organismes_inactifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Inactif' }
     @organismes_creation = @organismes.select { |el| el[2] == 'valide' && el[3] == 'En cours de création' }
     @organismes_brouillon = @organismes.reject { |el| el[2] == 'valide' }
+    @search_organismes = []
   end
 
   def recherche_organismes
     search = params[:search]
     if search.blank?
-      @organismes = []
+      @search_organismes = []
     else
-      @organismes = @familles.nil? ? Organisme.where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%") : Organisme.where(famille: @familles, statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
+      @search_organismes = @familles.nil? ? Organisme.where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%") : Organisme.where(famille: @familles, statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
     end
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
-          turbo_stream.update('resultats', partial: 'pages/recherche_organismes')
+          turbo_stream.update('resultats', partial: 'organismes/recherche_organismes')
         ]
       end
     end

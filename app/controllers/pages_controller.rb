@@ -5,7 +5,7 @@ class PagesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_famille, only: [:index]
   def index
-    @organismes = []
+    @search_organismes = []
     @organismes_last = @familles.nil? ? Organisme.order(updated_at: :desc).limit(6) : Organisme.where(famille: @familles, statut: 'valide').order(updated_at: :desc).limit(6)
   end
 

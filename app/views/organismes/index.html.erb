@@ -6,6 +6,7 @@
         <h1 class="fr-my-4w">Liste des organismes [<%= @organismes.length %>]</h1>
       </div>
     </div>
+    <%= render 'organismes/form_search' %>
     <div class="fr-tabs fr-mb-2w">
       <ul class="fr-tabs__list" role="tablist" aria-label="Onglets Organismes actifs">
         <li role="presentation">
@@ -26,8 +27,8 @@
       <div id="tabpanel-1177-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-1177" tabindex="0">
         <%  @organismes_actifs.each do |organisme|%>
           <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
-            <div class="fr-col-6 fr-col-lg-3">
-              <ul><li><%= link_to organisme_path(organisme[0]) do%><% if organisme[4] && !organisme[4].blank? %><%= organisme[4] %> - <%end %><%= organisme[1]  %><%end %></li></ul>
+            <div class="fr-col-6 fr-col-lg-7">
+              <ul><li><%= link_to organisme_path(organisme[0]) do%><%= organisme[1] %><% if organisme[4] && !organisme[4].blank? %> - <%= organisme[4] %><%end %><%end %></li></ul>
             </div>
             <div class="fr-col-6 fr-col-lg-2">
               <p class="fr-badge fr-badge--green-menthe"> <%= organisme[3] %></p>
@@ -42,8 +43,8 @@
         <div id="tabpanel-1178-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1178" tabindex="0">
           <%  @organismes_brouillon.each do |organisme|%>
             <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
-              <div class="fr-col-6 fr-col-lg-3">
-                <ul><li><%= link_to organisme_path(organisme[0]) do%><% if organisme[4] && !organisme[4].blank? %><%= organisme[4] %> - <%end %><%= organisme[1]  %><%end %></li></ul>
+              <div class="fr-col-6 fr-col-lg-7">
+                <ul><li><%= link_to organisme_path(organisme[0]) do%><%= organisme[1] %><% if organisme[4] && !organisme[4].blank? %> - <%= organisme[4] %><%end %><%end %></li></ul>
               </div>
               <div class="fr-col-6 fr-col-lg-2">
                 <p class="fr-badge fr-badge--new fr-badge--no-icon">Étape <%= organisme[2].to_i %>/6</p>
@@ -61,8 +62,8 @@
       <div id="tabpanel-1179-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1179" tabindex="0">
         <%  @organismes_creation.each do |organisme|%>
           <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
-            <div class="fr-col-6 fr-col-lg-3">
-              <ul><li><%= link_to organisme_path(organisme[0]) do%><% if organisme[4] && !organisme[4].blank? %><%= organisme[4] %> - <%end %><%= organisme[1]  %><%end %></li></ul>
+            <div class="fr-col-6 fr-col-lg-6">
+              <ul><li><%= link_to organisme_path(organisme[0]) do%><%= organisme[1] %><%end %><% if organisme[4] && !organisme[4].blank? %> - <%= organisme[4] %><%end %></li></ul>
             </div>
             <div class="fr-col-6 fr-col-lg-3">
               <p class="fr-badge fr-badge--warning fr-badge--no-icon"> <%= organisme[3] %></p>
@@ -76,8 +77,8 @@
       <div id="tabpanel-1180-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1180" tabindex="0">
         <%  @organismes_inactifs.each do |organisme|%>
           <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
-            <div class="fr-col-6 fr-col-lg-3">
-              <ul><li><%= link_to organisme_path(organisme[0]) do%><% if organisme[4] && !organisme[4].blank? %><%= organisme[4] %> - <%end %><%= organisme[1]  %><%end %></li></ul>
+            <div class="fr-col-6 fr-col-lg-7">
+              <ul><li><%= link_to organisme_path(organisme[0]) do%><%= organisme[1] %><% if organisme[4] && !organisme[4].blank? %> - <%= organisme[4] %><%end %><%end %></li></ul>
             </div>
             <div class="fr-col-6 fr-col-lg-2">
               <p class="fr-badge"> <%= organisme[3] %></p>
