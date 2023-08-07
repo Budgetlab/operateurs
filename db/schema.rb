@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_02_100940) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_07_133318) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "unaccent"
 
   create_table "ministeres", force: :cascade do |t|
     t.string "nom"

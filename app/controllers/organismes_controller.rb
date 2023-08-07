@@ -20,7 +20,7 @@ class OrganismesController < ApplicationController
     if search.blank?
       @search_organismes = []
     else
-      @search_organismes = @familles.nil? ? Organisme.where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%") : Organisme.where(famille: @familles, statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
+      @search_organismes = @familles.nil? ? Organisme.where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%") : Organisme.where(famille: @familles, statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
     end
     respond_to do |format|
       format.turbo_stream do
