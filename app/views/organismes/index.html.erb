@@ -43,7 +43,7 @@
         <div id="tabpanel-1178-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1178" tabindex="0">
           <%  @organismes_brouillon.each do |organisme|%>
             <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
-              <div class="fr-col-6 fr-col-lg-7">
+              <div class="fr-col-6 fr-col-lg-5">
                 <ul><li><%= link_to organisme_path(organisme[0]) do%><%= organisme[1] %><% if organisme[4] && !organisme[4].blank? %> - <%= organisme[4] %><%end %><%end %></li></ul>
               </div>
               <div class="fr-col-6 fr-col-lg-2">
@@ -52,8 +52,8 @@
               <div class="fr-col-6 fr-col-lg-3">
                 <%= link_to edit_organisme_path(organisme[0]), class: "fr-btn" do%>Reprendre le brouillon<%end %>
               </div>
-              <div class="fr-col-6 fr-col-lg-3">
-                <%= link_to organisme_path(organisme[0]),data: { "turbo-method": :delete}, class: "fr-btn fr-btn--secondary" do%>Supprimer l'organisme<%end %>
+              <div class="fr-col-6 fr-col-lg-2">
+                <%= link_to organisme_path(organisme[0]),data: { "turbo-method": :delete}, class: "fr-btn fr-btn--secondary" do%>Supprimer<%end %>
               </div>
             </div>
           <%end %>
@@ -63,7 +63,7 @@
         <%  @organismes_creation.each do |organisme|%>
           <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
             <div class="fr-col-6 fr-col-lg-6">
-              <ul><li><%= link_to organisme_path(organisme[0]) do%><%= organisme[1] %><%end %><% if organisme[4] && !organisme[4].blank? %> - <%= organisme[4] %><%end %></li></ul>
+              <ul><li><%= link_to organisme_path(organisme[0]) do%><%= organisme[1] %><% if organisme[4] && !organisme[4].blank? %> - <%= organisme[4] %><%end %><%end %></li></ul>
             </div>
             <div class="fr-col-6 fr-col-lg-3">
               <p class="fr-badge fr-badge--warning fr-badge--no-icon"> <%= organisme[3] %></p>
