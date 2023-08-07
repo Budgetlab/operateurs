@@ -34,7 +34,7 @@ class OrganismesController < ApplicationController
   def organismes_ajout
     redirect_to root_path and return unless @statut_user == '2B2O'
 
-    @organismes = Organisme.all.sort_by { |organisme| normalize_name(organisme.nom) } || []
+    @organismes = Organisme.where(statut: "valide").sort_by { |organisme| normalize_name(organisme.nom) } || []
     filename = 'liste_organismes.xlsx'
     respond_to do |format|
       format.html
