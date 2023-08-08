@@ -50,12 +50,9 @@
     <h2>Rechercher un organisme</h2>
     <%= render 'organismes/form_search' %>
 
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12 fr-col-lg-12">
-        <h2>Derniers organismes modifiés</h2>
-      </div>
-    </div>
-    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+    <% if @organismes_last %>
+      <h2>Derniers organismes modifiés</h2>
+      <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
       <% @organismes_last.each do |organisme| %>
       <div class="fr-col-12 fr-col-lg-4">
         <div class="fr-card fr-enlarge-link">
@@ -79,5 +76,6 @@
       </div>
       <%end %>
     </div>
+    <%end %>
   </div>
 </main>

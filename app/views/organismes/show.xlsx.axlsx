@@ -61,9 +61,8 @@
       end
       @array_ministeres = "Non renseigné" if @array_ministeres.empty?
       @ministere = @organisme.ministere ? format_boolean(@organisme.ministere.nom) : "Non renseigné"
-      @autorite_approbation = @organisme.delegation_approbation ? format_boolean(@organisme.autorite_approbation) : "NA" 
 
-      sheet.add_row [format_boolean(@organisme.tutelle_financiere), format_boolean(@organisme.delegation_approbation), @autorite_approbation, @ministere, @array_ministeres]
+      sheet.add_row [format_boolean(@organisme.tutelle_financiere), format_boolean(@organisme.delegation_approbation), format_boolean(@organisme.autorite_approbation), @ministere, @array_ministeres]
          
     end
     wb.add_worksheet(name: "Gouvernance DB") do |sheet|
@@ -76,7 +75,7 @@
     wb.add_worksheet(name: "Catégories") do |sheet|
     @date_n2 = Date.today.year-2
     @date_n3 = Date.today.year-3
-      sheet.add_row %W{ APU CIASSP\ #{@date_n2} CIASSP\ #{@date_n3} ODAL\ #{@date_n2} ODAL\ #{@date_n3} ODAC\ #{@date_n2} ODAC\ #{@date_n3}}
+      sheet.add_row %W{ APU CIASSP\ #{Date.today.year} CIASSP\ #{Date.today.year-1} ODAL\ #{@date_n2} ODAL\ #{@date_n3} ODAC\ #{@date_n2} ODAC\ #{@date_n3}}
     
       sheet.add_row [format_boolean(@organisme.apu),format_boolean(@organisme.ciassp_n),format_boolean(@organisme.ciassp_n1), format_boolean(@organisme.odal_n), format_boolean(@organisme.odal_n1), format_boolean(@organisme.odac_n), format_boolean(@organisme.odac_n1)]
          

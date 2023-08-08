@@ -148,9 +148,12 @@
                 <p class="fr-card__desc">Date de dissolution : <b><%= format_boolean(format_date(@organisme.date_dissolution))%></b></p>
                 <p class="fr-card__desc">Effet de dissolution : <b><%= format_boolean(@organisme.effet_dissolution) %></b></p>
                 <% if @organisme.effet_dissolution == "Rattachement" || @organisme.effet_dissolution == "Création" %>
-                  <p class="fr-card__desc">Organisme•s de rattachement : <b><% @organisme.organisme_rattachements.each do |orga|%><%= orga.organisme_destination.nom %> - <%end %></b></p>
+                  <p class="fr-card__desc">Organisme•s de rattachement : <b><% if @organisme.organisme_rattachements %><% @organisme.organisme_rattachements.each do |orga|%><%= link_to organisme_path(orga.organisme_destination) do%><%= orga.organisme_destination.nom %><%end %> - <%end %><%else %>Aucun<%end %></b></p>
                 <%end %>
               <%end %>
+              <% if @organisme_destinations %>
+                <p class="fr-card__desc">Organisme hérité de <% @organisme_destinations.each do |el| %><b><%= link_to organisme_path(el.organisme) do%><%= el.organisme.nom%><%end %></b> le <%= format_boolean(format_date(el.organisme.date_dissolution))%> -<%end %></p>
+              <% end %>
               <p class="fr-card__desc">Bureau DB de rattachement : <b><% if @organisme.bureau %><%= @organisme.bureau.nom %><%else %>Non renseigné<%end %></b></p>
               <p class="fr-card__desc">Texte institutif : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_institutif),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
               <p class="fr-card__desc">Commentaires : <b><%= auto_link(simple_format(format_boolean(@organisme.commentaire),{}, wrapper_tag: "span"), :html => { :target => '_blank' })%></b></p>
@@ -261,10 +264,8 @@
                 </h3>
                 <% if @organisme.tutelle_financiere %>
                   <p class="fr-card__desc">Délégation de l'approbation des BI / BR / comptes financiers : <b><%= format_boolean(@organisme.delegation_approbation) %></b></p>
-                  <% if @organisme.delegation_approbation %>
-                    <p class="fr-card__desc">Autorité chargée de l’approbation : <b><%= format_boolean(@organisme.autorite_approbation) %></b></p>
-                  <%end %>
                 <%end %>
+                <p class="fr-card__desc">Autorité chargée de l’approbation : <b><%= format_boolean(@organisme.autorite_approbation) %></b></p>
                 <p class="fr-card__desc">Ministère de tutelle principale : <b><% if @organisme.ministere %><%= @organisme.ministere.nom %><%else %>Aucun<%end %></b></p>
                 <p class="fr-card__desc">Ministère•s de co-tutelle : <b><% if @organisme_ministeres && !@organisme_ministeres.empty? %><% @organisme_ministeres.each do |orga|%><%= orga.ministere.nom %> - <%end %><%else %>Aucun<%end %></b></p>
                </div>
@@ -308,8 +309,8 @@
                 <h3 class="fr-card__title">
                   APU : <b><%= format_boolean(@organisme.apu) %></b>
                 </h3>
-                <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year-2 %> : <b><%= format_boolean(@organisme.ciassp_n) %></b></p>
-                <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year-3 %> : <b><%= format_boolean(@organisme.ciassp_n1) %></b></p>
+                <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year %> : <b><%= format_boolean(@organisme.ciassp_n) %></b></p>
+                <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year - 1 %> : <b><%= format_boolean(@organisme.ciassp_n1) %></b></p>
                 <p class="fr-card__desc">ODAC Liste INSEE année <%= Date.today.year-2 %> : <b><%= format_boolean(@organisme.odac_n) %></b></p>
                 <p class="fr-card__desc">ODAC Liste INSEE année <%= Date.today.year-3 %> : <b><%= format_boolean(@organisme.odac_n1) %></b></p>
                 <p class="fr-card__desc">ODAL Liste INSEE année <%= Date.today.year-2 %> : <b><%= format_boolean(@organisme.odal_n) %></b></p>

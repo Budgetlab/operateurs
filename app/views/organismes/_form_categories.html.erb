@@ -64,62 +64,64 @@
               </div>
             </fieldset>
           </div>
-          <div class="fr-col-12 fr-col-lg-4">
-            <fieldset class="fr-fieldset">
-              <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
-                Soumission à la CIASSP année <%= Date.today.year-2 %> <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
-                Information contextuelle
-              </button>
-                <span class="fr-tooltip fr-placement" id="tooltip-2994" role="tooltip" aria-hidden="true">Il est indispensable de renseigner cette donnée sur la base de l'annexe à la note annuelle de cadrage préparée par 2BPSS.</span>
-              </legend>
-
-              <div class="fr-fieldset__element fr-fieldset__element--inline">
-                <div class="fr-radio-group">
-                  <%= f.radio_button :ciassp_n, true, id: "radio-ciassp-n-1", checked: @organisme.ciassp_n == true%>
-                  <label class="fr-label" for="radio-ciassp-n-1">Oui</label>
-                </div>
-              </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline">
-                <div class="fr-radio-group">
-                  <%= f.radio_button :ciassp_n, false, checked: @organisme.ciassp_n == false, id:"radio-ciassp-n-b" %>
-                  <label class="fr-label" for="radio-ciassp-n-b">Non</label>
-                </div>
-              </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline">
-                <div class="fr-radio-group">
-                  <%= f.radio_button :ciassp_n, "", checked: @organisme.ciassp_n.nil? , id:"radio-ciassp-n" %>
-                  <label class="fr-label" for="radio-ciassp-n">Non renseigné</label>
-                </div>
-              </div>
-            </fieldset>
-          </div>
-          <div class="fr-col-12 fr-col-lg-4">
-            <fieldset class="fr-fieldset">
-              <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
-                Soumission à la CIASSP année <%= Date.today.year-3 %>
-              </legend>
-
-              <div class="fr-fieldset__element fr-fieldset__element--inline">
-                <div class="fr-radio-group">
-                  <%= f.radio_button :ciassp_n1, true, id: "radio-ciassp-n1-1", checked: @organisme.ciassp_n1 == true%>
-                  <label class="fr-label" for="radio-ciassp-n1-1">Oui</label>
-                </div>
-              </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline">
-                <div class="fr-radio-group">
-                  <%= f.radio_button :ciassp_n1, false, checked: @organisme.ciassp_n1 == false, id:"radio-ciassp-n1-b" %>
-                  <label class="fr-label" for="radio-ciassp-n1-b">Non</label>
-                </div>
-              </div>
-              <div class="fr-fieldset__element fr-fieldset__element--inline">
-                <div class="fr-radio-group">
-                  <%= f.radio_button :ciassp_n1, "", checked: @organisme.ciassp_n1.nil? , id:"radio-ciassp-n1" %>
-                  <label class="fr-label" for="radio-ciassp-n1">Non renseigné</label>
-                </div>
-              </div>
-            </fieldset>
-          </div>
         </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-4">
+              <fieldset class="fr-fieldset">
+                <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
+                  Soumission à la CIASSP année <%= Date.today.year %> <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
+                  Information contextuelle
+                </button>
+                  <span class="fr-tooltip fr-placement" id="tooltip-2994" role="tooltip" aria-hidden="true">Il est indispensable de renseigner cette donnée sur la base de l'annexe à la note annuelle de cadrage préparée par 2BPSS.</span>
+                </legend>
+
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
+                  <div class="fr-radio-group">
+                    <%= f.radio_button :ciassp_n, true, id: "radio-ciassp-n-1", checked: @organisme.ciassp_n == true%>
+                    <label class="fr-label" for="radio-ciassp-n-1">Oui</label>
+                  </div>
+                </div>
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
+                  <div class="fr-radio-group">
+                    <%= f.radio_button :ciassp_n, false, checked: @organisme.ciassp_n == false, id:"radio-ciassp-n-b" %>
+                    <label class="fr-label" for="radio-ciassp-n-b">Non</label>
+                  </div>
+                </div>
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
+                  <div class="fr-radio-group">
+                    <%= f.radio_button :ciassp_n, "", checked: @organisme.ciassp_n.nil? , id:"radio-ciassp-n" %>
+                    <label class="fr-label" for="radio-ciassp-n">Non renseigné</label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+            <div class="fr-col-12 fr-col-lg-4">
+              <fieldset class="fr-fieldset">
+                <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
+                  Soumission à la CIASSP année <%= Date.today.year %>
+                </legend>
+
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
+                  <div class="fr-radio-group">
+                    <%= f.radio_button :ciassp_n1, true, id: "radio-ciassp-n1-1", checked: @organisme.ciassp_n1 == true%>
+                    <label class="fr-label" for="radio-ciassp-n1-1">Oui</label>
+                  </div>
+                </div>
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
+                  <div class="fr-radio-group">
+                    <%= f.radio_button :ciassp_n1, false, checked: @organisme.ciassp_n1 == false, id:"radio-ciassp-n1-b" %>
+                    <label class="fr-label" for="radio-ciassp-n1-b">Non</label>
+                  </div>
+                </div>
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
+                  <div class="fr-radio-group">
+                    <%= f.radio_button :ciassp_n1, "", checked: @organisme.ciassp_n1.nil? , id:"radio-ciassp-n1" %>
+                    <label class="fr-label" for="radio-ciassp-n1">Non renseigné</label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-4">
             <fieldset class="fr-fieldset">
@@ -240,7 +242,7 @@
               <%end %>
             </li>
             <li>
-              <%= f.submit("#{@organisme.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}) %>
+              <%= f.submit("#{@organisme.statut != 'valide' ? 'Valider et terminer' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}) %>
             </li>
           </ul>
         </div>

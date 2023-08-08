@@ -43,12 +43,12 @@
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-12">
               <% if @est_controleur %>
-                <p class="fr-mb-1w">Tutelle financière</p>
+                <p class="fr-mb-1w">Tutelle financière MCP</p>
                 <p><b><%= format_boolean(@organisme.tutelle_financiere) %></b></p>
               <%else %>
               <fieldset class="fr-fieldset">
                 <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
-                  Tutelle financière* <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
+                  Tutelle financière MCP* <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
                   Information contextuelle
                 </button>
                   <span class="fr-tooltip fr-placement" id="tooltip-2994" role="tooltip" aria-hidden="true">La tutelle financière MCP découle de l'article 174 du décret GBCP. Les GIP n'ont pas de tutelle.</span>
@@ -84,13 +84,13 @@
               </legend>
               <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
-                  <%= f.radio_button :delegation_approbation, true, id: "radio-approbation-1", checked: @organisme.delegation_approbation, data: {action: "change->form#ChangeApprobation" }  %>
+                  <%= f.radio_button :delegation_approbation, true, id: "radio-approbation-1", checked: @organisme.delegation_approbation %>
                   <label class="fr-label" for="radio-approbation-1">Oui</label>
                 </div>
               </div>
               <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">
-                  <%= f.radio_button :delegation_approbation, false, checked: @organisme.delegation_approbation == false, id:"radio-approbation", data: {action: "change->form#ChangeApprobation" } %>
+                  <%= f.radio_button :delegation_approbation, false, checked: @organisme.delegation_approbation == false, id:"radio-approbation" %>
                   <label class="fr-label" for="radio-approbation">Non</label>
                 </div>
               </div>
@@ -103,8 +103,8 @@
               <p><b><%= format_boolean(@organisme.autorite_approbation) %></b></p>
             <%else %>
             <div class="fr-select-group">
-              <label for="autorite" class="fr-label">Autorité chargée de l'approbation*</label>
-              <%= f.select :autorite_approbation,options_for_select([["- sélectionner -", ""]] + @liste_approbation.map { |nom| [nom, nom] }, selected: @organisme.autorite_approbation),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite",class:"fr-select"}%>
+              <label for="autorite" class="fr-label">Autorité chargée de l'approbation</label>
+              <%= f.select :autorite_approbation,options_for_select([["- sélectionner -", ""]] + @liste_approbation.map { |nom| [nom, nom] }, selected: @organisme.autorite_approbation),{}, {id:"autorite",class:"fr-select"}%>
             </div>
             <%end %>
           </div>

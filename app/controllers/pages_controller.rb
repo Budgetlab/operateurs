@@ -3,10 +3,9 @@
 # Controller Pages statiques
 class PagesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_famille, only: [:index]
   def index
     @search_organismes = []
-    @organismes_last = @familles.nil? ? Organisme.order(updated_at: :desc).limit(6) : Organisme.where(famille: @familles, statut: 'valide').order(updated_at: :desc).limit(6)
+    @organismes_last = @statut_user == '2B2O' ? Organisme.order(updated_at: :desc).limit(6) : @statut_user == 'Controleur' ? current_user.controleur_organismes.where(statut: 'valide').order(updated_at: :desc).limit(6) : current_user.bureau_organismes.where(statut: 'valide').order(updated_at: :desc).limit(6)
   end
 
   def mentions_legales; end
@@ -23,13 +22,4 @@ class PagesController < ApplicationController
     redirect_to organismes_ajout_path
   end
 
-  private
-
-  def set_famille
-    if @statut_user == 'Controleur'
-      @familles = current_user.controleur_organismes.pluck(:famille).uniq
-    elsif @statut_user == 'Bureau Sectoriel'
-      @familles = current_user.bureau_organismes.pluck(:famille).uniq
-    end
-  end
 end

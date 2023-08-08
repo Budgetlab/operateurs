@@ -6,9 +6,11 @@ export default class extends Controller {
     }
     connect() {
 
-        if (this.data.get("nomsorganismes")!= null) {
-            this.changeEtat();
+        if (document.getElementById("nature") != null) {
             this.changeNature();
+        }
+        if (document.getElementById("etat") != null){
+            this.changeEtat();
             this.changeEffetDissolution();
             this.checkBox();
         }
@@ -24,7 +26,6 @@ export default class extends Controller {
         }
         if (this.element.querySelector('#radio-tutelle-1') != null){
             this.ChangeTutelle();
-            this.ChangeApprobation();
         }
         if (document.getElementById("ministere") != null ){
             this.checkBox();
@@ -157,7 +158,9 @@ export default class extends Controller {
         const nature= document.getElementById("nature")
         const date_previsionnelle= document.getElementById("date_previsionnelle_dissolution");
         const isTrue = nature.value === "GIP"
-        this.changeField(isTrue,date_previsionnelle);
+        if (date_previsionnelle != null){
+            this.changeField(isTrue,date_previsionnelle);
+        }
     }
     changeEtat(){
         const etat= document.getElementById("etat");
@@ -286,20 +289,13 @@ export default class extends Controller {
 
     ChangeTutelle(){
         const tutelle = this.element.querySelector('#radio-tutelle-1').checked;
-        const autorite = document.getElementById("autorite");
         if (tutelle === true){
             document.getElementById("radio-approbation-1").closest('fieldset').disabled = false;
         }else{
             document.getElementById("radio-approbation-1").closest('fieldset').disabled = true;
             document.getElementById("radio-approbation-1").checked = false;
             document.getElementById("radio-approbation").checked = false;
-            this.disableInput(autorite);
         }
-    }
-    ChangeApprobation(){
-        const autorite = document.getElementById("autorite");
-        const approbation = this.element.querySelector('#radio-approbation-1').checked;
-        this.changeField(approbation,autorite);
     }
     ChangeAdmin(){
         const admin = this.element.querySelector('#radio-admin-1').checked;

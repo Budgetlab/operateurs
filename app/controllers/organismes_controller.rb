@@ -46,7 +46,7 @@ class OrganismesController < ApplicationController
     @organisme = Organisme.includes(:ministere, :bureau, :controleur, :organisme_ministeres).find(params[:id])
     redirect_to root_path and return unless @statut_user == '2B2O' || (@familles && @familles.include?(@organisme.famille))
 
-    @admin = @statut_user == '2B2O' || current_user == @organisme.controleur ? true : false
+    @admin = @statut_user == '2B2O' || (current_user == @organisme.controleur && @organisme.etat != 'Inactif') ? true : false
     @est_valide = @organisme.statut == 'valide'
     @organisme_ministeres = @organisme.organisme_ministeres.includes(:ministere)
     @operateur = Operateur.includes(:mission, :programme, :operateur_programmes).find_by(organisme_id: @organisme.id)
@@ -55,6 +55,7 @@ class OrganismesController < ApplicationController
     @modifications_valides_organisme = @modifications_organisme.select { |modification| modification.statut == 'validée' }
     @modifications_rejetees_organisme = @modifications_organisme.select { |modification| modification.statut == 'refusée' }
     @modifications_attente_organisme = @modifications_organisme.select { |modification| modification.statut == 'En attente' }
+    @organisme_destinations = OrganismeRattachement.where(organisme_destination_id: @organisme.id)
     filename = 'fiche_organisme.xlsx'
     respond_to do |format|
       format.html
@@ -66,7 +67,7 @@ class OrganismesController < ApplicationController
     redirect_to root_path and return unless @statut_user == '2B2O'
 
     @organisme = Organisme.new
-    @bureaux = User.where(statut: 'Bureau Sectiorel').order(nom: :asc)
+    @bureaux = User.where(statut: 'Bureau Sectoriel').order(nom: :asc)
     @organismes = Organisme.where.not(id: @organisme.id).order(nom: :asc).pluck(:nom, :id, :siren, :etat)
     @noms_organismes = @organismes.map { |el| el[0] }
     @siren_organismes = @organismes.map { |el| el[2] }.compact
@@ -89,13 +90,13 @@ class OrganismesController < ApplicationController
 
   def edit
     @organisme = Organisme.find(params[:id])
-    @est_controleur = current_user == @organisme.controleur && @organisme.statut == 'valide' && @statut_user != '2B2O'
+    @est_controleur = current_user == @organisme.controleur && @organisme.statut == 'valide' && @statut_user != '2B2O' && @organisme.etat != 'Inactif'
     redirect_to root_path and return unless @statut_user == '2B2O' || @est_controleur
 
     redirect_to edit_organisme_path(@organisme) if params[:step] && @organisme.statut != 'valide' && params[:step].to_i > @organisme.statut.to_i + 1
 
     if params[:step].to_i == 1
-      @bureaux = User.where(statut: 'Bureau Sectiorel').order(nom: :asc)
+      @bureaux = User.where(statut: 'Bureau Sectoriel').order(nom: :asc)
       @organismes = Organisme.where.not(id: @organisme.id).order(nom: :asc).pluck(:nom, :id, :siren, :etat)
       @noms_organismes = @organismes.map { |el| el[0] }
       @siren_organismes = @organismes.map { |el| el[2] }.compact
@@ -207,8 +208,8 @@ class OrganismesController < ApplicationController
                     'Partie III GBCP', 'Comptabilité budgétaire', 'Nature contrôle', 'Texte soumission au contrôle',
                     'Autorité de contrôle', "Texte réglementaire de désignation de l'autorité de contrôle",
                     'Arrêté de contrôle', 'Date signature document contrôle ', 'Comité audit et risques',
-                    'Arrêté de nomination comissaire du gouvernement', "CIASSP #{(Date.today.year - 2).to_s}",
-                    "CIASSP #{(Date.today.year - 3).to_s}", "ODAL #{(Date.today.year - 2).to_s}",
+                    'Arrêté de nomination comissaire du gouvernement', "CIASSP #{(Date.today.year).to_s}",
+                    "CIASSP #{(Date.today.year - 1).to_s}", "ODAL #{(Date.today.year - 2).to_s}",
                     "ODAL #{(Date.today.year - 3).to_s}", "ODAC #{(Date.today.year - 2).to_s}",
                     "ODAC #{(Date.today.year - 3).to_s}"]
     champs_supp_controleur = [:date_creation, :date_previsionnelle_dissolution, :date_dissolution, :effet_dissolution,
