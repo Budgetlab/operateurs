@@ -3,7 +3,14 @@
 # Controller Modifications
 class ModificationsController < ApplicationController
   before_action :statut
-  def index; end
+  def index
+    @modification_counts = @modifications.modifications_count_by_controller
+    @modification_counts_valides = @modification_counts.select { |modification| modification.statut == 'validée' }
+    @modification_counts_refus = @modification_counts.select { |modification| modification.statut == 'refusée' }
+    @modification_counts_attente = @modification_counts.select { |modification| modification.statut == 'En attente' }
+    @total_valides = @modification_counts_valides.sum { |modification| modification.modification_count }
+    @total_refus = @modification_counts_refus.sum { |modification| modification.modification_count }
+  end
 
   def open_modal
     @modification = Modification.find(params[:id])

@@ -387,6 +387,9 @@
             </div>
           </div>
         </div>
+        <% if @statut_user == "2B2O" %>
+          <div><%= link_to organisme_path(@organisme),data: { "turbo-method": :delete}, class: "fr-btn fr-btn--secondary" do%>Supprimer l'organisme<%end %></div>
+        <% end %>
         <div class="fr-grid-row fr-grid-row--right fr-mb-4w">
           <a class="fr-link fr-icon-arrow-up-fill fr-link--icon-left" href="#top">
             Haut de page
