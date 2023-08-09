@@ -28,7 +28,7 @@
          @array_prog << el.programme.numero
         end
       end
-      @array_prog = "Non renseigné" if @array_prog.empty?
+      @array_prog = "Aucun" if @array_prog.empty?
 
       sheet.add_row [format_boolean(@operateur.operateur_n), format_boolean(@operateur.operateur_n1), format_boolean(@operateur.operateur_n2),format_boolean(@operateur.presence_categorie),format_boolean(@operateur.nom_categorie),format_boolean(@operateur.mission.nom), format_boolean(@operateur.programme.numero), @array_prog ]
          
@@ -51,7 +51,7 @@
          
     end
     wb.add_worksheet(name: "Tutelles") do |sheet|
-      sheet.add_row %W{ Tutelle\ financière Délégation\ approbation\ BI/BR/comptes  Autorité\ chargée\ approbation Ministère\ tutelle Ministeres\ co-tutelle}
+      sheet.add_row %W{ Tutelle\ financière\ MCP Délégation\ approbation\ BI/BR/comptes  Autorité\ chargée\ approbation Ministère\ tutelle Ministeres\ co-tutelle}
       
       @array_ministeres = []
       if @organisme_ministeres
@@ -59,10 +59,11 @@
           @array_ministeres << orga.ministere.nom
         end
       end
-      @array_ministeres = "Non renseigné" if @array_ministeres.empty?
-      @ministere = @organisme.ministere ? format_boolean(@organisme.ministere.nom) : "Non renseigné"
+      @array_ministeres = "Aucun" if @array_ministeres.empty?
+      @ministere = @organisme.ministere ? format_boolean(@organisme.ministere.nom) : "Aucun"
+      @delegation_approbation = @organisme.tutelle_financiere ? format_boolean(@organisme.tutelle_financiere) : "NA"
 
-      sheet.add_row [format_boolean(@organisme.tutelle_financiere), format_boolean(@organisme.delegation_approbation), format_boolean(@organisme.autorite_approbation), @ministere, @array_ministeres]
+      sheet.add_row [format_boolean(@organisme.tutelle_financiere), @delegation_approbation, format_boolean(@organisme.autorite_approbation), @ministere, @array_ministeres]
          
     end
     wb.add_worksheet(name: "Gouvernance DB") do |sheet|

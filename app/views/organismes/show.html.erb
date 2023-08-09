@@ -152,7 +152,7 @@
                 <%end %>
               <%end %>
               <% if @organisme_destinations %>
-                <p class="fr-card__desc">Organisme hérité de <% @organisme_destinations.each do |el| %><b><%= link_to organisme_path(el.organisme) do%><%= el.organisme.nom%><%end %></b> le <%= format_boolean(format_date(el.organisme.date_dissolution))%> -<%end %></p>
+                <p class="fr-card__desc">Organisme hérité de <% @organisme_destinations.each do |el| %><b><%= link_to organisme_path(el.organisme) do%><%= el.organisme.nom%><%end %></b> dissous le <%= format_boolean(format_date(el.organisme.date_dissolution))%> -<%end %></p>
               <% end %>
               <p class="fr-card__desc">Bureau DB de rattachement : <b><% if @organisme.bureau %><%= @organisme.bureau.nom %><%else %>Non renseigné<%end %></b></p>
               <p class="fr-card__desc">Texte institutif : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_institutif),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
@@ -260,7 +260,7 @@
             <div class="fr-card__body">
               <div class="fr-card__content">
                 <h3 class="fr-card__title">
-                  Tutelle financière : <%= format_boolean(@organisme.tutelle_financiere) %>
+                  Tutelle financière MCP: <%= format_boolean(@organisme.tutelle_financiere) %>
                 </h3>
                 <% if @organisme.tutelle_financiere %>
                   <p class="fr-card__desc">Délégation de l'approbation des BI / BR / comptes financiers : <b><%= format_boolean(@organisme.delegation_approbation) %></b></p>
