@@ -142,7 +142,7 @@
                       </legend>
                       <% @programmes.each_with_index do |programme, i|%>
                         <div class="fr-fieldset__element">
-                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                          <div class="fr-checkbox-group fr-checkbox-group--sm">
                             <%= f.check_box :programmes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @operateur.operateur_programmes.pluck(:programme_id).include?(programme.id) }, programme.id%>
                             <label class="fr-label" for="checkboxes-<%=i %>">
                               <%= programme.numero%>

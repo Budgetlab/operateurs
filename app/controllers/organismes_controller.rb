@@ -3,7 +3,7 @@
 # Controller Pages organismes
 class OrganismesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_famille
+  before_action :set_famille, only: [:show, :recherche_organismes]
   def index
     redirect_to root_path and return unless @statut_user == '2B2O' || @statut_user == 'Controleur'
 
@@ -19,8 +19,18 @@ class OrganismesController < ApplicationController
     search = params[:search]
     if search.blank?
       @search_organismes = []
+    elsif @statut_user == '2B2O'
+      @search_organismes = Organisme.where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%")
+    elsif @statut_user == "Controleur"
+      controleur_organismes = current_user.controleur_organismes.where(statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
+      famille_organismes = Organisme.where(famille: @familles, statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
+      @search_organismes = controleur_organismes.or(famille_organismes)
+    elsif @statut_user == "Bureau Sectoriel"
+      bureau_organismes = current_user.bureau_organismes.where(statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
+      famille_organismes = Organisme.where(famille: @familles, statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
+      @search_organismes = bureau_organismes.or(famille_organismes)
     else
-      @search_organismes = @familles.nil? ? Organisme.where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%") : Organisme.where(famille: @familles, statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
+      @search_organismes = []
     end
     respond_to do |format|
       format.turbo_stream do
@@ -44,9 +54,10 @@ class OrganismesController < ApplicationController
 
   def show
     @organisme = Organisme.includes(:ministere, :bureau, :controleur, :organisme_ministeres).find(params[:id])
-    redirect_to root_path and return unless @statut_user == '2B2O' || (@familles && @familles.include?(@organisme.famille))
+    @est_controleur = current_user == @organisme.controleur
+    redirect_to root_path and return unless @statut_user == '2B2O' || @est_controleur || (@familles && @familles.include?(@organisme.famille))
 
-    @admin = @statut_user == '2B2O' || (current_user == @organisme.controleur && @organisme.etat != 'Inactif') ? true : false
+    @admin = @statut_user == '2B2O' || (@est_controleur && @organisme.etat != 'Inactif') ? true : false
     @est_valide = @organisme.statut == 'valide'
     @organisme_ministeres = @organisme.organisme_ministeres.includes(:ministere)
     @operateur = Operateur.includes(:mission, :programme, :operateur_programmes).find_by(organisme_id: @organisme.id)
@@ -171,9 +182,9 @@ class OrganismesController < ApplicationController
 
   def set_famille
     if @statut_user == 'Controleur'
-      @familles = current_user.controleur_organismes.pluck(:famille).uniq
+      @familles = current_user.controleur_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
     elsif @statut_user == 'Bureau Sectoriel'
-      @familles = current_user.bureau_organismes.pluck(:famille).uniq
+      @familles = current_user.bureau_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
     end
   end
 

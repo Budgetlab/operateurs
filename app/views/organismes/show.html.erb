@@ -129,7 +129,6 @@
           <p><%= link_to "/opera/organismes/#{@organisme.id}.xlsx", format: :xslx, class: "fr-download__link" do %>Télécharger la fiche de l'organisme<span class="fr-download__detail">Format .xlsx</span><%end %></p>
         </div>
         <% end %>
-
         <div id="fiche_identite" class="fr-mb-4w">
           <h2 class="title-btn">Fiche d'identité <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
 

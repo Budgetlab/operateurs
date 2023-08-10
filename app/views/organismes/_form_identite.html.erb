@@ -179,12 +179,10 @@
               <div class="div-dropdown">
               <div class="fr-collapse fr-menu" id="translate-1295">
                 <fieldset class="fr-fieldset" id="checkboxes-" aria-labelledby="checkboxes-legend checkboxes-messages">
-                  <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="checkboxes-legend">
-                    Sélectionner un ou plusieurs organismes de rattachement
-                  </legend>
+
                   <% @organismes_rattachement.each_with_index do |organisme, i|%>
                     <div class="fr-fieldset__element">
-                      <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                      <div class="fr-checkbox-group fr-checkbox-group--sm">
                         <%= f.check_box :organismes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @organisme.organisme_rattachements.pluck(:organisme_destination_id).include?(organisme[1]) }, organisme[1]%>
                         <label class="fr-label" for="checkboxes-<%=i %>">
                           <%= organisme[0]%>
