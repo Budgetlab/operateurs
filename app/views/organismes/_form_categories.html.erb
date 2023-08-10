@@ -64,6 +64,32 @@
               </div>
             </fieldset>
           </div>
+          <div class="fr-col-12 fr-col-lg-8">
+            <fieldset class="fr-fieldset">
+              <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
+                Arrêté interdiction ODAC emprunt ≥ 12 mois
+              </legend>
+
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :arrete_interdiction_odac, "Annexe1", id: "radio-arrete-n-1", checked: @organisme.arrete_interdiction_odac == "Annexe1"%>
+                  <label class="fr-label" for="radio-arrete-n-1">Annexe1</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :arrete_interdiction_odac, "Annexe2", checked: @organisme.arrete_interdiction_odac == "Annexe2", id:"radio-arrete-n-b" %>
+                  <label class="fr-label" for="radio-arrete-n-b">Annexe2</label>
+                </div>
+              </div>
+              <div class="fr-fieldset__element fr-fieldset__element--inline">
+                <div class="fr-radio-group">
+                  <%= f.radio_button :arrete_interdiction_odac, "", checked: @organisme.arrete_interdiction_odac.nil? , id:"radio-arrete-n" %>
+                  <label class="fr-label" for="radio-arrete-n">Non renseigné</label>
+                </div>
+              </div>
+            </fieldset>
+          </div>
         </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">

@@ -309,6 +309,7 @@
                 <h3 class="fr-card__title">
                   APU : <b><%= format_boolean(@organisme.apu) %></b>
                 </h3>
+                <p class="fr-card__desc">Arrêté interdiction ODAC emprunt ≥ 12 mois : <b><%= format_boolean(@organisme.arrete_interdiction_odac) %></b></p>
                 <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year %> : <b><%= format_boolean(@organisme.ciassp_n) %></b></p>
                 <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year - 1 %> : <b><%= format_boolean(@organisme.ciassp_n1) %></b></p>
                 <p class="fr-card__desc">ODAC Liste INSEE année <%= Date.today.year-2 %> : <b><%= format_boolean(@organisme.odac_n) %></b></p>

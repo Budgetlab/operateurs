@@ -76,8 +76,8 @@
     wb.add_worksheet(name: "Catégories") do |sheet|
     @date_n2 = Date.today.year-2
     @date_n3 = Date.today.year-3
-      sheet.add_row %W{ APU CIASSP\ #{Date.today.year} CIASSP\ #{Date.today.year-1} ODAL\ #{@date_n2} ODAL\ #{@date_n3} ODAC\ #{@date_n2} ODAC\ #{@date_n3}}
+      sheet.add_row %W{ APU Arrêté\ Interdiction\ ODAC CIASSP\ #{Date.today.year} CIASSP\ #{Date.today.year-1} ODAL\ #{@date_n2} ODAL\ #{@date_n3} ODAC\ #{@date_n2} ODAC\ #{@date_n3}}
     
-      sheet.add_row [format_boolean(@organisme.apu),format_boolean(@organisme.ciassp_n),format_boolean(@organisme.ciassp_n1), format_boolean(@organisme.odal_n), format_boolean(@organisme.odal_n1), format_boolean(@organisme.odac_n), format_boolean(@organisme.odac_n1)]
+      sheet.add_row [format_boolean(@organisme.apu),format_boolean(@organisme.arrete_interdiction_odac), format_boolean(@organisme.ciassp_n),format_boolean(@organisme.ciassp_n1), format_boolean(@organisme.odal_n), format_boolean(@organisme.odal_n1), format_boolean(@organisme.odac_n), format_boolean(@organisme.odac_n1)]
          
     end

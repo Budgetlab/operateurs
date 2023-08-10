@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_07_133318) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_10_070618) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -137,6 +137,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_07_133318) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "ministere_id"
+    t.string "arrete_interdiction_odac"
     t.index ["bureau_id"], name: "index_organismes_on_bureau_id"
     t.index ["controleur_id"], name: "index_organismes_on_controleur_id"
     t.index ["ministere_id"], name: "index_organismes_on_ministere_id"

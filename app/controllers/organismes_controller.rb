@@ -117,7 +117,7 @@ class OrganismesController < ApplicationController
     reset_values([:admin_db_fonction]) if params[:organisme][:admin_db_present]
     reset_values([:delegation_approbation, :autorite_approbation]) if params[:organisme][:tutelle_financiere]
     if @organisme.statut == 'valide'
-      modifications = generate_modifications(organismes_to_link, ministeres_to_link)
+      modifications = generate_modifications(ministeres_to_link)
       create_modifications(modifications)
     end
     if @statut_user == '2B2O'
@@ -160,7 +160,7 @@ class OrganismesController < ApplicationController
                                       :tutelle_financiere, :delegation_approbation, :autorite_approbation, :ministere_id,
                                       :admin_db_present, :admin_db_fonction, :admin_preca, :controleur_preca,
                                       :controleur_ca, :comite_audit, :apu, :ciassp_n, :ciassp_n1, :odac_n, :odac_n1,
-                                      :odal_n, :odal_n1)
+                                      :odal_n, :odal_n1, :arrete_interdiction_odac)
   end
 
   def reset_values(param_names)
@@ -198,7 +198,7 @@ class OrganismesController < ApplicationController
     end
   end
 
-  def generate_modifications(organismes_to_link, ministeres_to_link)
+  def generate_modifications(ministeres_to_link)
     modifications = []
     champs_a_surveiller = [:nom, :etat, :acronyme, :siren, :nature, :texte_institutif, :gbcp_1, :gbcp_3,
                            :comptabilite_budgetaire, :nature_controle, :texte_soumission_controle, :autorite_controle,
@@ -212,32 +212,26 @@ class OrganismesController < ApplicationController
                     "CIASSP #{(Date.today.year - 1).to_s}", "ODAL #{(Date.today.year - 2).to_s}",
                     "ODAL #{(Date.today.year - 3).to_s}", "ODAC #{(Date.today.year - 2).to_s}",
                     "ODAC #{(Date.today.year - 3).to_s}"]
-    champs_supp_controleur = [:date_creation, :date_previsionnelle_dissolution, :date_dissolution, :effet_dissolution,
-                              :agent_comptable_present, :degre_gbcp, :document_controle_present,
-                              :document_controle_lien, :ministere_id, :admin_db_present, :admin_db_fonction,
-                              :admin_preca, :controleur_preca, :controleur_ca]
-    champs_supp_texte = ['Date création', 'Date prévisionnelle dissolution', 'Date dissolution', 'Effet dissolution',
-                         'Présence agent comptable', 'Degré GBCP', 'Présence document contrôle',
-                         'Lien document contrôle', 'Ministère', 'Présence Admin DB', 'Fonction Admin DB',
-                         'Présence DB préCA', 'Présence contrôleur préCA', 'Présence contrôleur CA']
+    champs_supp_controleur = [:date_creation, :date_previsionnelle_dissolution, :agent_comptable_present,
+                              :degre_gbcp, :document_controle_present, :document_controle_lien, :ministere_id,
+                              :admin_db_present, :admin_db_fonction, :admin_preca, :controleur_preca, :controleur_ca]
+    champs_supp_texte = ['Date création', 'Date prévisionnelle dissolution', 'Présence agent comptable', 'Degré GBCP',
+                         'Présence document contrôle', 'Lien document contrôle', 'Ministère', 'Présence Admin DB',
+                         'Fonction Admin DB', 'Présence DB préCA', 'Présence contrôleur préCA', 'Présence contrôleur CA']
     champs_a_surveiller.each_with_index do |champ, i|
-      if !organisme_params[champ].blank? && organisme_params[champ].to_s != check_format(@organisme[champ])
+      if organisme_params[champ] && organisme_params[champ].to_s != check_format(@organisme[champ]) # réucpérer que ceux qui sont dans le formulaire
         modifications << { champ: champ.to_s, nom: champs_texte[i], ancienne_valeur: check_format(@organisme[champ]), nouvelle_valeur: organisme_params[champ].to_s }
       end
     end
     if current_user.statut == 'Controleur'
       champs_supp_controleur.each_with_index do |champ, i|
-        if !organisme_params[champ].blank? && organisme_params[champ].to_s != check_format(@organisme[champ])
+        if organisme_params[champ] && organisme_params[champ].to_s != check_format(@organisme[champ])
           modifications << { champ: champ.to_s, nom: champs_supp_texte[i], ancienne_valeur: check_format(@organisme[champ]), nouvelle_valeur: organisme_params[champ].to_s }
         end
       end
       if ministeres_to_link && ministeres_to_link.map(&:to_i).reject { |element| element == 0 } != @organisme.organisme_ministeres.pluck(:ministere_id)
         nouvelle_valeur = ministeres_to_link.map(&:to_i).reject { |element| element == 0 }
         modifications << { champ: 'ministeres', nom: 'Ministère•s co-tutelle', ancienne_valeur: @organisme.organisme_ministeres.pluck(:ministere_id), nouvelle_valeur: nouvelle_valeur }
-      end
-      if organismes_to_link && organismes_to_link.map(&:to_i).reject { |element| element == 0 } != @organisme.organisme_rattachements.pluck(:organisme_destination_id)
-        nouvelle_valeur = organismes_to_link.map(&:to_i).reject { |element| element == 0 }
-        modifications << { champ: 'organisme_destination_id', nom: 'Organisme•s rattachement', ancienne_valeur: @organisme.organisme_rattachements.pluck(:organisme_destination_id), nouvelle_valeur: nouvelle_valeur }
       end
     end
     modifications

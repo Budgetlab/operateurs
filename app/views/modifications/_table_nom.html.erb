@@ -1,10 +1,8 @@
 <% if modification %>
 <% if modification.nom == "Ministère" %>
-  <b><%= Ministere.find(modification.nouvelle_valeur.to_i).nom %></b> <span class="fr-text--barre"><%= Ministere.find(modification.ancienne_valeur.to_i).nom %></span>
+  <b><% if !modification.nouvelle_valeur.blank? %><%= Ministere.find(modification.nouvelle_valeur.to_i).nom %><%else %>Aucun<%end %></b> <span class="fr-text--barre"><% if !modification.ancienne_valeur.blank?%><%= Ministere.find(modification.ancienne_valeur.to_i).nom %><%else %>Aucun<% end %></span>
 <% elsif modification.nom == "Ministère•s co-tutelle" %>
-  <b><% modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).each do |id| %><%= Ministere.find(id.to_i).nom %> - <%end %></b> <span class="fr-text--barre"><% modification.ancienne_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).each do |id| %><%= Ministere.find(id.to_i).nom %> - <%end %></span>
-<% elsif modification.nom == "Organisme•s rattachement" %>
-  <b><% modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).each do |id| %><%= Organisme.find(id.to_i).nom %> - <%end %></b> <span class="fr-text--barre"><% modification.ancienne_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).each do |id| %><%= Organisme.find(id.to_i).nom %> - <%end %></span>
+  <b><% if modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).length > 0 %><% modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).each do |id| %><%= Ministere.find(id.to_i).nom %> - <%end %><%else %>Aucun<%end %></b> <span class="fr-text--barre"><% if modification.ancienne_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).length > 0 %><% modification.ancienne_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).each do |id| %><%= Ministere.find(id.to_i).nom %> - <%end %><%else %>Aucun<%end %></span>
 <% else %>
   <b><%= format_boolean(modification.nouvelle_valeur) %></b> <span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span>
 <% end %>
