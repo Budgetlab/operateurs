@@ -28,7 +28,7 @@ class Organisme < ApplicationRecord
                         arrete_controle document_controle_present document_controle_date
                         arrete_nomination tutelle_financiere delegation_approbation autorite_approbation
                         admin_db_present admin_db_fonction admin_preca controleur_preca controleur_ca comite_audit
-                        apu ciassp_n ciassp_n1 odac_n odac_n1 odal_n odal_n1]
+                        apu ciassp_n ciassp_n1 odac_n odac_n1 odal_n odal_n1 arrete_interdiction_odac]
       column_names.each do |column_name|
         row_data[column_name] = convert_to_boolean(row_data[column_name]) if column_name != 'comptabilite_budgetaire'
       end

@@ -136,7 +136,7 @@ class OrganismesController < ApplicationController
     reset_values([:date_previsionnelle_dissolution, :date_dissolution, :effet_dissolution]) if params[:organisme][:etat]
     reset_values([:nature_controle, :texte_soumission_controle, :autorite_controle, :texte_reglementaire_controle, :arrete_controle, :document_controle_present, :document_controle_lien, :document_controle_date, :arrete_nomination]) if params[:organisme][:presence_controle]
     reset_values([:admin_db_fonction]) if params[:organisme][:admin_db_present]
-    reset_values([:delegation_approbation, :autorite_approbation]) if params[:organisme][:tutelle_financiere]
+    reset_values([:delegation_approbation]) if params[:organisme][:tutelle_financiere]
     if @organisme.statut == 'valide'
       modifications = generate_modifications(ministeres_to_link)
       create_modifications(modifications)
