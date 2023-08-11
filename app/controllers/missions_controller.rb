@@ -3,14 +3,14 @@
 # Controller Pages Missions
 class MissionsController < ApplicationController
   def index
-    redirect_to root_path and return unless current_user.statut == '2B2O'
+    redirect_to root_path and return unless @statut_user == '2B2O'
 
     @missions = Mission.all.pluck(:nom)
     @programmes = Programme.all.pluck(:nom)
   end
 
   def import_missions
-    redirect_to root_path and return unless current_user.statut == '2B2O'
+    redirect_to root_path and return unless @statut_user == '2B2O'
 
     Mission.import(params[:file])
     respond_to do |format|

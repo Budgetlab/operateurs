@@ -10,6 +10,7 @@ class OperateursController < ApplicationController
 
     @operateur = Operateur.new
     @programmes = Programme.all.order(numero: :asc)
+    @liste_operateur = @operateur.operateur_programmes.pluck(:programme_id)
   end
   def create
     @organisme = Organisme.find(params[:operateur][:organisme_id])
@@ -28,6 +29,7 @@ class OperateursController < ApplicationController
 
     @operateur = Operateur.find(params[:id])
     @programmes = Programme.all.order(numero: :asc)
+    @liste_operateur = @operateur.operateur_programmes.pluck(:programme_id)
   end
 
   def update

@@ -25,6 +25,7 @@
       <div class="fr-card__content">
         <%= form_with(model: @operateur, data: {'form-target': "form", action: "change->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
           <%= f.hidden_field :organisme_id, value: @organisme.id %>
+          <%= render 'organismes/form_notice' %>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
               <fieldset class="fr-fieldset">
@@ -143,7 +144,7 @@
                       <% @programmes.each_with_index do |programme, i|%>
                         <div class="fr-fieldset__element">
                           <div class="fr-checkbox-group fr-checkbox-group--sm">
-                            <%= f.check_box :programmes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @operateur.operateur_programmes.pluck(:programme_id).include?(programme.id) }, programme.id%>
+                            <%= f.check_box :programmes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @liste_operateur.include?(programme.id) }, programme.id%>
                             <label class="fr-label" for="checkboxes-<%=i %>">
                               <%= programme.numero%>
                             </label>

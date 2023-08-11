@@ -29,8 +29,9 @@
         end
       end
       @array_prog = "Aucun" if @array_prog.empty?
+      @nom_categorie = @operateur.presence_categorie ? format_boolean(@operateur.nom_categorie) : "NA"
 
-      sheet.add_row [format_boolean(@operateur.operateur_n), format_boolean(@operateur.operateur_n1), format_boolean(@operateur.operateur_n2),format_boolean(@operateur.presence_categorie),format_boolean(@operateur.nom_categorie),format_boolean(@operateur.mission.nom), format_boolean(@operateur.programme.numero), @array_prog ]
+      sheet.add_row [format_boolean(@operateur.operateur_n), format_boolean(@operateur.operateur_n1), format_boolean(@operateur.operateur_n2),format_boolean(@operateur.presence_categorie), @nom_categorie, format_boolean(@operateur.mission.nom), format_boolean(@operateur.programme.numero), @array_prog ]
          
     end
     end

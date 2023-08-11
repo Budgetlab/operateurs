@@ -40,6 +40,8 @@
         <% if @organisme.statut != "valide" %>
           <%= f.hidden_field :statut, value: "1" %>
         <%end %>
+          <%= render 'organismes/form_notice' %>
+
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-3">
             <% if @est_controleur %>
@@ -183,7 +185,7 @@
                   <% @organismes_rattachement.each_with_index do |organisme, i|%>
                     <div class="fr-fieldset__element">
                       <div class="fr-checkbox-group fr-checkbox-group--sm">
-                        <%= f.check_box :organismes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @organisme.organisme_rattachements.pluck(:organisme_destination_id).include?(organisme[1]) }, organisme[1]%>
+                        <%= f.check_box :organismes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @liste_organisme_rattachement.include?(organisme[1]) }, organisme[1]%>
                         <label class="fr-label" for="checkboxes-<%=i %>">
                           <%= organisme[0]%>
                         </label>

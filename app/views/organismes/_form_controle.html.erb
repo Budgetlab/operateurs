@@ -40,6 +40,7 @@
         <% if @organisme.statut != "valide" %>
           <%= f.hidden_field :statut, value: "3" %>
         <%end %>
+          <%= render 'organismes/form_notice' %>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
               <% if @est_controleur %>

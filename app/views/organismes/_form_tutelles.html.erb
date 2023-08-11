@@ -40,6 +40,7 @@
         <% if @organisme.statut != "valide" %>
           <%= f.hidden_field :statut, value: "4" %>
         <%end %>
+          <%= render 'organismes/form_notice' %>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-12">
               <% if @est_controleur %>
@@ -131,7 +132,7 @@
                     <% @ministeres.each_with_index do |ministere, i|%>
                       <div class="fr-fieldset__element">
                         <div class="fr-checkbox-group fr-checkbox-group--sm">
-                          <%= f.check_box :ministeres, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @organisme.organisme_ministeres.pluck(:ministere_id).include?(ministere.id) }, ministere.id%>
+                          <%= f.check_box :ministeres, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @liste_ministere.include?(ministere.id) }, ministere.id%>
                           <label class="fr-label" for="checkboxes-<%=i %>">
                             <%= ministere.nom %>
                           </label>

@@ -1,7 +1,7 @@
 <% content_for :title do %>Accueil | OPERA <% end %>
 <main role="main" class="containtAll">
   <div class="fr-container">
-    <h1 class="fr-my-6w"><%= current_user.nom%></h1>
+    <h1 class="fr-my-6w"><%= current_user.nom %></h1>
 
     <% if @statut_user == "2B2O" || @statut_user == "Controleur"%>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
@@ -50,9 +50,9 @@
     <h2>Rechercher un organisme</h2>
     <%= render 'organismes/form_search' %>
 
-    <% if @organismes_last %>
-      <h2>Derniers organismes modifiés</h2>
-      <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+
+    <h2>Derniers organismes modifiés</h2>
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
       <% @organismes_last.each do |organisme| %>
       <div class="fr-col-12 fr-col-lg-4">
         <div class="fr-card fr-enlarge-link">
@@ -76,6 +76,5 @@
       </div>
       <%end %>
     </div>
-    <%end %>
   </div>
 </main>

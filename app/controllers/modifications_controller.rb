@@ -41,8 +41,8 @@ class ModificationsController < ApplicationController
       @organisme.update(champ => @modification.nouvelle_valeur)
     end
     @operateur = @organisme.operateur
-    @modifications_organisme = @organisme.modifications.includes(:user).order(created_at: :desc)
-    modifications_classees(@modifications_organisme)
+    modifications_organisme = @organisme.modifications.includes(:user).order(created_at: :desc)
+    modifications_classees(modifications_organisme)
     redirect_to request.referer.presence || root_path, flash: { notice: 'modification' }
   end
 

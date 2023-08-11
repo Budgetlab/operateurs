@@ -7,7 +7,8 @@ class OrganismesController < ApplicationController
   def index
     redirect_to root_path and return unless @statut_user == '2B2O' || @statut_user == 'Controleur'
 
-    @organismes = @statut_user == '2B2O' ? Organisme.all.sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:id, :nom, :statut, :etat, :acronyme) : current_user.controleur_organismes.where(statut: 'valide').sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:id, :nom, :statut, :etat, :acronyme)
+    organismes = @statut_user == '2B2O' ? Organisme.all : current_user.controleur_organismes.where(statut: 'valide')
+    @organismes = organismes.sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:id, :nom, :statut, :etat, :acronyme)
     @organismes_actifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Actif' }
     @organismes_inactifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Inactif' }
     @organismes_creation = @organismes.select { |el| el[2] == 'valide' && el[3] == 'En cours de création' }
@@ -17,21 +18,26 @@ class OrganismesController < ApplicationController
 
   def recherche_organismes
     search = params[:search]
-    if search.blank?
-      @search_organismes = []
-    elsif @statut_user == '2B2O'
-      @search_organismes = Organisme.where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%")
-    elsif @statut_user == "Controleur"
-      controleur_organismes = current_user.controleur_organismes.where(statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
-      famille_organismes = Organisme.where(famille: @familles, statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
-      @search_organismes = controleur_organismes.or(famille_organismes)
-    elsif @statut_user == "Bureau Sectoriel"
-      bureau_organismes = current_user.bureau_organismes.where(statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
-      famille_organismes = Organisme.where(famille: @familles, statut: 'valide').where('nom ILIKE :search OR acronyme ILIKE :search', search: "%#{search}%")
-      @search_organismes = bureau_organismes.or(famille_organismes)
-    else
-      @search_organismes = []
-    end
+    @search_organismes =
+      if search.blank?
+        []
+      elsif @statut_user == '2B2O'
+        Organisme.where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%")
+      else
+        user_relation = case @statut_user
+                        when 'Controleur'
+                          current_user.controleur_organismes.where(statut: 'valide')
+                        when 'Bureau Sectoriel'
+                          current_user.bureau_organismes.where(statut: 'valide')
+                        else
+                          []
+                        end
+
+        famille_relation = Organisme.where(famille: @familles, statut: 'valide')
+                                    .where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%")
+
+        user_relation.or(famille_relation)
+      end
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -44,33 +50,34 @@ class OrganismesController < ApplicationController
   def organismes_ajout
     redirect_to root_path and return unless @statut_user == '2B2O'
 
-    @organismes = Organisme.where(statut: "valide").sort_by { |organisme| normalize_name(organisme.nom) } || []
+    @organismes = Organisme.where(statut: 'valide').sort_by { |organisme| normalize_name(organisme.nom) } || []
     filename = 'liste_organismes.xlsx'
     respond_to do |format|
       format.html
-      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""}
+      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
     end
   end
 
   def show
     @organisme = Organisme.includes(:ministere, :bureau, :controleur, :organisme_ministeres).find(params[:id])
-    @est_controleur = current_user == @organisme.controleur
-    redirect_to root_path and return unless @statut_user == '2B2O' || @est_controleur || (@familles && @familles.include?(@organisme.famille))
+    est_controleur = current_user == @organisme.controleur
+    est_famille = @familles && @familles.include?(@organisme.famille)
+    redirect_to root_path and return unless @statut_user == '2B2O' || est_controleur || est_famille
 
-    @admin = @statut_user == '2B2O' || (@est_controleur && @organisme.etat != 'Inactif') ? true : false
+    @admin = @statut_user == '2B2O' || (est_controleur && @organisme.etat != 'Inactif')
     @est_valide = @organisme.statut == 'valide'
     @organisme_ministeres = @organisme.organisme_ministeres.includes(:ministere)
     @operateur = Operateur.includes(:mission, :programme, :operateur_programmes).find_by(organisme_id: @organisme.id)
     @operateur_programmes = @operateur.operateur_programmes.includes(:programme) if @operateur
-    @modifications_organisme = @organisme.modifications.includes(:user).order(created_at: :desc)
-    @modifications_valides_organisme = @modifications_organisme.select { |modification| modification.statut == 'validée' }
-    @modifications_rejetees_organisme = @modifications_organisme.select { |modification| modification.statut == 'refusée' }
-    @modifications_attente_organisme = @modifications_organisme.select { |modification| modification.statut == 'En attente' }
+    modifications = @organisme.modifications.includes(:user).order(created_at: :desc)
+    @modifications_valides_organisme = modifications.select { |modification| modification.statut == 'validée' }
+    @modifications_rejetees_organisme = modifications.select { |modification| modification.statut == 'refusée' }
+    @modifications_attente_organisme = modifications.select { |modification| modification.statut == 'En attente' }
     @organisme_destinations = OrganismeRattachement.where(organisme_destination_id: @organisme.id)
     filename = 'fiche_organisme.xlsx'
     respond_to do |format|
       format.html
-      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""}
+      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
     end
   end
 
@@ -79,10 +86,11 @@ class OrganismesController < ApplicationController
 
     @organisme = Organisme.new
     @bureaux = User.where(statut: 'Bureau Sectoriel').order(nom: :asc)
-    @organismes = Organisme.where.not(id: @organisme.id).order(nom: :asc).pluck(:nom, :id, :siren, :etat)
+    @organismes = Organisme.where.not(id: @organisme.id).sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:nom, :id, :siren, :etat)
     @noms_organismes = @organismes.map { |el| el[0] }
     @siren_organismes = @organismes.map { |el| el[2] }.compact
     @organismes_rattachement = @organismes.select { |el| el[3] == 'Actif' || el[3] == 'En cours de création' }
+    @liste_organisme_rattachement = @organisme.organisme_rattachements.pluck(:organisme_destination_id)
   end
 
   def create
@@ -108,13 +116,15 @@ class OrganismesController < ApplicationController
 
     if params[:step].to_i == 1
       @bureaux = User.where(statut: 'Bureau Sectoriel').order(nom: :asc)
-      @organismes = Organisme.where.not(id: @organisme.id).order(nom: :asc).pluck(:nom, :id, :siren, :etat)
+      @organismes = Organisme.where.not(id: @organisme.id).sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:nom, :id, :siren, :etat)
       @noms_organismes = @organismes.map { |el| el[0] }
       @siren_organismes = @organismes.map { |el| el[2] }.compact
       @organismes_rattachement = @organismes.select { |el| el[3] == 'Actif' || el[3] == 'En cours de création' }
+      @liste_organisme_rattachement = @organisme.organisme_rattachements.pluck(:organisme_destination_id)
     end
     @controleurs = User.where(statut: 'Controleur').order(nom: :asc)
     @ministeres = Ministere.order(nom: :asc)
+    @liste_ministere = @organisme.organisme_ministeres.pluck(:ministere_id)
   end
 
   def update
