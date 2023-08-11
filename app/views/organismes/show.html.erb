@@ -180,10 +180,10 @@
             <div class="fr-card__body">
               <div class="fr-card__content">
                 <h3 class="fr-card__title">
-                  Opérateur <%= Date.today.year %> : <% if @operateur %><%= format_boolean(@operateur.operateur_n) %><%else %>Non<%end %>
+                  Opérateur année <%= Date.today.year %> : <% if @operateur %><%= format_boolean(@operateur.operateur_n) %><%else %>Non<%end %>
                 </h3>
-                <p class="fr-card__desc">Opérateur <%= Date.today.year-1 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n1) %><%else %>Non<%end %></b></p>
-                <p class="fr-card__desc">Opérateur <%= Date.today.year-2 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n2) %><%else %>Non<%end %></b></p>
+                <p class="fr-card__desc">Opérateur année <%= Date.today.year-1 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n1) %><%else %>Non<%end %></b></p>
+                <p class="fr-card__desc">Opérateur année <%= Date.today.year-2 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n2) %><%else %>Non<%end %></b></p>
                 <% if @operateur %>
                   <p class="fr-card__desc">Appartenance catégorie d'opérateur : <b><%= format_boolean(@operateur.presence_categorie) %></b></p>
                   <% if @operateur.presence_categorie  %>
@@ -297,7 +297,7 @@
                 <% if @organisme.admin_db_present %>
                   <p class="fr-card__desc">Fonction administrateur DB : <b><%= format_boolean(@organisme.admin_db_fonction) %></b></p>
                 <% end %>
-                <p class="fr-card__desc">Présence DB au préCA <button class="fr-btn--tooltip fr-btn" id="button-4" aria-describedby="tooltip-4" data-action="form#Dropdown">
+                <p class="fr-card__desc">Présence DB au pré-CA <button class="fr-btn--tooltip fr-btn" id="button-4" aria-describedby="tooltip-4" data-action="form#Dropdown">
                   Information contextuelle
                 </button>
                   <span class="fr-tooltip fr-placement" id="tooltip-4" role="tooltip" aria-hidden="true">Au pré-CA ou à tout autre organe délibérant (Assemblée Générale)</span>
@@ -328,13 +328,13 @@
                 <h3 class="fr-card__title">
                   APU : <b><%= format_boolean(@organisme.apu) %></b>
                 </h3>
-                <p class="fr-card__desc">Arrêté interdiction ODAC emprunt ≥ 12 mois : <b><%= format_boolean(@organisme.arrete_interdiction_odac) %></b></p>
-                <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year %> : <b><%= format_boolean(@organisme.ciassp_n) %></b></p>
-                <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year - 1 %> : <b><%= format_boolean(@organisme.ciassp_n1) %></b></p>
                 <p class="fr-card__desc">ODAC Liste INSEE année <%= Date.today.year-2 %> : <b><%= format_boolean(@organisme.odac_n) %></b></p>
                 <p class="fr-card__desc">ODAC Liste INSEE année <%= Date.today.year-3 %> : <b><%= format_boolean(@organisme.odac_n1) %></b></p>
+                <p class="fr-card__desc">Arrêté interdiction ODAC emprunt ≥ 12 mois : <b><%= format_boolean(@organisme.arrete_interdiction_odac) %></b></p>
                 <p class="fr-card__desc">ODAL Liste INSEE année <%= Date.today.year-2 %> : <b><%= format_boolean(@organisme.odal_n) %></b></p>
                 <p class="fr-card__desc">ODAL Liste INSEE année <%= Date.today.year-3 %> : <b><%= format_boolean(@organisme.odal_n1) %></b></p>
+                <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year %> : <b><%= format_boolean(@organisme.ciassp_n) %></b></p>
+                <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year - 1 %> : <b><%= format_boolean(@organisme.ciassp_n1) %></b></p>
               </div>
             </div>
           </div>
