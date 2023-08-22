@@ -26,15 +26,14 @@ class OrganismesController < ApplicationController
       else
         user_relation = case @statut_user
                         when 'Controleur'
-                          current_user.controleur_organismes.where(statut: 'valide')
+                          current_user.controleur_organismes.where(statut: 'valide').where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%")
                         when 'Bureau Sectoriel'
-                          current_user.bureau_organismes.where(statut: 'valide')
+                          current_user.bureau_organismes.where(statut: 'valide').where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%")
                         else
                           []
                         end
 
-        famille_relation = Organisme.where(famille: @familles, statut: 'valide')
-                                    .where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%")
+        famille_relation = Organisme.where(famille: @familles, statut: 'valide').where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%")
 
         user_relation.or(famille_relation)
       end

@@ -14,6 +14,7 @@ class ModificationsController < ApplicationController
 
   def open_modal
     @modification = Modification.find(params[:id])
+    redirect_to request.referer.presence || root_path, flash: { notice: 'supprimée' } unless @modification
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -26,29 +27,41 @@ class ModificationsController < ApplicationController
 
   def update
     @modification = Modification.find(params[:id])
-    @modification.update(modification_params)
-    @organisme = @modification.organisme
     redirect_to root_path and return unless current_user.statut == '2B2O'
 
-    champ = @modification.champ
-    if champ == 'ministeres'
-      selected_ministeres = @modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i)
-      @organisme.organisme_ministeres.destroy_all
-      selected_ministeres.each do |ministere_id|
-        @organisme.organisme_ministeres.create(ministere_id: ministere_id)
+    if @modification
+      @modification.update(modification_params)
+      @organisme = @modification.organisme
+
+      if @modification.statut == 'validée'
+        champ = @modification.champ
+        if champ == 'ministeres'
+          selected_ministeres = @modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i)
+          @organisme.organisme_ministeres.destroy_all
+          selected_ministeres.each do |ministere_id|
+            @organisme.organisme_ministeres.create(ministere_id: ministere_id)
+          end
+        else
+          @organisme.update(champ => @modification.nouvelle_valeur)
+        end
+        @message = 'validée'
+      elsif @modification.statut == 'refusée'
+        @message = 'refusée'
       end
     else
-      @organisme.update(champ => @modification.nouvelle_valeur)
+      @message = 'supprimée'
     end
     @operateur = @organisme.operateur
     modifications_organisme = @organisme.modifications.includes(:user).order(created_at: :desc)
     modifications_classees(modifications_organisme)
-    redirect_to request.referer.presence || root_path, flash: { notice: 'modification' }
+    redirect_to request.referer.presence || root_path, flash: { notice: @message }
   end
 
   def destroy
-    @modification = Modification.find(params[:id]).destroy
-    redirect_to request.referer.presence || root_path
+    @modification = Modification.find(params[:id])
+    @message = @modification && @modification.statut == 'En attente' ? 'annulation' : 'non annulation'
+    @modification.destroy if @modification && @modification.statut == 'En attente'
+    redirect_to request.referer.presence || root_path, flash: { notice: @message }
   end
 
   private

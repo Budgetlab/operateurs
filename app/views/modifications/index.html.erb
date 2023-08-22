@@ -28,7 +28,7 @@
                     <th scope="col">Contrôleur</th>
                   <%end %>
                   <th scope="col">Organisme</th>
-                  <th scope="col">Nombre</th>
+                  <th scope="col">Nombre de demandes en attente</th>
                   <th></th>
                 </tr>
                 </thead>
@@ -40,7 +40,7 @@
                     <td><%= User.find(modification.user_id).nom %></td>
                       <%end %>
                     <td><%= link_to organisme_path(modification.organisme_id) do %><%= Organisme.find(modification.organisme_id).nom %><%end %></td>
-                    <td><p class="fr-badge fr-badge--success fr-badge--no-icon"><%= modification.modification_count %></p></td>
+                    <td><p class="fr-badge fr-badge--warning fr-badge--no-icon"><%= modification.modification_count %></p></td>
                     <td><%= link_to organisme_path(modification.organisme_id), class:'fr-btn' do %>Consulter<%end %></td>
                   </tr>
                 <%end %>
@@ -60,7 +60,7 @@
                     <th scope="col">Contrôleur</th>
                   <%end %>
                   <th scope="col">Organisme</th>
-                  <th scope="col">Nombre</th>
+                  <th scope="col">Nombre de demandes validées</th>
                   <th></th>
                 </tr>
                 </thead>
@@ -91,7 +91,7 @@
                     <th scope="col">Contrôleur</th>
                   <%end %>
                   <th scope="col">Organisme</th>
-                  <th scope="col">Nombre</th>
+                  <th scope="col">Nombre de demandes rejetées</th>
                   <th></th>
                 </tr>
                 </thead>

@@ -14,7 +14,7 @@
               Refus de modification
             </h1>
             <p class="fr-my-1w">Souhaitez-vous expliquer le refus de modification au contrôleur ?</p>
-            <%= form_with(model: modification) do |f| %>
+            <%= form_with(model: modification, data: {'form-target': "form"}) do |f| %>
               <%= f.hidden_field :statut, value: 'refusée' %>
               <div class="fr-input-group">
                 <label for="commentaire" class="fr-label">Commentaire</label>
@@ -27,7 +27,7 @@
                     <button class="fr-btn fr-btn--secondary" aria-controls="modal-1" title="Annuler" data-action="click->form#Dropdown">Annuler</button>
                   </li>
                   <li>
-                    <%= f.submit 'Valider', class: "fr-btn"%>
+                    <%= f.submit 'Valider',data: {'form-target': "submitBouton"}, class: "fr-btn"%>
                   </li>
                 </ul>
               </div>

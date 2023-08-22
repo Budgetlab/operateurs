@@ -1,8 +1,24 @@
 <% if flash.any? %>
   <% flash.each do |type, msg| %>
-    <% if msg == "modification" %>
+    <% if msg == "validée" %>
       <div class="fr-alert fr-alert--success fr-mb-2w">
-        <h3 class="fr-alert__title">Modification mise à jour avec succès.</h3>
+        <h3 class="fr-alert__title">Modification validée et organisme mis à jour avec succès.</h3>
+      </div>
+    <% elsif msg == "refusée" %>
+        <div class="fr-alert fr-alert--success fr-mb-2w">
+          <h3 class="fr-alert__title">La modification a bien été rejetée.</h3>
+        </div>
+    <%elsif msg == "annulation" %>
+      <div class="fr-alert fr-alert--success fr-mb-2w">
+        <h3 class="fr-alert__title">La modification a bien été supprimée.</h3>
+      </div>
+    <%elsif msg == "non annulation" %>
+      <div class="fr-alert fr-alert--error fr-mb-2w">
+        <h3 class="fr-alert__title">La modification a déjà été mise à jour entre temps par 2B2O et n'a donc pas été supprimée.</h3>
+      </div>
+    <%elsif msg == "supprimée" %>
+      <div class="fr-alert fr-alert--error fr-mb-2w">
+        <h3 class="fr-alert__title">La modification a déjà été annulée entre temps par le contrôleur et a donc été supprimée.</h3>
       </div>
     <% end %>
   <% end %>

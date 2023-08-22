@@ -49,7 +49,7 @@
                       <li><%= link_to open_modal_path(id: modification.id), class:"fr-btn fr-btn--secondary fr-my-0","data-fr-opened": false,"aria-controls":"modal-1",data: { "turbo_method": :post} do %>Refuser<%end %></li>
                     </ul>
                     <%else %>
-                      <%= link_to modification_path(modification), data: { "turbo-method": :delete}, class: "fr-btn" do %>Supprimer<%end %>
+                      <%= link_to modification_path(modification), data: { "turbo-method": :delete}, class: "fr-btn" do %>Annuler demande<%end %>
                     <%end %>
                   </td>
 
@@ -209,7 +209,7 @@
                 </h3>
                 <p class="fr-card__desc">Partie I GBCP : <b><%= format_boolean(@organisme.gbcp_1) %></b></p>
                 <p class="fr-card__desc">Présence d’un agent comptable : <b><%= format_boolean(@organisme.agent_comptable_present) %></b></p>
-                <p class="fr-card__desc">Champ d'application du degré GBCP <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
+                <p class="fr-card__desc">Champ d'application du décret GBCP <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
                   Information contextuelle
                 </button>
                   <span class="fr-tooltip fr-placement" id="tooltip-2994" role="tooltip" aria-hidden="true">Appartenance aux bulles de l’article 1er du GBCP à retrouver sur https://www.legifrance.gouv.fr/loda/id/JORFTEXT000026597003</span>: <b><%= format_boolean(@organisme.degre_gbcp) %></b></p>
@@ -302,10 +302,10 @@
                 </button>
                   <span class="fr-tooltip fr-placement" id="tooltip-4" role="tooltip" aria-hidden="true">Au pré-CA ou à tout autre organe délibérant (Assemblée Générale)</span>
                   : <b><%= format_boolean(@organisme.admin_preca) %></b></p>
-                <p class="fr-card__desc">Présence contrôleur au pré-CA : <button class="fr-btn--tooltip fr-btn" id="button-5" aria-describedby="tooltip-5" data-action="form#Dropdown">
+                <p class="fr-card__desc">Présence contrôleur au pré-CA <button class="fr-btn--tooltip fr-btn" id="button-5" aria-describedby="tooltip-5" data-action="form#Dropdown">
                   Information contextuelle
                 </button>
-                  <span class="fr-tooltip fr-placement" id="tooltip-5" role="tooltip" aria-hidden="true">Au pré-CA ou à tout autre organe délibérant (Assemblée Générale)</span><b><%= format_boolean(@organisme.controleur_preca) %></b></p>
+                  <span class="fr-tooltip fr-placement" id="tooltip-5" role="tooltip" aria-hidden="true">Au pré-CA ou à tout autre organe délibérant (Assemblée Générale)</span> : <b><%= format_boolean(@organisme.controleur_preca) %></b></p>
                 <p class="fr-card__desc">Présence contrôleur au CA <button class="fr-btn--tooltip fr-btn" id="button-6" aria-describedby="tooltip-6" data-action="form#Dropdown">
                   Information contextuelle
                 </button>

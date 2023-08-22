@@ -9,7 +9,7 @@
         <div class="fr-card fr-enlarge-link fr-card--shadow">
           <div class="fr-card__body">
             <div class="fr-card__content">
-              <h3 class="fr-card__title"><%= link_to organismes_path do %>Liste des organismes<%end %></h3>
+              <h3 class="fr-card__title"><%= link_to organismes_path do %>Consulter un organisme<%end %></h3>
               <p class="fr-card__desc">Accéder aux fiches des organismes de mon périmètre</p>
             </div>
           </div>
@@ -19,7 +19,7 @@
         <div class="fr-card fr-enlarge-link fr-card--shadow">
           <div class="fr-card__body">
             <div class="fr-card__content">
-              <h3 class="fr-card__title"><%= link_to modifications_path do %>Suivi des modifications<%end %></h3>
+              <h3 class="fr-card__title"><%= link_to modifications_path do %>Gérer les demandes de modifications contrôleurs<%end %></h3>
               <% if @statut_user == "2B2O" %>
               <p class="fr-card__desc">Suivre l'historique des modifications effectuées par les contrôleurs</p>
               <% else %>
@@ -34,11 +34,11 @@
           <div class="fr-card__body">
             <div class="fr-card__content">
               <% if @statut_user == "2B2O" %>
-              <h3 class="fr-card__title"><%= link_to new_organisme_path do %>Ajouter un organisme<%end %></h3>
+              <h3 class="fr-card__title"><%= link_to new_organisme_path do %>Créer un organisme<%end %></h3>
               <p class="fr-card__desc">Créer un nouvel organisme directement au sein de l'outil</p>
               <% else %>
-              <h3 class="fr-card__title"><%= link_to root_path do %>Chiffres clés<%end %></h3>
-              <p class="fr-card__desc">Renseignez les chiffres clés d’un organisme en amont du préCA ou du CA</p>
+              <h3 class="fr-card__title"><%= link_to root_path do %>Renseigner les chiffres clés<%end %></h3>
+              <p class="fr-card__desc">Renseigner les chiffres clés d’un organisme de mon périmètre à chaque étape du processus budgétaire</p>
               <%end %>
             </div>
           </div>
