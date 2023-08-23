@@ -3,7 +3,7 @@
   <div class="fr-stepper">
     <h2 class="fr-stepper__title">
       <span class="fr-stepper__state">Étape 1 sur 6</span>
-      Fiche d'identité de l'organisme
+      Informations générales
     </h2>
     <div class="fr-stepper__steps" data-fr-current-step="1" data-fr-steps="6"></div>
     <p class="fr-stepper__details">
@@ -25,12 +25,12 @@
           <%= link_to organisme_path(@organisme), class:"fr-breadcrumb__link" do %><%= @organisme.nom %><%end %>
         </li>
         <li>
-          <a class="fr-breadcrumb__link" aria-current="page">Modification fiche d'identité</a>
+          <a class="fr-breadcrumb__link" aria-current="page">Modification informations générales</a>
         </li>
       </ol>
     </div>
   </nav>
-  <h1 class="fr-mb-4w">Modification fiche d'identité</h1>
+  <h1 class="fr-mb-4w">Modification informations générales</h1>
 <%end %>
 <div class="fr-mb-6w">
   <div class="fr-card  fr-card--no-arrow">
@@ -125,7 +125,7 @@
             <%else %>
             <div class="fr-select-group">
               <label for="nature" class="fr-label">Nature juridique*</label>
-              <%= f.select :nature, options_for_select([["- sélectionner -", ""]] + @liste_natures.map { |nature| [nature, nature] }, selected: @organisme.nature),{}, {data: {'form-target': 'fieldRequire', action: "change->form#changeNature" }, id:"nature",class:"fr-select"}%>
+              <%= f.select :nature, options_for_select([["- sélectionner -", ""]] + @liste_natures.map { |nature| [nature, nature] }, selected: @organisme.nature),{}, {data: {'form-target': 'fieldRequire' }, id:"nature",class:"fr-select"}%>
             </div>
             <%end %>
           </div>
@@ -174,7 +174,7 @@
               <p><b><% if @organisme.organisme_rattachements.count > 0 %><% @organisme.organisme_rattachements.each do |orga|%><%= orga.organisme_destination.nom %> - <%end %><%else %>Aucun<%end %></b></p>
             <%else %>
             <div class="fr-select-group">
-              <label for="rattachement" class="fr-label">Organisme•s de rattachement*</label>
+              <label class="fr-label">Organisme•s de rattachement</label>
               <button class="fr-select fr-btns-group--left" aria-controls="translate-1295" aria-expanded="false" title="Sélectionner un ou plusieurs organismes" data-action="click->form#Dropdown" id="BtnRattachement">
                 - sélectionner -
               </button>

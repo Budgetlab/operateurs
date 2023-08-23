@@ -6,9 +6,6 @@ export default class extends Controller {
     }
     connect() {
 
-        if (document.getElementById("nature") != null) {
-            this.changeNature();
-        }
         if (document.getElementById("etat") != null){
             this.changeEtat();
             this.changeEffetDissolution();
@@ -59,14 +56,6 @@ export default class extends Controller {
         if (this.checkRequireTargets != []){
             const checkRequireTargetschecked = this.checkRequireTargets.filter(target => target.checked);
             if (this.checkRequireTargets.length > 0 && checkRequireTargetschecked.length < Math.floor(this.checkRequireTargets.length/2)) {
-                isValid = false;
-            }
-        }
-        if (document.getElementById("effet_dissolution") != null){
-            const effet = document.getElementById("effet_dissolution");
-            const isTrue = effet.value === "Rattachement" || effet.value === "Création"
-            const checkTargetschecked = this.checklistTargets.filter(target => target.checked);
-            if (checkTargetschecked.length == 0 && isTrue) {
                 isValid = false;
             }
         }
@@ -152,14 +141,6 @@ export default class extends Controller {
 
         if (event.target.value.length > maxLength) {
             event.target.value = event.target.value.slice(0, maxLength);
-        }
-    }
-    changeNature(){
-        const nature= document.getElementById("nature")
-        const date_previsionnelle= document.getElementById("date_previsionnelle_dissolution");
-        const isTrue = nature.value === "GIP"
-        if (date_previsionnelle != null){
-            this.changeField(isTrue,date_previsionnelle);
         }
     }
     changeEtat(){

@@ -28,6 +28,9 @@
 .fr-text--barre{
   text-decoration : line-through;
 }
+.fr-text--italic{
+  font-style: italic;
+}
 
 .shadow{
   filter: drop-shadow(var(--lifted-shadow)) !important;

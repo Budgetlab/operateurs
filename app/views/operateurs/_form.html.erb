@@ -92,7 +92,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <fieldset class="fr-fieldset">
                 <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
-                  Appartenance catégorie d'opérateur*
+                  Appartenance catégorie d'opérateurs*
                 </legend>
                 <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
@@ -110,7 +110,7 @@
             </div>
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group">
-                <label for="nom_categorie" class="fr-label">Catégorie d'opérateur*</label>
+                <label for="nom_categorie" class="fr-label">Catégorie d'opérateurs*</label>
                 <%= f.select :nom_categorie,options_for_select([["- sélectionner -", ""]] + @liste_autorites.map { |autorite| [autorite, autorite] }, selected: @operateur.nom_categorie),{}, {data: {'form-target': 'fieldRequire'}, id:"nom_categorie",class:"fr-select"}%>
               </div>
             </div>

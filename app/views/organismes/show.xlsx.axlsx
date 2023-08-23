@@ -1,6 +1,6 @@
 
     wb = xlsx_package.workbook
-  	wb.add_worksheet(name: "Fiche identité") do |sheet| 	
+  	wb.add_worksheet(name: "Informations générales") do |sheet| 	
     	sheet.add_row %W{ Nom Acronyme État Date\ création Siren Famille Nature\ juridique Date\ prévisionnelle\ dissolution Date\ dissolution Effet\ dissolution Organismes\ Rattachement Bureau\ rattachement texte\ institutif commentaire}
       @array_orga = []
       if @organisme.effet_dissolution == "Rattachement" || @organisme.effet_dissolution == "Création"
@@ -9,18 +9,17 @@
         end
       end
       @bureau = @organisme.bureau ? format_boolean(@organisme.bureau.nom) : "Non renseigné"
-      @date_previsionnelle_dissolution = @organisme.nature == "GIP" ? format_boolean(@organisme.date_previsionnelle_dissolution) : "NA"
-      @date_dissolution = @organisme.etat == "Inactif" ? format_boolean(@organisme.date_dissolution) : "NA"
-      @effet_dissolution = @organisme.etat == "Inactif" ? format_boolean(@organisme.effet_dissolution) : "NA"
-      @array_orga = "NA" if @organisme.etat != "Inactif" || @organisme.effet_dissolution == "Suppression"
+      @date_dissolution = @organisme.etat == "Inactif" ? format_boolean(@organisme.date_dissolution) : "N/A"
+      @effet_dissolution = @organisme.etat == "Inactif" ? format_boolean(@organisme.effet_dissolution) : "N/A"
+      @array_orga = "N/A" if @organisme.etat != "Inactif" || @organisme.effet_dissolution == "Suppression"
       @array_orga = "Non renseigné" if @array_orga.empty?
 
-      sheet.add_row [@organisme.nom, format_boolean(@organisme.acronyme), @organisme.etat, format_boolean(@organisme.date_creation), format_boolean(@organisme.siren), format_boolean(@organisme.famille), format_boolean(@organisme.nature), @date_previsionnelle_dissolution, @date_dissolution , @effet_dissolution, @array_orga, @bureau, format_boolean(@organisme.texte_institutif), format_boolean(@organisme.commentaire)]
+      sheet.add_row [@organisme.nom, format_boolean(@organisme.acronyme), @organisme.etat, format_boolean(@organisme.date_creation), format_boolean(@organisme.siren), format_boolean(@organisme.famille), format_boolean(@organisme.nature), format_boolean(@organisme.date_previsionnelle_dissolution), @date_dissolution , @effet_dissolution, @array_orga, @bureau, format_boolean(@organisme.texte_institutif), format_boolean(@organisme.commentaire)]
            
   	end
     if @operateur
     wb.add_worksheet(name: "Opérateur") do |sheet|
-      sheet.add_row %W{ Opérateur\ #{Date.today.year} Opérateur\ #{Date.today.year-1} Opérateur\ #{Date.today.year-2} Appartenance\ catégorie\ opérateur Nom\ catégorie Mission Programme\ chef\ file Programmes\ Annexes}
+      sheet.add_row %W{ Opérateur\ #{Date.today.year} Opérateur\ #{Date.today.year-1} Opérateur\ #{Date.today.year-2} Appartenance\ catégorie\ opérateurs Nom\ catégorie Mission Programme\ chef\ file Programmes\ Annexes}
     
       @array_prog = []
       if @operateur_programmes
@@ -29,7 +28,7 @@
         end
       end
       @array_prog = "Aucun" if @array_prog.empty?
-      @nom_categorie = @operateur.presence_categorie ? format_boolean(@operateur.nom_categorie) : "NA"
+      @nom_categorie = @operateur.presence_categorie ? format_boolean(@operateur.nom_categorie) : "N/A"
 
       sheet.add_row [format_boolean(@operateur.operateur_n), format_boolean(@operateur.operateur_n1), format_boolean(@operateur.operateur_n2),format_boolean(@operateur.presence_categorie), @nom_categorie, format_boolean(@operateur.mission.nom), format_boolean(@operateur.programme.numero), @array_prog ]
          
@@ -42,17 +41,17 @@
          
   	end
     wb.add_worksheet(name: "Contrôle") do |sheet|
-      sheet.add_row %W{ Présence\ contrôle Contrôleur Nature\ contrôle Référence\ texte\ soumission\ contrôle Autorité\ contrôle Texte\ réglementaire\ désignation\ autorité\ contrôle référence\ arrêté\ contrôle document\ contrôle date\ signature\ document lien\ document Référence\ arrêté\ nomination\ comissaire\ gouvernement}
+      sheet.add_row %W{ Présence\ contrôle Contrôleur Nature\ contrôle Référence\ texte\ soumission\ contrôle Autorité\ contrôle Texte\ réglementaire\ désignation\ autorité\ contrôle référence\ arrêté\ contrôle document\ contrôle date\ signature\ document lien\ document Référence\ arrêté\ nomination\ commissaire\ gouvernement}
 
-      @array_controle = @organisme.presence_controle ? [format_boolean(@organisme.nature_controle), format_boolean(@organisme.texte_soumission_controle), format_boolean(@organisme.autorite_controle), format_boolean(@organisme.texte_reglementaire_controle),format_boolean(@organisme.arrete_controle), format_boolean(@organisme.document_controle_present)] : ["NA","NA",'NA','NA','NA','NA']
-      @document_controle_date = @organisme.document_controle_present ? format_boolean(@organisme.document_controle_date) : "NA"
-      @document_controle_lien = @organisme.document_controle_present ? format_boolean(@organisme.document_controle_lien) : "NA"
+      @array_controle = @organisme.presence_controle ? [format_boolean(@organisme.nature_controle), format_boolean(@organisme.texte_soumission_controle), format_boolean(@organisme.autorite_controle), format_boolean(@organisme.texte_reglementaire_controle),format_boolean(@organisme.arrete_controle), format_boolean(@organisme.document_controle_present)] : ["N/A","N/A",'N/A','N/A','N/A','N/A']
+      @document_controle_date = @organisme.document_controle_present ? format_boolean(@organisme.document_controle_date) : "N/A"
+      @document_controle_lien = @organisme.document_controle_present ? format_boolean(@organisme.document_controle_lien) : "N/A"
     
       sheet.add_row [format_boolean(@organisme.presence_controle), @organisme.controleur.nom, @array_controle[0], @array_controle[1], @array_controle[2], @array_controle[3],@array_controle[4], @array_controle[5], @document_controle_date, @document_controle_lien, format_boolean(@organisme.arrete_nomination)]
          
     end
     wb.add_worksheet(name: "Tutelles") do |sheet|
-      sheet.add_row %W{ Tutelle\ financière\ MCP Délégation\ approbation\ BI/BR/comptes  Autorité\ chargée\ approbation Ministère\ tutelle Ministeres\ co-tutelle}
+      sheet.add_row %W{ Tutelle\ financière\ MCP Délégation\ approbation\ BI/BR/CF  Autorité\ chargée\ approbation Ministère\ tutelle Ministères\ co-tutelle}
       
       @array_ministeres = []
       if @organisme_ministeres
@@ -62,14 +61,14 @@
       end
       @array_ministeres = "Aucun" if @array_ministeres.empty?
       @ministere = @organisme.ministere ? format_boolean(@organisme.ministere.nom) : "Aucun"
-      @delegation_approbation = @organisme.tutelle_financiere ? format_boolean(@organisme.tutelle_financiere) : "NA"
+      @delegation_approbation = @organisme.tutelle_financiere ? format_boolean(@organisme.tutelle_financiere) : "N/A"
 
       sheet.add_row [format_boolean(@organisme.tutelle_financiere), @delegation_approbation, format_boolean(@organisme.autorite_approbation), @ministere, @array_ministeres]
          
     end
     wb.add_worksheet(name: "Gouvernance DB") do |sheet|
       sheet.add_row %W{ Admin\ DB Fonction\ Admin Présence\ DB\ préCA Présence\ Controleur\ préCA Présence\ Controleur\ CA Comité\ Audit\ Risques}
-      @admin_db_fonction = @organisme.admin_db_present ? format_boolean(@organisme.admin_db_fonction) : "NA"
+      @admin_db_fonction = @organisme.admin_db_present ? format_boolean(@organisme.admin_db_fonction) : "N/A"
     
       sheet.add_row [format_boolean(@organisme.admin_db_present), @admin_db_fonction, format_boolean(@organisme.admin_preca),format_boolean(@organisme.controleur_preca), format_boolean(@organisme.controleur_ca), format_boolean(@organisme.comite_audit)]
          

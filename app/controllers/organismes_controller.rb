@@ -132,7 +132,7 @@ class OrganismesController < ApplicationController
 
     organismes_to_link = params[:organisme].delete(:organismes)
     ministeres_to_link = params[:organisme].delete(:ministeres)
-    reset_values([:date_previsionnelle_dissolution, :date_dissolution, :effet_dissolution]) if params[:organisme][:etat]
+    reset_values([:date_dissolution, :effet_dissolution]) if params[:organisme][:etat]
     reset_values([:nature_controle, :texte_soumission_controle, :autorite_controle, :texte_reglementaire_controle, :arrete_controle, :document_controle_present, :document_controle_lien, :document_controle_date, :arrete_nomination]) if params[:organisme][:presence_controle]
     reset_values([:admin_db_fonction]) if params[:organisme][:admin_db_present]
     reset_values([:delegation_approbation]) if params[:organisme][:tutelle_financiere]
@@ -141,11 +141,16 @@ class OrganismesController < ApplicationController
       create_modifications(modifications)
     end
     if @statut_user == '2B2O'
+      if params[:organisme][:statut] && params[:organisme][:statut] != 'valide'
+        step = params[:organisme][:statut].to_i + 1
+        params[:organisme][:statut] = @organisme.statut.to_i > params[:organisme][:statut].to_i ? @organisme.statut : params[:organisme][:statut] # pour garder étape si retour en arrière
+      end
       @organisme.update(organisme_params)
       update_organisme_rattachements(organismes_to_link)
       update_organisme_ministeres(ministeres_to_link)
+      update_modifications_attente(@organisme)
     end
-    redirect_to @organisme.statut == 'valide' ? @organisme : edit_organisme_path
+    redirect_to @organisme.statut == 'valide' ? @organisme : edit_organisme_path(@organisme, step: step)
   end
 
   def destroy
@@ -214,6 +219,15 @@ class OrganismesController < ApplicationController
       selected_ministeres = ministeres_to_link || []
       selected_ministeres.map(&:to_i).reject { |element| element == 0 }.each do |ministere_id|
         @organisme.organisme_ministeres.create(ministere_id: ministere_id)
+      end
+    end
+  end
+
+  def update_modifications_attente(organisme)
+    modifications_attente = organisme.modifications.where(statut: 'En attente')
+    if organisme.etat == 'Inactif' && !modifications_attente.empty?
+      modifications_attente.each do |modification|
+        modification.update(statut: 'refusée', commentaire: 'Organisme devenu inactif')
       end
     end
   end

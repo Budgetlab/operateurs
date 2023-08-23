@@ -1,6 +1,6 @@
 <% content_for :title do %>Affichage de l'organisme <%= @organisme.nom %> | OPERA <% end %>
 <main role="main">
-  <div class="fr-container" data-controller="toggle">
+  <div class="fr-container" >
     <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
       <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
       <div class="fr-collapse" id="breadcrumb-1">
@@ -22,7 +22,7 @@
 
     <%= render 'modifications/success'%>
     <% if @modifications_attente_organisme.length > 0  && @admin%>
-      <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-grid-row fr-grid-row--gutters" id="modifications_attente">
         <div class="fr-col-12 fr-col-lg-12">
           <h2><span class="fr-icon-alarm-warning-fill fr-icon--lg fr-label--success" aria-hidden="true"></span> Modifications en attente de validation [<%= @modifications_attente_organisme.length%>]</h2>
           <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--blue-ecume fr-table--layout-fixed--lg">
@@ -69,67 +69,54 @@
 
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-4">
-        <p class="fr-hint-text">Cliquez sur les interrupteurs ci-dessous pour faire apparaître ou disparaître des sections.</p>
-        <ul class="fr-toggle__list">
-          <li>
-            <div class="fr-toggle fr-toggle--border-bottom fr-toggle--label-left">
-              <input type="checkbox" checked="true" class="fr-toggle__input" id="group-4-toggle-0" data-action="change->toggle#toggle" data-section="fiche_identite">
-              <label class="fr-toggle__label" for="group-4-toggle-0" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Fiche d’identité</label>
+        <nav class="fr-sidemenu fr-sidemenu--sticky-full-height" aria-labelledby="fr-sidemenu-title">
+          <div class="fr-sidemenu__inner">
+            <button class="fr-sidemenu__btn" hidden aria-controls="fr-sidemenu-wrapper" aria-expanded="false">
+              Dans cette rubrique
+            </button>
+            <div class="fr-collapse" id="fr-sidemenu-wrapper">
+              <div class="fr-sidemenu__title" id="fr-sidemenu-title">Sections</div>
+              <ul class="fr-sidemenu__list">
+
+                <li class="fr-sidemenu__item">
+                  <a class="fr-sidemenu__link" href="#fiche_identite" target="_self">Informations générales</a>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <a class="fr-sidemenu__link" href="#operateur" target="_self">Opérateur</a>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <a class="fr-sidemenu__link" href="#regime_budgetaire" target="_self">Régime budgétaire et comptable</a>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <a class="fr-sidemenu__link" href="#controle" target="_self">Contrôle</a>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <a class="fr-sidemenu__link" href="#tutelles" target="_self">Tutelles financière et technique</a>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <a class="fr-sidemenu__link" href="#gouvernance" target="_self">Gouvernance DB</a>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <a class="fr-sidemenu__link" href="#categories" target="_self">Catégories</a>
+                </li>
+                <li class="fr-sidemenu__item fr-sidemenu__item--active">
+                  <a class="fr-sidemenu__link" href="#modifications" target="_self">Historique des modifications</a>
+                </li>
+              </ul>
             </div>
-          </li>
-          <li>
-            <div class="fr-toggle fr-toggle--border-bottom fr-toggle--label-left">
-              <input type="checkbox" checked="true" class="fr-toggle__input" id="group-4-toggle-op" data-action="change->toggle#toggle" data-section="operateur">
-              <label class="fr-toggle__label" for="group-4-toggle-op" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Opérateur</label>
-            </div>
-          </li>
-          <li>
-            <div class="fr-toggle fr-toggle--border-bottom fr-toggle--label-left">
-              <input type="checkbox" checked="true" class="fr-toggle__input" id="group-4-toggle-1" data-action="change->toggle#toggle" data-section="regime_budgetaire">
-              <label class="fr-toggle__label" for="group-4-toggle-1" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Régime budgétaire et comptable</label>
-            </div>
-          </li>
-          <li>
-            <div class="fr-toggle fr-toggle--border-bottom fr-toggle--label-left">
-              <input type="checkbox" checked="true" class="fr-toggle__input" id="group-4-toggle-2" data-action="change->toggle#toggle" data-section="controle">
-              <label class="fr-toggle__label" for="group-4-toggle-2" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Contrôle</label>
-            </div>
-          </li>
-          <li>
-            <div class="fr-toggle fr-toggle--border-bottom fr-toggle--label-left">
-              <input type="checkbox" checked="true" class="fr-toggle__input" id="group-4-toggle-3" data-action="change->toggle#toggle" data-section="tutelles">
-              <label class="fr-toggle__label" for="group-4-toggle-3" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Tutelles financière et technique</label>
-            </div>
-          </li>
-          <li>
-            <div class="fr-toggle fr-toggle--border-bottom fr-toggle--label-left">
-              <input type="checkbox" checked="true" class="fr-toggle__input" id="group-4-toggle-4" data-action="change->toggle#toggle" data-section="gouvernance">
-              <label class="fr-toggle__label" for="group-4-toggle-4" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Gouvernance DB</label>
-            </div>
-          </li>
-          <li>
-            <div class="fr-toggle fr-toggle--border-bottom fr-toggle--label-left">
-              <input type="checkbox" checked="true" class="fr-toggle__input" id="group-4-toggle-5" data-action="change->toggle#toggle" data-section="categories">
-              <label class="fr-toggle__label" for="group-4-toggle-5" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Catégories</label>
-            </div>
-          </li>
-          <li>
-            <div class="fr-toggle fr-toggle--border-bottom fr-toggle--label-left">
-              <input type="checkbox" checked="true" class="fr-toggle__input" id="group-4-toggle-6" data-action="change->toggle#toggle" data-section="modifications">
-              <label class="fr-toggle__label" for="group-4-toggle-6" data-fr-checked-label="Activé" data-fr-unchecked-label="Désactivé">Historique des modifications</label>
-            </div>
-          </li>
-        </ul>
+          </div>
+        </nav>
+
       </div>
 
       <div class="fr-col-12 fr-col-lg-8">
         <% if @est_valide %>
         <div class="fr-download">
-          <p><%= link_to "/opera/organismes/#{@organisme.id}.xlsx", format: :xslx, class: "fr-download__link" do %>Télécharger la fiche de l'organisme<span class="fr-download__detail">Format .xlsx</span><%end %></p>
+          <p><%= link_to "/opera/organismes/#{@organisme.id}.xlsx", format: :xslx, class: "fr-download__link" do %>Télécharger la fiche d'identité de l'organisme<span class="fr-download__detail">Format .xlsx</span><%end %></p>
         </div>
         <% end %>
         <div id="fiche_identite" class="fr-mb-4w">
-          <h2 class="title-btn">Fiche d'identité <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <h2 class="title-btn">Informations générales <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
 
           <div class="fr-card">
             <div class="fr-card__body">
@@ -141,12 +128,12 @@
               <p class="fr-card__desc">Siren : <b><%= format_boolean(@organisme.siren) %></b></p>
               <p class="fr-card__desc">Famille : <b><%= format_boolean(@organisme.famille) %></b></p>
               <p class="fr-card__desc">Nature juridique : <b><%= format_boolean(@organisme.nature) %></b></p>
-              <% if @organisme.nature == "GIP" %><p class="fr-card__desc">Date prévisionnelle de dissolution : <b><%= format_boolean(format_date(@organisme.date_previsionnelle_dissolution))%></b></p><%end %>
+              <% if @organisme.date_previsionnelle_dissolution %><p class="fr-card__desc">Date prévisionnelle de dissolution : <b><%= format_boolean(format_date(@organisme.date_previsionnelle_dissolution))%></b></p><%end %>
               <% if @organisme.etat == "Inactif" %>
                 <p class="fr-card__desc">Date de dissolution : <b><%= format_boolean(format_date(@organisme.date_dissolution))%></b></p>
                 <p class="fr-card__desc">Effet de dissolution : <b><%= format_boolean(@organisme.effet_dissolution) %></b></p>
                 <% if @organisme.effet_dissolution == "Rattachement" || @organisme.effet_dissolution == "Création" %>
-                  <p class="fr-card__desc">Organisme•s de rattachement : <b><% if @organisme.organisme_rattachements %><% @organisme.organisme_rattachements.each do |orga|%><%= link_to organisme_path(orga.organisme_destination) do%><%= orga.organisme_destination.nom %><%end %> - <%end %><%else %>Aucun<%end %></b></p>
+                  <p class="fr-card__desc">Organisme•s de rattachement : <b><% if @organisme.organisme_rattachements.length > 0 %><% @organisme.organisme_rattachements.each do |orga|%><%= link_to organisme_path(orga.organisme_destination) do%><%= orga.organisme_destination.nom %><%end %> - <%end %><%else %>Aucun parmi les organismes soumis au GBCP<%end %></b></p>
                 <%end %>
               <%end %>
 
@@ -155,7 +142,18 @@
               <% if @organisme_destinations && @organisme_destinations.count > 0 %>
                 <p class="fr-card__desc">Organisme hérité de <% @organisme_destinations.each do |el| %><b><%= link_to organisme_path(el.organisme) do%><%= el.organisme.nom%><%end %></b> dissous le <%= format_boolean(format_date(el.organisme.date_dissolution))%> -<%end %></p>
               <% end %>
-              <p class="fr-card__desc">Commentaires : <b><%= auto_link(simple_format(format_boolean(@organisme.commentaire),{}, wrapper_tag: "span"), :html => { :target => '_blank' })%></b></p>
+              <% if @organisme.commentaire && !@organisme.commentaire.blank?  %>
+              <div class="fr-card__desc">
+              <section class="fr-accordion">
+                <h3 class="fr-accordion__title">
+                  <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-106">Commentaires</button>
+                </h3>
+                <div class="fr-collapse" id="accordion-106">
+                  <%= auto_link(simple_format(format_boolean(@organisme.commentaire),{}, wrapper_tag: "span"), :html => { :target => '_blank' })%>
+                </div>
+              </section>
+              </div>
+              <%end %>
 
                 <div class="fr-card__start">
                   <ul class="fr-tags-group">

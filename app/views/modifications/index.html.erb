@@ -41,7 +41,7 @@
                       <%end %>
                     <td><%= link_to organisme_path(modification.organisme_id) do %><%= Organisme.find(modification.organisme_id).nom %><%end %></td>
                     <td><p class="fr-badge fr-badge--warning fr-badge--no-icon"><%= modification.modification_count %></p></td>
-                    <td><%= link_to organisme_path(modification.organisme_id), class:'fr-btn' do %>Consulter<%end %></td>
+                    <td><%= link_to organisme_path(modification.organisme_id, anchor: 'modifications_attente'), class:'fr-btn' do %>Consulter<%end %></td>
                   </tr>
                 <%end %>
                 </tbody>
@@ -73,7 +73,7 @@
                     <%end %>
                     <td><%= link_to organisme_path(modification.organisme_id) do %><%= Organisme.find(modification.organisme_id).nom %><%end %></td>
                     <td><p class="fr-badge fr-badge--success fr-badge--no-icon"><%= modification.modification_count %></p></td>
-                    <td><%= link_to organisme_path(modification.organisme_id), class:'fr-btn' do %>Consulter<%end %></td>
+                    <td><%= link_to organisme_path(modification.organisme_id, anchor: 'modifications'), class:'fr-btn' do %>Consulter<%end %></td>
                   </tr>
                 <%end %>
                 </tbody>
@@ -104,7 +104,7 @@
                     <%end %>
                     <td><%= link_to organisme_path(modification.organisme_id) do %><%= Organisme.find(modification.organisme_id).nom %><%end %></td>
                     <td><p class="fr-badge fr-badge--error fr-badge--no-icon"><%= modification.modification_count %></p></td>
-                    <td><%= link_to organisme_path(modification.organisme_id), class:'fr-btn' do %>Consulter<%end %></td>
+                    <td><%= link_to organisme_path(modification.organisme_id, anchor: 'modifications'), class:'fr-btn' do %>Consulter<%end %></td>
                   </tr>
                 <%end %>
                 </tbody>
