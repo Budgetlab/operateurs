@@ -68,7 +68,7 @@ class OrganismesController < ApplicationController
     @organisme_ministeres = @organisme.organisme_ministeres.includes(:ministere)
     @operateur = Operateur.includes(:mission, :programme, :operateur_programmes).find_by(organisme_id: @organisme.id)
     @operateur_programmes = @operateur.operateur_programmes.includes(:programme) if @operateur
-    modifications = @organisme.modifications.includes(:user).order(created_at: :desc)
+    modifications = @organisme.modifications.includes(:user).order(updated_at: :desc)
     @modifications_valides_organisme = modifications.select { |modification| modification.statut == 'validée' }
     @modifications_rejetees_organisme = modifications.select { |modification| modification.statut == 'refusée' }
     @modifications_attente_organisme = modifications.select { |modification| modification.statut == 'En attente' }

@@ -52,3 +52,8 @@
 .fr-card--custom-blue .fr-card__desc, .fr-card--custom-blue .fr-card__title a[href], .fr-card--custom-blue:before{
   color: var(--text-inverted-blue-france) !important;
 }
+
+select:disabled {
+  opacity: 1 !important;
+  color: var(--text-disabled-grey) !important;
+}

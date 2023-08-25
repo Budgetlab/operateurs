@@ -397,7 +397,11 @@
                       <td><%= modification.user.nom %></td>
                       <td><%= modification.nom %></td>
                       <td><%= render partial: 'modifications/table_nom', locals: {modification: modification}  %></td>
-                      <td><%= modification.commentaire %></td>
+
+                      <td><div data-controller="toggle">
+                        <span data-toggle-target="commentaireCourt"><%= truncate(modification.commentaire, length: 20) %><% if modification.commentaire && modification.commentaire.length > 20 %><button class="fr-btn--tertiary fr-btn--sm" data-action="click->toggle#afficherPlus">Voir plus</button><% end %></span>
+                        <span data-toggle-target="commentaireLong" style="display: none;"><%= modification.commentaire %><button class="fr-btn--tertiary fr-btn--sm" data-action="click->toggle#afficherMoins">Voir moins</button></span>
+                      </div></td>
                     </tr>
                   <%end %>
                   </tbody>
@@ -406,9 +410,6 @@
             </div>
           </div>
         </div>
-        <% if @statut_user == "2B2O" %>
-          <div><%= link_to organisme_path(@organisme),data: { "turbo-method": :delete}, class: "fr-btn fr-btn--secondary" do%>Supprimer l'organisme<%end %></div>
-        <% end %>
         <div class="fr-grid-row fr-grid-row--right fr-mb-4w">
           <a class="fr-link fr-icon-arrow-up-fill fr-link--icon-left" href="#top">
             Haut de page
