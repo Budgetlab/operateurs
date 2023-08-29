@@ -34,13 +34,13 @@
                 </legend>
                 <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
-                    <%= f.radio_button :operateur_nf, true, id: "radio-operateurnf-1", checked: @operateur.operateur_n, data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" } %>
+                    <%= f.radio_button :operateur_nf, true, id: "radio-operateurnf-1", checked: @operateur.operateur_nf, data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" } %>
                     <label class="fr-label" for="radio-operateurnf-1">Oui</label>
                   </div>
                 </div>
                 <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
-                    <%= f.radio_button :operateur_nf, false, checked: @operateur.operateur_n != true, id:"operateurnf", data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" }  %>
+                    <%= f.radio_button :operateur_nf, false, checked: @operateur.operateur_nf != true, id:"operateurnf", data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" }  %>
                     <label class="fr-label" for="operateurnf">Non</label>
                   </div>
                 </div>
