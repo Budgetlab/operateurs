@@ -72,7 +72,9 @@
                 <p><b><%= format_boolean(@organisme.controleur.nom) %></b></p>
               <% else %>
               <div class="fr-select-group">
-                <label for="controleur" class="fr-label">Contrôleur référent*</label>
+                <label for="controleur" class="fr-label">Contrôleur référent*<button class="fr-btn--tooltip fr-btn" id="button-299" aria-describedby="tooltip-299" data-action="form#Dropdown">
+                  Information contextuelle</button>
+                  <span class="fr-tooltip fr-placement" id="tooltip-299" role="tooltip" aria-hidden="true">Entité détenant les droits d’écriture sur la fiche d’identité de l’organisme et les données chiffrées</span></label>
                 <%= f.select :controleur_id,options_for_select([["- sélectionner -", ""],["2B2O",User.where(statut: "2B2O").first.id], *@controleurs.map { |controleur| [controleur.nom, controleur.id] }], selected: @organisme.statut != "valide" && @organisme.statut.to_i < 3 ? "" : @organisme.controleur_id ),{}, {data: {'form-target': 'fieldRequire'}, id:"controleur",class:"fr-select"}%>
               </div>
               <%end %>
@@ -82,7 +84,11 @@
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group">
-                <label for="nature" class="fr-label">Nature du contrôle*</label>
+                <label for="nature" class="fr-label">Nature du contrôle*<button class="fr-btn--tooltip fr-btn" id="button-2992" aria-describedby="tooltip-2992" data-action="form#Dropdown">
+                  Information contextuelle</button>
+                  <span class="fr-tooltip fr-placement" id="tooltip-2992" role="tooltip" aria-hidden="true">Contrôle économique et financier :  application du décret n°55-733 du 26 mai 1955 relatif au contrôle économique et financier de l'Etat ;<br>
+Contrôle budgétaire : application des articles 220 à 229 du décret n° 2012-1246 du 7 novembre 2012 relatif à la gestion budgétaire et comptable publique ;<br>
+Contrôle budgétaire EPSCP : application de certaines dispositions du code de l’éducation (Article L719-9 et Articles R719-51 à R719-112) par dérogation au décret GBCP (exclusion des articles 224 à 226). </span></label>
                 <%= f.select :nature_controle,[["- sélectionner -",""],['CEF','CEF'], ['Contrôle Budgétaire','Contrôle Budgétaire'], ['Contrôle budgétaire adapté','Contrôle budgétaire adapté'], ['Autre','Autre']],{selected: @organisme.nature_controle}, {data: {'form-target': 'fieldRequire'}, id:"nature",class:"fr-select"}%>
               </div>
             </div>
@@ -96,7 +102,9 @@
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group">
-                <label for="autorite_controle" class="fr-label">Autorité de contrôle*</label>
+                <label for="autorite_controle" class="fr-label">Autorité de contrôle*<button class="fr-btn--tooltip fr-btn" id="button-2991" aria-describedby="tooltip-2991" data-action="form#Dropdown">
+                  Information contextuelle</button>
+                  <span class="fr-tooltip fr-placement" id="tooltip-2991" role="tooltip" aria-hidden="true">Autorité de contrôle désignée dans les textes législatifs et/ou réglementaires</span></label>
                 <%= f.select :autorite_controle,options_for_select([["- sélectionner -", ""], ["2B2O",User.where(statut: "2B2O").first.id]] + User.where(statut: 'Controleur').order(nom: :asc).pluck(:nom).map { |nom| [nom, nom] }, selected: @organisme.autorite_controle),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite_controle",class:"fr-select"}%>
               </div>
             </div>

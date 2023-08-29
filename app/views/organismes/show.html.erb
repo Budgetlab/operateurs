@@ -122,7 +122,7 @@
             <div class="fr-card__body">
             <div class="fr-card__content">
               <h3 class="fr-card__title">
-                <% if @organisme.acronyme && !@organisme.acronyme.blank? %><%= @organisme.acronyme %> - <%end %><%= @organisme.nom %>
+                <%= @organisme.nom %><% if @organisme.acronyme && !@organisme.acronyme.blank? %> - <%= @organisme.acronyme %><%end %>
               </h3>
               <p class="fr-card__desc">Date de création : <b><%= format_boolean(format_date(@organisme.date_creation)) %></b></p>
               <p class="fr-card__desc">Siren : <b><%= format_boolean(@organisme.siren) %></b></p>
@@ -138,7 +138,7 @@
               <%end %>
 
               <p class="fr-card__desc">Bureau DB de rattachement : <b><% if @organisme.bureau %><%= @organisme.bureau.nom %><%else %>Non renseigné<%end %></b></p>
-              <p class="fr-card__desc">Texte institutif : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_institutif),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
+              <p class="fr-card__desc">Textes institutifs : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_institutif),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
               <% if @organisme_destinations && @organisme_destinations.count > 0 %>
                 <p class="fr-card__desc">Organisme hérité de <% @organisme_destinations.each do |el| %><b><%= link_to organisme_path(el.organisme) do%><%= el.organisme.nom%><%end %></b> dissous le <%= format_boolean(format_date(el.organisme.date_dissolution))%> -<%end %></p>
               <% end %>
