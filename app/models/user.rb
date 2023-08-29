@@ -15,6 +15,7 @@ class User < ApplicationRecord
            class_name: 'Organisme'
 
   def self.import(file)
+    User.where.not(statut: '2B2O').destroy_all
     data = Roo::Spreadsheet.open(file.path)
     headers = data.row(1) # get header row
     data.each_with_index do |row, idx|

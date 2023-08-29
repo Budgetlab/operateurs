@@ -1,0 +1,18 @@
+<main role="main" class="containtAll">
+  <div class="fr-container ">
+    <div class="fr-col-lg-12">
+      <h1 class="fr-my-7w">Mettre à jour les opérateurs [<%= @operateurs.length %>]</h1>
+      <div>
+        <%= form_tag import_operateurs_path, multipart: true do %>
+          <div class="fr-upload-group">
+            <label class="fr-label" for="file-upload">Ajouter des fichiers
+              <span class="fr-hint-text">Taille maximale : 50 Mo. Formats supportés : xlsx. </span>
+            </label>
+            <%= file_field_tag  :file, accept: '.xlsx', class: "fr-upload", id: "file-upload" %>
+          </div>
+          <div class="fr-my-4w"><%= submit_tag "Transmettre", class:"fr-btn" %></div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</main>

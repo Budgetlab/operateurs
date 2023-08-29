@@ -57,3 +57,7 @@ select:disabled {
   opacity: 1 !important;
   color: var(--text-disabled-grey) !important;
 }
+
+.fr-label--warning{
+  color: var(--text-default-warning);
+}

@@ -14,6 +14,12 @@ class OrganismesController < ApplicationController
     @organismes_creation = @organismes.select { |el| el[2] == 'valide' && el[3] == 'En cours de création' }
     @organismes_brouillon = @organismes.reject { |el| el[2] == 'valide' }
     @search_organismes = []
+    @liste_organismes = organismes.where(statut: 'valide').sort_by { |organisme| normalize_name(organisme.nom) } || []
+    filename = 'liste_organismes.xlsx'
+    respond_to do |format|
+      format.html
+      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
+    end
   end
 
   def recherche_organismes
@@ -48,13 +54,6 @@ class OrganismesController < ApplicationController
 
   def organismes_ajout
     redirect_to root_path and return unless @statut_user == '2B2O'
-
-    @organismes = Organisme.where(statut: 'valide').sort_by { |organisme| normalize_name(organisme.nom) } || []
-    filename = 'liste_organismes.xlsx'
-    respond_to do |format|
-      format.html
-      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
-    end
   end
 
   def show
@@ -197,7 +196,7 @@ class OrganismesController < ApplicationController
   def set_famille
     if @statut_user == 'Controleur'
       @familles = current_user.controleur_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
-      @familles = ['Universités'] if current_user.nom == 'CBCM MEN-MESRI'
+      @familles += ['Universités'] if current_user.nom == 'CBCM MEN-MESRI'
     elsif @statut_user == 'Bureau Sectoriel'
       @familles = current_user.bureau_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
     end

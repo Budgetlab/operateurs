@@ -24,7 +24,7 @@
     <% if @modifications_attente_organisme.length > 0  && @admin%>
       <div class="fr-grid-row fr-grid-row--gutters" id="modifications_attente">
         <div class="fr-col-12 fr-col-lg-12">
-          <h2><span class="fr-icon-alarm-warning-fill fr-icon--lg fr-label--success" aria-hidden="true"></span> Modifications en attente de validation [<%= @modifications_attente_organisme.length%>]</h2>
+          <h2><span class="fr-icon-alarm-warning-fill fr-icon--lg fr-label--warning" aria-hidden="true"></span> Modifications en attente de validation [<%= @modifications_attente_organisme.length%>]</h2>
           <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--blue-ecume fr-table--layout-fixed--lg">
             <table>
               <caption>Tableau des modifications </caption>
@@ -180,6 +180,7 @@
                 <h3 class="fr-card__title">
                   Opérateur année <%= Date.today.year %> : <% if @operateur %><%= format_boolean(@operateur.operateur_n) %><%else %>Non<%end %>
                 </h3>
+                <p class="fr-card__desc">Opérateur année <%= Date.today.year+1 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_nf) %><%else %>Non<%end %></b></p>
                 <p class="fr-card__desc">Opérateur année <%= Date.today.year-1 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n1) %><%else %>Non<%end %></b></p>
                 <p class="fr-card__desc">Opérateur année <%= Date.today.year-2 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n2) %><%else %>Non<%end %></b></p>
                 <% if @operateur %>

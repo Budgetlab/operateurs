@@ -84,12 +84,13 @@
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group">
-                <label for="nature" class="fr-label">Nature du contrôle*<button class="fr-btn--tooltip fr-btn" id="button-2992" aria-describedby="tooltip-2992" data-action="form#Dropdown">
+                <label for="nature" class="fr-label">Nature du contrôle*</label>
+                <%= f.select :nature_controle,[["- sélectionner -",""],['Contrôle Economique et Financier','Contrôle Economique et Financier'], ['Contrôle Budgétaire','Contrôle Budgétaire'], ['Contrôle Budgétaire EPSCP','Contrôle Budgétaire EPSCP'], ['Autre','Autre']],{selected: @organisme.nature_controle}, {data: {'form-target': 'fieldRequire'}, id:"nature",class:"fr-select"}%>
+                <button class="fr-btn--tooltip fr-btn" id="button-2992" aria-describedby="tooltip-2992" data-action="form#Dropdown">
                   Information contextuelle</button>
-                  <span class="fr-tooltip fr-placement" id="tooltip-2992" role="tooltip" aria-hidden="true">Contrôle économique et financier :  application du décret n°55-733 du 26 mai 1955 relatif au contrôle économique et financier de l'Etat ;<br>
+                <span class="fr-tooltip fr-placement" id="tooltip-2992" role="tooltip" aria-hidden="true">Contrôle économique et financier :  application du décret n°55-733 du 26 mai 1955 relatif au contrôle économique et financier de l'Etat ;<br>
 Contrôle budgétaire : application des articles 220 à 229 du décret n° 2012-1246 du 7 novembre 2012 relatif à la gestion budgétaire et comptable publique ;<br>
-Contrôle budgétaire EPSCP : application de certaines dispositions du code de l’éducation (Article L719-9 et Articles R719-51 à R719-112) par dérogation au décret GBCP (exclusion des articles 224 à 226). </span></label>
-                <%= f.select :nature_controle,[["- sélectionner -",""],['CEF','CEF'], ['Contrôle Budgétaire','Contrôle Budgétaire'], ['Contrôle budgétaire adapté','Contrôle budgétaire adapté'], ['Autre','Autre']],{selected: @organisme.nature_controle}, {data: {'form-target': 'fieldRequire'}, id:"nature",class:"fr-select"}%>
+Contrôle budgétaire EPSCP : application de certaines dispositions du code de l’éducation (Article L719-9 et Articles R719-51 à R719-112) par dérogation au décret GBCP (exclusion des articles 224 à 226). </span>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-6">
@@ -102,10 +103,11 @@ Contrôle budgétaire EPSCP : application de certaines dispositions du code de l
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group">
-                <label for="autorite_controle" class="fr-label">Autorité de contrôle*<button class="fr-btn--tooltip fr-btn" id="button-2991" aria-describedby="tooltip-2991" data-action="form#Dropdown">
+                <label for="autorite_controle" class="fr-label">Autorité de contrôle*</label>
+                <%= f.select :autorite_controle,options_for_select([["- sélectionner -", ""]] + @liste_autorite_controle.map { |nom| [nom, nom] }, selected: @organisme.autorite_controle),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite_controle",class:"fr-select"}%>
+                <button class="fr-btn--tooltip fr-btn" id="button-2991" aria-describedby="tooltip-2991" data-action="form#Dropdown">
                   Information contextuelle</button>
-                  <span class="fr-tooltip fr-placement" id="tooltip-2991" role="tooltip" aria-hidden="true">Autorité de contrôle désignée dans les textes législatifs et/ou réglementaires</span></label>
-                <%= f.select :autorite_controle,options_for_select([["- sélectionner -", ""], ["2B2O",User.where(statut: "2B2O").first.id]] + User.where(statut: 'Controleur').order(nom: :asc).pluck(:nom).map { |nom| [nom, nom] }, selected: @organisme.autorite_controle),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite_controle",class:"fr-select"}%>
+                <span class="fr-tooltip fr-placement" id="tooltip-2991" role="tooltip" aria-hidden="true">Autorité de contrôle désignée dans les textes législatifs et/ou réglementaires</span>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-6">

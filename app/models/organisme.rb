@@ -50,7 +50,7 @@ class Organisme < ApplicationRecord
       end
       if row_data['operateur_n'] == 'oui' || row_data['operateur_n1'] == 'oui' || row_data['operateur_n2'] == 'oui'
         operateur = Operateur.new(organisme_id: organisme.id)
-        column_names_bis = %w[operateur_n operateur_n1 operateur_n2 presence_categorie nom_categorie]
+        column_names_bis = %w[operateur_nf operateur_n operateur_n1 operateur_n2 presence_categorie nom_categorie]
         column_names_bis.each do |column_name|
           row_data[column_name] = convert_to_boolean(row_data[column_name])
         end

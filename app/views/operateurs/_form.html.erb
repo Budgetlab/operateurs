@@ -27,7 +27,27 @@
           <%= f.hidden_field :organisme_id, value: @organisme.id %>
           <%= render 'organismes/form_notice' %>
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 fr-col-lg-3">
+              <fieldset class="fr-fieldset">
+                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
+                  Opérateur PLF <%= Date.today.year + 1 %>*
+                </legend>
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
+                  <div class="fr-radio-group">
+                    <%= f.radio_button :operateur_nf, true, id: "radio-operateurnf-1", checked: @operateur.operateur_n, data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" } %>
+                    <label class="fr-label" for="radio-operateurnf-1">Oui</label>
+                  </div>
+                </div>
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
+                  <div class="fr-radio-group">
+                    <%= f.radio_button :operateur_nf, false, checked: @operateur.operateur_n != true, id:"operateurnf", data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" }  %>
+                    <label class="fr-label" for="operateurnf">Non</label>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="fr-col-12 fr-col-lg-3">
               <fieldset class="fr-fieldset">
                 <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
                   Opérateur PLF <%= Date.today.year %>*
@@ -47,7 +67,7 @@
               </fieldset>
             </div>
 
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 fr-col-lg-3">
               <fieldset class="fr-fieldset">
                 <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
                   Opérateur PLF <%= Date.today.year-1 %>*
@@ -67,7 +87,7 @@
               </fieldset>
             </div>
 
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 fr-col-lg-3">
               <fieldset class="fr-fieldset">
                 <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
                   Opérateur PLF <%= Date.today.year-2 %>*

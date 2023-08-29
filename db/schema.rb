@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_10_070618) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_29_073939) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -64,6 +64,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_10_070618) do
     t.bigint "programme_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "operateur_nf"
     t.index ["mission_id"], name: "index_operateurs_on_mission_id"
     t.index ["organisme_id"], name: "index_operateurs_on_organisme_id"
     t.index ["programme_id"], name: "index_operateurs_on_programme_id"

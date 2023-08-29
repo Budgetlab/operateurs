@@ -6,6 +6,9 @@
         <h1 class="fr-my-4w">Liste des organismes [<%= @organismes.length %>]</h1>
       </div>
     </div>
+    <div class="fr-download">
+      <p><%= link_to "/opera/organismes.xlsx", format: :xslx, class: "fr-link fr-download__link" do %>Télécharger la liste des organismes de mon périmètre<span class="fr-download__detail">Format .xlsx - < 1Mo</span><%end %></p>
+    </div>
     <%= render 'organismes/form_search' %>
     <div class="fr-tabs fr-mb-2w">
       <ul class="fr-tabs__list" role="tablist" aria-label="Onglets Organismes actifs">

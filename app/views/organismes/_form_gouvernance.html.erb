@@ -72,12 +72,12 @@
             </fieldset>
           </div>
           <div class="fr-col-12 fr-col-lg-4">
-            <div class="fr-input-group">
+            <div class="fr-select-group">
               <label for="admin_db_fonction" class="fr-label">Fonction de l’administrateur DB <button class="fr-btn--tooltip fr-btn" id="button-2996" aria-describedby="tooltip-2995" data-action="form#Dropdown">
                 Information contextuelle
               </button>
                 <span class="fr-tooltip fr-placement" id="tooltip-2995" role="tooltip" aria-hidden="true">Ne pas donner l’identité mais uniquement la fonction de l’administrateur </span></label>
-              <%= f.text_field :admin_db_fonction, value: @organisme.admin_db_fonction, id:"admin_db_fonction", class:"fr-input"%>
+              <%= f.select :admin_db_fonction,options_for_select([["- sélectionner -", ""]] + @liste_fonctions_admin_db.map { |nom| [nom, nom] }, selected: @organisme.admin_db_fonction),{}, {id:"admin_db_fonction", class:"fr-input"}%>
             </div>
           </div>
         </div>

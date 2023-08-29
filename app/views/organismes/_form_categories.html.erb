@@ -146,6 +146,12 @@
                 </div>
                 <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
+                    <%= f.radio_button :arrete_interdiction_odac, "Exclusion", checked: @organisme.arrete_interdiction_odac == "Exclusion", id:"radio-arrete-n-e" %>
+                    <label class="fr-label" for="radio-arrete-n-e">Exclusion</label>
+                  </div>
+                </div>
+                <div class="fr-fieldset__element fr-fieldset__element--inline">
+                  <div class="fr-radio-group">
                     <%= f.radio_button :arrete_interdiction_odac, "", checked: (@organisme.arrete_interdiction_odac.blank? || @organisme.arrete_interdiction_odac.nil?) , id:"radio-arrete-n" %>
                     <label class="fr-label" for="radio-arrete-n">Non renseigné</label>
                   </div>

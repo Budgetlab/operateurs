@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   post '/import_organismes' => 'organismes#import'
   get '/organismes_ajout' => 'organismes#organismes_ajout'
   post '/recherche_organismes' => 'organismes#recherche_organismes'
+  post '/import_operateurs' => 'operateurs#import'
   get '/ministeres' => 'ministeres#index'
   post '/import_ministeres' => 'ministeres#import'
   get '/missions' => 'missions#index'

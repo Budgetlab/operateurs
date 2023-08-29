@@ -196,7 +196,7 @@ export default class extends Controller {
             console.log(degre.value)
             if (degre.value == "Exclusion"){
                 this.resetChamp(degre);
-                ['3°','4°','5°','6°'].forEach((deg)=>{
+                ['3° Etablissements publics de santé / GCS','4° Autres personnes morales de droit public (cf. arrêté)','5° Personnes morales de droit privé','6° Personnes morales de droit public hors APU'].forEach((deg)=>{
                     const option = document.createElement("option");
                     option.value = deg;
                     option.innerHTML = deg;

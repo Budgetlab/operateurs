@@ -87,7 +87,7 @@
                 </button>
                   <span class="fr-tooltip fr-placement" id="tooltip-2994" role="tooltip" aria-hidden="true">Appartenance aux bulles de l’article 1er du GBCP à retrouver sur https://www.legifrance.gouv.fr/loda/id/JORFTEXT000026597003</span>
                 </label>
-                <%= f.select :degre_gbcp,[["- sélectionner -",""],['3°','3°'],['4°','4°'],["5°",'5°'],["6°",'6°']],{selected: @organisme.degre_gbcp}, {id:"degre_gbcp",class:"fr-select"}%>
+                <%= f.select :degre_gbcp,[["- sélectionner -",""],['3° Etablissements publics de santé / GCS','3° Etablissements publics de santé / GCS'],['4° Autres personnes morales de droit public (cf. arrêté)','4° Autres personnes morales de droit public (cf. arrêté)'],["5° Personnes morales de droit privé",'5° Personnes morales de droit privé'],["6° Personnes morales de droit public hors APU",'6° Personnes morales de droit public hors APU']],{selected: @organisme.degre_gbcp}, {id:"degre_gbcp",class:"fr-select"}%>
               </div>
 
               <fieldset class="fr-fieldset">

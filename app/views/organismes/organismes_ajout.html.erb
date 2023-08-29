@@ -14,9 +14,7 @@
         <% end %>
       </div>
       <div class="fr-mb-4w"><%= link_to reset_all_path, class:"fr-btn fr-btn--secondary", data: {"turbo-method": :post} do %>Tout supprimer<%end %></div>
-      <div class="fr-download">
-        <p><%= link_to "/opera/organismes_ajout.xlsx", format: :xslx, class: "fr-link fr-download__link" do %>Télécharger la liste des <%= @organismes.count %> organismes<span class="fr-download__detail">Format .xlsx - 500Ko</span><%end %></p>
-      </div>
+
     </div>
   </div>
 </main>
