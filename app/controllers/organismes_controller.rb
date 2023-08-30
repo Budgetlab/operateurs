@@ -14,7 +14,7 @@ class OrganismesController < ApplicationController
     @organismes_creation = @organismes.select { |el| el[2] == 'valide' && el[3] == 'En cours de création' }
     @organismes_brouillon = @organismes.reject { |el| el[2] == 'valide' }
     @search_organismes = []
-    @liste_organismes = organismes.where(statut: 'valide').includes(:bureau, :ministere, :organisme_rattachements, :organisme_ministeres, operateur: [:mission, :programme, :operateur_programmes]).sort_by { |organisme| normalize_name(organisme.nom) } || []
+    @liste_organismes = organismes.where(statut: 'valide').includes(:bureau, :controleur, :ministere, :organisme_rattachements, organisme_ministeres: [:ministere], operateur: [:mission, :programme, operateur_programmes: [:programme]]).sort_by { |organisme| normalize_name(organisme.nom) } || []
     filename = 'liste_organismes.xlsx'
     respond_to do |format|
       format.html

@@ -18,7 +18,7 @@
       end
 
       @array_ministeres = []
-      @organisme_ministeres = organisme.organisme_ministeres.includes(:ministere) || []
+      @organisme_ministeres = organisme.organisme_ministeres || []
       @organisme_ministeres.each do |orga|
         @array_ministeres << orga.ministere.nom
       end
@@ -28,7 +28,7 @@
       @nom_categorie = @operateur && @operateur.presence_categorie ? format_boolean(@operateur.nom_categorie) : "N/A"
       
       @array_operateur = @operateur ? [format_boolean(@operateur.operateur_nf), format_boolean(@operateur.operateur_n), format_boolean(@operateur.operateur_n1), format_boolean(@operateur.operateur_n2), format_boolean(@operateur.presence_categorie), @nom_categorie, format_boolean(@operateur.mission.nom), format_boolean(@operateur.programme.numero)] : ["Non","Non","Non","Non","Non","N/A","N/A","N/A"]
-      @operateur_programmes = @operateur ? @operateur&.operateur_programmes.includes(:programme) : []
+      @operateur_programmes = @operateur ? @operateur&.operateur_programmes : []
       @array_prog = []
       @operateur_programmes.each do |el|
        @array_prog << el.programme.numero
