@@ -61,3 +61,14 @@ select:disabled {
 .fr-label--warning{
   color: var(--text-default-warning);
 }
+
+.fr-table--onglet-vscroll{
+  max-height: 25rem;
+  overflow: auto;
+}
+
+.fr-table--onglet2-vscroll{
+  max-height: 35rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+}

@@ -10,7 +10,7 @@
       <p><%= link_to "/opera/organismes.xlsx", format: :xslx, class: "fr-link fr-download__link" do %>Télécharger la liste des organismes de mon périmètre<span class="fr-download__detail">Format .xlsx - < 1Mo</span><%end %></p>
     </div>
     <%= render 'organismes/form_search' %>
-    <div class="fr-tabs fr-mb-2w">
+    <div class="fr-tabs fr-mb-4w">
       <ul class="fr-tabs__list" role="tablist" aria-label="Onglets Organismes actifs">
         <li role="presentation">
           <button id="tabpanel-1177" class="fr-tabs__tab fr-icon-checkbox-circle-line fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-1177-panel">Organismes actifs (<%= @organismes_actifs.length %>)</button>
@@ -28,6 +28,7 @@
         </li>
       </ul>
       <div id="tabpanel-1177-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-1177" tabindex="0">
+        <div class="fr-table--onglet2-vscroll">
         <% @organismes_actifs.each do |organisme|%>
           <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
             <div class="fr-col-6 fr-col-lg-7">
@@ -41,9 +42,11 @@
             </div>
           </div>
         <%end %>
+        </div>
       </div>
       <% if @statut_user == "2B2O" %>
         <div id="tabpanel-1178-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1178" tabindex="0">
+          <div class="fr-table--onglet2-vscroll">
           <%  @organismes_brouillon.each do |organisme|%>
             <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
               <div class="fr-col-6 fr-col-lg-6">
@@ -60,9 +63,11 @@
               </div>
             </div>
           <%end %>
+          </div>
         </div>
       <% end %>
       <div id="tabpanel-1179-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1179" tabindex="0">
+        <div class="fr-table--onglet2-vscroll">
         <%  @organismes_creation.each do |organisme|%>
           <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
             <div class="fr-col-6 fr-col-lg-6">
@@ -76,8 +81,10 @@
             </div>
           </div>
         <%end %>
+        </div>
       </div>
       <div id="tabpanel-1180-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1180" tabindex="0">
+        <div class="fr-table--onglet2-vscroll">
         <%  @organismes_inactifs.each do |organisme|%>
           <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
             <div class="fr-col-6 fr-col-lg-7">
@@ -91,6 +98,7 @@
             </div>
           </div>
         <%end %>
+        </div>
       </div>
     </div>
   </div>

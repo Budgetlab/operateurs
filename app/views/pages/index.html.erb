@@ -9,8 +9,8 @@
         <div class="fr-card fr-enlarge-link fr-card--shadow">
           <div class="fr-card__body">
             <div class="fr-card__content">
-              <h3 class="fr-card__title"><%= link_to organismes_path do %>Consulter un organisme<%end %></h3>
-              <p class="fr-card__desc">Accéder aux fiches des organismes de mon périmètre</p>
+              <h3 class="fr-card__title"><%= link_to organismes_path do %>Consulter les informations d'un organisme<%end %></h3>
+              <p class="fr-card__desc">Accéder aux fiches des organismes de mon périmètre.</p>
             </div>
           </div>
         </div>
@@ -19,11 +19,12 @@
         <div class="fr-card fr-enlarge-link fr-card--shadow">
           <div class="fr-card__body">
             <div class="fr-card__content">
-              <h3 class="fr-card__title"><%= link_to modifications_path do %>Gérer les demandes de modifications contrôleurs<%end %></h3>
               <% if @statut_user == "2B2O" %>
-              <p class="fr-card__desc">Suivre l'historique des modifications effectuées par les contrôleurs</p>
+              <h3 class="fr-card__title"><%= link_to modifications_path do %>Gérer les demandes de modifications contrôleurs<%end %></h3>
+              <p class="fr-card__desc">Suivre l'historique des modifications effectuées par les contrôleurs.</p>
               <% else %>
-              <p class="fr-card__desc">Suivre mes modifications effectuées sur les organismes de mon périmètre</p>
+                <h3 class="fr-card__title"><%= link_to modifications_path do %>Suivre mes modifications<%end %></h3>
+              <p class="fr-card__desc">Accéder à l'historique des modifications effectuées sur les organismes de mon périmètre.</p>
               <%end %>
             </div>
           </div>
@@ -34,11 +35,11 @@
           <div class="fr-card__body">
             <div class="fr-card__content">
               <% if @statut_user == "2B2O" %>
-              <h3 class="fr-card__title"><%= link_to new_organisme_path do %>Créer un organisme<%end %></h3>
-              <p class="fr-card__desc">Créer un nouvel organisme directement au sein de l'outil</p>
+              <h3 class="fr-card__title"><%= link_to new_organisme_path do %>Créer la fiche d'un organisme<%end %></h3>
+              <p class="fr-card__desc">Créer la fiche d'un organisme directement au sein de l'outil.</p>
               <% else %>
               <h3 class="fr-card__title"><%= link_to root_path do %>Renseigner les chiffres clés<%end %></h3>
-              <p class="fr-card__desc">Renseigner les chiffres clés d’un organisme de mon périmètre à chaque étape du processus budgétaire</p>
+              <p class="fr-card__desc">Renseigner les chiffres clés d’un organisme de mon périmètre à chaque étape du processus budgétaire.</p>
               <%end %>
             </div>
           </div>
@@ -58,7 +59,7 @@
         <div class="fr-card fr-enlarge-link">
           <div class="fr-card__body">
             <div class="fr-card__content">
-              <h3 class="fr-card__title"><%= link_to organisme_path(organisme) do %><% if organisme.acronyme && !organisme.acronyme.blank? %><%= organisme.acronyme %> - <%end %><%= organisme.nom %><%end %></h3>
+              <h3 class="fr-card__title"><%= link_to organisme_path(organisme) do %><%= organisme.nom %><% if organisme.acronyme && !organisme.acronyme.blank? %> - <%= organisme.acronyme %><%end %><%end %></h3>
               <p class="fr-card__desc">Nature juridique : <%= organisme.nature %></p>
               <p class="fr-card__desc">Famille : <%= organisme.famille %></p>
               <div class="fr-card__start">
@@ -77,6 +78,7 @@
       <%end %>
     </div>
   </div>
+  <% if @statut_user != "2B2O" %>
   <div class="fr-follow">
     <div class="fr-container">
       <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
@@ -95,4 +97,5 @@
       </div>
     </div>
   </div>
+  <%end %>
 </main>
