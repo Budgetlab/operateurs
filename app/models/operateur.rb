@@ -18,7 +18,7 @@ class Operateur < ApplicationRecord
       organisme = Organisme.find_by(siren: row_data['Siren'].to_s)
       if organisme
         operateur = Operateur.where(organisme_id: organisme.id).first || Operateur.new(organisme_id: organisme.id)
-
+        column_names_excel = %w[operateur_n operateur_n1 operateur_n2 presence_categorie nom_categorie]
       end
     end
   end

@@ -7,9 +7,11 @@
       
       @liste_organismes.each do |organisme|
 
+      @operateur = organisme.operateur
+
       @array_orga = []
       if organisme.effet_dissolution == "Rattachement" || organisme.effet_dissolution == "Création"
-        @organisme_rattachements = organisme.organisme_rattachements || []
+        @organisme_rattachements = organisme.organisme_rattachements.includes(:organisme_destination) || []
         @organisme_rattachements.each do |orga|
         @array_orga << orga.organisme_destination.nom
         end
@@ -22,11 +24,11 @@
       end
       @array_ministeres = "Aucun" if @array_ministeres.empty?
     
-      @operateur = Operateur.includes(:mission, :programme, :operateur_programmes).find_by(organisme_id: organisme.id)
+
       @nom_categorie = @operateur && @operateur.presence_categorie ? format_boolean(@operateur.nom_categorie) : "N/A"
       
       @array_operateur = @operateur ? [format_boolean(@operateur.operateur_nf), format_boolean(@operateur.operateur_n), format_boolean(@operateur.operateur_n1), format_boolean(@operateur.operateur_n2), format_boolean(@operateur.presence_categorie), @nom_categorie, format_boolean(@operateur.mission.nom), format_boolean(@operateur.programme.numero)] : ["Non","Non","Non","Non","Non","N/A","N/A","N/A"]
-      @operateur_programmes = @operateur ? @operateur.operateur_programmes.includes(:programme) : []
+      @operateur_programmes = @operateur ? @operateur&.operateur_programmes.includes(:programme) : []
       @array_prog = []
       @operateur_programmes.each do |el|
        @array_prog << el.programme.numero
