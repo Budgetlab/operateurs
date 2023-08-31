@@ -149,7 +149,10 @@ class OrganismesController < ApplicationController
       update_organisme_ministeres(ministeres_to_link)
       update_modifications_attente(@organisme)
     end
-    redirect_to @organisme.statut == 'valide' ? @organisme : edit_organisme_path(@organisme, step: step)
+    redirect_path = @organisme.statut == 'valide' ? @organisme : edit_organisme_path(@organisme, step: step)
+    message = @organisme.statut == 'valide' ? 'maj' : ''
+    message = 'maj controleur' if @statut_user == 'Controleur'
+    redirect_to redirect_path, flash: { notice: message }
   end
 
   def destroy
