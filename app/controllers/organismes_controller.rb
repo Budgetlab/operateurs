@@ -139,6 +139,8 @@ class OrganismesController < ApplicationController
       modifications = generate_modifications(ministeres_to_link)
       create_modifications(modifications)
     end
+    message = @organisme.statut == 'valide' ? 'maj' : 'creation'
+    message = 'maj controleur' if @statut_user == 'Controleur'
     if @statut_user == '2B2O'
       if params[:organisme][:statut] && params[:organisme][:statut] != 'valide'
         step = params[:organisme][:statut].to_i + 1
@@ -150,8 +152,6 @@ class OrganismesController < ApplicationController
       update_modifications_attente(@organisme)
     end
     redirect_path = @organisme.statut == 'valide' ? @organisme : edit_organisme_path(@organisme, step: step)
-    message = @organisme.statut == 'valide' ? 'maj' : ''
-    message = 'maj controleur' if @statut_user == 'Controleur'
     redirect_to redirect_path, flash: { notice: message }
   end
 
