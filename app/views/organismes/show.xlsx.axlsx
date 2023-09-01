@@ -14,7 +14,7 @@
       @array_orga = "N/A" if @organisme.etat != "Inactif" || @organisme.effet_dissolution == "Suppression"
       @array_orga = "Non renseigné" if @array_orga.empty?
 
-      sheet.add_row [@organisme.nom, format_boolean(@organisme.acronyme), @organisme.etat, format_boolean(@organisme.date_creation), format_boolean(@organisme.siren), format_boolean(@organisme.famille), format_boolean(@organisme.nature), format_boolean(@organisme.date_previsionnelle_dissolution), @date_dissolution , @effet_dissolution, @array_orga, @bureau, format_boolean(@organisme.texte_institutif), format_boolean(@organisme.commentaire)]
+      sheet.add_row [@organisme.nom, format_boolean(@organisme.acronyme), @organisme.etat, format_boolean(@organisme.date_creation), " "+format_boolean(@organisme.siren), format_boolean(@organisme.famille), format_boolean(@organisme.nature), format_boolean(@organisme.date_previsionnelle_dissolution), @date_dissolution , @effet_dissolution, @array_orga, @bureau, format_boolean(@organisme.texte_institutif), format_boolean(@organisme.commentaire)]
            
   	end
     if @operateur
