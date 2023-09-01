@@ -1,7 +1,7 @@
 
     wb = xlsx_package.workbook
   	wb.add_worksheet(name: "Informations générales") do |sheet| 	
-    	sheet.add_row %W{ Nom Acronyme État Date\ création Siren Famille Nature\ juridique Date\ prévisionnelle\ dissolution Date\ dissolution Effet\ dissolution Organismes\ Rattachement Bureau\ rattachement textes\ institutifs commentaire}
+    	sheet.add_row %W{ Nom Acronyme État Date\ création Siren Famille Nature\ juridique Date\ prévisionnelle\ dissolution Date\ dissolution Effet\ dissolution Organismes\ Rattachement Bureau\ rattachement Textes\ institutifs Commentaire}
       @array_orga = []
       if @organisme.effet_dissolution == "Rattachement" || @organisme.effet_dissolution == "Création"
         @organisme.organisme_rattachements.each do |orga|
@@ -19,7 +19,7 @@
   	end
     if @operateur
     wb.add_worksheet(name: "Opérateur") do |sheet|
-      sheet.add_row %W{ Opérateur\ #{Date.today.year+1} Opérateur\ #{Date.today.year} Opérateur\ #{Date.today.year-1} Opérateur\ #{Date.today.year-2} Appartenance\ catégorie\ opérateurs Nom\ catégorie Mission Programme\ chef\ file Programmes\ Annexes}
+      sheet.add_row %W{ Opérateur\ #{Date.today.year+1} Opérateur\ #{Date.today.year} Opérateur\ #{Date.today.year-1} Opérateur\ #{Date.today.year-2} Appartenance\ catégorie\ opérateurs Nom\ catégorie Mission Programme\ chef\ file Autres\ Programmes\ financeurs}
     
       @array_prog = []
       if @operateur_programmes
@@ -35,13 +35,13 @@
     end
     end
   	wb.add_worksheet(name: "Régime budgétaire") do |sheet|
-    	sheet.add_row %W{ GBCP\ I Agent\ comptable Degré GBCP\ III Comptabilité\ budgétaire}
+    	sheet.add_row %W{ GBCP\ Titre\ I Agent\ comptable Champ\ application\ GBCP GBCP\ Titre\ III Comptabilité\ budgétaire}
     
     	sheet.add_row [format_boolean(@organisme.gbcp_1), format_boolean(@organisme.agent_comptable_present), format_boolean(@organisme.degre_gbcp), format_boolean(@organisme.gbcp_3), format_boolean(@organisme.comptabilite_budgetaire) ]
          
   	end
     wb.add_worksheet(name: "Contrôle") do |sheet|
-      sheet.add_row %W{ Présence\ contrôle Contrôleur Nature\ contrôle Référence\ texte\ soumission\ contrôle Autorité\ contrôle Texte\ réglementaire\ désignation\ autorité\ contrôle référence\ arrêté\ contrôle document\ contrôle date\ signature\ document lien\ document Référence\ arrêté\ nomination\ commissaire\ gouvernement}
+      sheet.add_row %W{ Présence\ contrôle Contrôleur Nature\ contrôle Référence\ texte\ soumission\ contrôle Autorité\ contrôle Texte\ réglementaire\ désignation\ autorité\ contrôle Référence\ arrêté\ contrôle Document\ contrôle Date\ signature\ document Lien\ document Référence\ arrêté\ nomination\ commissaire\ gouvernement}
 
       @array_controle = @organisme.presence_controle ? [format_boolean(@organisme.nature_controle), format_boolean(@organisme.texte_soumission_controle), format_boolean(@organisme.autorite_controle), format_boolean(@organisme.texte_reglementaire_controle),format_boolean(@organisme.arrete_controle), format_boolean(@organisme.document_controle_present)] : ["N/A","N/A",'N/A','N/A','N/A','N/A']
       @document_controle_date = @organisme.document_controle_present ? format_boolean(@organisme.document_controle_date) : "N/A"
@@ -51,7 +51,7 @@
          
     end
     wb.add_worksheet(name: "Tutelles") do |sheet|
-      sheet.add_row %W{ Tutelle\ financière\ MCP Délégation\ approbation\ BI/BR/CF  Autorité\ chargée\ approbation Ministère\ tutelle Ministères\ co-tutelle}
+      sheet.add_row %W{ Tutelle\ financière\ MCP Délégation\ approbation\ BI/BR/CF  Autorité\ chargée\ approbation\ BI/BR/CF Ministère\ tutelle Ministères\ co-tutelle}
       
       @array_ministeres = []
       if @organisme_ministeres
@@ -61,7 +61,7 @@
       end
       @array_ministeres = "Aucun" if @array_ministeres.empty?
       @ministere = @organisme.ministere ? format_boolean(@organisme.ministere.nom) : "Aucun"
-      @delegation_approbation = @organisme.tutelle_financiere ? format_boolean(@organisme.tutelle_financiere) : "N/A"
+      @delegation_approbation = @organisme.tutelle_financiere ? format_boolean(@organisme.delegation_approbation) : "N/A"
 
       sheet.add_row [format_boolean(@organisme.tutelle_financiere), @delegation_approbation, format_boolean(@organisme.autorite_approbation), @ministere, @array_ministeres]
          
@@ -76,7 +76,7 @@
     wb.add_worksheet(name: "Catégories") do |sheet|
     @date_n2 = Date.today.year-2
     @date_n3 = Date.today.year-3
-      sheet.add_row %W{ APU Arrêté\ Interdiction\ ODAC CIASSP\ #{Date.today.year} CIASSP\ #{Date.today.year-1} ODAL\ #{@date_n2} ODAL\ #{@date_n3} ODAC\ #{@date_n2} ODAC\ #{@date_n3}}
+      sheet.add_row %W{ APU Arrêté\ Interdiction\ emprunt\ ODAC CIASSP\ #{Date.today.year} CIASSP\ #{Date.today.year-1} ODAL\ #{@date_n2} ODAL\ #{@date_n3} ODAC\ #{@date_n2} ODAC\ #{@date_n3}}
     
       sheet.add_row [format_boolean(@organisme.apu),format_boolean(@organisme.arrete_interdiction_odac), format_boolean(@organisme.ciassp_n),format_boolean(@organisme.ciassp_n1), format_boolean(@organisme.odal_n), format_boolean(@organisme.odal_n1), format_boolean(@organisme.odac_n), format_boolean(@organisme.odac_n1)]
          

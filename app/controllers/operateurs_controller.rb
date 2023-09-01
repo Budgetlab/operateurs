@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 
-# Controller Pages operatuers
+# Controller Pages operateurs
 class OperateursController < ApplicationController
   def index
+    redirect_to root_path and return unless @statut_user == '2B2O'
+
     @operateurs = Operateur.all
   end
 
   def new
     @organisme = Organisme.find(params[:organisme_id])
-    redirect_to root_path and return unless current_user.statut == '2B2O' && @organisme
+    redirect_to root_path and return unless @statut_user == '2B2O' && @organisme
 
     @operateur = Operateur.new
     @programmes = Programme.all.order(numero: :asc)
@@ -16,7 +18,7 @@ class OperateursController < ApplicationController
   end
   def create
     @organisme = Organisme.find(params[:operateur][:organisme_id])
-    redirect_to root_path and return unless current_user.statut == '2B2O' && @organisme
+    redirect_to root_path and return unless @statut_user == '2B2O' && @organisme
 
     programmes_to_link = params[:operateur].delete(:programmes)
     @operateur = Operateur.new(operateur_params)
@@ -27,7 +29,7 @@ class OperateursController < ApplicationController
 
   def edit
     @organisme = Organisme.find(params[:organisme_id])
-    redirect_to root_path and return unless current_user.statut == '2B2O' && @organisme
+    redirect_to root_path and return unless @statut_user == '2B2O' && @organisme
 
     @operateur = Operateur.find(params[:id])
     @programmes = Programme.all.order(numero: :asc)
@@ -36,7 +38,7 @@ class OperateursController < ApplicationController
 
   def update
     @organisme = Organisme.find(params[:operateur][:organisme_id])
-    redirect_to root_path and return unless current_user.statut == '2B2O'
+    redirect_to root_path and return unless @statut_user == '2B2O' && @organisme
 
     @operateur = Operateur.find(params[:id])
     programmes_to_link = params[:operateur].delete(:programmes)
@@ -48,7 +50,7 @@ class OperateursController < ApplicationController
   end
 
   def import
-    redirect_to root_path and return unless current_user.statut == '2B2O'
+    redirect_to root_path and return unless @statut_user == '2B2O'
 
     file = params[:file]
     Operateur.import(file) if file.present?
@@ -61,7 +63,7 @@ class OperateursController < ApplicationController
 
   def operateur_params
     params.require(:operateur).permit(:organisme_id, :operateur_nf, :operateur_n, :operateur_n1, :operateur_n2, :presence_categorie,
-                                      :nom_categorie, :mission_id, :programme_id )
+                                      :nom_categorie, :mission_id, :programme_id)
   end
 
   def update_operateur_programmes(programmes_to_link)
@@ -73,4 +75,5 @@ class OperateursController < ApplicationController
       end
     end
   end
+
 end

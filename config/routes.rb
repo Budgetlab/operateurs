@@ -28,10 +28,10 @@ Rails.application.routes.draw do
   get '/accessibilite', to: 'pages#accessibilite'
   get '/plan', to: 'pages#plan'
   # routes pages erreurs
-  get '/*path', to: 'errors#error_404'
   match '/500', via: :all, to: 'errors#error_500'
   match '/404', via: :all, to: 'errors#error_404'
   match '/503', via: :all, to: 'errors#error_503'
+  match '*path', to: 'errors#error_404', via: :all
   end
   get '/', to: redirect('/opera')
 end

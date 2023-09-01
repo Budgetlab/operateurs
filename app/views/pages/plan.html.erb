@@ -6,7 +6,17 @@
       <div>
         <ul>
           <li><%= link_to root_path do %>Accueil<%end %></li>
-          <li><%= link_to plan_path do %>Plan du site<%end %></li>
+          <% if @statut_user == "2B2O" ||  @statut_user == "Controleur"%>
+            <li>Organismes
+              <ul>
+                <li><%= link_to organismes_path do %>Liste des organismes<%end %></li>
+                <% if @statut_user == "2B2O"%>
+                  <li><%= link_to new_organisme_path do %>Créer la fiche d'un organisme<%end %></li>
+                <%end %>
+              </ul>
+            </li>
+            <li><%= link_to modifications_path do %>Gestion des modifications<%end %></li>
+          <%end %>
           <li><%= link_to accessibilite_path do %>Déclaration d'accessibilité<%end %></li>
           <li><%= link_to mentions_legales_path do %>Mentions légales<%end %></li>
           <li><%= link_to donnees_personnelles_path do %>Gestion des données personnelles et cookies<%end %></li>

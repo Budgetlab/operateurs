@@ -165,7 +165,7 @@ class OrganismesController < ApplicationController
   end
 
   def import
-    redirect_to root_path and return unless current_user.statut == '2B2O'
+    redirect_to root_path and return unless @statut_user == '2B2O'
 
     file = params[:file]
     Organisme.import(file) if file.present?

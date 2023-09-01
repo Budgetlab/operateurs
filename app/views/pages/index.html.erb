@@ -60,8 +60,8 @@
           <div class="fr-card__body">
             <div class="fr-card__content">
               <h3 class="fr-card__title"><%= link_to organisme_path(organisme) do %><%= organisme.nom %><% if organisme.acronyme && !organisme.acronyme.blank? %> - <%= organisme.acronyme %><%end %><%end %></h3>
-              <p class="fr-card__desc">Nature juridique : <%= organisme.nature %></p>
-              <p class="fr-card__desc">Famille : <%= organisme.famille %></p>
+              <p class="fr-card__desc">Nature juridique : <%= format_boolean(organisme.nature) %></p>
+              <p class="fr-card__desc">Famille : <%= format_boolean(organisme.famille) %></p>
               <div class="fr-card__start">
                 <ul class="fr-tags-group">
                   <li>

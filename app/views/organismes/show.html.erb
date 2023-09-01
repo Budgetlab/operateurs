@@ -178,9 +178,9 @@
             <div class="fr-card__body">
               <div class="fr-card__content">
                 <h3 class="fr-card__title">
-                  Opérateur année <%= Date.today.year %> : <% if @operateur %><%= format_boolean(@operateur.operateur_n) %><%else %>Non<%end %>
+                  Opérateur année <%= Date.today.year+1 %> : <% if @operateur %><%= format_boolean(@operateur.operateur_nf) %><%else %>Non<%end %>
                 </h3>
-                <p class="fr-card__desc">Opérateur année <%= Date.today.year+1 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_nf) %><%else %>Non<%end %></b></p>
+                <p class="fr-card__desc">Opérateur année <%= Date.today.year %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n) %><%else %>Non<%end %></b></p>
                 <p class="fr-card__desc">Opérateur année <%= Date.today.year-1 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n1) %><%else %>Non<%end %></b></p>
                 <p class="fr-card__desc">Opérateur année <%= Date.today.year-2 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n2) %><%else %>Non<%end %></b></p>
                 <% if @operateur %>
@@ -204,7 +204,7 @@
             <div class="fr-card__body">
               <div class="fr-card__content">
                 <h3 class="fr-card__title">
-                  GBCP I / III
+                  Parties GBCP
                 </h3>
                 <p class="fr-card__desc">Partie I GBCP : <b><%= format_boolean(@organisme.gbcp_1) %></b></p>
                 <p class="fr-card__desc">Présence d’un agent comptable : <b><%= format_boolean(@organisme.agent_comptable_present) %></b></p>
