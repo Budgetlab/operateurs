@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_29_073939) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_01_144317) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -90,7 +90,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_29_073939) do
 
   create_table "organismes", force: :cascade do |t|
     t.string "etat"
-    t.integer "siren"
+    t.string "siren"
     t.string "acronyme"
     t.string "nom"
     t.string "famille"

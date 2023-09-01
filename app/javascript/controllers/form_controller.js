@@ -132,7 +132,7 @@ export default class extends Controller {
     ChangeSiren(event){
         const maxLength = 9;
         const text_siren_alert = document.getElementById("alertSiren")
-        const result = parseInt(event.target.value);
+        const result = event.target.value.toString();
         const siren_organismes = JSON.parse(this.data.get("sirenorganismes"));
         this.hideField(text_siren_alert);
         if (siren_organismes.includes(result)) {
