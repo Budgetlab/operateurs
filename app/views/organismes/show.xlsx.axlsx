@@ -1,7 +1,7 @@
 
     wb = xlsx_package.workbook
   	wb.add_worksheet(name: "Informations générales") do |sheet| 	
-    	sheet.add_row %W{ Nom Acronyme État Date\ création Siren Famille Nature\ juridique Date\ prévisionnelle\ dissolution Date\ dissolution Effet\ dissolution Organismes\ Rattachement Bureau\ rattachement Textes\ institutifs Commentaire}
+    	sheet.add_row %W{ Nom Acronyme État Date\ création Siren Famille Nature\ juridique Date\ prévisionnelle\ dissolution Date\ dissolution Effet\ dissolution Organismes\ rattachement Bureau\ rattachement Textes\ institutifs Commentaire}
       @array_orga = []
       if @organisme.effet_dissolution == "Rattachement" || @organisme.effet_dissolution == "Création"
         @organisme.organisme_rattachements.each do |orga|
@@ -41,7 +41,7 @@
          
   	end
     wb.add_worksheet(name: "Contrôle") do |sheet|
-      sheet.add_row %W{ Présence\ contrôle Contrôleur Nature\ contrôle Référence\ texte\ soumission\ contrôle Autorité\ contrôle Texte\ réglementaire\ désignation\ autorité\ contrôle Référence\ arrêté\ contrôle Document\ contrôle Date\ signature\ document Lien\ document Référence\ arrêté\ nomination\ commissaire\ gouvernement}
+      sheet.add_row %W{ Présence\ contrôle Contrôleur\ Référent\ OPERA Nature\ contrôle Référence\ texte\ soumission\ contrôle Autorité\ contrôle Texte\ réglementaire\ désignation\ autorité\ contrôle Référence\ arrêté\ contrôle Document\ contrôle Date\ signature\ document Lien\ document Référence\ arrêté\ nomination\ commissaire\ gouvernement}
 
       @array_controle = @organisme.presence_controle ? [format_boolean(@organisme.nature_controle), format_boolean(@organisme.texte_soumission_controle), format_boolean(@organisme.autorite_controle), format_boolean(@organisme.texte_reglementaire_controle),format_boolean(@organisme.arrete_controle), format_boolean(@organisme.document_controle_present)] : ["N/A","N/A",'N/A','N/A','N/A','N/A']
       @document_controle_date = @organisme.document_controle_present ? format_boolean(@organisme.document_controle_date) : "N/A"
