@@ -57,13 +57,13 @@ class Organisme < ApplicationRecord
         operateur.attributes = row_data.slice(*column_names_bis)
         programme_id = Programme.find_by(numero: row_data['programme'][0, 3].to_i)&.id if row_data['programme']
         operateur.programme_id = programme_id
-        operateur.mission_id = Mission.where(programme_id: programme_id).first.id if !programme_id.nil?
+        operateur.mission_id = Mission.where(programme_id: programme_id).first.id if programme_id
         operateur.save
         if operateur.save
         selected_programmes = row_data['programmes_annexes'].to_s.split(' , ').map { |element| element.split(" - ").first.to_i } || []
         selected_programmes.each do |programme_numero|
           p_id = Programme.find_by(numero: programme_numero)&.id
-          operateur.operateur_programmes.create(programme_id: p_id) if !p_id.nil?
+          operateur.operateur_programmes.create(programme_id: p_id) if p_id
         end
         end
       end

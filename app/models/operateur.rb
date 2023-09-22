@@ -14,11 +14,34 @@ class Operateur < ApplicationRecord
       next if idx == 0 # skip header
 
       row_data = Hash[[headers, row].transpose]
-      next if row_data['Siren'].blank?
-      organisme = Organisme.find_by(siren: row_data['Siren'].to_s)
-      if organisme
+      siren = row_data['siren'].to_s
+      next if siren.blank?
+
+      organisme = Organisme.find_by(siren: siren)
+      if organisme && [row_data['operateur_n'], row_data['operateur_n1'], row_data['operateur_n2']].any?('OUI')
         operateur = Operateur.where(organisme_id: organisme.id).first || Operateur.new(organisme_id: organisme.id)
-        column_names_excel = %w[operateur_n operateur_n1 operateur_n2 presence_categorie nom_categorie]
+        column_names_bis = %w[operateur_n operateur_n1 operateur_n2 presence_categorie nom_categorie]
+        column_names_bis.each do |column_name|
+          row_data[column_name] = convert_to_boolean(row_data[column_name])
+        end
+        operateur.attributes = row_data.slice(*column_names_bis)
+
+        if row_data['programme']
+          programme = Programme.find_by(numero: row_data['programme'].to_i)
+          operateur.programme_id = programme&.id
+          operateur.mission_id = Mission.find_by(programme_id: programme&.id)&.id if programme
+        end
+
+        if operateur.save
+          operateur.operateur_programmes.destroy_all
+          selected_programmes = (row_data['programmes_annexes'].to_s || '').split('-').map(&:to_i)
+          selected_programmes.each do |programme_numero|
+            p_id = Programme.find_by(numero: programme_numero)&.id
+            operateur.operateur_programmes.create(programme_id: p_id) if p_id
+          end
+        end
+      elsif organisme
+        organisme.operateur&.destroy
       end
     end
   end
