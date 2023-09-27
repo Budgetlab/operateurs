@@ -175,25 +175,13 @@
             <%else %>
             <div class="fr-select-group">
               <label class="fr-label">Organisme•s de rattachement</label>
-              <button class="fr-select fr-btns-group--left" aria-controls="translate-1295" aria-expanded="false" title="Sélectionner un ou plusieurs organismes" data-action="click->form#Dropdown" id="BtnRattachement">
+              <button class="fr-select fr-btns-group--left" aria-controls="resultats" aria-expanded="false" title="Sélectionner un ou plusieurs organismes" data-action="click->form#Dropdown" id="BtnRattachement">
                 - sélectionner -
               </button>
               <div class="div-dropdown">
-              <div class="fr-collapse fr-menu" id="translate-1295">
-                <fieldset class="fr-fieldset" id="checkboxes-" aria-labelledby="checkboxes-legend checkboxes-messages">
-
-                  <% @organismes_rattachement.each_with_index do |organisme, i|%>
-                    <div class="fr-fieldset__element">
-                      <div class="fr-checkbox-group fr-checkbox-group--sm">
-                        <%= f.check_box :organismes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @liste_organisme_rattachement.include?(organisme[1]) }, organisme[1]%>
-                        <label class="fr-label" for="checkboxes-<%=i %>">
-                          <%= organisme[0]%>
-                        </label>
-                      </div>
-                    </div>
-                  <%end %>
-                </fieldset>
-              </div>
+                <div class="fr-collapse fr-menu" id="resultats">
+                  <%= render partial: 'organismes/form_liste_organismes_rattachement', locals: {f: f}%>
+                </div>
               </div>
             </div>
             <%end %>
