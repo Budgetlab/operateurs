@@ -1,0 +1,25 @@
+<div data-controller="search">
+
+  <div class="fr-search-bar fr-my-1w" id="header-search" role="search" >
+    <label class="fr-label" for="search-784-input">
+      Rechercher un organisme par son nom ou son acronyme
+    </label>
+    <%= f.text_field :search, class:"fr-input", id: "search-784-input", placeholder: "Rechercher un organisme par son nom ou son acronyme", data: {'search-target': "input", action: "keyup->search#updateList"}%>
+    <button class="fr-btn" title="Rechercher" aria-controls="modal-autocomplete" aria-expanded="false" data-search-target="button" data-action="search#Dropdown">
+      Rechercher un organisme par son nom ou son acronyme
+    </button>
+  </div>
+
+  <fieldset class="fr-fieldset" id="checkboxes-" aria-labelledby="checkboxes-legend checkboxes-messages" >
+    <% @organismes_rattachement.each_with_index do |organisme, i|%>
+      <div class="fr-fieldset__element" data-search-target="listeDeroulante">
+        <div class="fr-checkbox-group fr-checkbox-group--sm form-check">
+          <%= f.check_box :organismes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @liste_organisme_rattachement.include?(organisme[1]) }, organisme[1]%>
+          <label class="fr-label" for="checkboxes-<%=i %>">
+            <%= organisme[0]%><% if organisme[4] && !organisme[4].blank? %> - <%= organisme[4] %><% end %>
+          </label>
+        </div>
+      </div>
+    <%end %>
+  </fieldset>
+</div>

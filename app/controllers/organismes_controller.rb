@@ -84,7 +84,7 @@ class OrganismesController < ApplicationController
 
     @organisme = Organisme.new
     @bureaux = User.where(statut: 'Bureau Sectoriel').order(nom: :asc)
-    @organismes = Organisme.where.not(id: @organisme.id).sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:nom, :id, :siren, :etat)
+    @organismes = Organisme.where.not(id: @organisme.id).sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:nom, :id, :siren, :etat, :acronyme)
     @noms_organismes = @organismes.map { |el| el[0] }
     @siren_organismes = @organismes.map { |el| el[2] }.compact
     @organismes_rattachement = @organismes.select { |el| el[3] == 'Actif' || el[3] == 'En cours de création' }
@@ -114,7 +114,7 @@ class OrganismesController < ApplicationController
 
     if params[:step].to_i == 1
       @bureaux = User.where(statut: 'Bureau Sectoriel').order(nom: :asc)
-      @organismes = Organisme.where.not(id: @organisme.id).sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:nom, :id, :siren, :etat)
+      @organismes = Organisme.where.not(id: @organisme.id).sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:nom, :id, :siren, :etat, :acronyme)
       @noms_organismes = @organismes.map { |el| el[0] }
       @siren_organismes = @organismes.map { |el| el[2] }.compact
       @organismes_rattachement = @organismes.select { |el| el[3] == 'Actif' || el[3] == 'En cours de création' }
