@@ -4,6 +4,6 @@
 <% elsif modification.nom == "Ministère•s co-tutelle" %>
   <b><% if modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).length > 0 %><% modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).each do |id| %><%= Ministere.find(id.to_i).nom %> - <%end %><%else %>Aucun<%end %></b> <span class="fr-text--barre"><% if modification.ancienne_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).length > 0 %><% modification.ancienne_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).each do |id| %><%= Ministere.find(id.to_i).nom %> - <%end %><%else %>Aucun<%end %></span>
 <% else %>
-  <b><%= format_boolean(modification.nouvelle_valeur) %></b> <span class="fr-text--barre"><%= format_boolean(modification.ancienne_valeur) %></span>
+  <b><%= auto_link(simple_format(format_boolean(modification.nouvelle_valeur),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b> <span class="fr-text--barre"><%= auto_link(simple_format(format_boolean(modification.ancienne_valeur),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></span>
 <% end %>
 <%end %>

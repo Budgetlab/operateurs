@@ -41,7 +41,7 @@
                 <tr>
                   <td><%= format_date(modification.created_at) %></td>
                   <td><%= modification.nom %></td>
-                  <td><%= render partial: 'modifications/table_nom', locals: {modification: modification}  %></td>
+                  <td class="fr-td--overflow"><%= render partial: 'modifications/table_nom', locals: {modification: modification}  %></td>
                   <td>
                     <% if @statut_user == "2B2O" %>
                     <ul class="fr-btns-group fr-btns-group--inline">
@@ -371,7 +371,7 @@
                     <td><%= format_date(modification.created_at) %></td>
                     <td><%= modification.user.nom %></td>
                     <td><%= modification.nom %></td>
-                    <td><%= render partial: 'modifications/table_nom', locals: {modification: modification}  %></td>
+                    <td class="fr-td--overflow"><%= render partial: 'modifications/table_nom', locals: {modification: modification}  %></td>
                   </tr>
                     <%end %>
                   </tbody>
@@ -397,7 +397,7 @@
                       <td><%= format_date(modification.created_at) %></td>
                       <td><%= modification.user.nom %></td>
                       <td><%= modification.nom %></td>
-                      <td><%= render partial: 'modifications/table_nom', locals: {modification: modification}  %></td>
+                      <td class="fr-td--overflow"><%= render partial: 'modifications/table_nom', locals: {modification: modification}  %></td>
 
                       <td><div data-controller="toggle">
                         <span data-toggle-target="commentaireCourt"><%= truncate(modification.commentaire, length: 20) %><% if modification.commentaire && modification.commentaire.length > 20 %><button class="fr-btn--tertiary fr-btn--sm" data-action="click->toggle#afficherPlus">Voir plus</button><% end %></span>

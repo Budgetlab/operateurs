@@ -72,3 +72,8 @@ select:disabled {
   overflow-y: auto;
   overflow-x: hidden;
 }
+
+.fr-td--overflow{
+  overflow: hidden;
+  text-overflow: ellipsis ;
+}
