@@ -10,10 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_01_144317) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_12_090732) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
+
+  create_table "chiffres", force: :cascade do |t|
+    t.bigint "organisme_id", null: false
+    t.integer "exercice_budgetaire"
+    t.string "type_budget"
+    t.string "phase"
+    t.string "statut"
+    t.string "commentaire"
+    t.boolean "comptabilite_budgetaire"
+    t.boolean "operateur"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["organisme_id"], name: "index_chiffres_on_organisme_id"
+    t.index ["user_id"], name: "index_chiffres_on_user_id"
+  end
 
   create_table "ministeres", force: :cascade do |t|
     t.string "nom"
@@ -165,6 +181,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_01_144317) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "chiffres", "organismes"
+  add_foreign_key "chiffres", "users"
   add_foreign_key "missions", "programmes"
   add_foreign_key "modifications", "organismes"
   add_foreign_key "modifications", "users"

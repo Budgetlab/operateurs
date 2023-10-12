@@ -1,0 +1,50 @@
+<% content_for :title do %>Historique chiffres clés | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container " data-controller="filter">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h1 class="fr-my-4w">Historique des chiffres clés</h1>
+      </div>
+    </div>
+    <div class="fr-table fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll fr-mb-6w">
+      <%= form_with(url: filter_chiffres_path, method: :post, data: { 'filter-target': "form"}) do |f|%>
+      <table>
+        <caption>Historique</caption>
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Profil</th>
+            <th scope="col">Organisme</th>
+            <th scope="col">Exercice</th>
+            <th scope="col">Budget<div class="fr-translate fr-nav fr-nav-filter">
+              <button class="filter-table-btn2" aria-controls="budget" aria-expanded="false" title="Filtrer par budget" data-action="click->filter#Dropdown">
+              </button>
+              <div class="fr-collapse fr-menu" id="budget">
+                <ul class="fr-menu__list filter-table-list">
+                  <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-budget">
+                    <div class="fr-fieldset__element">
+                      <% ["Budget initial","Budget rectificatif","Compte financier"].each_with_index do |budget,i| %>
+                        <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                          <%= f.check_box "budgets[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-budget-#{i}"}, budget%>
+                          <label class="fr-label" for="checkboxes-budget-<%= i %>"><%= budget %></label>
+                        </div>
+                      <%end %>
+                    </div>
+                  </fieldset></li>
+                </ul>
+              </div>
+            </div></th>
+            <th scope="col">Phase</th>
+            <th scope="col">Examen</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody id="table_historique">
+          <%= render partial: 'chiffres/table_historique', locals: {chiffres: @chiffres} %>
+        </tbody>
+      </table>
+
+      <% end  %>
+    </div>
+  </div>
+</main>

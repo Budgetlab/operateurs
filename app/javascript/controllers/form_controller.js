@@ -348,6 +348,72 @@ export default class extends Controller {
         }
     }
 
+    changeNomChiffres(){
+        const comptabilite = document.getElementById("comptabilite");
+        const organisme = document.getElementById("organisme").value;
+        const exercice = document.getElementById("exercice").value;
+        const operateur = document.getElementById("operateur");
+        this.changeComptabiliteChiffres(organisme, comptabilite);
+        this.changeOperateurChiffres(organisme, exercice, operateur);
+    }
+
+    changeComptabiliteChiffres(organisme, comptabilite) {
+        if (organisme != ""){
+            const token = document.querySelector('meta[name="csrf-token"]').content;
+            const url = "/opera/select_comptabilite"
+            const body = { organisme }
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(body),
+                credentials: "include",
+                dataType: 'script',
+                headers: {
+                    "X-CSRF-Token": token,
+                    "Content-Type": "application/json"
+                },
+            })
+                .then(response => response.json()/*response.text()*/)
+                .then(data => {
+                    comptabilite.value = data.comptabilite;
+                    this.validateForm();
+                });
+        }else{
+            comptabilite.selectedIndex = 0;
+        }
+    }
+
+    changeExerciceChiffres(){
+        const organisme = document.getElementById("organisme").value;
+        const exercice = document.getElementById("exercice").value;
+        const operateur = document.getElementById("operateur");
+        this.changeOperateurChiffres(organisme, exercice, operateur);
+    }
+
+    changeOperateurChiffres(organisme, exercice, operateur){
+        if (organisme != "" && exercice != ""){
+            const token = document.querySelector('meta[name="csrf-token"]').content;
+            const url = "/opera/select_exercice"
+            const body = { organisme, exercice }
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(body),
+                credentials: "include",
+                dataType: 'script',
+                headers: {
+                    "X-CSRF-Token": token,
+                    "Content-Type": "application/json"
+                },
+            })
+                .then(response => response.json()/*response.text()*/)
+                .then(data => {
+                    operateur.value = data.operateur;
+                    this.validateForm();
+                });
+        }else{
+            operateur.selectedIndex = 0;
+        }
+    }
+
     submitForm(event){
         let isValid = this.validateForm(this.formTarget);
         if (!isValid) {

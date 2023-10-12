@@ -1,0 +1,16 @@
+<% @chiffres.each do |chiffre| %>
+  <tr>
+    <td><%= l(chiffre.created_at,format: "%e/%m/%y")%></td>
+    <td><%= chiffre.user.nom %></td>
+    <td><%= chiffre.organisme.nom %></td>
+    <td><%= chiffre.exercice_budgetaire %></td>
+    <td><%= chiffre.type_budget %></td>
+    <td><%= chiffre.phase %></td>
+    <td><% if chiffre.statut != "valide" %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><% else %><%= chiffre.statut %><%end %></td>
+    <td>
+      <% if chiffre.statut != "valide" %>
+        <% if current_user == chiffre.user %><%= link_to edit_chiffre_path(chiffre), class: "fr-btn fr-btn--sm" do %>Reprendre<% end %><% end %>
+      <%end %>
+    </td>
+  </tr>
+<% end %>

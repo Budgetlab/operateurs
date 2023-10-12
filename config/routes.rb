@@ -8,7 +8,15 @@ Rails.application.routes.draw do
   post '/select_nom' => 'users#select_nom'
   root 'pages#index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  resources :organismes
+  resources :organismes do
+    resources :chiffres, only: [:index]
+  end
+  resources :chiffres, except: [:index]
+  post '/show_dates' => 'chiffres#show_dates'
+  post '/select_comptabilite' => 'chiffres#select_comptabilite'
+  post '/select_exercice' => 'chiffres#select_exercice'
+  get '/chiffres-historique' => 'chiffres#historique'
+  post '/filter_chiffres' => 'chiffres#filterchiffres'
   post '/import_organismes' => 'organismes#import'
   get '/organismes_ajout' => 'organismes#organismes_ajout'
   post '/recherche_organismes' => 'organismes#recherche_organismes'
