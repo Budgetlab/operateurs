@@ -48,7 +48,7 @@ class ChiffresController < ApplicationController
                 when Date.today.year + 1
                   operateur&.operateur_nf
                 when Date.today.year
-                  operateur&.operateur
+                  operateur&.operateur_n
                 when Date.today.year - 1
                   operateur&.operateur_n1
                 else
@@ -79,18 +79,20 @@ class ChiffresController < ApplicationController
   end
 
   def historique
-    @organismes_id = if @statut_user == 'Controleur'
-                       current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif').pluck(:id)
-                     elsif @statut_user == 'Bureau Sectoriel'
-                       current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif').pluck(:id)
-                     else
-                       Organisme.where(statut: 'valide', etat: 'Actif').pluck(:id)
-                     end
-    @chiffres = Chiffre.where(organisme_id: @organismes_id).includes(:organisme, :user)
+    select_chiffres
+    @exercices = @chiffres.pluck(:exercice_budgetaire).uniq
+    respond_to do |format|
+      format.html
+      format.xlsx
+    end
   end
 
-  def filterchiffres
-    @chiffres = Chiffre.where(organisme_id: @organismes_id).includes(:organisme, :user)
+  def filtre_chiffres
+    select_chiffres
+    @exercices = @chiffres.pluck(:exercice_budgetaire).uniq
+    @chiffres = @chiffres.select { |el| params[:budgets].include?(el.type_budget) } if params[:budgets] && params[:budgets].length != 3
+    @chiffres = @chiffres.select { |el| params[:phases].include?(el.phase) } if params[:phases] && params[:phases].length != 3
+    @chiffres = @chiffres.select { |el| params[:exercices].include?(el.exercice_budgetaire.to_s) } if params[:exercices] && params[:exercices].length != @exercices.length
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -119,5 +121,16 @@ class ChiffresController < ApplicationController
 
   def filter_chiffres(type_budget, exercice_budgetaire, chiffres)
     chiffres.select { |el| el.type_budget == type_budget && el.exercice_budgetaire == exercice_budgetaire }
+  end
+
+  def select_chiffres
+    @organismes_id = if @statut_user == 'Controleur'
+                       current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif').pluck(:id)
+                     elsif @statut_user == 'Bureau Sectoriel'
+                       current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif').pluck(:id)
+                     else
+                       Organisme.where(statut: 'valide', etat: 'Actif').pluck(:id)
+                     end
+    @chiffres = Chiffre.where(organisme_id: @organismes_id).includes(:organisme, :user).order(created_at: :desc)
   end
 end

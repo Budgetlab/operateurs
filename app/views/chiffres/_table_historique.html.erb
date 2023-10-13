@@ -2,7 +2,7 @@
   <tr>
     <td><%= l(chiffre.created_at,format: "%e/%m/%y")%></td>
     <td><%= chiffre.user.nom %></td>
-    <td><%= chiffre.organisme.nom %></td>
+    <td><%= link_to organisme_path(chiffre.organisme) do %><%= chiffre.organisme.nom %><% end %></td>
     <td><%= chiffre.exercice_budgetaire %></td>
     <td><%= chiffre.type_budget %></td>
     <td><%= chiffre.phase %></td>

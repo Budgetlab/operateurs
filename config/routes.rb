@@ -16,7 +16,7 @@ Rails.application.routes.draw do
   post '/select_comptabilite' => 'chiffres#select_comptabilite'
   post '/select_exercice' => 'chiffres#select_exercice'
   get '/chiffres-historique' => 'chiffres#historique'
-  post '/filter_chiffres' => 'chiffres#filterchiffres'
+  post '/filter_chiffres' => 'chiffres#filtre_chiffres'
   post '/import_organismes' => 'organismes#import'
   get '/organismes_ajout' => 'organismes#organismes_ajout'
   post '/recherche_organismes' => 'organismes#recherche_organismes'

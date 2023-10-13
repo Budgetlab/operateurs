@@ -35,24 +35,6 @@
 .shadow{
   filter: drop-shadow(var(--lifted-shadow)) !important;
 }
-
-@media (min-width: 62em) {
-  .fr-table--layout-fixed--lg table {
-    display: table !important;
-    table-layout: fixed !important;
-  }
-}
-.fr-card--custom-blue{
-    border-bottom-right-radius: 40px;
-    background-color: var(--background-action-high-blue-france) !important;
-  &:hover, &:active{
-    background-color: var(--background-action-high-blue-france-hover) !important;
-  }
-}
-.fr-card--custom-blue .fr-card__desc, .fr-card--custom-blue .fr-card__title a[href], .fr-card--custom-blue:before{
-  color: var(--text-inverted-blue-france) !important;
-}
-
 select:disabled {
   opacity: 1 !important;
   color: var(--text-disabled-grey) !important;
@@ -61,7 +43,44 @@ select:disabled {
 .fr-label--warning{
   color: var(--text-default-warning);
 }
-
+.fr-card--custom-blue{
+  border-bottom-right-radius: 40px;
+  background-color: var(--background-action-high-blue-france) !important;
+  &:hover, &:active{
+    background-color: var(--background-action-high-blue-france-hover) !important;
+  }
+}
+.fr-card--custom-blue .fr-card__desc, .fr-card--custom-blue .fr-card__title a[href], .fr-card--custom-blue:before{
+  color: var(--text-inverted-blue-france) !important;
+}
+/**
+  * TABLES
+  */
+.fr-table td, .fr-table th {
+  max-width:20rem !important;
+}
+.fr-table thead th {
+  position: sticky;
+  top: 0px;
+  background-color: var(--background-contrast-grey);
+  background-size: 100% 2px;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-image: linear-gradient(0deg, var(--border-plain-grey), var(--border-plain-grey));
+  min-width:8rem !important;
+}
+@media (min-width: 62em) {
+  .fr-table--layout-fixed--lg table {
+    display: table !important;
+    table-layout: fixed !important;
+  }
+}
+.fr-table--vscroll table {
+  max-height: 35rem;
+  overflow: auto;
+  min-height: 18rem !important;
+}
+// tables présentes dans onglets
 .fr-table--onglet-vscroll{
   max-height: 25rem;
   overflow: auto;
@@ -77,35 +96,7 @@ select:disabled {
   overflow: hidden;
   text-overflow: ellipsis ;
 }
-.fr-table td, .fr-table th {
-  max-width:20rem !important;
-}
-.fr-table thead th {
-  position: sticky;
-  top: 0px;
-  background-color: var(--background-contrast-grey);
-  background-size: 100% 2px;
-  background-position: bottom;
-  background-repeat: no-repeat;
-  background-image: linear-gradient(0deg, var(--border-plain-grey), var(--border-plain-grey));
-  min-width:8rem !important;
-}
-.filter-table-list{
-  background-color: var(--background-overlap-grey);
-  display: grid;
-  grid-template-rows: repeat(var(--rows), auto);
-  grid-auto-flow: column;
-  pointer-events: auto;
-}
-.filter-table-list .fr-fieldset {
-  max-height: 10rem;
-  overflow: auto;
-  margin-bottom: 0rem !important;
-  padding: 0.75rem 1rem !important;
-}
-.filter-table-list .fr-checkbox-group{
-  margin-right: 0.5rem !important;
-}
+// tables avec filtres
 .fr-nav-filter{
   position:absolute !important;
   right:0 !important;
@@ -118,10 +109,25 @@ select:disabled {
   position: absolute;
   top: 100%;
   z-index: calc(var(--ground) + 1000);
-
-
 }
-.filter-table-btn2{
+.filter-table--list{
+  background-color: var(--background-overlap-grey);
+  display: grid;
+  grid-template-rows: repeat(var(--rows), auto);
+  grid-auto-flow: column;
+  pointer-events: auto;
+}
+.filter-table--list .fr-fieldset {
+  max-height: 10rem;
+  overflow: auto;
+  margin-bottom: 0rem !important;
+  padding: 0.75rem 1rem !important;
+}
+.filter-table--list .fr-checkbox-group{
+  margin-right: 0.5rem !important;
+}
+
+.filter-table--btn{
   height: 100%;
   width: auto;
   margin-bottom: 1rem;
@@ -129,10 +135,7 @@ select:disabled {
   line-height: 1.5rem;
   padding: 0.25rem 0.25rem;
 }
-.filter-table-btn2[aria-expanded=true]::after {
-  transform: rotate(-180deg);
-}
-.filter-table-btn2::after {
+.filter-table--btn::after {
   flex: 0 0 auto;
   display: inline-block;
   vertical-align: calc((0.75em - var(--icon-size)) * 0.5);
@@ -148,11 +151,13 @@ select:disabled {
   margin-left: auto;
   transition: transform 0.3s;
 }
-.filter-table-btn2[aria-expanded=true]{
+.filter-table--btn[aria-expanded=true]{
   color: var(--text-active-blue-france);
   background-color: var(--background-open-blue-france);
-
   --idle: transparent;
   --hover: var(--background-open-blue-france-hover);
   --active: var(--background-open-blue-france-active);
+}
+.filter-table--btn[aria-expanded=true]::after {
+  transform: rotate(-180deg);
 }

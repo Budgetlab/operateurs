@@ -1,0 +1,11 @@
+
+    wb = xlsx_package.workbook
+  	wb.add_worksheet(name: "Historique") do |sheet| 	
+    	sheet.add_row %W{ Date Profil Organisme Exercice Budget Phase Examen}
+
+      @chiffres.each do |chiffre|
+        sheet.add_row [chiffre.created_at chiffre.user.nom chiffre.organisme.nom chiffre.exercice_budgetaire chiffre.type_budget chiffre.phase "en cours"]
+           
+      end
+  	end
+ 

@@ -6,7 +6,7 @@
         <h1 class="fr-my-4w">Historique des chiffres clés</h1>
       </div>
     </div>
-    <div class="fr-table fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll fr-mb-6w">
+    <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--vscroll fr-mb-6w">
       <%= form_with(url: filter_chiffres_path, method: :post, data: { 'filter-target': "form"}) do |f|%>
       <table>
         <caption>Historique</caption>
@@ -15,26 +15,68 @@
             <th scope="col">Date</th>
             <th scope="col">Profil</th>
             <th scope="col">Organisme</th>
-            <th scope="col">Exercice</th>
-            <th scope="col">Budget<div class="fr-translate fr-nav fr-nav-filter">
-              <button class="filter-table-btn2" aria-controls="budget" aria-expanded="false" title="Filtrer par budget" data-action="click->filter#Dropdown">
-              </button>
-              <div class="fr-collapse fr-menu" id="budget">
-                <ul class="fr-menu__list filter-table-list">
-                  <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-budget">
-                    <div class="fr-fieldset__element">
-                      <% ["Budget initial","Budget rectificatif","Compte financier"].each_with_index do |budget,i| %>
-                        <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
-                          <%= f.check_box "budgets[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-budget-#{i}"}, budget%>
-                          <label class="fr-label" for="checkboxes-budget-<%= i %>"><%= budget %></label>
-                        </div>
-                      <%end %>
-                    </div>
-                  </fieldset></li>
-                </ul>
+            <th scope="col">Exercice
+              <% if !@exercices.empty? %>
+              <div class="fr-translate fr-nav fr-nav-filter">
+                <button class="filter-table--btn" aria-controls="exercice" aria-expanded="false" title="Filtrer par exercice" data-action="click->filter#Dropdown">
+                </button>
+                <div class="fr-collapse fr-menu" id="exercice">
+                  <ul class="fr-menu__list filter-table--list">
+                    <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-exercice">
+                      <div class="fr-fieldset__element">
+                        <% @exercices.each_with_index do |exercice,i| %>
+                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                            <%= f.check_box "exercices[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-exercice-#{i}"}, exercice%>
+                            <label class="fr-label" for="checkboxes-exercice-<%= i %>"><%= exercice %></label>
+                          </div>
+                        <%end %>
+                      </div>
+                    </fieldset></li>
+                  </ul>
+                </div>
               </div>
-            </div></th>
-            <th scope="col">Phase</th>
+              <% end %>
+            </th>
+            <th scope="col">Budget
+              <div class="fr-translate fr-nav fr-nav-filter">
+                <button class="filter-table--btn" aria-controls="budget" aria-expanded="false" title="Filtrer par budget" data-action="click->filter#Dropdown">
+                </button>
+                <div class="fr-collapse fr-menu" id="budget">
+                  <ul class="fr-menu__list filter-table--list">
+                    <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-budget">
+                      <div class="fr-fieldset__element">
+                        <% ["Budget initial","Budget rectificatif","Compte financier"].each_with_index do |budget,i| %>
+                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                            <%= f.check_box "budgets[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-budget-#{i}"}, budget%>
+                            <label class="fr-label" for="checkboxes-budget-<%= i %>"><%= budget %></label>
+                          </div>
+                        <%end %>
+                      </div>
+                    </fieldset></li>
+                  </ul>
+                </div>
+              </div>
+            </th>
+            <th scope="col">Phase
+              <div class="fr-translate fr-nav fr-nav-filter">
+                <button class="filter-table--btn" aria-controls="phase" aria-expanded="false" title="Filtrer par phase" data-action="click->filter#Dropdown">
+                </button>
+                <div class="fr-collapse fr-menu" id="phase">
+                  <ul class="fr-menu__list filter-table--list">
+                    <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-phase">
+                      <div class="fr-fieldset__element">
+                        <% ["pré-CA","CA","Budget voté"].each_with_index do |phase,i| %>
+                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                            <%= f.check_box "phases[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-phase-#{i}"}, phase%>
+                            <label class="fr-label" for="checkboxes-phase-<%= i %>"><%= phase %></label>
+                          </div>
+                        <%end %>
+                      </div>
+                    </fieldset></li>
+                  </ul>
+                </div>
+              </div>
+            </th>
             <th scope="col">Examen</th>
             <th scope="col"></th>
           </tr>
