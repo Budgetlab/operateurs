@@ -96,7 +96,8 @@ class ChiffresController < ApplicationController
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
-          turbo_stream.update('table_historique', partial: 'chiffres/table_historique', locals: { chiffres: @chiffres })
+          turbo_stream.update('table_historique', partial: 'chiffres/table_historique', locals: { chiffres: @chiffres }),
+          turbo_stream.update('total_table', partial: 'chiffres/table_historique_total', locals: { total: @chiffres.length })
         ]
       end
     end

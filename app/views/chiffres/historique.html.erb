@@ -6,6 +6,11 @@
         <h1 class="fr-my-4w">Historique des chiffres clés</h1>
       </div>
     </div>
+    <div class="fr-download">
+      <p><%= link_to "/opera/chiffres-historique.xlsx", format: :xslx, class: "fr-download__link" do %> Télécharger l'historique des chiffres clés
+          <span class="fr-download__detail">Format .xlsx</span>
+        <%end %></p>
+    </div>
     <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--vscroll fr-mb-6w">
       <%= form_with(url: filter_chiffres_path, method: :post, data: { 'filter-target': "form"}) do |f|%>
       <table>
@@ -78,7 +83,7 @@
               </div>
             </th>
             <th scope="col">Examen</th>
-            <th scope="col"></th>
+            <th scope="col" id="total_table"><%= render partial: "chiffres/table_historique_total", locals: {total: @chiffres.length} %></th>
           </tr>
         </thead>
         <tbody id="table_historique">

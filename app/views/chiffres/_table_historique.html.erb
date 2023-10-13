@@ -10,6 +10,8 @@
     <td>
       <% if chiffre.statut != "valide" %>
         <% if current_user == chiffre.user %><%= link_to edit_chiffre_path(chiffre), class: "fr-btn fr-btn--sm" do %>Reprendre<% end %><% end %>
+      <% else  %>
+      <%= link_to organisme_chiffres_path(chiffre.organisme), class: "fr-btn fr-btn--sm" do %>Consulter<% end %>
       <%end %>
     </td>
   </tr>
