@@ -416,28 +416,45 @@ export default class extends Controller {
     }
     changeNumber(event){
         const inputElement = event.target;
-        // Formatage du nombre
-        const formattedValue = parseFloat(inputElement.value.replace(/\u202F/g, "")).toLocaleString("fr-FR");
-        // Mettez à jour la valeur du champ de formulaire avec le format souhaité
-        if (inputElement.value != ""){
-            inputElement.value = formattedValue;
+        const element = inputElement.value.replace(/[^0-9,]/g, "");
+        const lastLetter = inputElement.value[inputElement.value.length - 1];
+        const parsedValue = this.numberFormat(element);
+        if (!isNaN(parsedValue)) {
+            // Formatage du nombre avec séparateur de milliers
+            const formattedValue = parsedValue.toLocaleString("fr-FR");
+            // Mettez à jour la valeur du champ de formulaire avec le format souhaité
+            if (lastLetter == ","){
+                inputElement.value = formattedValue + lastLetter;
+            }else {
+                inputElement.value = formattedValue;
+            }
+        } else {
+            inputElement.value = null;
         }
     }
+    numberFormat(number){
+        const sanitizedValue = number.replace(/\u202F/g, "");
+        // Remplacez la virgule par un point pour permettre les décimaux
+        const sanitizedValueWithDot = sanitizedValue.replace(',', '.');
+        // Analysez la valeur en tant que nombre à virgule flottante
+        const parsedValue = parseFloat(sanitizedValueWithDot);
+        return parsedValue;
+    }
     changeTotalEmplois(){
-        const emplois_plafond = parseFloat(document.getElementById("emplois_plafond").value.replace(/\u202F/g, "")) || 0;
-        const emplois_hors_plafond = parseFloat(document.getElementById("emplois_hors_plafond").value.replace(/\u202F/g, "")) || 0;
+        const emplois_plafond = this.numberFormat(document.getElementById("emplois_plafond").value) || 0;
+        const emplois_hors_plafond = this.numberFormat(document.getElementById("emplois_hors_plafond").value)|| 0;
         const total_emplois = emplois_plafond + emplois_hors_plafond;
         const total_field = document.getElementById("emplois_total");
         const total_text = document.getElementById("emplois_total_text");
         total_field.value = total_emplois;
-        total_text.innerHTML =  new Intl.NumberFormat('fr').format((parseFloat(Number(total_emplois).toFixed(2))));
+        total_text.innerHTML = total_emplois.toLocaleString("fr-FR");
         this.changeIndicateurEmploi(emplois_hors_plafond,total_emplois);
-        const total_personnel = parseFloat(document.getElementById("emplois_personnel").value.replace(/\u202F/g, "")) || 0;
+        const total_personnel = this.numberFormat(document.getElementById("emplois_personnel").value) || 0;
         this.changeIndicateurCout(total_emplois, total_personnel)
     }
     changeTotalPersonnel(){
-        const total_emplois = parseFloat(document.getElementById("emplois_total").value.replace(/\u202F/g, "")) || 0;
-        const total_personnel = parseFloat(document.getElementById("emplois_personnel").value.replace(/\u202F/g, "")) || 0;
+        const total_emplois = this.numberFormat(document.getElementById("emplois_total").value) || 0;
+        const total_personnel = this.numberFormat(document.getElementById("emplois_personnel").value) || 0;
         this.changeIndicateurCout(total_emplois, total_personnel)
     }
 

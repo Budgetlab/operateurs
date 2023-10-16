@@ -25,7 +25,7 @@
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-input-group">
                   <label for="emplois_plafond" class="fr-label"><% if @chiffre.comptabilite_budgetaire == true %>Autorisation d’emplois<%else %>Emplois<%end %> sous plafond LFI (en ETPT)*</label>
-                  <%= f.text_field :emplois_plafond, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber input->form#changeTotalEmplois'}, value: @chiffre.emplois_plafond, id:"emplois_plafond", class:"fr-input" %>
+                  <%= f.text_field :emplois_plafond, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber input->form#changeTotalEmplois'}, value: @chiffre.emplois_plafond, id:"emplois_plafond", class:"fr-input", step: "any" %>
                 </div>
               </div>
             </div>
@@ -60,14 +60,24 @@
                 </div>
               </div>
             </div>
+          <% else  %>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group">
+                  <label for="emplois_total" class="fr-label"><% if @chiffre.comptabilite_budgetaire == true %>Autorisation d’emplois<%else %>Emplois<%end %> rémunérés par l'organisme (en ETPT)*</label>
+                  <%= f.text_field :emplois_total, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber input->form#changeTotalPersonnel'}, value: @chiffre.emplois_total, id:"emplois_total", class:"fr-input" %>
+                </div>
+              </div>
+            </div>
+          <% end  %>
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-input-group fr-mb-4w">
                 <% if @chiffre.comptabilite_budgetaire == true %>
-                  <label for="emplois_depenses_personnel" class="fr-label">Total des dépenses de personnel*</label>
+                  <label for="emplois_personnel" class="fr-label">Total des dépenses de personnel*</label>
                   <%= f.text_field :emplois_depenses_personnel, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber input->form#changeTotalPersonnel'}, value: @chiffre.emplois_depenses_personnel, id:"emplois_personnel", class:"fr-input" %>
                 <%else %>
-                  <label for="emplois_charges_personnel" class="fr-label">Total des charges de personnel*</label>
+                  <label for="emplois_personnel" class="fr-label">Total des charges de personnel*</label>
                   <%= f.text_field :emplois_charges_personnel, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber input->form#changeTotalPersonnel'}, value: @chiffre.emplois_charges_personnel, id:"emplois_personnel", class:"fr-input" %>
                 <% end %>
                 </div>
@@ -83,9 +93,10 @@
                 </div>
               </div>
            </div>
-          <% end  %>
+
 
           <h2>Rappel du plafond</h2>
+
           <h2>Schéma d'emplois</h2>
           <h2>Répartition des emplois et dépenses de personnel par statut</h2>
           <div class="fr-my-4w">
