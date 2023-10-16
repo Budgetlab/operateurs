@@ -31,6 +31,9 @@
 .fr-text--italic{
   font-style: italic;
 }
+.fr-text--center{
+  text-align: center;
+}
 
 .shadow{
   filter: drop-shadow(var(--lifted-shadow)) !important;
@@ -43,6 +46,9 @@ select:disabled {
 .fr-label--warning{
   color: var(--text-default-warning);
 }
+/**
+  * CARD
+  */
 .fr-card--custom-blue{
   border-bottom-right-radius: 40px;
   background-color: var(--background-action-high-blue-france) !important;
@@ -52,6 +58,14 @@ select:disabled {
 }
 .fr-card--custom-blue .fr-card__desc, .fr-card--custom-blue .fr-card__title a[href], .fr-card--custom-blue:before{
   color: var(--text-inverted-blue-france) !important;
+}
+.fr-card--blue {
+  background-color: var(--background-contrast-info) !important;
+
+  --idle: transparent;
+  --hover: var(--background-contrast-info-hover);
+  --active: var(--background-contrast-info-active);
+  color: var(--background-action-high-blue-france);
 }
 /**
   * TABLES

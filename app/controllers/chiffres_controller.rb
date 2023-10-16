@@ -11,7 +11,7 @@ class ChiffresController < ApplicationController
 
   def show_dates
     @chiffres = @organisme.chiffres
-    @date = params[:exercice_budgetaire]
+    @date = params[:exercice_budgetaire].to_i
     liste_budgets(@date, @chiffres)
     respond_to do |format|
       format.turbo_stream do
@@ -107,7 +107,12 @@ class ChiffresController < ApplicationController
 
   def chiffre_params
     params.require(:chiffre).permit(:organisme_id, :type_budget, :exercice_budgetaire, :phase, :statut, :commentaire,
-                                    :comptabilite_budgetaire, :operateur, :user_id)
+                                    :comptabilite_budgetaire, :operateur, :user_id, :emplois_plafond,
+                                    :emplois_hors_plafond, :emplois_total, :emplois_plafond_rappel,
+                                    :emplois_plafond_prenotifie, :emplois_schema, :emplois_schema_prenotifie,
+                                    :emplois_non_remuneres, :emplois_titulaires, :emplois_titulaires_montant,
+                                    :emplois_contractuels, :emplois_contractuels_montant, :emplois_autre_entite,
+                                    :emplois_depenses_personnel, :emplois_charges_personnel)
   end
 
   def find_organisme

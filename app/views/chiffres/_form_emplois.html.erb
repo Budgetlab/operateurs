@@ -19,6 +19,82 @@
           <% if @chiffre.statut != "valide" %>
             <%= f.hidden_field :statut, value: "1" %>
           <%end %>
+          <h2>Emplois rémunérés par l’organisme</h2>
+          <% if @chiffre.operateur != true %>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group">
+                  <label for="emplois_plafond" class="fr-label"><% if @chiffre.comptabilite_budgetaire == true %>Autorisation d’emplois<%else %>Emplois<%end %> sous plafond LFI (en ETPT)*</label>
+                  <%= f.text_field :emplois_plafond, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber input->form#changeTotalEmplois'}, value: @chiffre.emplois_plafond, id:"emplois_plafond", class:"fr-input" %>
+                </div>
+              </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group">
+                  <label for="emplois_hors_plafond" class="fr-label"><% if @chiffre.comptabilite_budgetaire == true %>Autorisation d’emplois<%else %>Emplois<%end %> hors plafond LFI (en ETPT)*</label>
+                  <%= f.text_field :emplois_hors_plafond, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber input->form#changeTotalEmplois'}, value: @chiffre.emplois_hors_plafond, id:"emplois_hors_plafond", class:"fr-input" %>
+                </div>
+              </div>
+                <div class="fr-col-12 fr-col-lg-6">
+                  <div>
+                    <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                      <div class="fr-cart__body">
+                        <p class="fr-mb-0 fr-text--center">Hors-plafond / total effectifs rémunérés par l'organisme</p>
+                        <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_emploi">-</span> %</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Total des <% if @chiffre.comptabilite_budgetaire == true %>autorisations d'emplois<%else %>emplois<%end %> rémunérés par l'organisme</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="emplois_total_text">-</span> ETPT</p>
+                      <%= f.hidden_field :emplois_total, id: "emplois_total", value: @chiffre.emplois_total %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group fr-mb-4w">
+                <% if @chiffre.comptabilite_budgetaire == true %>
+                  <label for="emplois_depenses_personnel" class="fr-label">Total des dépenses de personnel*</label>
+                  <%= f.text_field :emplois_depenses_personnel, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber input->form#changeTotalPersonnel'}, value: @chiffre.emplois_depenses_personnel, id:"emplois_personnel", class:"fr-input" %>
+                <%else %>
+                  <label for="emplois_charges_personnel" class="fr-label">Total des charges de personnel*</label>
+                  <%= f.text_field :emplois_charges_personnel, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber input->form#changeTotalPersonnel'}, value: @chiffre.emplois_charges_personnel, id:"emplois_personnel", class:"fr-input" %>
+                <% end %>
+                </div>
+              </div>
+              <div class="fr-col-12 fr-col-lg-6">
+                <div>
+                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Coût moyen par ETPT</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_cout">-</span> €</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+           </div>
+          <% end  %>
+
+          <h2>Rappel du plafond</h2>
+          <h2>Schéma d'emplois</h2>
+          <h2>Répartition des emplois et dépenses de personnel par statut</h2>
+          <div class="fr-my-4w">
+            <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
+              <li>
+                <%= f.submit("Valider", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}) %>
+              </li>
+            </ul>
+          </div>
         <%end %>
       </div>
     </div>

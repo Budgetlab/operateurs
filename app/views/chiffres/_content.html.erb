@@ -1,3 +1,25 @@
+<%  if chiffre %>
+  <% if chiffre.statut != "valide" %>
+    <div class="fr-mb-4w title-btn">
+      <p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p>
+      <%= link_to edit_chiffre_path(chiffre), class: "fr-btn"  do %>Reprendre le brouillon<% end %>
+    </div>
+  <% end %>
+  <div class="fr-mb-4w">
+    <div>
+      <% if chiffre.operateur == true %><p class="fr-badge fr-badge--info fr-badge--no-icon">Opérateur</p><% else %><p class="fr-badge fr-badge--new fr-badge--no-icon">Non opérateur</p><% end %>
+      <% if chiffre.comptabilite_budgetaire == true %><p class="fr-badge fr-badge--success fr-badge--no-icon">Comptabilité budgétaire</p><%else %><p class="fr-badge fr-badge--purple-glycine">Hors comptabilité budgétaire</p><%end %>
+      <p class="fr-badge <% if chiffre.phase == 'pré-CA' %>fr-badge--brown-opera<%elsif chiffre.phase == 'CA' %>fr-badge--green-archipel<%else %>fr-badge--blue-ecume<%end %>"><%= chiffre.phase %></p>
+    </div>
+  </div>
+  <p>Dernières données remplies le <%= format_date(chiffre.updated_at) %> par <%= chiffre.user.nom %></p>
+  <div class="fr-toggle">
+    <input type="checkbox" class="fr-toggle__input" aria-describedby="toggle-698-hint-text" id="toggle-698">
+    <label class="fr-toggle__label" for="toggle-698" >Données complètes</label>
+    <p class="fr-hint-text" id="toggle-698-hint-text">Cliquez sur l’interrupteur pour afficher l’ensemble des données</p>
+  </div>
+  <hr class="fr-my-2w">
+<% end  %>
 <div data-tab-target="section" data-tab-value="emplois" class="fr-mb-4w">
   <h2>Emplois</h2>
   <p class="fr-badge fr-badge--warning">Non renseigné</p>

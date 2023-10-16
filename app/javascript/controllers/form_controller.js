@@ -36,6 +36,7 @@ export default class extends Controller {
             this.changeProgramme();
         }
         this.validateForm(this.formTarget);
+
     }
     validateBtn(isValid){
         this.submitBoutonTarget.disabled = !isValid;
@@ -413,6 +414,51 @@ export default class extends Controller {
             operateur.selectedIndex = 0;
         }
     }
+    changeNumber(event){
+        const inputElement = event.target;
+        // Formatage du nombre
+        const formattedValue = parseFloat(inputElement.value.replace(/\u202F/g, "")).toLocaleString("fr-FR");
+        // Mettez à jour la valeur du champ de formulaire avec le format souhaité
+        if (inputElement.value != ""){
+            inputElement.value = formattedValue;
+        }
+    }
+    changeTotalEmplois(){
+        const emplois_plafond = parseFloat(document.getElementById("emplois_plafond").value.replace(/\u202F/g, "")) || 0;
+        const emplois_hors_plafond = parseFloat(document.getElementById("emplois_hors_plafond").value.replace(/\u202F/g, "")) || 0;
+        const total_emplois = emplois_plafond + emplois_hors_plafond;
+        const total_field = document.getElementById("emplois_total");
+        const total_text = document.getElementById("emplois_total_text");
+        total_field.value = total_emplois;
+        total_text.innerHTML =  new Intl.NumberFormat('fr').format((parseFloat(Number(total_emplois).toFixed(2))));
+        this.changeIndicateurEmploi(emplois_hors_plafond,total_emplois);
+        const total_personnel = parseFloat(document.getElementById("emplois_personnel").value.replace(/\u202F/g, "")) || 0;
+        this.changeIndicateurCout(total_emplois, total_personnel)
+    }
+    changeTotalPersonnel(){
+        const total_emplois = parseFloat(document.getElementById("emplois_total").value.replace(/\u202F/g, "")) || 0;
+        const total_personnel = parseFloat(document.getElementById("emplois_personnel").value.replace(/\u202F/g, "")) || 0;
+        this.changeIndicateurCout(total_emplois, total_personnel)
+    }
+
+    changeIndicateurEmploi(emplois_hors_plafond,total_emplois){
+        const indicateur_emploi = document.getElementById("indicateur_emploi");
+        if (total_emplois != null && total_emplois != 0){
+            const ratio = Math.round((emplois_hors_plafond/total_emplois)*100);
+            indicateur_emploi.innerHTML = ratio.toString();
+        }else{
+            indicateur_emploi.innerHTML = "-"
+        }
+    }
+    changeIndicateurCout(total_emplois, total_personnel){
+        const indicateur_cout = document.getElementById("indicateur_cout");
+        if (total_emplois != null && total_emplois != 0 && total_personnel != null && total_personnel != 0){
+            const ratio = Math.round(total_personnel/total_emplois);
+            indicateur_cout.innerHTML = new Intl.NumberFormat('fr').format((parseFloat(Number(ratio).toFixed(2))));;
+        }else{
+            indicateur_cout.innerHTML = "-"
+        }
+    }
 
     submitForm(event){
         let isValid = this.validateForm(this.formTarget);
@@ -423,6 +469,8 @@ export default class extends Controller {
     Dropdown(e){
         e.preventDefault();
     }
+
+
 }
 function getSelectedValues(event) {
     return [...event.target.selectedOptions].map(option => option.value)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_12_090732) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_16_070332) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -27,6 +27,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_12_090732) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id", null: false
+    t.float "emplois_plafond"
+    t.float "emplois_hors_plafond"
+    t.float "emplois_total"
+    t.float "emplois_plafond_rappel"
+    t.float "emplois_plafond_prenotifie"
+    t.float "emplois_schema"
+    t.float "emplois_schema_prenotifie"
+    t.float "emplois_non_remuneres"
+    t.float "emplois_titulaires"
+    t.float "emplois_titulaires_montant"
+    t.float "emplois_contractuels"
+    t.float "emplois_contractuels_montant"
+    t.float "emplois_autre_entite"
+    t.float "emplois_depenses_personnel"
+    t.float "emplois_charges_personnel"
     t.index ["organisme_id"], name: "index_chiffres_on_organisme_id"
     t.index ["user_id"], name: "index_chiffres_on_user_id"
   end
