@@ -448,33 +448,62 @@ export default class extends Controller {
         const total_text = document.getElementById("emplois_total_text");
         total_field.value = total_emplois;
         total_text.innerHTML = total_emplois.toLocaleString("fr-FR");
-        this.changeIndicateurEmploi(emplois_hors_plafond,total_emplois);
+        const indicateur_emploi = document.getElementById("indicateur_emploi");
+        this.changeRatio(emplois_hors_plafond,total_emplois,indicateur_emploi);
         const total_personnel = this.numberFormat(document.getElementById("emplois_personnel").value) || 0;
-        this.changeIndicateurCout(total_emplois, total_personnel)
+        const indicateur_cout = document.getElementById("indicateur_cout");
+        this.changeIndicateurFraction(total_personnel,total_emplois, indicateur_cout);
+        const total_emplois_contractuels = this.numberFormat(document.getElementById("emplois_contractuels").value) || 0;
+        const indicateur_contractuels = document.getElementById("indicateur_contractuels");
+        this.changeRatio(total_emplois_contractuels,total_emplois, indicateur_contractuels);
+        this.changeIndicateurEmploisAutre();
     }
     changeTotalPersonnel(){
         const total_emplois = this.numberFormat(document.getElementById("emplois_total").value) || 0;
         const total_personnel = this.numberFormat(document.getElementById("emplois_personnel").value) || 0;
-        this.changeIndicateurCout(total_emplois, total_personnel)
+        const indicateur_cout = document.getElementById("indicateur_cout");
+        this.changeIndicateurFraction(total_personnel,total_emplois, indicateur_cout)
     }
 
-    changeIndicateurEmploi(emplois_hors_plafond,total_emplois){
-        const indicateur_emploi = document.getElementById("indicateur_emploi");
-        if (total_emplois != null && total_emplois != 0){
-            const ratio = Math.round((emplois_hors_plafond/total_emplois)*100);
-            indicateur_emploi.innerHTML = ratio.toString();
+    changeRatio(value1,value2,valueText){
+        if (value2 != null && value2 != 0){
+            const ratio = Math.round((value1/value2)*100);
+            valueText.innerHTML = ratio.toString();
         }else{
-            indicateur_emploi.innerHTML = "-"
+            valueText.innerHTML = "-"
         }
     }
-    changeIndicateurCout(total_emplois, total_personnel){
-        const indicateur_cout = document.getElementById("indicateur_cout");
-        if (total_emplois != null && total_emplois != 0 && total_personnel != null && total_personnel != 0){
-            const ratio = Math.round(total_personnel/total_emplois);
-            indicateur_cout.innerHTML = new Intl.NumberFormat('fr').format((parseFloat(Number(ratio).toFixed(2))));;
+    changeIndicateurFraction(value1, value2, valueText){
+        if (value1 != null && value2 != null && value2 != 0){
+            const ratio = Math.round(value1/value2);
+            valueText.innerHTML = ratio.toString();
         }else{
-            indicateur_cout.innerHTML = "-"
+            valueText.innerHTML = "-"
         }
+    }
+    changeEmploisTitulaires(){
+        const total_emplois_titulaires = this.numberFormat(document.getElementById("emplois_titulaires").value) || 0;
+        const total_personnel_titulaires = this.numberFormat(document.getElementById("emplois_titulaires_montant").value) || 0;
+        const indicateur_cout_titulaires = document.getElementById("indicateur_cout_titulaires");
+        this.changeIndicateurFraction(total_personnel_titulaires,total_emplois_titulaires, indicateur_cout_titulaires)
+    }
+    changeEmploisContractuels(){
+        const total_emplois_contractuels = this.numberFormat(document.getElementById("emplois_contractuels").value) || 0;
+        const total_personnel_contractuels = this.numberFormat(document.getElementById("emplois_contractuels_montant").value) || 0;
+        const indicateur_cout_contractuels = document.getElementById("indicateur_cout_contractuels");
+        this.changeIndicateurFraction(total_personnel_contractuels,total_emplois_contractuels, indicateur_cout_contractuels);
+        const total_emplois = this.numberFormat(document.getElementById("emplois_total").value) || 0;
+        const indicateur_contractuels = document.getElementById("indicateur_contractuels");
+        this.changeRatio(total_emplois_contractuels,total_emplois, indicateur_contractuels);
+    }
+
+    changeIndicateurEmploisAutre(){
+        const total_emplois = this.numberFormat(document.getElementById("emplois_total").value) || 0;
+        const emplois_non_remuneres = this.numberFormat(document.getElementById("emplois_non_remuneres").value) || 0;
+        const emplois_autre_entite = this.numberFormat(document.getElementById("emplois_autre_entite").value) || 0;
+        const indicateur_cout_autre = document.getElementById("indicateur_cout_autre");
+        const num = total_emplois - emplois_non_remuneres + emplois_autre_entite;
+        this.changeRatio(num,total_emplois, indicateur_cout_autre);
     }
 
     submitForm(event){

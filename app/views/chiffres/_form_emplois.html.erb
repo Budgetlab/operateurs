@@ -72,7 +72,7 @@
           <% end  %>
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 fr-col-lg-6">
-                <div class="fr-input-group fr-mb-4w">
+                <div class="fr-input-group">
                 <% if @chiffre.comptabilite_budgetaire == true %>
                   <label for="emplois_personnel" class="fr-label">Total des dépenses de personnel*</label>
                   <%= f.text_field :emplois_depenses_personnel, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber input->form#changeTotalPersonnel'}, value: @chiffre.emplois_depenses_personnel, id:"emplois_personnel", class:"fr-input" %>
@@ -95,10 +95,134 @@
            </div>
 
 
-          <h2>Rappel du plafond</h2>
+          <h2 class="fr-mt-4w">Rappel du plafond</h2>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-input-group">
+                <label for="emplois_plafond_rappel" class="fr-label">Rappel du plafond d'emplois inscrit en PLF / LFI (en ETPT)</label>
+                <%= f.text_field :emplois_plafond_rappel, data: {action: 'input->form#changeNumber'}, value: @chiffre.emplois_plafond_rappel, id:"emplois_plafond_rappel", class:"fr-input" %>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-input-group">
+                <label for="emplois_plafond_prenotifie" class="fr-label">Plafond d'emplois pré-notifié à l'organisme par le RPROG (en ETPT)</label>
+                <%= f.text_field :emplois_plafond_prenotifie, data: {action: 'input->form#changeNumber'}, value: @chiffre.emplois_plafond_prenotifie, id:"emplois_plafond_prenotifie", class:"fr-input" %>
+              </div>
+            </div>
+          </div>
 
-          <h2>Schéma d'emplois</h2>
-          <h2>Répartition des emplois et dépenses de personnel par statut</h2>
+          <h2 class="fr-mt-4w">Schéma d'emplois</h2>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-input-group">
+                <label for="emplois_schema" class="fr-label">Schéma d'emplois (en ETP)</label>
+                <%= f.text_field :emplois_schema, data: {action: 'input->form#changeNumber'}, value: @chiffre.emplois_schema, id:"emplois_schema", class:"fr-input" %>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-input-group">
+                <label for="emplois_schema_prenotifie" class="fr-label">Schéma d'emplois pré-notifié à l'organisme par le RPROG (en ETP)</label>
+                <%= f.text_field :emplois_schema_prenotifie, data: {action: 'input->form#changeNumber'}, value: @chiffre.emplois_schema_prenotifie, id:"emplois_schema_prenotifie", class:"fr-input" %>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="fr-mt-4w">Répartition des emplois et dépenses de personnel par statut</h2>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-input-group">
+                <label for="emplois_titulaires" class="fr-label">Total des emplois titulaires (en ETPT)</label>
+                <%= f.text_field :emplois_titulaires, data: {action: 'input->form#changeNumber input->form#changeEmploisTitulaires'}, value: @chiffre.emplois_titulaires, id:"emplois_titulaires", class:"fr-input" %>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-input-group">
+                <label for="emplois_titulaires_montant" class="fr-label">Dépenses de personnel des emplois titulaires (en €)</label>
+                <%= f.text_field :emplois_titulaires_montant, data: {action: 'input->form#changeNumber input->form#changeEmploisTitulaires'}, value: @chiffre.emplois_titulaires_montant, id:"emplois_titulaires_montant", class:"fr-input" %>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div>
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Coût moyen des emplois titulaires</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_cout_titulaires">-</span> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-input-group">
+                <label for="emplois_contractuels" class="fr-label">Total des emplois contractuels (en ETPT)</label>
+                <%= f.text_field :emplois_contractuels, data: {action: 'input->form#changeNumber input->form#changeEmploisContractuels'}, value: @chiffre.emplois_contractuels, id:"emplois_contractuels", class:"fr-input" %>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div>
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Part des contractuels dans le total des emplois rémunérés par l’organisme</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_contractuels">-</span> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-input-group">
+                <label for="emplois_contractuels_montant" class="fr-label">Dépenses de personnel des emplois contractuels (en €)</label>
+                <%= f.text_field :emplois_contractuels_montant, data: {action: 'input->form#changeNumber input->form#changeEmploisContractuels'}, value: @chiffre.emplois_contractuels_montant, id:"emplois_contractuels_montant", class:"fr-input" %>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div>
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Coût moyen des emplois contractuels</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_cout_contractuels">-</span> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h2 class="fr-mt-4w">Autres emplois en fonction dans l’organisme</h2>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-input-group">
+                <label for="emplois_non_remuneres" class="fr-label">Emplois en fonction dans l'organisme, non rémunérés par lui - emplois T2, MAD entrantes remboursées ou non* (en ETPT)</label>
+                <%= f.text_field :emplois_non_remuneres, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber input->form#changeIndicateurEmploisAutre'}, value: @chiffre.emplois_non_remuneres, id:"emplois_non_remuneres", class:"fr-input" %>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-input-group">
+                <label for="emplois_autre_entite" class="fr-label">Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisation d'emplois - MAD sortantes (en ETPT)</label>
+                <%= f.text_field :emplois_autre_entite, data: {action: 'input->form#changeNumber input->form#changeIndicateurEmploisAutre'}, value: @chiffre.emplois_autre_entite, id:"emplois_autre_entite", class:"fr-input" %>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div>
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Part des personnels exerçant leurs missions dans l’organisme dans le total des emplois rémunérés directement par l’organisme</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_cout_autre">-</span> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="fr-my-4w">
             <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
               <li>
