@@ -76,6 +76,15 @@ class ChiffresController < ApplicationController
 
   def update
     @chiffre = Chiffre.find(params[:id])
+    @organisme = @chiffre.organisme
+    if params[:chiffre][:statut] && params[:chiffre][:statut] != 'valide'
+      step = params[:chiffre][:statut].to_i + 1
+      params[:chiffre][:statut] = @chiffre.statut.to_i > params[:chiffre][:statut].to_i ? @chiffre.statut : params[:chiffre][:statut] # pour garder dernière étape sauvegardee si retour en arrière
+    end
+    @chiffre.update(chiffre_params)
+    message = @chiffre.statut == 'valide' ? 'maj' : 'creation'
+    redirect_path = @chiffre.statut == 'valide' ? organisme_path(@organisme) : edit_chiffre_path(@chiffre, step: step)
+    redirect_to redirect_path, flash: { notice: message }
   end
 
   def historique

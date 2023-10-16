@@ -35,6 +35,12 @@ export default class extends Controller {
             this.ChangeOperateur();
             this.changeProgramme();
         }
+        if (document.getElementById("chiffres") != null ){
+            const fields = document.querySelectorAll("input");
+            fields.forEach(field => {
+                this.changeFloatToText(field);
+            })
+        }
         this.validateForm(this.formTarget);
 
     }
@@ -432,6 +438,17 @@ export default class extends Controller {
             inputElement.value = null;
         }
     }
+    changeFloatToText(field){
+        const parsedValue = this.numberFormat(field.value);
+        if (!isNaN(parsedValue)) {
+            // Formatage du nombre avec séparateur de milliers
+            const formattedValue = parsedValue.toLocaleString("fr-FR");
+            field.value = formattedValue;
+
+        } else {
+            field.value = null;
+        }
+    }
     numberFormat(number){
         const sanitizedValue = number.replace(/\u202F/g, "");
         // Remplacez la virgule par un point pour permettre les décimaux
@@ -520,6 +537,18 @@ export default class extends Controller {
         blocs.forEach(element => {
             element.classList.remove("fr-hidden");
         })
+    }
+    changeTextToFloat(event){
+        event.preventDefault();
+        const fields = document.querySelectorAll("input");
+        fields.forEach(field => {
+            const parsedValue = this.numberFormat(field.value);
+            if (!isNaN(parsedValue)) {
+                field.value = parsedValue;
+                console.log(field.value)
+            }
+        })
+        this.formTarget.submit();
     }
 
     submitForm(event){
