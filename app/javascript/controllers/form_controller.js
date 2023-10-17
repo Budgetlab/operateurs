@@ -36,7 +36,7 @@ export default class extends Controller {
             this.changeProgramme();
         }
         if (document.getElementById("chiffres") != null ){
-            const fields = document.querySelectorAll("input:not([type='submit'])");
+            const fields = document.querySelectorAll("input[type='text']");
             fields.forEach(field => {
                 this.changeFloatToText(field);
             });
@@ -183,18 +183,18 @@ export default class extends Controller {
     checkBox(){
         const btn_rattachement= document.getElementById("BtnRattachement");
         if (btn_rattachement != null){
-        const checkTargetschecked = this.checklistTargets.filter(target => target.checked);
-        if (checkTargetschecked.length > 0) {
-            btn_rattachement.textContent = "";
-            this.checklistTargets.forEach((field) =>{
-                if (field.checked){
-                    const label = this.element.querySelector(`label[for="${field.id}"]`);
-                    btn_rattachement.textContent = btn_rattachement.textContent + label.textContent + " | " ;
-                }
-            })
-        }else{
-            btn_rattachement.textContent = "- sélectionner -"
-        }
+            const checkTargetschecked = this.checklistTargets.filter(target => target.checked);
+            if (checkTargetschecked.length > 0) {
+                btn_rattachement.textContent = "";
+                this.checklistTargets.forEach((field) =>{
+                    if (field.checked){
+                        const label = this.element.querySelector(`label[for="${field.id}"]`);
+                        btn_rattachement.textContent = btn_rattachement.textContent + label.textContent + " | " ;
+                    }
+                })
+            }else{
+                btn_rattachement.textContent = "- sélectionner -"
+            }
         }
     }
 
@@ -338,29 +338,29 @@ export default class extends Controller {
         const mission = document.getElementById("mission");
         const programme = document.getElementById("programme").value;
         if (programme != ""){
-        const token = document.querySelector('meta[name="csrf-token"]').content;
-        const url = "/opera/select_mission"
-        const body = { programme }
-        fetch(url, {
-            method: 'POST',
-            body: JSON.stringify(body),
-            credentials: "include",
-            dataType: 'script',
-            headers: {
-                "X-CSRF-Token": token,
-                "Content-Type": "application/json"
-            },
-        })
-            .then(response => response.json()/*response.text()*/)
-            .then(data => {
-                mission.innerHTML = "";
-                const opt = document.createElement("option");
-                opt.value = data.mission.id;
-                opt.innerHTML = data.mission.nom;
-                mission.appendChild(opt);
-                mission.selectedIndex = 0;
-                this.validateForm();
-            });
+            const token = document.querySelector('meta[name="csrf-token"]').content;
+            const url = "/opera/select_mission"
+            const body = { programme }
+            fetch(url, {
+                method: 'POST',
+                body: JSON.stringify(body),
+                credentials: "include",
+                dataType: 'script',
+                headers: {
+                    "X-CSRF-Token": token,
+                    "Content-Type": "application/json"
+                },
+            })
+                .then(response => response.json()/*response.text()*/)
+                .then(data => {
+                    mission.innerHTML = "";
+                    const opt = document.createElement("option");
+                    opt.value = data.mission.id;
+                    opt.innerHTML = data.mission.nom;
+                    mission.appendChild(opt);
+                    mission.selectedIndex = 0;
+                    this.validateForm();
+                });
         }else{
             this.resetChamp(mission);
         }
@@ -571,7 +571,7 @@ export default class extends Controller {
     }
     changeTextToFloat(event){
         event.preventDefault();
-        const fields = document.querySelectorAll("input");
+        const fields = document.querySelectorAll("input[type='text']");
         fields.forEach(field => {
             const parsedValue = this.numberFormat(field.value);
             if (!isNaN(parsedValue)) {
