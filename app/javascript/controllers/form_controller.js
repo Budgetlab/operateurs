@@ -39,7 +39,8 @@ export default class extends Controller {
             const fields = document.querySelectorAll("input");
             fields.forEach(field => {
                 this.changeFloatToText(field);
-            })
+            });
+            this.changeEmplois();
         }
         this.validateForm(this.formTarget);
 
@@ -457,33 +458,46 @@ export default class extends Controller {
         const parsedValue = parseFloat(sanitizedValueWithDot);
         return parsedValue;
     }
-    changeTotalEmplois(){
+    changeEmplois(){
+        if (document.getElementById("emplois_plafond") != null && document.getElementById("emplois_hors_plafond") != null){
+            // Mettre à jour indicateur total emplois
+            this.changeIndicateurTotalEmplois()
+            // Mettre à jour indicateur hors plafond uniquement si emplois hors plafond est non null
+            this.changeIndicateurHorsPlafond()
+        }
+        // Mettre à jour indicateur cout moyen par ETP
+        this.changeIndicateurPersonnel();
+
+        if (document.getElementById("emplois_titulaires") != null && document.getElementById("emplois_contractuels") != null){
+            // Mettre à jour indicateur cout moyen titulaires
+            this.changeIndicateurCoutTitulaires();
+            // Mettre à jour indicateur part des contractuels
+            this.changeIndicateurPartContractuels();
+            // Mettre à jour indicateur cout moyen contractuels
+            this.changeIndicateurCoutContractuels();
+        }
+        if (document.getElementById("emplois_autre_entite") != null){
+            // Mettre à jour indicateur part des personnels
+            this.changeIndicateurEmploisAutre();
+        }
+        this.validateForm();
+    }
+    changeIndicateurTotalEmplois(){
         const emplois_plafond = this.numberFormat(document.getElementById("emplois_plafond").value) || 0;
-        const emplois_hors_plafond_field = document.getElementById("emplois_hors_plafond")
-        const emplois_hors_plafond = this.numberFormat(emplois_hors_plafond_field.value) || 0;
+        const emplois_hors_plafond = this.numberFormat(document.getElementById("emplois_hors_plafond").value) || 0;
         // Mettre à jour total des emplois
         const emplois_total = emplois_plafond + emplois_hors_plafond;
         const total_field = document.getElementById("emplois_total");
         const total_text = document.getElementById("emplois_total_text");
         total_field.value = emplois_total;
         total_text.innerHTML = emplois_total.toLocaleString("fr-FR");
-
-        // Mettre à jour indicateur hors plafond uniquement si emplois hors plafond est non null
+    }
+    changeIndicateurHorsPlafond(){
+        const emplois_hors_plafond_field = document.getElementById("emplois_hors_plafond");
+        const emplois_hors_plafond = this.numberFormat(emplois_hors_plafond_field.value) || 0;
+        const emplois_total = this.numberFormat(document.getElementById("emplois_total").value) || 0;
         const indicateur_emploi = document.getElementById("indicateur_emploi");
         this.indicateurRatio(emplois_hors_plafond_field,indicateur_emploi, emplois_hors_plafond, emplois_total,100)
-        // Mettre à jour indicateur cout moyen par ETP
-        this.changeIndicateurPersonnel();
-        // Mettre à jour indicateur part des contractuels
-        this.changeIndicateurPartContractuels();
-        // Mettre à jour indicateur part des personnels
-        this.changeIndicateurEmploisAutre();
-    }
-    changeIndicateurPartContractuels(){
-        const emplois_total = this.numberFormat(document.getElementById("emplois_total").value) || 0;
-        const emplois_contractuels_field = document.getElementById("emplois_contractuels")
-        const emplois_contractuels = this.numberFormat(emplois_contractuels_field.value) || 0;
-        const indicateur_contractuels = document.getElementById("indicateur_contractuels");
-        this.indicateurRatio(emplois_contractuels_field,indicateur_contractuels, emplois_contractuels, emplois_total,100)
     }
     changeIndicateurPersonnel(){
         const emplois_total = this.numberFormat(document.getElementById("emplois_total").value) || 0;
@@ -492,21 +506,26 @@ export default class extends Controller {
         const indicateur_cout = document.getElementById("indicateur_cout");
         this.indicateurRatio(emplois_personnel_field, indicateur_cout, emplois_personnel,emplois_total,1)
     }
-
-    changeEmploisTitulaires(){
+    changeIndicateurCoutTitulaires(){
         const emplois_titulaires = this.numberFormat(document.getElementById("emplois_titulaires").value) || 0;
         const emplois_titulaires_montant_field = document.getElementById("emplois_titulaires_montant")
         const emplois_titulaires_montant = this.numberFormat(emplois_titulaires_montant_field.value) || 0;
         const indicateur_cout_titulaires = document.getElementById("indicateur_cout_titulaires");
         this.indicateurRatio(emplois_titulaires_montant_field, indicateur_cout_titulaires, emplois_titulaires_montant,emplois_titulaires,1)
     }
-    changeEmploisContractuels(){
+    changeIndicateurPartContractuels(){
+        const emplois_total = this.numberFormat(document.getElementById("emplois_total").value) || 0;
+        const emplois_contractuels_field = document.getElementById("emplois_contractuels")
+        const emplois_contractuels = this.numberFormat(emplois_contractuels_field.value) || 0;
+        const indicateur_contractuels = document.getElementById("indicateur_contractuels");
+        this.indicateurRatio(emplois_contractuels_field,indicateur_contractuels, emplois_contractuels, emplois_total,100)
+    }
+    changeIndicateurCoutContractuels(){
         const emplois_contractuels = this.numberFormat(document.getElementById("emplois_contractuels").value) || 0;
         const emplois_contractuels_montant_field = document.getElementById("emplois_contractuels_montant")
         const emplois_contractuels_montant = this.numberFormat(emplois_contractuels_montant_field.value) || 0;
         const indicateur_cout_contractuels = document.getElementById("indicateur_cout_contractuels");
         this.indicateurRatio(emplois_contractuels_montant_field, indicateur_cout_contractuels, emplois_contractuels_montant,emplois_contractuels, 1);
-        this.changeIndicateurPartContractuels();
     }
 
     changeIndicateurEmploisAutre(){
@@ -526,7 +545,7 @@ export default class extends Controller {
     indicateurRatio(field, indicateur_text, value1,value2,value3){
         if (field.value != null && field.value != "" && value2 != 0){
             const ratio = Math.round((value1/value2)*value3);
-            indicateur_text.innerHTML = ratio.toString();
+            indicateur_text.innerHTML = ratio.toLocaleString("fr-FR");
         }else{
             indicateur_text.innerHTML = "-"
         }
