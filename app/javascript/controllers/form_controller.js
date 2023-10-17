@@ -36,10 +36,13 @@ export default class extends Controller {
             this.changeProgramme();
         }
         if (document.getElementById("chiffres") != null ){
-            const fields = document.querySelectorAll("input");
+            const fields = document.querySelectorAll("input:not([type='submit'])");
             fields.forEach(field => {
                 this.changeFloatToText(field);
             });
+
+        }
+        if (document.getElementById("emplois_total") != null ) {
             this.changeEmplois();
         }
         this.validateForm(this.formTarget);
@@ -47,6 +50,10 @@ export default class extends Controller {
     }
     validateBtn(isValid){
         this.submitBoutonTarget.disabled = !isValid;
+    }
+    validateBtnAffichePlus(isValid){
+        const bouton = document.getElementById("btn-plus");
+        bouton.disabled = !isValid;
     }
     validateForm(){
         let isValid = true;
@@ -68,6 +75,9 @@ export default class extends Controller {
             }
         }
         this.validateBtn(isValid);
+        if (document.getElementById("btn-plus") != null){
+            this.validateBtnAffichePlus(isValid);
+        }
         return isValid;
     }
     addErreurInput(input){
@@ -556,6 +566,8 @@ export default class extends Controller {
         blocs.forEach(element => {
             element.classList.remove("fr-hidden");
         })
+        const section = document.getElementById("chiffres");
+        this.scrollToSection(section);
     }
     changeTextToFloat(event){
         event.preventDefault();
@@ -568,6 +580,20 @@ export default class extends Controller {
             }
         })
         this.formTarget.submit();
+    }
+    scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth" // Pour un défilement fluide
+        });
+    }
+    scrollToSection(section) {
+        if (section) {
+            section.scrollIntoView({
+                behavior: "smooth",
+                block: "start"
+            });
+        }
     }
 
     submitForm(event){

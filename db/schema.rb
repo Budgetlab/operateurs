@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_16_070332) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_17_144143) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -42,6 +42,27 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_16_070332) do
     t.float "emplois_autre_entite"
     t.float "emplois_depenses_personnel"
     t.float "emplois_charges_personnel"
+    t.float "credits_ae_total"
+    t.float "credits_ae_fonctionnement"
+    t.float "credits_ae_intervention"
+    t.float "credits_ae_investissement"
+    t.float "credits_cp_total"
+    t.float "credits_cp_fonctionnement"
+    t.float "credits_cp_intervention"
+    t.float "credits_cp_investissement"
+    t.float "credits_cp_operations"
+    t.float "credits_cp_recettes_flechees"
+    t.float "credits_subvention_sp"
+    t.float "credits_subvention_investissement_globalisee"
+    t.float "credits_subvention_investissement_flechee"
+    t.float "credits_financements_etat_autres"
+    t.float "credits_financements_etat_fleches"
+    t.float "credits_fiscalite_affectee"
+    t.float "credits_financements_publics_autres"
+    t.float "credits_financements_publics_fleches"
+    t.float "credits_recettes_propres_globalisees"
+    t.float "credits_recettes_propres_flechees"
+    t.float "credits_restes_a_payer"
     t.index ["organisme_id"], name: "index_chiffres_on_organisme_id"
     t.index ["user_id"], name: "index_chiffres_on_user_id"
   end

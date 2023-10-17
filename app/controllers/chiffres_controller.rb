@@ -62,7 +62,7 @@ class ChiffresController < ApplicationController
   def create
     @chiffre = Chiffre.new(chiffre_params)
     if @chiffre.save
-      redirect_to edit_chiffre_path(@chiffre.id)
+      redirect_to edit_chiffre_path(@chiffre)
     else
       render :new
     end
@@ -121,7 +121,16 @@ class ChiffresController < ApplicationController
                                     :emplois_plafond_prenotifie, :emplois_schema, :emplois_schema_prenotifie,
                                     :emplois_non_remuneres, :emplois_titulaires, :emplois_titulaires_montant,
                                     :emplois_contractuels, :emplois_contractuels_montant, :emplois_autre_entite,
-                                    :emplois_depenses_personnel, :emplois_charges_personnel)
+                                    :emplois_depenses_personnel, :emplois_charges_personnel, :credits_ae_total,
+                                    :credits_ae_fonctionnement, :credits_ae_intervention, :credits_ae_investissement,
+                                    :credits_cp_total, :credits_cp_fonctionnement, :credits_cp_intervention,
+                                    :credits_cp_investissement, :credits_cp_operations, :credits_cp_recettes_flechees,
+                                    :credits_subvention_sp, :credits_subvention_investissement_globalisee,
+                                    :credits_subvention_investissement_flechee, :credits_financements_etat_autres,
+                                    :credits_financements_etat_fleches, :credits_fiscalite_affectee,
+                                    :credits_financements_publics_autres, :credits_financements_publics_fleches,
+                                    :credits_recettes_propres_globalisees, :credits_recettes_propres_flechees,
+                                    :credits_restes_a_payer)
   end
 
   def find_organisme

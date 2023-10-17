@@ -11,10 +11,10 @@
           <span class="fr-download__detail">Format .xlsx</span>
         <%end %></p>
     </div>
-    <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--vscroll fr-mb-6w">
+    <div class="fr-table fr-table--bordered fr-table--layout-fixed--lg fr-table--vscroll fr-mb-6w">
       <%= form_with(url: filter_chiffres_path, method: :post, data: { 'filter-target': "form"}) do |f|%>
       <table>
-        <caption>Historique</caption>
+        <caption>Liste des résultats <span id="total_table"><%= render partial: "chiffres/table_historique_total", locals: {total: @chiffres.length} %></span></caption>
         <thead>
           <tr>
             <th scope="col">Date</th>
@@ -83,7 +83,7 @@
               </div>
             </th>
             <th scope="col">Examen</th>
-            <th scope="col" id="total_table"><%= render partial: "chiffres/table_historique_total", locals: {total: @chiffres.length} %></th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody id="table_historique">

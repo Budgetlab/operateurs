@@ -1,0 +1,38 @@
+<% if @chiffre.statut != "valide" %>
+  <div class="fr-stepper">
+    <h2 class="fr-stepper__title">
+      <span class="fr-stepper__state">Étape 2 sur <%= @steps %></span>
+      Emplois
+    </h2>
+    <div class="fr-stepper__steps" data-fr-current-step="1" data-fr-steps="<%= @steps %>"></div>
+    <p class="fr-stepper__details">
+      <span class="fr-text--bold">Étape suivante :</span> Comptabilité générale
+    </p>
+  </div>
+<%end %>
+
+<div class="fr-mb-6w">
+  <div class="fr-card  fr-card--no-arrow">
+    <div class="fr-card__body" data-controller="form" id="chiffres">
+      <div class="fr-card__content">
+        <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#changeEmplois turbo:before-fetch-request->form#submitForm"}) do |f|%>
+          <% if @chiffre.statut != "valide" %>
+            <%= f.hidden_field :statut, value: "2" %>
+          <%end %>
+          <h2>Dépenses</h2>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-input-group fr-input-group--option">
+                <label for="credits_ae_total" class="fr-label">Total des autorisations d'engagement (AE en €)*</label>
+                <%= f.text_field :credits_ae_total, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_ae_total, id:"credits_ae_total", class:"fr-input" %>
+              </div>
+            </div>
+          </div>
+          <h2 class="fr-mt-4w">Recettes</h2>
+          <h2 class="fr-mt-4w">Solde budgétaire</h2>
+          <h2 class="fr-mt-4w">Restes à payer</h2>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

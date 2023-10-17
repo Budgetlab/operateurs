@@ -1,0 +1,30 @@
+<% if @chiffre.statut != "valide" %>
+  <div class="fr-stepper">
+    <h2 class="fr-stepper__title">
+      <span class="fr-stepper__state">Étape <%= @chiffre.statut.to_i + 1 %> sur <%= @steps %></span>
+      Comptabilité générale
+    </h2>
+    <div class="fr-stepper__steps" data-fr-current-step="<%= @chiffre.statut.to_i + 1 %>" data-fr-steps="<%= @steps %>"></div>
+    <p class="fr-stepper__details">
+      <span class="fr-text--bold">Étape suivante :</span> Trésorerie
+    </p>
+  </div>
+<%end %>
+
+<div class="fr-mb-6w">
+  <div class="fr-card  fr-card--no-arrow">
+    <div class="fr-card__body" data-controller="form" id="chiffres">
+      <div class="fr-card__content">
+        <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#changeEmplois turbo:before-fetch-request->form#submitForm"}) do |f|%>
+          <% if @chiffre.statut != "valide" %>
+            <% if @chiffre.comptabilite_budgetaire == true %>
+              <%= f.hidden_field :statut, value: "3" %>
+            <% else %>
+              <%= f.hidden_field :statut, value: "2" %>
+            <% end %>
+          <%end %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
