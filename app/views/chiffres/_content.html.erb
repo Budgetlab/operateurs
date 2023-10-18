@@ -582,7 +582,145 @@
   <hr class="fr-my-2w">
   <div data-tab-target="section" data-tab-value="tresorerie" class="fr-mb-4w">
     <h2>Trésorerie</h2>
-    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <% if chiffre.statut == "valide" || chiffre.statut.to_i > 3 %>
+      <% @den = (chiffre.credits_cp_total - chiffre.credits_cp_investissement)/360 %>
+      <h3 class="fr-h4">Niveaux de trésorerie</h3>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Niveau final de trésorerie</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.tresorerie_finale) %> €</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.comptabilite_budgetaire == true %><%= format_nombre(chiffre.tresorerie_finale/@den) %><%else %>x<%end %> Jours</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-6 fr-col-offset-lg-6">
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Taux de couverture des restes à payer par la trésorerie</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(ratio(chiffre.tresorerie_finale,chiffre.credits_restes_a_payer,100)) %> %</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% if chiffre.comptabilite_budgetaire == true  %>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>Niveau final de la trésorerie non fléchée</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_finale_non_flechee) %> €</div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Poids de la trésorerie non fléchée</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(ratio(chiffre.tresorerie_finale_non_flechee,chiffre.tresorerie_finale,100))%> %</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>Niveau final de la trésorerie fléchée</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_finale_flechee) %> €</div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Trésorerie non fléchée en jours de fonctionnement</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.tresorerie_finale_non_flechee/@den) %> Jours</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% end  %>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Niveau initial de trésorerie</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.tresorerie_finale-chiffre.tresorerie_variation) %> €</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h3 class="fr-h4 fr-mt-4w">Variation</h3>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>Variation de la trésorerie </div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_variation) %> €</div>
+        </div>
+      </div>
+      <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>Variation de la trésorerie fléchée </div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_variation_flechee) %> €</div>
+        </div>
+      </div>
+      <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>Variation de la trésorerie non fléchée </div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_variation_non_flechee) %> €</div>
+        </div>
+      </div>
+      <h3 class="fr-h4 fr-mt-4w options fr-hidden">Point haut / bas</h3>
+      <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>Point le plus haut dans le plan de trésorerie </div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_max) %> € au mois de <%= format_date(chiffre.tresorerie_min_date) %></div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Niveau le plus haut de trésorerie en jours de fonctionnement</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.comptabilite_budgetaire == true %><%= format_nombre(chiffre.tresorerie_max/@den)  %><%else %>x<%end %> Jours</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>Point le plus bas dans le plan de trésorerie </div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_min) %> € au mois de <%= format_date(chiffre.tresorerie_min_date) %></div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Niveau le plus bas de trésorerie en jours de fonctionnement</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.comptabilite_budgetaire == true %><%= format_nombre(chiffre.tresorerie_min/@den)  %><%else %>x<%end %> Jours</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% else %>
+      <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <% end %>
   </div>
   <hr class="fr-my-2w">
   <div data-tab-target="section" data-tab-value="analyse" class="fr-mb-4w">

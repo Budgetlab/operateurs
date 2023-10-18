@@ -686,6 +686,7 @@ export default class extends Controller {
     }
     changeTresorerie(){
         this.changeIndicateurTresoJours();
+        this.changeIndicateurInit();
         if (document.getElementById("indicateur_treso_non_flechee") != null){
             this.changeIndicateurTresoNonFlechee();
         }
@@ -708,9 +709,16 @@ export default class extends Controller {
         const den = this.calculateTresoDen();
         this.indicateurRatio(tresorerie_finale_non_flechee_field,indicateur_treso_non_flechee_jours,tresorerie_finale_non_flechee,den,1);
     }
+    changeIndicateurInit(){
+        const tresorerie_indicateur_initial = document.getElementById("tresorerie_indicateur_initial");
+        const tresorerie_finale = this.numberFormat(document.getElementById("tresorerie_finale").value) || 0;
+        const tresorerie_variation = this.numberFormat(document.getElementById("tresorerie_variation").value) || 0;
+        const tresorie_initiale = tresorerie_finale - tresorerie_variation;
+        tresorerie_indicateur_initial.innerHTML = tresorie_initiale.toLocaleString("fr-FR");
+    }
     changeIndicateurTresoJours(){
         const indicateur_treso_jours = document.getElementById("indicateur_treso_jours");
-        const tresorerie_finale_field = document.getElementById("tresorerie_finale")
+        const tresorerie_finale_field = document.getElementById("tresorerie_finale");
         const tresorerie_finale = this.numberFormat(tresorerie_finale_field.value) || 0;
         const den = this.calculateTresoDen();
         this.indicateurRatio(tresorerie_finale_field,indicateur_treso_jours,tresorerie_finale,den,1);
