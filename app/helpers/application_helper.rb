@@ -16,12 +16,26 @@ module ApplicationHelper
   end
 
   def format_date(date)
-    unless date.nil?
-      date = date.strftime('%d/%m/%Y')
-    end
+    return if date.nil?
+
+    date = date.strftime('%d/%m/%Y')
+
   end
 
   def format_nombre(nombre)
-    nombre = number_with_delimiter(nombre, precision: 2, significant: true, strip_insignificant_zeros: true, delimiter: ' ')
+    case nombre
+    when nil, ''
+      '-'
+    else
+      number_with_delimiter('%.11g' % ('%.1f' % nombre), locale: :fr)
+    end
+  end
+  def format_nombre_entier(nombre)
+    case nombre
+    when nil, ''
+      '-'
+    else
+      number_with_delimiter('%.11g' % ('%.0f' % nombre), locale: :fr)
+    end
   end
 end

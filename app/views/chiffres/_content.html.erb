@@ -14,33 +14,238 @@
   </div>
   <p>Dernières données remplies le <%= format_date(chiffre.updated_at) %> par <%= chiffre.user.nom %></p>
   <div class="fr-toggle">
-    <input type="checkbox" class="fr-toggle__input" aria-describedby="toggle-698-hint-text" id="toggle-698">
+    <input type="checkbox" class="fr-toggle__input" aria-describedby="toggle-698-hint-text" id="toggle-698" data-action="click->toggle#toggle">
     <label class="fr-toggle__label" for="toggle-698" >Données complètes</label>
     <p class="fr-hint-text" id="toggle-698-hint-text">Cliquez sur l’interrupteur pour afficher l’ensemble des données</p>
   </div>
   <hr class="fr-my-2w">
+  <div data-tab-target="section" data-tab-value="emplois" class="fr-mb-4w">
+    <h2>Emplois</h2>
+    <% if chiffre.statut == "valide" || chiffre.statut.to_i > 0 %>
+      <h3 class="fr-h4">Emplois rémunérés par l’organisme</h3>
+      <% if chiffre.operateur == true %>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div><% if chiffre.comptabilite_budgetaire == true %>Autorisation d’emplois<%else %>Emplois<%end %> sous plafond LFI</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_plafond) %> ETPT</div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div><% if chiffre.comptabilite_budgetaire == true %>Autorisation d’emplois<%else %>Emplois<%end %> hors plafond LFI</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_hors_plafond) %> ETPT</div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-6">
+            <div>
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Hors-plafond / total effectifs rémunérés par l'organisme</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.emplois_hors_plafond*100/chiffre.emplois_total) %> %</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Total des <% if chiffre.comptabilite_budgetaire == true %>autorisations d'emplois<%else %>emplois<%end %> rémunérés par l'organisme</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.emplois_total) %> ETPT</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <%else %>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div>Total des <% if chiffre.comptabilite_budgetaire == true %>autorisations d'emplois<%else %>emplois<%end %> rémunérés par l'organisme</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_total) %> ETPT</div>
+          </div>
+        </div>
+      <% end %>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-6">
+          <% if chiffre.comptabilite_budgetaire == true %>
+            <div>Total des dépenses de personnel</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_depenses_personnel) %> €</div>
+          <%else %>
+            <div>Total des charges de personnel</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_charges_personnel) %> €</div>
+          <%end %>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>
+            <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Coût moyen par ETPT</p>
+                <% if chiffre.comptabilite_budgetaire == true %>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.emplois_depenses_personnel/chiffre.emplois_total) %> €</p>
+                <%else %>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.emplois_charges_personnel/chiffre.emplois_total) %> €</p>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% if chiffre.operateur == true %>
+        <h3 class="fr-h4 fr-mt-4w options fr-hidden">Rappel du plafond</h3>
+        <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+          <div class="fr-col-12 fr-col-lg-12">
+            <div>Rappel du plafond d'emplois inscrit en PLF / LFI</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_plafond_rappel) %> ETPT</div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+          <div class="fr-col-12 fr-col-lg-12">
+            <div>Plafond d'emplois pré-notifié à l'organisme par le RPROG</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_plafond_prenotifie) %> ETPT</div>
+          </div>
+        </div>
+        <h3 class="fr-h4 fr-mt-4w">Schéma d’emplois</h3>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-12">
+            <div>Schéma d'emplois</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_schema) %> ETP</div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+          <div class="fr-col-12 fr-col-lg-12">
+            <div>Schéma d'emplois pré-notifié à l'organisme par le RPROG</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_schema_prenotifie) %> ETP</div>
+          </div>
+        </div>
+      <% end  %>
+      <h3 class="fr-h4 fr-mt-4w options fr-hidden">Répartition des emplois et dépenses de personnel par statut</h3>
+      <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>Total des emplois titulaires</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_titulaires) %> ETPT</div>
+        </div>
+      </div>
+      <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div><% if chiffre.comptabilite_budgetaire == true %>Dépenses<%else %>Charges<%end %> de personnel des emplois titulaires</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_titulaires_montant) %> €</div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>
+            <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Coût moyen des emplois titulaires</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.emplois_titulaires_montant %><%= format_nombre_entier(chiffre.emplois_titulaires_montant/chiffre.emplois_titulaires) %><%else %>-<%end %> €</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>Total des emplois contractuels</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_contractuels) %> ETPT</div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>
+            <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Part des contractuels dans le total des emplois rémunérés par l’organisme</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.emplois_contractuels %><%= format_nombre_entier(chiffre.emplois_contractuels*1000/chiffre.emplois_total) %><%else %>-<%end %> %</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div><% if chiffre.comptabilite_budgetaire == true %>Dépenses<%else %>Charges<%end %> de personnel des emplois contractuels</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_contractuels_montant) %> €</div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>
+            <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Coût moyen des emplois contractuels</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.emplois_contractuels_montant %><%= format_nombre_entier(chiffre.emplois_contractuels_montant/chiffre.emplois_contractuels) %><%else %>-<%end %> €</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h3 class="fr-h4 fr-mt-4w">Autres emplois en fonction dans l’organisme</h3>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>Emplois en fonction dans l'organisme, non rémunérés par lui - emplois T2, MAD entrantes remboursées ou non</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_non_remuneres) %> ETPT</div>
+        </div>
+      </div>
+      <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisation d'emplois - MAD sortantes</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_autre_entite) %> ETPT</div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>
+            <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Part des personnels exerçant leurs missions dans l’organisme dans le total des emplois rémunérés directement par l’organisme</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.emplois_autre_entite %><%= format_nombre_entier((chiffre.emplois_total-chiffre.emplois_non_remuneres+chiffre.emplois_autre_entite)*100/chiffre.emplois_total) %><%else %>-<%end %> %</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%else %>
+      <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <% end %>
+  </div>
+  <hr class="fr-my-2w">
+  <div data-tab-target="section" data-tab-value="credits" class="fr-mb-4w">
+    <h2>Crédits</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="comptabilite" class="fr-mb-4w">
+    <h2>Comptabilité générale</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="tresorerie" class="fr-mb-4w">
+    <h2>Trésorerie</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="analyse" class="fr-mb-4w">
+    <h2>Analyse financière</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="commentaires" class="fr-mb-4w">
+    <h2>Commentaires</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+<% else %>
+  <div data-tab-target="section" data-tab-value="emplois" class="fr-mb-4w">
+    <h2>Emplois</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="credits" class="fr-mb-4w">
+    <h2>Crédits</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="comptabilite" class="fr-mb-4w">
+    <h2>Comptabilité générale</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="tresorerie" class="fr-mb-4w">
+    <h2>Trésorerie</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="analyse" class="fr-mb-4w">
+    <h2>Analyse financière</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="commentaires" class="fr-mb-4w">
+    <h2>Commentaires</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
 <% end  %>
-<div data-tab-target="section" data-tab-value="emplois" class="fr-mb-4w">
-  <h2>Emplois</h2>
-  <p class="fr-badge fr-badge--warning">Non renseigné</p>
-</div>
-<div data-tab-target="section" data-tab-value="credits" class="fr-mb-4w">
-  <h2>Crédits</h2>
-  <p class="fr-badge fr-badge--warning">Non renseigné</p>
-</div>
-<div data-tab-target="section" data-tab-value="comptabilite" class="fr-mb-4w">
-  <h2>Comptabilité générale</h2>
-  <p class="fr-badge fr-badge--warning">Non renseigné</p>
-</div>
-<div data-tab-target="section" data-tab-value="tresorerie" class="fr-mb-4w">
-  <h2>Trésorerie</h2>
-  <p class="fr-badge fr-badge--warning">Non renseigné</p>
-</div>
-<div data-tab-target="section" data-tab-value="analyse" class="fr-mb-4w">
-  <h2>Analyse financière</h2>
-  <p class="fr-badge fr-badge--warning">Non renseigné</p>
-</div>
-<div data-tab-target="section" data-tab-value="commentaires" class="fr-mb-4w">
-  <h2>Commentaires</h2>
-  <p class="fr-badge fr-badge--warning">Non renseigné</p>
-</div>
+

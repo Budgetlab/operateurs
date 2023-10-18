@@ -15,7 +15,9 @@
   <div class="fr-card  fr-card--no-arrow">
     <div class="fr-card__body" data-controller="form" id="chiffres">
       <div class="fr-card__content">
+        <%= render 'organismes/form_notice' %>
         <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#changeEmplois turbo:before-fetch-request->form#submitForm"}) do |f|%>
+          <%= f.hidden_field :user_id, value: current_user.id %>
           <% if @chiffre.statut != "valide" %>
             <%= f.hidden_field :statut, value: "1" %>
           <%end %>
@@ -74,11 +76,15 @@
             <div class="fr-col-12 fr-col-lg-6">
               <div class="fr-input-group">
                 <% if @chiffre.comptabilite_budgetaire == true %>
-                  <label for="emplois_personnel" class="fr-label">Total des dépenses de personnel (en €)*</label>
+                  <label for="emplois_personnel" class="fr-label">Total des dépenses de personnel*</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :emplois_depenses_personnel, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.emplois_depenses_personnel, id:"emplois_personnel", class:"fr-input" %>
+                  </div>
                 <%else %>
-                  <label for="emplois_personnel" class="fr-label">Total des charges de personnel (en €)*</label>
+                  <label for="emplois_personnel" class="fr-label">Total des charges de personnel*</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :emplois_charges_personnel, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.emplois_charges_personnel, id:"emplois_personnel", class:"fr-input" %>
+                  </div>
                 <% end %>
               </div>
             </div>
@@ -147,8 +153,10 @@
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-input-group fr-input-group--option">
-                  <label for="emplois_titulaires_montant" class="fr-label"><% if @chiffre.comptabilite_budgetaire == true %>Dépenses<%else %>Charges<%end %> de personnel des emplois titulaires (en €)</label>
+                  <label for="emplois_titulaires_montant" class="fr-label"><% if @chiffre.comptabilite_budgetaire == true %>Dépenses<%else %>Charges<%end %> de personnel des emplois titulaires</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :emplois_titulaires_montant, data: {action: 'input->form#changeNumber'}, value: @chiffre.emplois_titulaires_montant, id:"emplois_titulaires_montant", class:"fr-input" %>
+                  </div>
                 </div>
               </div>
               <div class="fr-col-12 fr-col-lg-6">
@@ -183,8 +191,10 @@
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-input-group fr-input-group--option">
-                  <label for="emplois_contractuels_montant" class="fr-label"><% if @chiffre.comptabilite_budgetaire == true %>Dépenses<%else %>Charges<%end %> de personnel des emplois contractuels (en €)</label>
+                  <label for="emplois_contractuels_montant" class="fr-label"><% if @chiffre.comptabilite_budgetaire == true %>Dépenses<%else %>Charges<%end %> de personnel des emplois contractuels</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :emplois_contractuels_montant, data: {action: 'input->form#changeNumber'}, value: @chiffre.emplois_contractuels_montant, id:"emplois_contractuels_montant", class:"fr-input" %>
+                  </div>
                 </div>
               </div>
               <div class="fr-col-12 fr-col-lg-6">
