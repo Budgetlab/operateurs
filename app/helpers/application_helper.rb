@@ -38,4 +38,10 @@ module ApplicationHelper
       number_with_delimiter('%.11g' % ('%.0f' % nombre), locale: :fr)
     end
   end
+
+  def ratio(a,b,n)
+    if !a.nil? && !b.nil? && b != 0
+      (a / b) * n
+    end
+  end
 end

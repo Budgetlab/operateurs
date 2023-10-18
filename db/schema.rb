@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_17_144143) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_18_144023) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -63,6 +63,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_17_144143) do
     t.float "credits_recettes_propres_globalisees"
     t.float "credits_recettes_propres_flechees"
     t.float "credits_restes_a_payer"
+    t.float "tresorerie_finale_flechee"
+    t.float "tresorerie_finale_non_flechee"
+    t.float "tresorerie_finale"
+    t.float "tresorerie_variation"
+    t.float "tresorerie_variation_flechee"
+    t.float "tresorerie_variation_non_flechee"
+    t.float "tresorerie_min"
+    t.float "tresorerie_max"
+    t.date "tresorerie_min_date"
+    t.date "tresorerie_max_date"
     t.index ["organisme_id"], name: "index_chiffres_on_organisme_id"
     t.index ["user_id"], name: "index_chiffres_on_user_id"
   end

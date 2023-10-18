@@ -15,7 +15,7 @@
         <% elsif @chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 1 || params[:step].to_i == 2) %>
           <%= render 'form_credits' %>
         <% elsif (@chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 2 || params[:step].to_i == 3)) ||  (@chiffre.comptabilite_budgetaire == false && (@chiffre.statut.to_i == 1 || params[:step].to_i == 2))%>
-          <%= render 'form_comptabilite' %>
+          <%= render 'form_tresorerie' %>
         <% end %>
       </div>
     </div>

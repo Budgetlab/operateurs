@@ -47,13 +47,13 @@ select:disabled {
   color: var(--text-default-warning);
 }
 .fr-input-group--option label{
-  color: var(--border-action-high-info);
+  color: var(--border-action-high-info) !important;
 }
-.fr-input-group--option .fr-input {
-  box-shadow: inset 0 -2px 0 0 var(--border-action-high-info);
+.fr-input-group--option .fr-input, .fr-input-group--option .fr-select {
+  box-shadow: inset 0 -2px 0 0 var(--border-action-high-info) !important;
 }
 .fr-input-group--option::before {
-  background-image: linear-gradient(0deg, var(--border-action-high-info), var(--border-action-high-info));
+  background-image: linear-gradient(0deg, var(--border-action-high-info), var(--border-action-high-info)) !important;
 }
 .fr-input-group--option::before {
   content: "";

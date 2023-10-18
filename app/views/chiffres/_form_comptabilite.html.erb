@@ -16,6 +16,7 @@
     <div class="fr-card__body" data-controller="form" id="chiffres">
       <div class="fr-card__content">
         <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#changeEmplois turbo:before-fetch-request->form#submitForm"}) do |f|%>
+          <%= f.hidden_field :user_id, value: current_user.id %>
           <% if @chiffre.statut != "valide" %>
             <% if @chiffre.comptabilite_budgetaire == true %>
               <%= f.hidden_field :statut, value: "3" %>

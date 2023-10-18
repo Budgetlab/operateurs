@@ -1,0 +1,247 @@
+<% if @chiffre.statut != "valide" %>
+  <div class="fr-stepper">
+    <h2 class="fr-stepper__title">
+      <span class="fr-stepper__state">Étape <%= @chiffre.statut.to_i + 1 %> sur <%= @steps %></span>
+      Trésorerie
+    </h2>
+    <div class="fr-stepper__steps" data-fr-current-step="<%= @chiffre.statut.to_i + 1 %>" data-fr-steps="<%= @steps %>"></div>
+    <p class="fr-stepper__details">
+      <span class="fr-text--bold">Étape suivante :</span> Analyse financière
+    </p>
+  </div>
+<%end %>
+
+<div class="fr-mb-6w">
+  <div class="fr-card  fr-card--no-arrow">
+    <div class="fr-card__body" data-controller="form" id="chiffres">
+      <div class="fr-card__content">
+        <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#changeTresorerie turbo:before-fetch-request->form#submitForm"}) do |f|%>
+          <%= f.hidden_field :user_id, value: current_user.id %>
+          <% if @chiffre.statut != "valide" %>
+            <% if @chiffre.comptabilite_budgetaire == true %>
+              <%= f.hidden_field :statut, value: "4" %>
+            <% else %>
+              <%= f.hidden_field :statut, value: "3" %>
+            <% end %>
+          <%end %>
+          <%= f.hidden_field :credits_cp_total, id: "credits_cp_total", value: @chiffre.credits_cp_total %>
+          <%= f.hidden_field :credits_cp_investissement, id: "credits_cp_investissement", value: @chiffre.credits_cp_investissement %>
+          <%= f.hidden_field :credits_restes_a_payer, id: "credits_restes_a_payer", value: @chiffre.credits_restes_a_payer %>
+          <h2>Niveaux de trésorerie</h2>
+          <% if @chiffre.comptabilite_budgetaire == true  %>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group">
+                  <label for="tresorerie_finale_flechee" class="fr-label">Niveau final trésorerie fléchée*</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                    <%= f.text_field :tresorerie_finale_flechee, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_finale_flechee, id:"tresorerie_finale_flechee", class:"fr-input" %>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-col-12 fr-col-lg-6">
+                <div>
+                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Poids de la trésorerie non fléchée</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_non_flechee">-</span> %</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group">
+                  <label for="tresorerie_finale_non_flechee" class="fr-label">Niveau final trésorerie non fléchée*</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                    <%= f.text_field :tresorerie_finale_non_flechee, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_finale_non_flechee, id:"tresorerie_finale_non_flechee", class:"fr-input" %>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-col-12 fr-col-lg-6">
+                <div>
+                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Trésorerie non fléchée en jours de fonctionnement</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_non_flechee_jours">-</span> Jours</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Niveau final de trésorerie</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="tresorerie_finale_text">-</span> €</p>
+                      <%= f.hidden_field :tresorerie_finale, id: "tresorerie_finale", value: @chiffre.tresorerie_finale %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-col-12 fr-col-lg-6">
+                <div>
+                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_jours">-</span> Jours</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% else %>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group">
+                  <label for="tresorerie_finale" class="fr-label">Niveau final trésorerie*</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                    <%= f.text_field :tresorerie_finale, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_finale, id:"tresorerie_finale", class:"fr-input" %>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-col-12 fr-col-lg-6">
+                <div>
+                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_jours">-</span> %</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end  %>
+
+          <h2 class="fr-mt-4w">Variation</h2>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-input-group">
+                <label for="tresorerie_variation" class="fr-label">Variation de la trésorerie*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :tresorerie_variation, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_variation, id:"tresorerie_variation", class:"fr-input" %>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div>
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Taux de couverture des restes à payer par la trésorerie</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_rap">-</span> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% if @chiffre.comptabilite_budgetaire == true  %>
+            <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group fr-input-group--option">
+                  <label for="tresorerie_variation_flechee" class="fr-label">Variation de trésorerie fléchée</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                    <%= f.text_field :tresorerie_variation_flechee, data: {action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_variation_flechee, id:"tresorerie_variation_flechee", class:"fr-input" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group fr-input-group--option">
+                  <label for="tresorerie_variation_non_flechee" class="fr-label">Variation de la trésorerie non fléchée</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                    <%= f.text_field :tresorerie_variation_non_flechee, data: {action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_variation_non_flechee, id:"tresorerie_variation_non_flechee", class:"fr-input" %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end  %>
+          <div class=" options fr-hidden">
+            <h2 class="fr-mt-4w">Point haut / bas</h2>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group fr-input-group--option">
+                  <label for="tresorerie_max" class="fr-label">Point le plus haut dans le plan de trésorerie</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                    <%= f.text_field :tresorerie_max, data: {action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_max, id:"tresorerie_max", class:"fr-input" %>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-col-12 fr-col-lg-6">
+                <div>
+                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Niveau le plus haut de trésorerie en jours de fonctionnement</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_max">-</span> Jours</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group fr-input-group--option">
+                  <label for="tresorerie_max_date" class="fr-label">Mois le plus haut dans le plan de trésorerie</label>
+                  <%= f.text_field :tresorerie_max_date,class:"fr-select", data: { controller: "flatpickr", flatpickr_date_format: "m/Y",flatpickr_default_date: format_date(@chiffre.tresorerie_max_date)}, value: @chiffre.tresorerie_max_date, id: "tresorerie_max_date", placeholder: "- sélectionner -"%>
+                </div>
+              </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group fr-input-group--option">
+                  <label for="tresorerie_min" class="fr-label">Point le plus bas dans le plan de trésorerie</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                    <%= f.text_field :tresorerie_min, data: {action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_min, id:"tresorerie_min", class:"fr-input" %>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-col-12 fr-col-lg-6">
+                <div>
+                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Niveau le plus bas de trésorerie en jours de fonctionnement</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_min">-</span> Jours</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-input-group fr-input-group--option">
+                  <label for="tresorerie_min_date" class="fr-label">Mois le plus bas dans le plan de trésorerie</label>
+                    <%= f.text_field :tresorerie_min_date,class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "m/Y",flatpickr_default_date: format_date(@chiffre.tresorerie_min_date)}, value: @chiffre.tresorerie_min_date, id: "tresorerie_min_date", placeholder: "- sélectionner -"%>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fr-mt-4w"><button id="btn-plus" class="fr-btn fr-btn--secondary" data-action="click->form#afficherInfos">Renseigner + de données</button></div>
+
+          <div class="fr-my-4w">
+            <ul class="fr-btns-group fr-btns-group--icon-left fr-btns-group--inline fr-btns-group--right">
+              <li>
+                <% if @chiffre.statut == 'valide' %>
+                  <%=link_to organisme_chiffres_path(@chiffre.organisme), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %>
+                <%else %>
+                  <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line"  data-fr-opened="false" aria-controls="fr-modal-1" data-action="form#Dropdown">
+                    Étape précédente
+                  </button>
+                <%end %>
+              </li>
+              <li>
+                <%= f.submit("#{@chiffre.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton", action: "click->form#changeTextToFloat" }, aria: { label: "Valider"}) %>
+              </li>
+            </ul>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<dialog id="fr-modal-1" class="fr-modal">
+  <%= render partial: 'chiffres/modal_retour',locals: {step: 3} %>
+</dialog>

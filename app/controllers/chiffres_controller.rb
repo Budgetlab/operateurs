@@ -130,7 +130,10 @@ class ChiffresController < ApplicationController
                                     :credits_financements_etat_fleches, :credits_fiscalite_affectee,
                                     :credits_financements_publics_autres, :credits_financements_publics_fleches,
                                     :credits_recettes_propres_globalisees, :credits_recettes_propres_flechees,
-                                    :credits_restes_a_payer)
+                                    :credits_restes_a_payer, :tresorerie_finale_flechee, :tresorerie_finale_non_flechee,
+                                    :tresorerie_finale, :tresorerie_variation, :tresorerie_variation_flechee,
+                                    :tresorerie_variation_non_flechee, :tresorerie_min, :tresorerie_max,
+                                    :tresorerie_min_date, :tresorerie_max_date)
   end
 
   def find_organisme

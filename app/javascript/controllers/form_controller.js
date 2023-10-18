@@ -684,6 +684,60 @@ export default class extends Controller {
         const total = credits_cp_total - credits_cp_personnel
         this.indicateurRatio(credits_restes_a_payer_field,indicateur_poids_rap,credits_restes_a_payer,total,100);
     }
+    changeTresorerie(){
+        this.changeIndicateurTresoJours();
+        if (document.getElementById("indicateur_treso_non_flechee") != null){
+            this.changeIndicateurTresoNonFlechee();
+        }
+        this.changeIndicateurTresoRAP();
+        this.changeIndicateurTresoExtremesJours();
+        this.validateForm();
+    }
+    changeIndicateurTresoNonFlechee(){
+        const indicateur_treso_non_flechee = document.getElementById("indicateur_treso_non_flechee");
+        const indicateur_treso_non_flechee_jours = document.getElementById("indicateur_treso_non_flechee_jours");
+        const tresorerie_finale_text = document.getElementById("tresorerie_finale_text");
+        const tresorerie_finale = document.getElementById("tresorerie_finale");
+        const tresorerie_finale_non_flechee_field = document.getElementById("tresorerie_finale_non_flechee");
+        const tresorerie_finale_non_flechee = this.numberFormat(tresorerie_finale_non_flechee_field.value) || 0;
+        const tresorerie_finale_flechee = this.numberFormat(document.getElementById("tresorerie_finale_flechee").value) || 0;
+        const total = tresorerie_finale_flechee + tresorerie_finale_non_flechee;
+        tresorerie_finale.value = total;
+        tresorerie_finale_text.innerHTML = total.toLocaleString("fr-FR");
+        this.indicateurRatio(tresorerie_finale_non_flechee_field,indicateur_treso_non_flechee,tresorerie_finale_non_flechee,total,100);
+        const den = this.calculateTresoDen();
+        this.indicateurRatio(tresorerie_finale_non_flechee_field,indicateur_treso_non_flechee_jours,tresorerie_finale_non_flechee,den,1);
+    }
+    changeIndicateurTresoJours(){
+        const indicateur_treso_jours = document.getElementById("indicateur_treso_jours");
+        const tresorerie_finale_field = document.getElementById("tresorerie_finale")
+        const tresorerie_finale = this.numberFormat(tresorerie_finale_field.value) || 0;
+        const den = this.calculateTresoDen();
+        this.indicateurRatio(tresorerie_finale_field,indicateur_treso_jours,tresorerie_finale,den,1);
+    }
+    changeIndicateurTresoRAP(){
+        const indicateur_treso_rap = document.getElementById("indicateur_treso_rap");
+        const tresorerie_finale_field = document.getElementById("tresorerie_finale")
+        const tresorerie_finale = this.numberFormat(tresorerie_finale_field.value) || 0;
+        const credits_restes_a_payer = this.numberFormat(document.getElementById("credits_restes_a_payer").value) || 0;
+        this.indicateurRatio(tresorerie_finale_field,indicateur_treso_rap,tresorerie_finale,credits_restes_a_payer,100);
+    }
+    calculateTresoDen(){
+        const credits_cp_total = this.numberFormat(document.getElementById("credits_cp_total").value) || 0;
+        const credits_cp_investissement = this.numberFormat(document.getElementById("credits_cp_investissement").value) || 0;
+        return (credits_cp_total - credits_cp_investissement)/360;
+    }
+    changeIndicateurTresoExtremesJours(){
+        const indicateur_treso_max = document.getElementById("indicateur_treso_max");
+        const indicateur_treso_min = document.getElementById("indicateur_treso_min");
+        const tresorerie_max_field = document.getElementById("tresorerie_max")
+        const tresorerie_max = this.numberFormat(tresorerie_max_field.value) || 0;
+        const tresorerie_min_field = document.getElementById("tresorerie_min")
+        const tresorerie_min = this.numberFormat(tresorerie_min_field.value) || 0;
+        const den = this.calculateTresoDen(); // a modifier cas ocb
+        this.indicateurRatio(tresorerie_max_field,indicateur_treso_max,tresorerie_max,den,1);
+        this.indicateurRatio(tresorerie_min_field,indicateur_treso_min,tresorerie_min,den,1);
+    }
     indicateurRatio(field, indicateur_text, value1,value2,value3){
         if (field.value != null && field.value != "" && value2 != 0){
             const ratio = Math.round((value1/value2)*value3);
