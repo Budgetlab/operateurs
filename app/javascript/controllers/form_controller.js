@@ -552,6 +552,133 @@ export default class extends Controller {
         }
         this.indicateurRatio(field,indicateur_cout_autre,num,emplois_total,100);
     }
+    changeCredits(){
+        this.changeIndicateurPoidsPersonnel();
+        this.changeIndicateurPoidsFonctionnement();
+        this.changeIndicateurPoidsIntervention();
+        this.changeIndicateurPoidsInvestissement();
+        if (document.getElementById("credits_cp_operations") != null){
+            this.changeIndicateurOperations();
+        }
+        this.changeIndicateursRecettes();
+        this.changeIndicateurVariationRaP();
+    }
+    changeIndicateurPoidsPersonnel(){
+        const indicateur_poids_personnel = document.getElementById("indicateur_poids_personnel");
+        const credits_cp_personnel_field = document.getElementById("credits_cp_personnel")
+        const credits_cp_personnel = this.numberFormat(credits_cp_personnel_field.value) || 0;
+        const credits_cp_total = this.numberFormat(document.getElementById("credits_cp_total").value) || 0;
+        const credits_cp_investissement = this.numberFormat(document.getElementById("credits_cp_investissement").value) || 0;
+        const total = credits_cp_total - credits_cp_investissement
+        this.indicateurRatio(credits_cp_personnel_field,indicateur_poids_personnel,credits_cp_personnel,total,100);
+    }
+    changeIndicateurPoidsFonctionnement(){
+        const indicateur_poids_fonctionnement = document.getElementById("indicateur_poids_fonctionnement");
+        const credits_cp_fonctionnement_field = document.getElementById("credits_cp_fonctionnement")
+        const credits_cp_fonctionnement = this.numberFormat(credits_cp_fonctionnement_field.value) || 0;
+        const credits_cp_total = this.numberFormat(document.getElementById("credits_cp_total").value) || 0;
+        this.indicateurRatio(credits_cp_fonctionnement_field,indicateur_poids_fonctionnement,credits_cp_fonctionnement,credits_cp_total,100);
+    }
+    changeIndicateurPoidsIntervention(){
+        const indicateur_poids_intervention = document.getElementById("indicateur_poids_intervention");
+        const credits_cp_intervention_field = document.getElementById("credits_cp_intervention")
+        const credits_cp_intervention = this.numberFormat(credits_cp_intervention_field.value) || 0;
+        const credits_cp_total = this.numberFormat(document.getElementById("credits_cp_total").value) || 0;
+        this.indicateurRatio(credits_cp_intervention_field,indicateur_poids_intervention,credits_cp_intervention,credits_cp_total,100);
+    }
+    changeIndicateurPoidsInvestissement(){
+        const indicateur_poids_investissement = document.getElementById("indicateur_poids_investissement");
+        const credits_cp_investissement_field = document.getElementById("credits_cp_investissement")
+        const credits_cp_investissement = this.numberFormat(credits_cp_investissement_field.value) || 0;
+        const credits_cp_total = this.numberFormat(document.getElementById("credits_cp_total").value) || 0;
+        this.indicateurRatio(credits_cp_investissement_field,indicateur_poids_investissement,credits_cp_investissement,credits_cp_total,100);
+    }
+    changeIndicateurOperations() {
+        const indicateur_operations = document.getElementById("indicateur_operations");
+        const credits_cp_operations_field = document.getElementById("credits_cp_operations");
+        const credits_cp_operations = this.numberFormat(credits_cp_operations_field.value) || 0;
+        const credits_cp_total = this.numberFormat(document.getElementById("credits_cp_total").value) || 0;
+        this.indicateurRatio(credits_cp_operations_field,indicateur_operations,credits_cp_operations,credits_cp_total,100);
+    }
+    changeIndicateurTauxSP() {
+        const indicateur_taux_sp = document.getElementById("indicateur_taux_sp");
+        const credits_subvention_sp_field = document.getElementById("credits_subvention_sp")
+        const credits_subvention_sp = this.numberFormat(credits_subvention_sp_field.value) || 0;
+        const credits_cp_fonctionnement = this.numberFormat(document.getElementById("credits_cp_fonctionnement").value) || 0;
+        const credits_cp_personnel = this.numberFormat(document.getElementById("credits_cp_personnel").value) || 0;
+        const total = credits_cp_fonctionnement + credits_cp_personnel
+        this.indicateurRatio(credits_subvention_sp_field,indicateur_taux_sp,credits_subvention_sp,total,100);
+    }
+    changeIndicateursRecettes(){
+        const indicateur_subv_etat = document.getElementById("indicateur_subv_etat");
+        const indicateur_total_recettes_propres = document.getElementById("indicateur_total_recettes_propres");
+        const indicateur_total_recettes_globalisees = document.getElementById("indicateur_total_recettes_globalisees");
+        const indicateur_total_recettes_flechees = document.getElementById("indicateur_total_recettes_flechees");
+        const indicateur_total_recettes = document.getElementById("indicateur_total_recettes");
+        const indicateur_taux_recettes_propres = document.getElementById("indicateur_taux_recettes_propres");
+        const indicateur_poids_recettes_globalisees = document.getElementById("indicateur_poids_recettes_globalisees");
+        const indicateur_poids_financements_etat = document.getElementById("indicateur_poids_financements_etat");
+        const indicateur_solde_budgetaire = document.getElementById("indicateur_solde_budgetaire");
+        const indicateur_solde_budgetaire_fleche = document.getElementById("indicateur_solde_budgetaire_fleche");
+
+        const credits_financements_etat_fleches = this.numberFormat(document.getElementById("credits_financements_etat_fleches").value) || 0;
+        const credits_recettes_propres_flechees = this.numberFormat(document.getElementById("credits_recettes_propres_flechees").value) || 0;
+        const credits_financements_publics_fleches = this.numberFormat(document.getElementById("credits_financements_publics_fleches").value) || 0;
+        const credits_financements_etat_autres = this.numberFormat(document.getElementById("credits_financements_etat_autres").value) || 0;
+        const credits_recettes_propres_globalisees = this.numberFormat(document.getElementById("credits_recettes_propres_globalisees").value) || 0;
+        const credits_fiscalite_affectee = this.numberFormat(document.getElementById("credits_fiscalite_affectee").value) || 0;
+        const credits_financements_publics_autres = this.numberFormat(document.getElementById("credits_financements_publics_autres").value) || 0;
+        const credits_cp_total = this.numberFormat(document.getElementById("credits_cp_total").value) || 0;
+        const credits_cp_recettes_flechees = this.numberFormat(document.getElementById("credits_cp_recettes_flechees").value) || 0;
+
+        let somme_total_subv_etat = credits_financements_etat_autres + credits_financements_etat_fleches;
+        const somme_total_recettes_propres = credits_recettes_propres_globalisees + credits_recettes_propres_flechees;
+        let somme_total_recettes_globalisees = credits_recettes_propres_globalisees + credits_financements_etat_autres + credits_fiscalite_affectee + credits_financements_publics_autres;
+        let somme_total_recettes_flechees = credits_recettes_propres_flechees + credits_financements_etat_fleches + credits_financements_publics_fleches;
+        let somme_total_recettes = credits_recettes_propres_flechees + credits_financements_etat_fleches + credits_financements_publics_fleches + credits_recettes_propres_globalisees + credits_financements_etat_autres + credits_fiscalite_affectee + credits_financements_publics_autres;
+
+        if (document.getElementById("credits_subvention_sp") != null){
+            const credits_subvention_sp = this.numberFormat(document.getElementById("credits_subvention_sp").value) || 0;
+            const credits_subvention_investissement_globalisee = this.numberFormat(document.getElementById("credits_subvention_investissement_globalisee").value) || 0;
+            const credits_subvention_investissement_flechee = this.numberFormat(document.getElementById("credits_subvention_investissement_flechee").value) || 0;
+            somme_total_subv_etat = somme_total_subv_etat + credits_subvention_sp + credits_subvention_investissement_globalisee + credits_subvention_investissement_flechee;
+            somme_total_recettes_globalisees = somme_total_recettes_globalisees + credits_subvention_sp + credits_subvention_investissement_globalisee ;
+            somme_total_recettes_flechees = somme_total_recettes_flechees + credits_subvention_investissement_flechee;
+            somme_total_recettes = somme_total_recettes + credits_subvention_sp + credits_subvention_investissement_globalisee + credits_subvention_investissement_flechee;
+
+            const indicateur_poids_scsp = document.getElementById("indicateur_poids_scsp");
+            this.indicateurRatio(document.getElementById("credits_subvention_sp"),indicateur_poids_scsp,credits_subvention_sp,somme_total_recettes,100);
+        }
+        const solde = somme_total_recettes - credits_cp_total;
+        const solde_fleche = somme_total_recettes_flechees - credits_cp_recettes_flechees;
+        indicateur_solde_budgetaire.innerHTML = solde.toLocaleString("fr-FR");
+        indicateur_solde_budgetaire_fleche.innerHTML = solde_fleche.toLocaleString("fr-FR");
+        indicateur_subv_etat.innerHTML = somme_total_subv_etat.toLocaleString("fr-FR");
+        indicateur_total_recettes_propres.innerHTML = somme_total_recettes_propres.toLocaleString("fr-FR");
+        indicateur_total_recettes_globalisees.innerHTML = somme_total_recettes_globalisees.toLocaleString("fr-FR");
+        indicateur_total_recettes_flechees.innerHTML = somme_total_recettes_flechees.toLocaleString("fr-FR");
+        indicateur_total_recettes.innerHTML = somme_total_recettes.toLocaleString("fr-FR");
+        this.indicateurRatio(document.getElementById("credits_recettes_propres_globalisees"),indicateur_taux_recettes_propres,somme_total_recettes_propres,somme_total_recettes,100);
+        this.indicateurRatio(document.getElementById("credits_recettes_propres_globalisees"),indicateur_poids_recettes_globalisees,somme_total_recettes_globalisees,somme_total_recettes,100);
+        this.indicateurRatio(document.getElementById("credits_financements_etat_autres"),indicateur_poids_financements_etat,somme_total_subv_etat,somme_total_recettes,100);
+    }
+
+    changeIndicateurVariationRaP() {
+        const indicateur_variation_rap = document.getElementById("indicateur_variation_rap");
+        const credits_ae_total = this.numberFormat(document.getElementById("credits_ae_total").value) || 0;
+        const credits_cp_total = this.numberFormat(document.getElementById("credits_cp_total").value) || 0;
+        const variation = credits_ae_total - credits_cp_total;
+        indicateur_variation_rap.innerHTML = variation.toLocaleString("fr-FR");
+    }
+    changeIndicateurPoidsRaP() {
+        const indicateur_poids_rap = document.getElementById("indicateur_poids_rap");
+        const credits_restes_a_payer_field = document.getElementById("credits_restes_a_payer")
+        const credits_restes_a_payer = this.numberFormat(document.getElementById("credits_restes_a_payer").value) || 0;
+        const credits_cp_total = this.numberFormat(document.getElementById("credits_cp_total").value) || 0;
+        const credits_cp_personnel = this.numberFormat(document.getElementById("credits_cp_personnel").value) || 0;
+        const total = credits_cp_total - credits_cp_personnel
+        this.indicateurRatio(credits_restes_a_payer_field,indicateur_poids_rap,credits_restes_a_payer,total,100);
+    }
     indicateurRatio(field, indicateur_text, value1,value2,value3){
         if (field.value != null && field.value != "" && value2 != 0){
             const ratio = Math.round((value1/value2)*value3);
