@@ -560,8 +560,13 @@ export default class extends Controller {
         if (document.getElementById("credits_cp_operations") != null){
             this.changeIndicateurOperations();
         }
+        if (document.getElementById("credits_subvention_sp") != null) {
+            this.changeIndicateurTauxSP();
+        }
         this.changeIndicateursRecettes();
         this.changeIndicateurVariationRaP();
+        this.changeIndicateurPoidsRaP();
+        this.validateForm();
     }
     changeIndicateurPoidsPersonnel(){
         const indicateur_poids_personnel = document.getElementById("indicateur_poids_personnel");

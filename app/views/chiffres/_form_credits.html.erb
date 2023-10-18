@@ -26,7 +26,7 @@
               <div class="fr-input-group">
                 <label for="credits_ae_total" class="fr-label">Total des autorisations d'engagement (AE)*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                <%= f.text_field :credits_ae_total, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_ae_total, id:"credits_ae_total", class:"fr-input" %>
+                <%= f.text_field :credits_ae_total, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_ae_total, id:"credits_ae_total", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -34,7 +34,7 @@
               <div class="fr-input-group">
                 <label for="credits_cp_total" class="fr-label">Total des crédits de paiement (CP)*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                <%= f.text_field :credits_cp_total, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_cp_total, id:"credits_cp_total", class:"fr-input" %>
+                <%= f.text_field :credits_cp_total, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_cp_total, id:"credits_cp_total", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -79,7 +79,7 @@
               <div class="fr-input-group">
                 <label for="credits_cp_fonctionnement" class="fr-label">Dont total des dépenses de fonctionnement (CP)*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                <%= f.text_field :credits_cp_fonctionnement, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_cp_fonctionnement, id:"credits_cp_fonctionnement", class:"fr-input" %>
+                <%= f.text_field :credits_cp_fonctionnement, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_cp_fonctionnement, id:"credits_cp_fonctionnement", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -105,7 +105,7 @@
               <div class="fr-input-group">
                 <label for="credits_cp_intervention" class="fr-label">Dont total des dépenses d'intervention (CP)*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                <%= f.text_field :credits_cp_intervention, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_cp_intervention, id:"credits_cp_intervention", class:"fr-input" %>
+                <%= f.text_field :credits_cp_intervention, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_cp_intervention, id:"credits_cp_intervention", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -131,7 +131,7 @@
               <div class="fr-input-group">
                 <label for="credits_cp_investissement" class="fr-label">Dont total des dépenses d'investissement (CP)*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                <%= f.text_field :credits_cp_investissement, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_cp_investissement, id:"credits_cp_investissement", class:"fr-input" %>
+                <%= f.text_field :credits_cp_investissement, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_cp_investissement, id:"credits_cp_investissement", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -184,7 +184,7 @@
               <div class="fr-input-group">
                 <label for="credits_subvention_sp" class="fr-label">Subvention pour charges de service public*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :credits_subvention_sp, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_subvention_sp, id:"credits_subvention_sp", class:"fr-input" %>
+                  <%= f.text_field :credits_subvention_sp, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_subvention_sp, id:"credits_subvention_sp", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -204,7 +204,7 @@
               <div class="fr-input-group">
                 <label for="credits_subvention_investissement_globalisee" class="fr-label">Subvention pour charges d'investissement globalisée*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :credits_subvention_investissement_globalisee, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_subvention_investissement_globalisee, id:"credits_subvention_investissement_globalisee", class:"fr-input" %>
+                  <%= f.text_field :credits_subvention_investissement_globalisee, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_subvention_investissement_globalisee, id:"credits_subvention_investissement_globalisee", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -212,7 +212,7 @@
               <div class="fr-input-group">
                 <label for="credits_subvention_investissement_flechee" class="fr-label">Subvention pour charges d'investissement fléchée*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :credits_subvention_investissement_flechee, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_subvention_investissement_flechee, id:"credits_subvention_investissement_flechee", class:"fr-input" %>
+                  <%= f.text_field :credits_subvention_investissement_flechee, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_subvention_investissement_flechee, id:"credits_subvention_investissement_flechee", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -231,7 +231,7 @@
               <div class="fr-input-group">
                 <label for="credits_financements_etat_autres" class="fr-label">Autres financements de l’Etat*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :credits_financements_etat_autres, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_financements_etat_autres, id:"credits_financements_etat_autres", class:"fr-input" %>
+                  <%= f.text_field :credits_financements_etat_autres, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_financements_etat_autres, id:"credits_financements_etat_autres", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -239,7 +239,7 @@
               <div class="fr-input-group">
                 <label for="credits_financements_etat_fleches" class="fr-label">Autres financements de l’Etat fléchés*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :credits_financements_etat_fleches, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_financements_etat_fleches, id:"credits_financements_etat_fleches", class:"fr-input" %>
+                  <%= f.text_field :credits_financements_etat_fleches, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_financements_etat_fleches, id:"credits_financements_etat_fleches", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -257,7 +257,7 @@
               <div class="fr-input-group">
                 <label for="credits_fiscalite_affectee" class="fr-label">Fiscalité affectée*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :credits_fiscalite_affectee, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_fiscalite_affectee, id:"credits_fiscalite_affectee", class:"fr-input" %>
+                  <%= f.text_field :credits_fiscalite_affectee, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_fiscalite_affectee, id:"credits_fiscalite_affectee", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -267,7 +267,7 @@
               <div class="fr-input-group">
                 <label for="credits_financements_publics_autres" class="fr-label">Autres financements publics*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :credits_financements_publics_autres, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_financements_publics_autres, id:"credits_financements_publics_autres", class:"fr-input" %>
+                  <%= f.text_field :credits_financements_publics_autres, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_financements_publics_autres, id:"credits_financements_publics_autres", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -275,7 +275,7 @@
               <div class="fr-input-group">
                 <label for="credits_financements_publics_fleches" class="fr-label">Autres financements publics fléchés*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :credits_financements_publics_fleches, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_financements_publics_fleches, id:"credits_financements_publics_fleches", class:"fr-input" %>
+                  <%= f.text_field :credits_financements_publics_fleches, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_financements_publics_fleches, id:"credits_financements_publics_fleches", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -293,7 +293,7 @@
               <div class="fr-input-group">
                 <label for="credits_recettes_propres_globalisees" class="fr-label">Recettes propres globalisées*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :credits_recettes_propres_globalisees, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_recettes_propres_globalisees, id:"credits_recettes_propres_globalisees", class:"fr-input" %>
+                  <%= f.text_field :credits_recettes_propres_globalisees, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_recettes_propres_globalisees, id:"credits_recettes_propres_globalisees", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -301,7 +301,7 @@
               <div class="fr-input-group">
                 <label for="credits_recettes_propres_flechees" class="fr-label">Recettes propres fléchées*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :credits_recettes_propres_flechees, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_recettes_propres_flechees, id:"credits_recettes_propres_flechees", class:"fr-input" %>
+                  <%= f.text_field :credits_recettes_propres_flechees, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_recettes_propres_flechees, id:"credits_recettes_propres_flechees", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -369,7 +369,7 @@
                 </div>
               </div>
             </div>
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 fr-col-lg-4 options fr-hidden">
               <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
                   <p class="fr-mb-0 fr-text--center">Solde budgétaire résultant des opérations fléchées</p>
@@ -384,7 +384,7 @@
               <div class="fr-input-group">
                 <label for="credits_restes_a_payer" class="fr-label">Niveau final des restes à payer*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :credits_restes_a_payer, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_restes_a_payer, id:"credits_restes_a_payer", class:"fr-input" %>
+                  <%= f.text_field :credits_restes_a_payer, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_restes_a_payer, id:"credits_restes_a_payer", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -409,7 +409,16 @@
           <div class="fr-mt-4w"><button id="btn-plus" class="fr-btn fr-btn--secondary" data-action="click->form#afficherInfos">Renseigner + de données</button></div>
 
           <div class="fr-my-4w">
-            <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
+            <ul class="fr-btns-group fr-btns-group--icon-left fr-btns-group--inline fr-btns-group--right">
+              <li>
+                <% if @chiffre.statut == 'valide' %>
+                  <%=link_to organisme_chiffres_path(@chiffre.organisme), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %>
+                <%else %>
+                  <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line"  data-fr-opened="false" aria-controls="fr-modal-1" data-action="form#Dropdown">
+                    Étape précédente
+                  </button>
+                <%end %>
+              </li>
               <li>
                 <%= f.submit("#{@chiffre.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton", action: "click->form#changeTextToFloat" }, aria: { label: "Valider"}) %>
               </li>
@@ -420,3 +429,7 @@
     </div>
   </div>
 </div>
+
+<dialog id="fr-modal-1" class="fr-modal">
+  <%= render partial: 'chiffres/modal_retour',locals: {step: 1} %>
+</dialog>
