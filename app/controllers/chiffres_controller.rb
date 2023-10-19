@@ -133,7 +133,10 @@ class ChiffresController < ApplicationController
                                     :credits_restes_a_payer, :tresorerie_finale_flechee, :tresorerie_finale_non_flechee,
                                     :tresorerie_finale, :tresorerie_variation, :tresorerie_variation_flechee,
                                     :tresorerie_variation_non_flechee, :tresorerie_min, :tresorerie_max,
-                                    :tresorerie_min_date, :tresorerie_max_date)
+                                    :tresorerie_min_date, :tresorerie_max_date, :commentaire_annexe,
+                                    :capacite_autofinancement, :fonds_roulement_final, :fonds_roulement_variation,
+                                    :fonds_roulement_inital, :fonds_roulement_besoin_initial,
+                                    :fonds_roulement_besoin_final, :risque_insolvabilite)
   end
 
   def find_organisme

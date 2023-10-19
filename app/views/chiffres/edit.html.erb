@@ -16,6 +16,12 @@
           <%= render 'form_credits' %>
         <% elsif (@chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 2 || params[:step].to_i == 3)) ||  (@chiffre.comptabilite_budgetaire == false && (@chiffre.statut.to_i == 1 || params[:step].to_i == 2))%>
           <%= render 'form_tresorerie' %>
+        <% elsif (@chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 3 || params[:step].to_i == 4)) ||  (@chiffre.comptabilite_budgetaire == false && (@chiffre.statut.to_i == 2 || params[:step].to_i == 3))%>
+          <%= render 'form_tresorerie' %>
+        <% elsif (@chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 4 || params[:step].to_i == 5)) ||  (@chiffre.comptabilite_budgetaire == false && (@chiffre.statut.to_i == 3 || params[:step].to_i == 4))%>
+          <%= render 'form_analyse' %>
+        <% elsif (@chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 5 || params[:step].to_i == 6)) ||  (@chiffre.comptabilite_budgetaire == false && (@chiffre.statut.to_i == 4 || params[:step].to_i == 5))%>
+          <%= render 'form_commentaires' %>
         <% end %>
       </div>
     </div>

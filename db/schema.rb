@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_18_144023) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_19_061410) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -73,6 +73,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_18_144023) do
     t.float "tresorerie_max"
     t.date "tresorerie_min_date"
     t.date "tresorerie_max_date"
+    t.string "commentaire_annexe"
+    t.float "capacite_autofinancement"
+    t.float "fonds_roulement_final"
+    t.float "fonds_roulement_variation"
+    t.float "fonds_roulement_inital"
+    t.float "fonds_roulement_besoin_initial"
+    t.float "fonds_roulement_besoin_final"
+    t.string "risque_insolvabilite"
     t.index ["organisme_id"], name: "index_chiffres_on_organisme_id"
     t.index ["user_id"], name: "index_chiffres_on_user_id"
   end
