@@ -806,12 +806,12 @@ export default class extends Controller {
                 "Des décalages de flux d’encaissement peuvent expliquer que ponctuellement le solde budgétaire est négatif. Si le niveau du besoin est structurellement élevé, l’organisme doit disposer d’un niveau de trésorerie important.";
         }
         else if (solde_budgetaire > 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr > 0 ){
-            this.updateRisque("Risque d’insoutenabilité à moyen terme ");
+            this.updateRisque("Risque d’insoutenabilité à moyen terme");
             commentaire.innerHTML = "un risque d’insoutenabilité existe à moyen terme si la variation du besoin en fonds de roulement est positive. En effet, il existe un risque que le fonds de roulement ne se redresse pas pour couvrir le besoin en fonds de roulement. \n" +
                 "Dans ce cas, il convient de vérifier si le solde budgétaire positif est dû à des opérations non budgétaires qui généreraient des décalage de flux de trésorerie important (exemple : remboursements d’emprunts). ";
         }
         else if (solde_budgetaire < 0 && tresorerie_variation > 0 && fonds_roulement_variation > 0 && variation_besoin_fr < 0 ){
-            this.updateRisque("Risque d’insoutenabilité à moyen terme ");
+            this.updateRisque("Risque d’insoutenabilité à moyen terme");
             commentaire.innerHTML = "il y a un risque d’insoutenabilité à moyen terme si la variation du besoin en fonds de roulement est négative. \n" +
                 "Une variation du besoin en fonds de roulement devrait, a priori, permettre de dégager un solde budgétaire positif. Il convient donc de vérifier si le solde budgétaire négatif est dû à des opérations pluriannuelles (fléchées ou non) qui généreraient des décalages de flux de trésorerie importants. ";
         }

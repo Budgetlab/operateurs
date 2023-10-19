@@ -1,4 +1,5 @@
 <%  if chiffre %>
+  <% @steps = chiffre.comptabilite_budgetaire == true ? 6 : 5 %>
   <% if chiffre.statut != "valide" %>
     <div class="fr-mb-4w title-btn">
       <p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p>
@@ -12,7 +13,7 @@
       <p class="fr-badge <% if chiffre.phase == 'pré-CA' %>fr-badge--brown-opera<%elsif chiffre.phase == 'CA' %>fr-badge--green-archipel<%else %>fr-badge--blue-ecume<%end %>"><%= chiffre.phase %></p>
     </div>
   </div>
-  <p>Dernières données remplies le <%= format_date(chiffre.updated_at) %> par <%= chiffre.user.nom %></p>
+  <p class="fr-my-1w">Dernières données remplies le <%= format_date(chiffre.updated_at) %> par <%= chiffre.user.nom %></p>
   <div class="fr-toggle">
     <input type="checkbox" class="fr-toggle__input" aria-describedby="toggle-698-hint-text" id="toggle-698" data-action="click->toggle#toggle">
     <label class="fr-toggle__label" for="toggle-698" >Données complètes</label>
@@ -20,7 +21,7 @@
   </div>
   <hr class="fr-my-2w">
   <div data-tab-target="section" data-tab-value="emplois" class="fr-mb-4w">
-    <h2>Emplois</h2>
+    <h2 class="title-btn">Emplois<% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
     <% if chiffre.statut == "valide" || chiffre.statut.to_i > 0 %>
       <h3 class="fr-h4">Emplois rémunérés par l’organisme</h3>
       <% if chiffre.operateur == true %>
@@ -203,8 +204,8 @@
   </div>
   <hr class="fr-my-2w">
   <div data-tab-target="section" data-tab-value="credits" class="fr-mb-4w">
-    <h2>Crédits</h2>
-    <% if chiffre.statut == "valide" || chiffre.statut.to_i > 0 %>
+    <h2 class="title-btn">Crédits <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps-4), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+    <% if chiffre.statut == "valide" || chiffre.statut.to_i > 1 %>
       <h3 class="fr-h4 fr-mt-4w">Dépenses</h3>
       <div class="fr-grid-row fr-grid-row--gutters">
         <div class="fr-col-12 fr-col-lg-6">
@@ -576,13 +577,103 @@
   </div>
   <hr class="fr-my-2w">
   <div data-tab-target="section" data-tab-value="comptabilite" class="fr-mb-4w">
-    <h2>Comptabilité générale</h2>
-    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <h2 class="title-btn">Comptabilité générale <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps-3), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+    <% if chiffre.statut == "valide" || chiffre.statut.to_i > @steps-4 %>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-6">
+          <h3 class="fr-h4">Charges</h3>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <h3 class="fr-h4">Produits</h3>
+        </div>
+      </div>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-12">
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Résultat</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center">€</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-6">
+          <div>Charges non décaissables</div>
+          <div class="fr-text--bold fr-mt-1w"> €</div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Charges décaissables</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center">€</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-6">
+          <h3 class="fr-h4">Emplois</h3>
+          <div>Total des emplois</div>
+          <div class="fr-text--bold fr-mt-1w"> €</div>
+          <div class="fr-mt-1w">Dont investissements</div>
+          <div class="fr-text--bold fr-mt-1w"> €</div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <h3 class="fr-h4">Ressources</h3>
+          <div>Total des ressources </div>
+          <div class="fr-text--bold fr-mt-1w"> €</div>
+          <div class="fr-mt-1w">Dont financement de l’actif par l’Etat </div>
+          <div class="fr-text--bold fr-mt-1w"> €</div>
+          <div class="fr-mt-1w">Dont autres ressources</div>
+          <div class="fr-text--bold fr-mt-1w"> €</div>
+        </div>
+      </div>
+      <div class="options fr-hidden">
+        <h3 class="fr-h4 fr-mt-4w">Opérations non budgétaires</h3>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div>Emprunts, Prêts, Dépôts et cautionnements (besoins)</div>
+            <div class="fr-text--bold fr-mt-1w"> €</div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-6">
+            <div>Emprunts, Prêts, Dépôts et cautionnements (financements)</div>
+            <div class="fr-text--bold fr-mt-1w"> €</div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div>Opérations au nom et pour le compte de tiers (besoins)</div>
+            <div class="fr-text--bold fr-mt-1w"> €</div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-6">
+            <div>Opérations au nom et pour le compte de tiers (financements)</div>
+            <div class="fr-text--bold fr-mt-1w"> €</div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div>Autres décaissements non budgétaires</div>
+            <div class="fr-text--bold fr-mt-1w"> €</div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-6">
+            <div>Autres encaissements non budgétaires</div>
+            <div class="fr-text--bold fr-mt-1w"> €</div>
+          </div>
+        </div>
+      </div>
+    <%else %>
+      <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <% end %>
   </div>
   <hr class="fr-my-2w">
   <div data-tab-target="section" data-tab-value="tresorerie" class="fr-mb-4w">
-    <h2>Trésorerie</h2>
-    <% if chiffre.statut == "valide" || chiffre.statut.to_i > 3 %>
+    <h2 class="title-btn">Trésorerie <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps-2), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+    <% if chiffre.statut == "valide" || chiffre.statut.to_i > @steps-3 %>
       <% @den = (chiffre.credits_cp_total - chiffre.credits_cp_investissement)/360 %>
       <h3 class="fr-h4">Niveaux de trésorerie</h3>
       <div class="fr-grid-row fr-grid-row--gutters">
@@ -724,13 +815,86 @@
   </div>
   <hr class="fr-my-2w">
   <div data-tab-target="section" data-tab-value="analyse" class="fr-mb-4w">
-    <h2>Analyse financière</h2>
-    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <h2 class="title-btn">Analyse financière <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps-1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+    <% if chiffre.statut == "valide" || chiffre.statut.to_i > @steps-2 %>
+
+      <div class="fr-grid-row fr-grid-row--gutters">
+        <div class="fr-col-12 fr-col-lg-6">
+          <h3 class="fr-h4">Capacité d’autofinancement</h3>
+          <div>Capacité d’autofinancement</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.capacite_autofinancement) %> €</div>
+          <h3 class="fr-h4 fr-mt-4w">Fonds de roulement</h3>
+          <div>Variation du fonds de roulement</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.fonds_roulement_variation) %> €</div>
+          <div class="fr-mt-1w">Niveau final du fonds de roulement</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.fonds_roulement_final) %> €</div>
+          <div class="options fr-hidden">
+          <div class="fr-mt-1w">Niveau initial du fonds de roulement</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.fonds_roulement_inital) %> €</div>
+          <div class="fr-mt-1w">Niveau initial du besoin en fonds de roulement</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.fonds_roulement_besoin_initial) %> €</div>
+          <div class="fr-mt-1w">Niveau final du besoin en fonds de roulement</div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.fonds_roulement_besoin_final) %> €</div>
+          </div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-6">
+          <div class="fr-mb-2w">
+            <div class="fr-card <% if chiffre.risque_insolvabilite == 'Situation saine' %>fr-card--vert<%elsif chiffre.risque_insolvabilite == 'Situation saine a priori mais à surveiller'%>fr-card--jaune<%elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité à moyen terme'%>fr-card--orange<%elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité élevé'%>fr-card--rouge<%end %> fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Examen à moyen-court termes</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><%= chiffre.risque_insolvabilite %></p>
+              </div>
+            </div>
+          </div>
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center">€</p>
+              </div>
+            </div>
+          </div>
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Variation de la trésorerie</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.tresorerie_variation) %> €</p>
+              </div>
+            </div>
+          </div>
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Variation du fonds de roulement</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.fonds_roulement_variation) %> €</p>
+              </div>
+            </div>
+          </div>
+          <div class="fr-mb-2w">
+            <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+              <div class="fr-cart__body">
+                <p class="fr-mb-0 fr-text--center">Variation du besoin en fonds de roulement</p>
+                <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.fonds_roulement_final - chiffre.tresorerie_finale) %> €</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% else  %>
+      <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <% end  %>
   </div>
   <hr class="fr-my-2w">
   <div data-tab-target="section" data-tab-value="commentaires" class="fr-mb-4w">
-    <h2>Commentaires</h2>
-    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <h2 class="title-btn">Commentaires <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+    <% if chiffre.statut == "valide" %>
+      <h3 class="fr-h4">Commentaire sur le budget</h3>
+      <div><%= chiffre.commentaire %></div>
+      <h3 class="fr-h4 fr-mt-4w">Autres points de vigilance</h3>
+      <div><%= chiffre.commentaire_annexe %></div>
+    <% else  %>
+      <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <% end %>
   </div>
 <% else %>
   <div data-tab-target="section" data-tab-value="emplois" class="fr-mb-4w">

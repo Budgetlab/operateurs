@@ -4,6 +4,7 @@
 class ChiffresController < ApplicationController
   before_action :find_organisme, only: %i[index show_dates]
   def index
+    @est_editeur = current_user == @organisme.controleur || current_user == @organisme.bureau
     @chiffres = @organisme.chiffres
     @date = Date.today.year
     liste_budgets(@date, @chiffres)
@@ -83,7 +84,7 @@ class ChiffresController < ApplicationController
     end
     @chiffre.update(chiffre_params)
     message = @chiffre.statut == 'valide' ? 'maj' : 'creation'
-    redirect_path = @chiffre.statut == 'valide' ? organisme_path(@organisme) : edit_chiffre_path(@chiffre, step: step)
+    redirect_path = @chiffre.statut == 'valide' ? organisme_chiffres_path(@organisme) : edit_chiffre_path(@chiffre, step: step)
     redirect_to redirect_path, flash: { notice: message }
   end
 

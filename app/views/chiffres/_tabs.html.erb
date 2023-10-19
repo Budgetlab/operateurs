@@ -10,7 +10,7 @@
     <% end %>
     <% if !@compte_financier.empty? %>
       <li role="presentation">
-        <button id="compte-financier" class="fr-tabs__tab " tabindex="-1" role="tab" aria-selected="false" aria-controls="compte-financier-tab" data-action="click->tab#showSection">Compte financier</button>
+        <button id="compte-financier" class="fr-tabs__tab " tabindex="-1" role="tab" aria-selected="false" aria-controls="compte-financier-tab" data-action="click->tab#showSection">Compte financier <%= @date %></button>
       </li>
     <% end  %>
   </ul>

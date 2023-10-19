@@ -7,3 +7,54 @@
     <div class="fr-stepper__steps" data-fr-current-step="<%= @chiffre.statut.to_i + 1 %>" data-fr-steps="<%= @steps %>"></div>
   </div>
 <%end %>
+
+<div class="fr-mb-6w">
+  <div class="fr-card  fr-card--no-arrow">
+    <div class="fr-card__body" data-controller="form" id="chiffres">
+      <div class="fr-card__content">
+        <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
+          <%= f.hidden_field :user_id, value: current_user.id %>
+          <% if @chiffre.statut != "valide" %>
+            <%= f.hidden_field :statut, value: "valide" %>
+          <%end %>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-12">
+              <h2>Commentaires</h2>
+              <div class="fr-input-group">
+                <label for="commentaire" class="fr-label">Commentaire sur le budget*<span class="fr-hint-text">Vous pouvez rédiger ici une appréciation sur le budget de l’organisme</span></label>
+                <%= f.text_area :commentaire, rows: 5, data: {'form-target': 'fieldRequire'}, value: @chiffre.commentaire, id:"commentaire", class:"fr-input" %>
+              </div>
+
+              <div class="fr-input-group">
+                <label for="commentaire_annexe" class="fr-label">Autres points de vigilance (facultatif)<span class="fr-hint-text">Si vous souhaitez porter d’autres informations à notre connaissance, faites le nous savoir ici.</span></label>
+                <%= f.text_area :commentaire_annexe, rows: 5, value: @chiffre.commentaire_annexe, id:"commentaire_annexe", class:"fr-input" %>
+              </div>
+              <div class="fr-my-4w">
+                <ul class="fr-btns-group fr-btns-group--icon-left fr-btns-group--inline fr-btns-group--right">
+                  <li>
+                    <% if @chiffre.statut == 'valide' %>
+                      <%=link_to organisme_chiffres_path(@chiffre.organisme), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %>
+                    <%else %>
+                      <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line"  data-fr-opened="false" aria-controls="fr-modal-1" data-action="form#Dropdown">
+                        Étape précédente
+                      </button>
+                    <%end %>
+                  </li>
+                  <li>
+                    <%= f.submit("#{@chiffre.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton", action: "click->form#changeTextToFloat" }, aria: { label: "Valider"}) %>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @chiffre.statut != "valide" %>
+<dialog id="fr-modal-1" class="fr-modal">
+  <%= render partial: 'chiffres/modal_retour',locals: {step: @chiffre.statut.to_i} %>
+</dialog>
+<% end %>

@@ -10,12 +10,12 @@
           <p class="fr-badge <% if @chiffre.phase == 'pré-CA' %>fr-badge--brown-opera<%elsif @chiffre.phase == 'CA' %>fr-badge--green-archipel<%else %>fr-badge--blue-ecume<%end %>"><%= @chiffre.phase %></p>
           <p class="fr-badge"><%= @chiffre.exercice_budgetaire %></p>
         </div>
-        <% if @chiffre.statut.to_i == 0 || params[:step].to_i == 1 %>
+        <% if (@chiffre.statut != "valide" && @chiffre.statut.to_i == 0) || params[:step].to_i == 1 %>
           <%= render 'form_emplois' %>
         <% elsif @chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 1 || params[:step].to_i == 2) %>
           <%= render 'form_credits' %>
         <% elsif (@chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 2 || params[:step].to_i == 3)) ||  (@chiffre.comptabilite_budgetaire == false && (@chiffre.statut.to_i == 1 || params[:step].to_i == 2))%>
-          <%= render 'form_tresorerie' %>
+          <%= render 'form_comptabilite' %>
         <% elsif (@chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 3 || params[:step].to_i == 4)) ||  (@chiffre.comptabilite_budgetaire == false && (@chiffre.statut.to_i == 2 || params[:step].to_i == 3))%>
           <%= render 'form_tresorerie' %>
         <% elsif (@chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 4 || params[:step].to_i == 5)) ||  (@chiffre.comptabilite_budgetaire == false && (@chiffre.statut.to_i == 3 || params[:step].to_i == 4))%>

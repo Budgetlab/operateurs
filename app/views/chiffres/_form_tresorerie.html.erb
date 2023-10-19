@@ -254,6 +254,8 @@
   </div>
 </div>
 
-<dialog id="fr-modal-1" class="fr-modal">
-  <%= render partial: 'chiffres/modal_retour',locals: {step: 3} %>
-</dialog>
+<% if @chiffre.statut != "valide" %>
+  <dialog id="fr-modal-1" class="fr-modal">
+    <%= render partial: 'chiffres/modal_retour',locals: {step: @chiffre.statut.to_i} %>
+  </dialog>
+<% end %>
