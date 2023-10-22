@@ -15,17 +15,67 @@
   <div class="fr-card  fr-card--no-arrow">
     <div class="fr-card__body" data-controller="form" id="chiffres">
       <div class="fr-card__content">
-        <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#changeEmplois turbo:before-fetch-request->form#submitForm"}) do |f|%>
+        <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#changeComptabilite turbo:before-fetch-request->form#submitForm"}) do |f|%>
           <%= f.hidden_field :user_id, value: current_user.id %>
           <% if @chiffre.statut != "valide" %>
-            <% if @chiffre.comptabilite_budgetaire == true %>
-              <%= f.hidden_field :statut, value: "3" %>
-            <% else %>
-              <%= f.hidden_field :statut, value: "2" %>
-            <% end %>
+              <%= f.hidden_field :statut, value: @chiffre.statut.to_i + 1  %>
           <%end %>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <h2>Charges</h2>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <h2>Produits</h2>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-12">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Résultat</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_resultat">-</span> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <h2>Emplois</h2>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <h2>Ressources</h2>
+            </div>
+          </div>
+
+          <div class="fr-mt-4w"><button id="btn-plus" class="fr-btn fr-btn--secondary" data-action="click->form#afficherInfos">Renseigner + de données</button></div>
+
+          <div class="fr-my-4w">
+            <ul class="fr-btns-group fr-btns-group--icon-left fr-btns-group--inline fr-btns-group--right">
+              <li>
+                <% if @chiffre.statut == 'valide' %>
+                  <%=link_to organisme_chiffres_path(@chiffre.organisme), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %>
+                <%else %>
+                  <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line"  data-fr-opened="false" aria-controls="fr-modal-1" data-action="form#Dropdown">
+                    Étape précédente
+                  </button>
+                <%end %>
+              </li>
+              <li>
+                <%= f.submit("#{@chiffre.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton", action: "click->form#changeTextToFloat" }, aria: { label: "Valider"}) %>
+              </li>
+            </ul>
+          </div>
+
         <% end %>
       </div>
     </div>
   </div>
 </div>
+
+<% if @chiffre.statut != "valide" %>
+  <dialog id="fr-modal-1" class="fr-modal">
+    <%= render partial: 'chiffres/modal_retour',locals: {step: @chiffre.statut.to_i} %>
+  </dialog>
+<% end %>

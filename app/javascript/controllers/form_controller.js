@@ -684,6 +684,9 @@ export default class extends Controller {
         const total = credits_cp_total - credits_cp_personnel
         this.indicateurRatio(credits_restes_a_payer_field,indicateur_poids_rap,credits_restes_a_payer,total,100);
     }
+    changeComptabilite(){
+        this.validateForm();
+    }
     changeTresorerie(){
         this.changeIndicateurTresoJours();
         this.changeIndicateurInit();

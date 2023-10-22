@@ -18,11 +18,7 @@
         <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#changeAnalyse turbo:before-fetch-request->form#submitForm"}) do |f|%>
           <%= f.hidden_field :user_id, value: current_user.id %>
           <% if @chiffre.statut != "valide" %>
-            <% if @chiffre.comptabilite_budgetaire == true %>
-              <%= f.hidden_field :statut, value: "5" %>
-            <% else %>
-              <%= f.hidden_field :statut, value: "4" %>
-            <% end %>
+            <%= f.hidden_field :statut, value: @chiffre.statut.to_i + 1  %>
           <%end %>
           <%= f.hidden_field :tresorerie_finale, id: "tresorerie_finale", value: @chiffre.tresorerie_finale %>
           <%= f.hidden_field :tresorerie_variation, id: "tresorerie_variation", value: @chiffre.tresorerie_variation %>

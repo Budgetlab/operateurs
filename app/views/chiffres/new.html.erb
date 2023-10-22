@@ -10,9 +10,13 @@
           <div class="fr-card  fr-card--no-arrow">
             <div class="fr-card__body" data-controller="form">
               <div class="fr-card__content">
+                <div id="error">
+                  <%= render partial: 'chiffres/form_error', locals: { organisme: nil } %>
+                </div>
                 <%= form_with(model: @chiffre, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
                   <%= f.hidden_field :statut, value: "0" %>
                   <%= f.hidden_field :user_id, value: current_user.id %>
+
                   <div class="fr-select-group">
                     <label for="organisme" class="fr-label">Organisme*</label>
                     <%= f.select :organisme_id,options_for_select([["- sélectionner -", ""], *@organismes.map { |organisme| [organisme.nom, organisme.id] }]),{}, {data: {action: 'change->form#changeNomChiffres','form-target': 'fieldRequire'}, id:"organisme",class:"fr-select"}%>

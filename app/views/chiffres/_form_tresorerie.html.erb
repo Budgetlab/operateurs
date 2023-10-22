@@ -18,11 +18,7 @@
         <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#changeTresorerie turbo:before-fetch-request->form#submitForm"}) do |f|%>
           <%= f.hidden_field :user_id, value: current_user.id %>
           <% if @chiffre.statut != "valide" %>
-            <% if @chiffre.comptabilite_budgetaire == true %>
-              <%= f.hidden_field :statut, value: "4" %>
-            <% else %>
-              <%= f.hidden_field :statut, value: "3" %>
-            <% end %>
+            <%= f.hidden_field :statut, value: @chiffre.statut.to_i + 1  %>
           <%end %>
           <%= f.hidden_field :credits_cp_total, id: "credits_cp_total", value: @chiffre.credits_cp_total %>
           <%= f.hidden_field :credits_cp_investissement, id: "credits_cp_investissement", value: @chiffre.credits_cp_investissement %>
@@ -171,6 +167,7 @@
             </div>
           <% end  %>
           <div class=" options fr-hidden">
+           <%  @annee = @chiffre.exercice_budgetaire.to_i %>
             <h2 class="fr-mt-4w">Point haut / bas</h2>
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 fr-col-lg-6">
@@ -194,9 +191,9 @@
             </div>
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 fr-col-lg-6">
-                <div class="fr-input-group fr-input-group--option">
+                <div class="fr-select-group fr-input-group--option">
                   <label for="tresorerie_max_date" class="fr-label">Mois le plus haut dans le plan de trésorerie</label>
-                  <%= f.text_field :tresorerie_max_date,class:"fr-select", data: { controller: "flatpickr", flatpickr_date_format: "m/Y",flatpickr_default_date: format_date(@chiffre.tresorerie_max_date)}, value: @chiffre.tresorerie_max_date, id: "tresorerie_max_date", placeholder: "- sélectionner -"%>
+                  <%= f.select :tresorerie_max_date,[["- sélectionner -", ""], ["Janvier", Date.new(@annee,1,1)],["Février", Date.new(@annee,2,1)], ["Mars", Date.new(@annee,3,1)], ["Avril", Date.new(@annee,4,1)], ["Mai", Date.new(@annee,5,1)], ["Juin", Date.new(@annee,6,1)], ["Juillet", Date.new(@annee,7,1)], ["Août", Date.new(@annee,8,1)], ["Septembre", Date.new(@annee,9,1)],["Octobre", Date.new(@annee,10,1)], ["Novembre", Date.new(@annee,11,1)], ["Décembre", Date.new(@annee,12,1)] ],{}, {id:"tresorerie_max_date",class:"fr-select"}%>
                 </div>
               </div>
             </div>
@@ -222,9 +219,9 @@
             </div>
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 fr-col-lg-6">
-                <div class="fr-input-group fr-input-group--option">
+                <div class="fr-select-group fr-input-group--option">
                   <label for="tresorerie_min_date" class="fr-label">Mois le plus bas dans le plan de trésorerie</label>
-                    <%= f.text_field :tresorerie_min_date,class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "m/Y",flatpickr_default_date: format_date(@chiffre.tresorerie_min_date)}, value: @chiffre.tresorerie_min_date, id: "tresorerie_min_date", placeholder: "- sélectionner -"%>
+                  <%= f.select :tresorerie_min_date,[["- sélectionner -", ""], ["Janvier", Date.new(@annee,1,1)],["Février", Date.new(@annee,2,1)], ["Mars", Date.new(@annee,3,1)], ["Avril", Date.new(@annee,4,1)], ["Mai", Date.new(@annee,5,1)], ["Juin", Date.new(@annee,6,1)], ["Juillet", Date.new(@annee,7,1)], ["Août", Date.new(@annee,8,1)], ["Septembre", Date.new(@annee,9,1)],["Octobre", Date.new(@annee,10,1)], ["Novembre", Date.new(@annee,11,1)], ["Décembre", Date.new(@annee,12,1)] ],{}, {id:"tresorerie_min_date",class:"fr-select"}%>
                 </div>
               </div>
             </div>

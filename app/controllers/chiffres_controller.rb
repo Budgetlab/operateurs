@@ -61,12 +61,30 @@ class ChiffresController < ApplicationController
   end
 
   def create
-    @chiffre = Chiffre.new(chiffre_params)
-    if @chiffre.save
-      redirect_to edit_chiffre_path(@chiffre)
+    @organisme = Organisme.find(params[:chiffre][:organisme_id])
+    @can_edit = @organisme && (current_user == @organisme.controleur || current_user == @organisme.bureau)
+    redirect_to root_path and return unless @can_edit
+
+    @chiffre_exist = !Chiffre.where(organisme_id: @organisme.id,
+                                   exercice_budgetaire: params[:chiffre][:exercice_budgetaire],
+                                   type_budget: params[:chiffre][:type_budget]).empty?
+    if @chiffre_exist
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.update('error', partial: 'chiffres/form_error', locals: { organisme: @organisme })
+          ]
+        end
+      end
     else
-      render :new
+      @chiffre = Chiffre.new(chiffre_params)
+      if @chiffre.save
+        redirect_to edit_chiffre_path(@chiffre)
+      else
+        render :new
+      end
     end
+
   end
 
   def edit

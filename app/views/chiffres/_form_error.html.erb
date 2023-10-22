@@ -1,0 +1,7 @@
+<% if organisme %>
+<div class="fr-fieldset__element" >
+  <div class="fr-alert fr-alert--error fr-alert--sm">
+    <p>Des chiffres pour cet organisme, ce type de budget et cet exercice budgétaire ont déjà été renseignés. Rendez-vous sur <%= link_to organisme_chiffres_path(organisme) do %>la page des chiffres clés de l'organisme<% end %> pour compléter ou modifier ces données.</p>
+  </div>
+</div>
+<% end %>
