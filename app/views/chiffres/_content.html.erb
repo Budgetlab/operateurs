@@ -798,7 +798,7 @@
       <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
         <div class="fr-col-12 fr-col-lg-6">
           <div>Point le plus haut dans le plan de trésorerie </div>
-          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_max) %> € en <%= chiffre.tresorerie_min_date.strftime('%m/%Y') %></div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_max) %> € au mois de <%= I18n.localize(chiffre.tresorerie_max_date, format: '%B')  %></div>
         </div>
         <div class="fr-col-12 fr-col-lg-6">
           <div class="fr-mb-2w">
@@ -814,7 +814,7 @@
       <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
         <div class="fr-col-12 fr-col-lg-6">
           <div>Point le plus bas dans le plan de trésorerie </div>
-          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_min) %> € au mois de <%= chiffre.tresorerie_min_date.strftime('%m/%Y')  %></div>
+          <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_min) %> € au mois de <%= I18n.localize(chiffre.tresorerie_min_date, format: '%B') %></div>
         </div>
         <div class="fr-col-12 fr-col-lg-6">
           <div class="fr-mb-2w">
