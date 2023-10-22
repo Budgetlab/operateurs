@@ -45,6 +45,15 @@ export default class extends Controller {
         if (document.getElementById("emplois_total") != null ) {
             this.changeEmplois();
         }
+        if (document.getElementById("credits_ae_total") != null ) {
+            this.changeCredits();
+        }
+        if (document.getElementById("tresorerie") != null ) {
+            this.changeTresorerie();
+        }
+        if (document.getElementById("capacite_autofinancement") != null ) {
+            this.changeAnalyse();
+        }
         this.validateForm(this.formTarget);
 
     }
