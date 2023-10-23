@@ -1,0 +1,12 @@
+<div class="fr-mb-4w title-btn">
+  <div>
+  <% if chiffre.operateur == true %><p class="fr-badge fr-badge--info fr-badge--no-icon">Opérateur</p><% else %><p class="fr-badge fr-badge--beige-gris-galet">Non opérateur</p><% end %>
+  <% if chiffre.comptabilite_budgetaire == true %><p class="fr-badge fr-badge--success fr-badge--no-icon">Comptabilité budgétaire</p><%else %><p class="fr-badge fr-badge--purple-glycine">Hors comptabilité budgétaire</p><%end %>
+  <p class="fr-badge <% if chiffre.phase == 'pré-CA' %>fr-badge--brown-opera<%elsif chiffre.phase == 'CA' %>fr-badge--green-archipel<%else %>fr-badge--blue-ecume<%end %>"><%= chiffre.phase %></p>
+  </div>
+    <div><button class="fr-btn fr-btn--sm" data-fr-opened="false" aria-controls="modal-1">Modifier la phase</button></div>
+</div>
+<dialog id="modal-1" class="fr-modal" aria-labelledby="modal-1-title">
+  <%= render partial: 'chiffres/form_phase',locals: {chiffre: chiffre} %>
+</dialog>
+<p class="fr-my-1w">Dernières données remplies le <%= format_date(chiffre.updated_at) %> par <%= chiffre.user.nom %></p>

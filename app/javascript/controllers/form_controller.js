@@ -842,6 +842,17 @@ export default class extends Controller {
         }
     }
 
+    changePhase(){
+        const phase =  document.getElementById("phase").value;
+        const error_message = document.getElementById("phase_error");
+        if (phase == "Budget non approuvé"){
+            this.showField(error_message);
+        }else{
+            this.hideField(error_message);
+        }
+        this.validateForm();
+    }
+
     indicateurRatio(field, indicateur_text, value1,value2,value3){
         if (field.value != null && field.value != "" && value2 != 0){
             const ratio = Math.round((value1/value2)*value3);

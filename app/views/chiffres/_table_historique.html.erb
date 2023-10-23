@@ -6,7 +6,7 @@
     <td><%= chiffre.exercice_budgetaire %></td>
     <td><%= chiffre.type_budget %></td>
     <td><%= chiffre.phase %></td>
-    <td><% if chiffre.statut != "valide" %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><% else %><%= chiffre.statut %><%end %></td>
+    <td><% if chiffre.statut != "valide" %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><% else %><p class="fr-badge fr-badge--no-icon <% if chiffre.risque_insolvabilite == "Situation saine" %>fr-badge--success<%elsif chiffre.risque_insolvabilite == "Situation saine a priori mais à surveiller"%>fr-badge--green-tilleul-verveine<%elsif chiffre.risque_insolvabilite == "Risque d’insoutenabilité à moyen terme" %>fr-badge--warning<% elsif chiffre.risque_insolvabilite == "Risque d’insoutenabilité élevé" %>fr-badge--error <%end %>"><%= chiffre.risque_insolvabilite %></p><%end %></td>
     <td>
       <% if chiffre.statut != "valide" %>
         <% if current_user == chiffre.user %><%= link_to edit_chiffre_path(chiffre), class: "fr-btn fr-btn--sm" do %>Reprendre<% end %><% end %>

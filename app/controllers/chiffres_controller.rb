@@ -96,6 +96,9 @@ class ChiffresController < ApplicationController
   def update
     @chiffre = Chiffre.find(params[:id])
     @organisme = @chiffre.organisme
+    @can_edit = @organisme && (current_user == @organisme.controleur || current_user == @organisme.bureau)
+    redirect_to root_path and return unless @can_edit
+
     if params[:chiffre][:statut] && params[:chiffre][:statut] != 'valide'
       step = params[:chiffre][:statut].to_i + 1
       params[:chiffre][:statut] = @chiffre.statut.to_i > params[:chiffre][:statut].to_i ? @chiffre.statut : params[:chiffre][:statut] # pour garder dernière étape sauvegardee si retour en arrière
@@ -104,6 +107,27 @@ class ChiffresController < ApplicationController
     message = @chiffre.statut == 'valide' ? 'maj' : 'creation'
     redirect_path = @chiffre.statut == 'valide' ? organisme_chiffres_path(@organisme) : edit_chiffre_path(@chiffre, step: step)
     redirect_to redirect_path, flash: { notice: message }
+  end
+
+  def update_phase
+    @chiffre = Chiffre.find(params[:id])
+    @organisme = @chiffre.organisme
+    @can_edit = @organisme && (current_user == @organisme.controleur || current_user == @organisme.bureau)
+    redirect_to root_path and return unless @can_edit && params[:phase]
+
+    if params[:phase] == 'Budget non approuvé'
+      @chiffre.destroy
+      redirect_to organisme_chiffres_path(@organisme)
+    else
+      @chiffre.update(phase: params[:phase],user_id: params[:user_id])
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: [
+            turbo_stream.update('content_phase', partial: 'chiffres/content_phase', locals: { chiffre: @chiffre })
+          ]
+        end
+      end
+    end
   end
 
   def historique

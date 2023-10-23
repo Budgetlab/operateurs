@@ -193,7 +193,7 @@
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-select-group fr-input-group--option">
                   <label for="tresorerie_max_date" class="fr-label">Mois le plus haut dans le plan de trésorerie</label>
-                  <%= f.select :tresorerie_max_date,[["- sélectionner -", ""], ["Janvier", Date.new(@annee,1,1)],["Février", Date.new(@annee,2,1)], ["Mars", Date.new(@annee,3,1)], ["Avril", Date.new(@annee,4,1)], ["Mai", Date.new(@annee,5,1)], ["Juin", Date.new(@annee,6,1)], ["Juillet", Date.new(@annee,7,1)], ["Août", Date.new(@annee,8,1)], ["Septembre", Date.new(@annee,9,1)],["Octobre", Date.new(@annee,10,1)], ["Novembre", Date.new(@annee,11,1)], ["Décembre", Date.new(@annee,12,1)] ],{}, {id:"tresorerie_max_date",class:"fr-select"}%>
+                  <%= f.select :tresorerie_max_date,[["- sélectionner -", ""], ["Janvier", Date.new(@annee,1,1)],["Février", Date.new(@annee,2,1)], ["Mars", Date.new(@annee,3,1)], ["Avril", Date.new(@annee,4,1)], ["Mai", Date.new(@annee,5,1)], ["Juin", Date.new(@annee,6,1)], ["Juillet", Date.new(@annee,7,1)], ["Août", Date.new(@annee,8,1)], ["Septembre", Date.new(@annee,9,1)],["Octobre", Date.new(@annee,10,1)], ["Novembre", Date.new(@annee,11,1)], ["Décembre", Date.new(@annee,12,1)] ],{selected: @chiffre.tresorerie_max_date}, {id:"tresorerie_max_date",class:"fr-select"}%>
                 </div>
               </div>
             </div>
@@ -221,7 +221,7 @@
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-select-group fr-input-group--option">
                   <label for="tresorerie_min_date" class="fr-label">Mois le plus bas dans le plan de trésorerie</label>
-                  <%= f.select :tresorerie_min_date,[["- sélectionner -", ""], ["Janvier", Date.new(@annee,1,1)],["Février", Date.new(@annee,2,1)], ["Mars", Date.new(@annee,3,1)], ["Avril", Date.new(@annee,4,1)], ["Mai", Date.new(@annee,5,1)], ["Juin", Date.new(@annee,6,1)], ["Juillet", Date.new(@annee,7,1)], ["Août", Date.new(@annee,8,1)], ["Septembre", Date.new(@annee,9,1)],["Octobre", Date.new(@annee,10,1)], ["Novembre", Date.new(@annee,11,1)], ["Décembre", Date.new(@annee,12,1)] ],{}, {id:"tresorerie_min_date",class:"fr-select"}%>
+                  <%= f.select :tresorerie_min_date,[["- sélectionner -", ""], ["Janvier", Date.new(@annee,1,1)],["Février", Date.new(@annee,2,1)], ["Mars", Date.new(@annee,3,1)], ["Avril", Date.new(@annee,4,1)], ["Mai", Date.new(@annee,5,1)], ["Juin", Date.new(@annee,6,1)], ["Juillet", Date.new(@annee,7,1)], ["Août", Date.new(@annee,8,1)], ["Septembre", Date.new(@annee,9,1)],["Octobre", Date.new(@annee,10,1)], ["Novembre", Date.new(@annee,11,1)], ["Décembre", Date.new(@annee,12,1)] ],{selected: @chiffre.tresorerie_min_date}, {id:"tresorerie_min_date",class:"fr-select"}%>
                 </div>
               </div>
             </div>

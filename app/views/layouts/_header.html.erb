@@ -75,6 +75,9 @@
               <% if @modifications_attente.length > 0 %><p class="fr-badge fr-badge--warning fr-badge--no-icon"><span class="fr-icon-alarm-warning-fill fr-icon--sm" aria-hidden="true"></span> [<%= @modifications_attente.length%>]<%end %></p>
             <%end%>
           </li>
+            <li class="fr-nav__item">
+              <%= active_link_to chiffres_historique_path, class: "fr-nav__link", target: "_self" do%> Historique des chiffres clés<%end %>
+            </li>
 
           <%end %>
         </ul>

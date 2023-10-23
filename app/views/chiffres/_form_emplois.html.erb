@@ -240,7 +240,10 @@
           <div class="fr-mt-4w"><button id="btn-plus" class="fr-btn fr-btn--secondary" data-action="click->form#afficherInfos">Renseigner + de données</button></div>
 
           <div class="fr-my-4w">
-            <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
+            <ul class="fr-btns-group fr-btns-group--icon-left fr-btns-group--inline fr-btns-group--right">
+                <% if @chiffre.statut == 'valide' %>
+                <li>  <%=link_to organisme_chiffres_path(@chiffre.organisme), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %></li>
+                <%end %>
               <li>
                 <%= f.submit("#{@chiffre.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton", action: "click->form#changeTextToFloat" }, aria: { label: "Valider"}) %>
               </li>
