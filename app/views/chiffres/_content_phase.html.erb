@@ -9,4 +9,4 @@
 <dialog id="modal-1" class="fr-modal" aria-labelledby="modal-1-title">
   <%= render partial: 'chiffres/form_phase',locals: {chiffre: chiffre} %>
 </dialog>
-<p class="fr-my-1w">Dernières données remplies le <%= format_date(chiffre.updated_at) %> par <%= chiffre.user.nom %></p>
+<p class="fr-my-1w">Dernières données mises à jour le <%= format_date(chiffre.updated_at) %></p>

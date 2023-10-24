@@ -9,10 +9,7 @@
             <div class="fr-col-12 fr-col-lg-6 fr-col-offset-3">
           <div class="fr-card  fr-card--no-arrow">
             <div class="fr-card__body" data-controller="form">
-              <div class="fr-card__content">
-                <div id="error">
-                  <%= render partial: 'chiffres/form_error', locals: { organisme: nil } %>
-                </div>
+              <div class="fr-card__content" id="new_content">
                 <%= form_with(model: @chiffre, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
                   <%= f.hidden_field :statut, value: "0" %>
                   <%= f.hidden_field :user_id, value: current_user.id %>
@@ -41,6 +38,7 @@
                     <label for="phase" class="fr-label">Phase*</label>
                     <%= f.select :phase,[["- sélectionner -", ""], ["pré-CA", "pré-CA"], ["CA", "CA"], ["Budget voté", "Budget voté"]],{}, {data: {'form-target': 'fieldRequire'}, id:"phase",class:"fr-select"}%>
                   </div>
+
                   <div class="fr-my-4w">
                     <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
                       <li>

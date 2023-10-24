@@ -376,6 +376,10 @@ export default class extends Controller {
         }
     }
 
+    changeChiffresError(){
+        const error_message = document.getElementById("error");
+        this.hideField(error_message);
+    }
     changeNomChiffres(){
         const comptabilite = document.getElementById("comptabilite");
         const organisme = document.getElementById("organisme").value;

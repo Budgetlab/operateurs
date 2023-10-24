@@ -72,7 +72,7 @@ class ChiffresController < ApplicationController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.update('error', partial: 'chiffres/form_error', locals: { organisme: @organisme })
+            turbo_stream.update('new_content', partial: 'chiffres/form_error', locals: { organisme: @organisme })
           ]
         end
       end
@@ -119,7 +119,7 @@ class ChiffresController < ApplicationController
       @chiffre.destroy
       redirect_to organisme_chiffres_path(@organisme)
     else
-      @chiffre.update(phase: params[:phase],user_id: params[:user_id])
+      @chiffre.update(phase: params[:phase])
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [

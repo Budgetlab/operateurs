@@ -1,7 +1,8 @@
 <% if organisme %>
-<div class="fr-fieldset__element" >
-  <div class="fr-alert fr-alert--error fr-alert--sm">
-    <p>Des chiffres pour cet organisme, ce type de budget et cet exercice budgétaire ont déjà été renseignés. Rendez-vous sur <%= link_to organisme_chiffres_path(organisme) do %>la page des chiffres clés de l'organisme<% end %> pour compléter ou modifier ces données.</p>
+  <div class="fr-fieldset__element" >
+    <div class="fr-alert fr-alert--error fr-alert--sm">
+      <p>Des chiffres pour cet organisme, ce type de budget et cet exercice budgétaire ont déjà été renseignés. Accédez à <%= link_to organisme_chiffres_path(organisme) do %>la page des chiffres clés de l'organisme<% end %> pour compléter ou modifier ces données.</p>
+    </div>
   </div>
-</div>
+  <div><%= link_to new_chiffre_path, class:"fr-link fr-icon-arrow-left-line fr-link--icon-left" do %>Retour à un nouveau formulaire<%end %></div>
 <% end %>

@@ -16,7 +16,6 @@
             <div class="fr-text--bold fr-mb-2w"><%= chiffre.type_budget %> - <%= chiffre.exercice_budgetaire %></div>
             <div class="fr-mb-4w">Sélectionnez la nouvelle phase en cours puis validez, les données renseignées restent inchangées pour cette nouvelle phase. Vous aurez ensuite la possibilité de modifier les données nécessitant d’être changées d’une phase à l’autre. Vous pouvez également compléter votre précédent commentaire.</div>
             <%= form_with(url: update_phase_path, data: {'form-target': "form", action: "input->form#changePhase turbo:before-fetch-request->form#submitForm"}) do |f|%>
-              <%= f.hidden_field :user_id, value: current_user.id %>
               <%= f.hidden_field :id, value: chiffre.id %>
               <div class="fr-select-group">
                 <label for="phase" class="fr-label">Phase</label>
