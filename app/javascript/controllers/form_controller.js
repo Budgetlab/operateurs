@@ -774,15 +774,22 @@ export default class extends Controller {
         const fonds_roulement_variation_field = document.getElementById("fonds_roulement_variation")
         const fonds_roulement_variation = this.numberFormat(fonds_roulement_variation_field.value) || 0;
         this.indicateurRatio(fonds_roulement_variation_field,indicateur_variation_fr,fonds_roulement_variation,1,1);
+        // niveau initial fr
+        const indicateur_fr_initial = document.getElementById("indicateur_fr_initial");
+        const fr_f =this.numberFormat(document.getElementById("fonds_roulement_final").value) || 0;
+        const fr_i = fonds_roulement_variation + fr_f;
+        this.indicateurRatio(fonds_roulement_final_field,indicateur_fr_initial,fr_i,1,1);
         //Variation du besoin en fonds de roulement
-        const fonds_roulement_final_field =document.getElementById("fonds_roulement_final")
-        const fonds_roulement_final = this.numberFormat(fonds_roulement_final_field.value) || 0;
-        const tresorerie_finale = this.numberFormat(document.getElementById("tresorerie_finale").value) || 0;
-        const variation_besoin_fr = fonds_roulement_final - tresorerie_finale;
-        this.indicateurRatio(fonds_roulement_final_field,indicateur_besoin_fr,variation_besoin_fr,1,1);
-
-        //risque insolvalibilite
         const tresorerie_variation = this.numberFormat(document.getElementById("tresorerie_variation").value) || 0;
+        const variation_bfr = fonds_roulement_variation - tresorerie_variation;
+        this.indicateurRatio(fonds_roulement_final_field,indicateur_besoin_fr,variation_bfr,1,1);
+        // niveau initial besoin fr
+        const indicateur_bfr_initial = document.getElementById("indicateur_bfr_initial");
+        const bfr_f =this.numberFormat(document.getElementById("fonds_roulement_besoin_final").value) || 0;
+        const bfr_i = variation_bfr + bfr_f ;
+        this.indicateurRatio(fonds_roulement_final_field,indicateur_bfr_initial,bfr_i,1,1);
+        //risque insolvalibilite
+
         const solde_budgetaire = 10;
         this.calculRisque(solde_budgetaire, tresorerie_variation, fonds_roulement_variation, variation_besoin_fr)
     }

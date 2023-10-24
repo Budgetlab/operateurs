@@ -178,8 +178,14 @@ class ChiffresController < ApplicationController
                                     :tresorerie_variation_non_flechee, :tresorerie_min, :tresorerie_max,
                                     :tresorerie_min_date, :tresorerie_max_date, :commentaire_annexe,
                                     :capacite_autofinancement, :fonds_roulement_final, :fonds_roulement_variation,
-                                    :fonds_roulement_inital, :fonds_roulement_besoin_initial,
-                                    :fonds_roulement_besoin_final, :risque_insolvabilite)
+                                    :fonds_roulement_besoin_final, :risque_insolvabilite, :charges_personnel,
+                                    :charges_fonctionnement, :charges_intervention, :charges_non_decaissables,
+                                    :produits_subventions_etat, :produits_fiscalite_affectee,
+                                    :produits_subventions_autres, :produits_autres, :produits_non_encaissables,
+                                    :emplois_cout_total, :emplois_cout_investissements, :ressources_financement_etat,
+                                    :ressources_autres, :decaissements_emprunts, :encaissements_emprunts,
+                                    :decaissements_operations, :encaissements_operations, :decaissements_autres,
+                                    :encaissements_autres, :ressources_total)
   end
 
   def find_organisme

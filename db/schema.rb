@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_19_061410) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_24_160203) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -77,10 +77,28 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_19_061410) do
     t.float "capacite_autofinancement"
     t.float "fonds_roulement_final"
     t.float "fonds_roulement_variation"
-    t.float "fonds_roulement_inital"
-    t.float "fonds_roulement_besoin_initial"
     t.float "fonds_roulement_besoin_final"
     t.string "risque_insolvabilite"
+    t.float "charges_personnel"
+    t.float "charges_fonctionnement"
+    t.float "charges_intervention"
+    t.float "charges_non_decaissables"
+    t.float "produits_subventions_etat"
+    t.float "produits_fiscalite_affectee"
+    t.float "produits_subventions_autres"
+    t.float "produits_autres"
+    t.float "produits_non_encaissables"
+    t.float "emplois_cout_total"
+    t.float "emplois_cout_investissements"
+    t.float "ressources_financement_etat"
+    t.float "ressources_autres"
+    t.float "decaissements_emprunts"
+    t.float "encaissements_emprunts"
+    t.float "decaissements_operations"
+    t.float "encaissements_operations"
+    t.float "decaissements_autres"
+    t.float "encaissements_autres"
+    t.float "ressources_total"
     t.index ["organisme_id"], name: "index_chiffres_on_organisme_id"
     t.index ["user_id"], name: "index_chiffres_on_user_id"
   end

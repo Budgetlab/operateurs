@@ -21,15 +21,79 @@
               <%= f.hidden_field :statut, value: @chiffre.statut.to_i + 1  %>
           <%end %>
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-col-12 fr-col-lg-4">
               <h2>Charges</h2>
+              <div class="fr-input-group">
+                <label for="charges_personnel" class="fr-label">Charges de personnel*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :charges_personnel, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.charges_personnel, id:"charges_personnel", class:"fr-input" %>
+                </div>
+              </div>
+              <div class="fr-input-group">
+                <label for="charges_fonctionnement" class="fr-label">Charges de fonctionnement*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :charges_fonctionnement, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.charges_fonctionnement, id:"charges_fonctionnement", class:"fr-input" %>
+                </div>
+              </div>
+              <div class="fr-input-group">
+                <label for="charges_intervention" class="fr-label">Charges d’intervention*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :charges_intervention, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.charges_intervention, id:"charges_intervention", class:"fr-input" %>
+                </div>
+              </div>
             </div>
-            <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-col-12 fr-col-lg-4">
               <h2>Produits</h2>
+              <div class="fr-input-group">
+                <label for="produits_subventions_etat" class="fr-label">Subventions de l’Etat*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :produits_subventions_etat, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.produits_subventions_etat, id:"produits_subventions_etat", class:"fr-input" %>
+                </div>
+              </div>
+              <div class="fr-input-group">
+                <label for="produits_fiscalite_affectee" class="fr-label">Fiscalité affectée*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :produits_fiscalite_affectee, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.produits_fiscalite_affectee, id:"produits_fiscalite_affectee", class:"fr-input" %>
+                </div>
+              </div>
+              <div class="fr-input-group">
+                <label for="produits_subventions_autres" class="fr-label">Autres subventions*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :produits_subventions_autres, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.produits_subventions_autres, id:"produits_subventions_autres", class:"fr-input" %>
+                </div>
+              </div>
+              <div class="fr-input-group">
+                <label for="produits_autres" class="fr-label">Autres produits*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :produits_autres, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.produits_autres, id:"produits_autres", class:"fr-input" %>
+                </div>
+              </div>
             </div>
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-12">
+            <div class="fr-col-12 fr-col-lg-4">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Total des charges</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_charges">-</span> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-4">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Total des produits</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_produits">-</span> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-8">
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
@@ -40,12 +104,134 @@
               </div>
             </div>
           </div>
+          <hr class="fr-my-2w">
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-6">
-              <h2>Emplois</h2>
+            <div class="fr-col-12 fr-col-lg-4">
+              <div class="fr-input-group">
+                <label for="charges_non_decaissables" class="fr-label">Charges non décaissables*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :charges_non_decaissables, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.charges_non_decaissables, id:"charges_non_decaissables", class:"fr-input" %>
+                </div>
+              </div>
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Charges décaissables</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_charges_dec">-</span> €</p>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-col-12 fr-col-lg-4">
+              <div class="fr-input-group">
+                <label for="produits_non_encaissables" class="fr-label">Produits non encaissables*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :produits_non_encaissables, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.produits_non_encaissables, id:"produits_non_encaissables", class:"fr-input" %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-4">
+              <h2>Emplois</h2>
+              <div class="fr-input-group">
+                <label for="emplois_cout_total" class="fr-label">Total des emplois*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :emplois_cout_total, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.emplois_cout_total, id:"emplois_cout_total", class:"fr-input" %>
+                </div>
+              </div>
+              <div class="fr-input-group">
+                <label for="emplois_cout_investissements" class="fr-label">Dont investissements*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :emplois_cout_investissements, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.emplois_cout_investissements, id:"emplois_cout_investissements", class:"fr-input" %>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-4">
               <h2>Ressources</h2>
+              <div class="fr-input-group">
+                <label for="ressources_total" class="fr-label">Total des ressources*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :ressources_total, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.ressources_total, id:"ressources_total", class:"fr-input" %>
+                </div>
+              </div>
+              <div class="fr-input-group">
+                <label for="ressources_financement_etat" class="fr-label">Dont financement de l'actif par l'Etat*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :ressources_financement_etat, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.ressources_financement_etat, id:"ressources_financement_etat", class:"fr-input" %>
+                </div>
+              </div>
+              <div class="fr-input-group">
+                <label for="ressources_autres" class="fr-label">Dont autres ressources*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :ressources_autres, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.ressources_autres, id:"ressources_autres", class:"fr-input" %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-mt-2w options fr-hidden">
+            <h2>Opérations non budgétaires</h2>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-4">
+                <div class="fr-input-group fr-input-group--option">
+                  <label for="decaissements_operations" class="fr-label">Opérations au nom et pour le compte de tiers <% if @chiffre.comptabilite_budgetaire == true %>(besoins)<%else %>(débits)<%end %></label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                    <%= f.text_field :decaissements_operations, data: {action: 'input->form#changeNumber'}, value: @chiffre.decaissements_operations, id:"decaissements_operations", class:"fr-input" %>
+                  </div>
+                </div>
+                <% if @chiffre.comptabilite_budgetaire == true %>
+                <div class="fr-input-group fr-input-group--option">
+                  <label for="decaissements_emprunts" class="fr-label">Emprunts, Prêts, Dépôts et cautionnements (besoins)</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                    <%= f.text_field :decaissements_emprunts, data: {action: 'input->form#changeNumber'}, value: @chiffre.decaissements_emprunts, id:"decaissements_emprunts", class:"fr-input" %>
+                  </div>
+                </div>
+                <div class="fr-input-group fr-input-group--option">
+                  <label for="decaissements_autres" class="fr-label">Autres décaissements non budgétaires</label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                    <%= f.text_field :decaissements_autres, data: {action: 'input->form#changeNumber'}, value: @chiffre.decaissements_autres, id:"decaissements_autres", class:"fr-input" %>
+                  </div>
+                </div>
+                <% end  %>
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Décaissements non budgétaires</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_dec">-</span> €</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-col-12 fr-col-lg-4">
+                <div class="fr-input-group fr-input-group--option">
+                  <label for="encaissements_operations" class="fr-label">Opérations au nom et pour le compte de tiers <% if @chiffre.comptabilite_budgetaire == true %>(financements)<%else %>(crédits)<%end %></label>
+                  <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                    <%= f.text_field :encaissements_operations, data: {action: 'input->form#changeNumber'}, value: @chiffre.encaissements_operations, id:"encaissements_operations", class:"fr-input" %>
+                  </div>
+                </div>
+                <% if @chiffre.comptabilite_budgetaire == true %>
+                  <div class="fr-input-group fr-input-group--option">
+                    <label for="encaissements_emprunts" class="fr-label">Emprunts, Prêts, Dépôts et cautionnements (financements)</label>
+                    <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                      <%= f.text_field :encaissements_emprunts, data: {action: 'input->form#changeNumber'}, value: @chiffre.encaissements_emprunts, id:"encaissements_emprunts", class:"fr-input" %>
+                    </div>
+                  </div>
+                  <div class="fr-input-group fr-input-group--option">
+                    <label for="encaissements_autres" class="fr-label">Autres encaissements non budgétaires</label>
+                    <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                      <%= f.text_field :encaissements_autres, data: {action: 'input->form#changeNumber'}, value: @chiffre.encaissements_autres, id:"encaissements_autres", class:"fr-input" %>
+                    </div>
+                  </div>
+                <% end  %>
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Encaissements non budgétaires</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_enc">-</span> €</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
