@@ -1,0 +1,62 @@
+<div class="fr-grid-row fr-grid-row--gutters">
+  <div class="fr-col-12 fr-col-lg-6">
+    <h3 class="fr-h4">Capacité d’autofinancement</h3>
+    <div>Capacité d’autofinancement</div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.capacite_autofinancement) %> €</div>
+    <h3 class="fr-h4 fr-mt-4w">Fonds de roulement</h3>
+    <div>Variation du fonds de roulement</div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.fonds_roulement_variation) %> €</div>
+    <div class="fr-mt-1w">Niveau final du fonds de roulement</div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.fonds_roulement_final) %> €</div>
+    <div class="options fr-hidden">
+      <div class="fr-mt-1w">Niveau initial du fonds de roulement</div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.fonds_roulement_inital) %> €</div>
+      <div class="fr-mt-1w">Niveau initial du besoin en fonds de roulement</div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.fonds_roulement_besoin_initial) %> €</div>
+      <div class="fr-mt-1w">Niveau final du besoin en fonds de roulement</div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.fonds_roulement_besoin_final) %> €</div>
+    </div>
+  </div>
+  <div class="fr-col-12 fr-col-lg-6">
+    <div class="fr-mb-2w">
+      <div class="fr-card <% if chiffre.risque_insolvabilite == 'Situation saine' %>fr-card--vert<%elsif chiffre.risque_insolvabilite == 'Situation saine a priori mais à surveiller'%>fr-card--jaune<%elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité à moyen terme'%>fr-card--orange<%elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité élevé'%>fr-card--rouge<%end %> fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Examen à moyen-court termes</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= chiffre.risque_insolvabilite %></p>
+        </div>
+      </div>
+    </div>
+    <div class="fr-mb-2w">
+      <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center">€</p>
+        </div>
+      </div>
+    </div>
+    <div class="fr-mb-2w">
+      <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Variation de la trésorerie</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.tresorerie_variation) %> €</p>
+        </div>
+      </div>
+    </div>
+    <div class="fr-mb-2w">
+      <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Variation du fonds de roulement</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.fonds_roulement_variation) %> €</p>
+        </div>
+      </div>
+    </div>
+    <div class="fr-mb-2w">
+      <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Variation du besoin en fonds de roulement</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.fonds_roulement_final - chiffre.tresorerie_finale) %> €</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
