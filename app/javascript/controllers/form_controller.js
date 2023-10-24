@@ -50,6 +50,7 @@ export default class extends Controller {
         }
         if (document.getElementById("tresorerie") != null ) {
             this.changeTresorerie();
+
         }
         if (document.getElementById("capacite_autofinancement") != null ) {
             this.changeAnalyse();

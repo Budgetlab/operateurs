@@ -1,5 +1,5 @@
 <% content_for :title do %>Chiffres clés de l'organisme <%= @organisme.nom %> | OPERA <% end %>
-<main role="main">
+<main role="main" data-controller="tab">
   <div class="fr-container" >
     <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
       <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
@@ -41,7 +41,7 @@
                       <li class="fr-sidemenu__item">
                         <a class="fr-sidemenu__link" href="#emplois" target="_self">Emplois</a>
                       </li>
-                      <li class="fr-sidemenu__item">
+                      <li class="fr-sidemenu__item" id="nav_credits">
                         <a class="fr-sidemenu__link" href="#credits" target="_self">Crédits</a>
                       </li>
                       <li class="fr-sidemenu__item">
@@ -67,7 +67,7 @@
 
       </div>
 
-      <div class="fr-col-12 fr-col-lg-8" data-controller="tab">
+      <div class="fr-col-12 fr-col-lg-8" >
         <div class="title-btn">
           <div class="fr-download">
             <p><%= link_to "/opera/organismes/#{@organisme.id}.xlsx", format: :xslx, class: "fr-download__link" do %>Télécharger les chiffres clés<span class="fr-download__detail">Format .xlsx</span><%end %></p>

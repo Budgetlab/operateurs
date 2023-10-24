@@ -184,7 +184,7 @@
         </div>
         <div id="synthese" class="fr-mb-4w">
           <h2 class="title-btn">Indicateurs budgétaires et financiers</h2>
-          <% if @chiffre %>
+          <% if @chiffre && @chiffre.statut == "valide"%>
             <%= render partial: "organismes/synthese_chiffres", locals: {chiffre: @chiffre} %>
           <% else  %>
             <div class="fr-card">

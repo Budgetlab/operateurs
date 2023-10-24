@@ -1,4 +1,4 @@
-<%  if chiffre %>
+<% if chiffre %>
   <% @steps = chiffre.comptabilite_budgetaire == true ? 6 : 5 %>
   <% if chiffre.statut != "valide" %>
     <div class="fr-mb-4w title-btn">
@@ -23,15 +23,19 @@
       <p class="fr-badge fr-badge--warning">Non renseigné</p>
     <% end %>
   </div>
-  <hr class="fr-my-2w">
-  <div data-tab-target="section" data-tab-value="credits" class="fr-mb-4w">
-    <h2 class="title-btn">Crédits <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps-4), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
-    <% if chiffre.statut == "valide" || chiffre.statut.to_i > 1 %>
-      <%= render partial: "chiffres/content_credits", locals: {chiffre: chiffre} %>
-    <% else %>
-      <p class="fr-badge fr-badge--warning">Non renseigné</p>
-    <% end  %>
-  </div>
+
+  <% if chiffre.comptabilite_budgetaire == true %>
+    <hr class="fr-my-2w">
+    <div data-tab-target="section" data-tab-value="credits" class="fr-mb-4w">
+      <h2 class="title-btn">Crédits <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps-4), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+      <% if chiffre.statut == "valide" || chiffre.statut.to_i > 1 %>
+        <%= render partial: "chiffres/content_credits", locals: {chiffre: chiffre} %>
+      <% else %>
+        <p class="fr-badge fr-badge--warning">Non renseigné</p>
+      <% end  %>
+    </div>
+  <% end %>
+
   <hr class="fr-my-2w">
   <div data-tab-target="section" data-tab-value="comptabilite" class="fr-mb-4w">
     <h2 class="title-btn">Comptabilité générale <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps-3), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
@@ -55,9 +59,9 @@
     <h2 class="title-btn">Analyse financière <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps-1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
     <% if chiffre.statut == "valide" || chiffre.statut.to_i > @steps-2 %>
       <%= render partial: "chiffres/content_analyse", locals: {chiffre: chiffre} %>
-    <% else  %>
+    <% else %>
       <p class="fr-badge fr-badge--warning">Non renseigné</p>
-    <% end  %>
+    <% end %>
   </div>
   <hr class="fr-my-2w">
   <div data-tab-target="section" data-tab-value="commentaires" class="fr-mb-4w">
@@ -96,5 +100,5 @@
     <h2>Commentaires</h2>
     <p class="fr-badge fr-badge--warning">Non renseigné</p>
   </div>
-<% end  %>
+<% end %>
 
