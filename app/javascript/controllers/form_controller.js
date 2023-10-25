@@ -48,7 +48,7 @@ export default class extends Controller {
         if (document.getElementById("credits_ae_total") != null ) {
             this.changeCredits();
         }
-        if (document.getElementById("comptabilite") != null ) {
+        if (document.getElementById("comptabilite_ge") != null ) {
             this.changeComptabilite();
         }
         if (document.getElementById("tresorerie") != null ) {
@@ -413,6 +413,18 @@ export default class extends Controller {
                 });
         }else{
             comptabilite.selectedIndex = 0;
+        }
+    }
+    changeBudget(){
+        const budget = document.getElementById("budget").value;
+        const phase = document.getElementById("phase");
+        const lastOption = phase.querySelector("option:last-child");
+        if (budget == "Compte financier"){
+            lastOption.value = "CF arrêté";
+            lastOption.textContent = "CF arrêté";
+        }else {
+            lastOption.value = "Budget voté";
+            lastOption.textContent = "Budget voté";
         }
     }
 

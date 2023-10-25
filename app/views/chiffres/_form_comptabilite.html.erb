@@ -14,7 +14,7 @@
 <div class="fr-mb-6w">
   <div class="fr-card  fr-card--no-arrow">
     <div class="fr-card__body" data-controller="form" id="chiffres">
-      <div class="fr-card__content" id="comptabilite">
+      <div class="fr-card__content" id="comptabilite_ge">
         <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#changeComptabilite turbo:before-fetch-request->form#submitForm"}) do |f|%>
           <%= f.hidden_field :user_id, value: current_user.id %>
           <% if @chiffre.statut != "valide" %>

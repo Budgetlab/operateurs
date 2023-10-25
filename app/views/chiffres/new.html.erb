@@ -24,7 +24,7 @@
                   </div>
                   <div class="fr-select-group">
                     <label for="budget" class="fr-label">Type de budget*</label>
-                    <%= f.select :type_budget,[["- sélectionner -", ""], ["Budget initial", "Budget initial"], ["Budget rectificatif", "Budget rectificatif"], ["Compte financier", "Compte financier"]],{}, {data: {'form-target': 'fieldRequire'}, id:"budget",class:"fr-select"}%>
+                    <%= f.select :type_budget,[["- sélectionner -", ""], ["Budget initial", "Budget initial"], ["Budget rectificatif", "Budget rectificatif"], ["Compte financier", "Compte financier"]],{}, {data: {action: 'change->form#changeBudget','form-target': 'fieldRequire'}, id:"budget",class:"fr-select"}%>
                   </div>
                   <div class="fr-select-group">
                     <label for="comptabilite" class="fr-label">Comptabilité budgétaire*</label>
