@@ -699,7 +699,59 @@ export default class extends Controller {
         this.indicateurRatio(credits_restes_a_payer_field,indicateur_poids_rap,credits_restes_a_payer,total,100);
     }
     changeComptabilite(){
+        this.changeTotalComptabilite();
+        this.changeRessources();
         this.validateForm();
+    }
+    changeTotalComptabilite(){
+        const indicateur_charges = document.getElementById("indicateur_charges");
+        const indicateur_produits = document.getElementById("indicateur_produits");
+        const indicateur_resultat = document.getElementById("indicateur_resultat");
+        const indicateur_charges_personnel = document.getElementById("indicateur_charges_personnel");
+        const indicateur_charges_fonctionnement = document.getElementById("indicateur_charges_fonctionnement");
+        const indicateur_charges_intervention = document.getElementById("indicateur_charges_intervention");
+        const indicateur_charges_dec = document.getElementById("indicateur_charges_dec");
+        const charge_personnel_field = document.getElementById("charges_personnel")
+        const charge_personnel = this.numberFormat(charge_personnel_field.value) || 0;
+        const charges_fonctionnement_field = document.getElementById("charges_fonctionnement");
+        const charges_fonctionnement = this.numberFormat(charges_fonctionnement_field.value) || 0;
+        const charges_intervention_field = document.getElementById("charges_intervention")
+        const charges_intervention = this.numberFormat(charges_intervention_field.value) || 0;
+        const charges_total = charge_personnel + charges_fonctionnement + charges_intervention;
+        indicateur_charges.innerHTML = charges_total.toLocaleString("fr-FR");
+        const charges_non_decaissables = this.numberFormat(document.getElementById("charges_non_decaissables").value) || 0;
+        const charges_dec = charges_total - charges_non_decaissables;
+        indicateur_charges_dec.innerHTML = charges_dec.toLocaleString("fr-FR");
+        const produits_total = this.TotalProduits();
+        indicateur_produits.innerHTML = produits_total.toLocaleString("fr-FR");
+        const resultat = charges_total + produits_total;
+        indicateur_resultat.innerHTML = resultat.toLocaleString("fr-FR");
+        this.indicateurRatio(charge_personnel_field,indicateur_charges_personnel,charge_personnel,charges_total,100);
+        this.indicateurRatio(charges_fonctionnement_field,indicateur_charges_fonctionnement,charges_fonctionnement,charges_total,100);
+        this.indicateurRatio(charges_intervention_field,indicateur_charges_intervention,charges_intervention,charges_total,100);
+    }
+    TotalProduits(){
+        const produits_subventions_etat = this.numberFormat(document.getElementById("produits_subventions_etat").value) || 0;
+        const produits_fiscalite_affectee = this.numberFormat(document.getElementById("produits_fiscalite_affectee").value) || 0;
+        const produits_subventions_autres = this.numberFormat(document.getElementById("produits_subventions_autres").value) || 0;
+        const produits_autres = this.numberFormat(document.getElementById("produits_autres").value) || 0;
+        return produits_subventions_etat + produits_fiscalite_affectee + produits_subventions_autres + produits_autres;
+    }
+    changeRessources(){
+        const indicateur_ressources = document.getElementById("indicateur_ressources");
+        const produits_autres = this.numberFormat(document.getElementById("produits_autres").value) || 0;
+        const produits_total = this.TotalProduits();
+        const produits_non_encaissables = this.numberFormat(document.getElementById("produits_non_encaissables").value) || 0;
+        const ressources_autres = this.numberFormat(document.getElementById("ressources_autres").value) || 0;
+        const ressources_total = this.numberFormat(document.getElementById("ressources_total").value) || 0;
+        if (produits_total-produits_non_encaissables+ressources_total != 0){
+            const taux = (produits_autres - produits_non_encaissables + ressources_autres)/(produits_total-produits_non_encaissables+ressources_total);
+            indicateur_ressources.innerHTML = taux.toLocaleString("fr-FR");
+        }else{
+            indicateur_ressources.innerHTML = "-"
+        }
+
+
     }
     changeTresorerie(){
         this.changeIndicateurTresoJours();

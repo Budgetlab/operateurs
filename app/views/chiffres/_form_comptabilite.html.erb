@@ -69,6 +69,32 @@
                 </div>
               </div>
             </div>
+            <div class="fr-col-12 fr-col-lg-4">
+              <div class="fr-mb-2w fr-mt-8w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids relatif des charges de personnel</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_charges_personnel">-</span> %</p>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids des charges de fonctionnement</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_charges_fonctionnement">-</span> %</p>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids des charges d'intervention</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_charges_intervention">-</span> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
@@ -165,6 +191,16 @@
                 <label for="ressources_autres" class="fr-label">Dont autres ressources*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :ressources_autres, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.ressources_autres, id:"ressources_autres", class:"fr-input" %>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-4">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Taux de ressources propres</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_ressources">-</span> %</p>
+                  </div>
                 </div>
               </div>
             </div>
