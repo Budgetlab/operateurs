@@ -726,7 +726,7 @@ export default class extends Controller {
         indicateur_charges_dec.innerHTML = charges_dec.toLocaleString("fr-FR");
         const produits_total = this.TotalProduits();
         indicateur_produits.innerHTML = produits_total.toLocaleString("fr-FR");
-        const resultat = charges_total + produits_total;
+        const resultat = charges_total - produits_total;
         indicateur_resultat.innerHTML = resultat.toLocaleString("fr-FR");
         this.indicateurRatio(charge_personnel_field,indicateur_charges_personnel,charge_personnel,charges_total,100);
         this.indicateurRatio(charges_fonctionnement_field,indicateur_charges_fonctionnement,charges_fonctionnement,charges_total,100);

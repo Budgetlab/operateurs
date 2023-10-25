@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_24_160203) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_25_090119) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -79,7 +79,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_24_160203) do
     t.float "fonds_roulement_variation"
     t.float "fonds_roulement_besoin_final"
     t.string "risque_insolvabilite"
-    t.float "charges_personnel"
     t.float "charges_fonctionnement"
     t.float "charges_intervention"
     t.float "charges_non_decaissables"

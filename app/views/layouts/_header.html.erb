@@ -76,7 +76,20 @@
             <%end%>
           </li>
             <li class="fr-nav__item">
-              <%= active_link_to chiffres_historique_path, class: "fr-nav__link", target: "_self" do%> Historique des chiffres clés<%end %>
+              <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-chiffres" <%= current_page?(chiffres_historique_path) || current_page?(new_chiffre_path) ? 'aria-current="true"' : '' %>>Chiffres clés</button>
+              <div class="fr-collapse fr-menu" id="menu-chiffres">
+                <ul class="fr-menu__list">
+                  <li>
+                    <%= active_link_to chiffres_historique_path, class: "fr-nav__link", target: "_self" do%>Historique des chiffres clés<%end %>
+                  </li>
+                  <% if @statut_user == 'Controleur' %>
+                    <li>
+                      <%= active_link_to new_chiffre_path, class: "fr-nav__link", target: "_self" do%>Renseigner un budget<%end%>
+                    </li>
+                  <% end %>
+                </ul>
+              </div>
+
             </li>
 
           <%end %>
