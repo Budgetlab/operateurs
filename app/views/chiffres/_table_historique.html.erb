@@ -1,4 +1,4 @@
-<% @chiffres.each do |chiffre| %>
+<% chiffres.each do |chiffre| %>
   <tr>
     <td><%= l(chiffre.created_at,format: "%e/%m/%y")%></td>
     <td><%= link_to organisme_path(chiffre.organisme) do %><%= chiffre.organisme.nom %><% end %></td>
