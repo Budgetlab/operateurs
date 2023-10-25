@@ -758,8 +758,9 @@ export default class extends Controller {
         const produits_non_encaissables = this.numberFormat(document.getElementById("produits_non_encaissables").value) || 0;
         const ressources_autres = this.numberFormat(document.getElementById("ressources_autres").value) || 0;
         const ressources_total = this.numberFormat(document.getElementById("ressources_total").value) || 0;
+        const capacite_autofinancement = this.numberFormat(document.getElementById("capacite_autofinancement").value) || 0;
         if (produits_total-produits_non_encaissables+ressources_total != 0){
-            const taux = (produits_autres - produits_non_encaissables + ressources_autres)/(produits_total-produits_non_encaissables+ressources_total);
+            const taux = (produits_autres - produits_non_encaissables + ressources_autres)/(produits_total-produits_non_encaissables+ressources_total-capacite_autofinancement);
             indicateur_ressources.innerHTML = taux.toLocaleString("fr-FR");
         }else{
             indicateur_ressources.innerHTML = "-"

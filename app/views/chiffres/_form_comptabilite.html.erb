@@ -171,6 +171,17 @@
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
+              <h2>Capacité d’autofinancement</h2>
+              <div class="fr-input-group">
+                <label for="capacite_autofinancement" class="fr-label">Capacité d’autofinancement*</label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :capacite_autofinancement, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.capacite_autofinancement, id:"capacite_autofinancement", class:"fr-input" %>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-4">
               <h2>Emplois</h2>
               <div class="fr-input-group">
                 <label for="emplois_cout_total" class="fr-label">Total des emplois*</label>
