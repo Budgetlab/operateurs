@@ -48,9 +48,11 @@ export default class extends Controller {
         if (document.getElementById("credits_ae_total") != null ) {
             this.changeCredits();
         }
+        if (document.getElementById("comptabilite") != null ) {
+            this.changeComptabilite();
+        }
         if (document.getElementById("tresorerie") != null ) {
             this.changeTresorerie();
-
         }
         if (document.getElementById("capacite_autofinancement") != null ) {
             this.changeAnalyse();
@@ -447,7 +449,7 @@ export default class extends Controller {
     }
     changeNumber(event){
         const inputElement = event.target;
-        const element = inputElement.value.replace(/[^0-9,]/g, "");
+        const element = inputElement.value.replace(/[^0-9,-]/g, "");
         const lastLetter = inputElement.value[inputElement.value.length - 1];
         const parsedValue = this.numberFormat(element);
         if (!isNaN(parsedValue)) {
