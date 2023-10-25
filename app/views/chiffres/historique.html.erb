@@ -69,7 +69,7 @@
                   <ul class="fr-menu__list filter-table--list">
                     <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-phase">
                       <div class="fr-fieldset__element">
-                        <% ["pré-CA","CA","Budget voté"].each_with_index do |phase,i| %>
+                        <% ["pré-CA","CA","Budget voté", "CF arrêté"].each_with_index do |phase,i| %>
                           <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
                             <%= f.check_box "phases[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-phase-#{i}"}, phase%>
                             <label class="fr-label" for="checkboxes-phase-<%= i %>"><%= phase %></label>
@@ -81,7 +81,26 @@
                 </div>
               </div>
             </th>
-            <th scope="col">Examen</th>
+            <th scope="col">Examen
+              <div class="fr-translate fr-nav fr-nav-filter">
+                <button class="filter-table--btn" aria-controls="examen" aria-expanded="false" title="Filtrer par examen" data-action="click->filter#Dropdown">
+                </button>
+                <div class="fr-collapse fr-menu" id="examen">
+                  <ul class="fr-menu__list filter-table--list">
+                    <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-examen">
+                      <div class="fr-fieldset__element">
+                        <% ["Situation saine","Situation saine a priori mais à surveiller","Risque d’insoutenabilité à moyen terme","Risque d’insoutenabilité élevé", "Brouillon"].each_with_index do |examen,i| %>
+                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                            <%= f.check_box "risque_insolvabilites[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-examen-#{i}"}, examen%>
+                            <label class="fr-label" for="checkboxes-examen-<%= i %>"><%= examen %></label>
+                          </div>
+                        <%end %>
+                      </div>
+                    </fieldset></li>
+                  </ul>
+                </div>
+              </div>
+            </th>
             <th scope="col"></th>
           </tr>
         </thead>

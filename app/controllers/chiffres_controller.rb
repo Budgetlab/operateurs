@@ -143,8 +143,13 @@ class ChiffresController < ApplicationController
     select_chiffres
     @exercices = @chiffres.pluck(:exercice_budgetaire).uniq
     @chiffres = @chiffres.select { |el| params[:budgets].include?(el.type_budget) } if params[:budgets] && params[:budgets].length != 3
-    @chiffres = @chiffres.select { |el| params[:phases].include?(el.phase) } if params[:phases] && params[:phases].length != 3
+    @chiffres = @chiffres.select { |el| params[:phases].include?(el.phase) } if params[:phases] && params[:phases].length != 4
     @chiffres = @chiffres.select { |el| params[:exercices].include?(el.exercice_budgetaire.to_s) } if params[:exercices] && params[:exercices].length != @exercices.length
+    if params[:risque_insolvabilites] && params[:risque_insolvabilites].include?("Brouillon")
+      @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) || el.statut != 'valide'}
+    else
+      @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) } if params[:risque_insolvabilites] && params[:risque_insolvabilites].length != 5
+    end
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -202,13 +207,13 @@ class ChiffresController < ApplicationController
   end
 
   def select_chiffres
-    @organismes_id = if @statut_user == 'Controleur'
-                       current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif').pluck(:id)
-                     elsif @statut_user == 'Bureau Sectoriel'
-                       current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif').pluck(:id)
-                     else
-                       Organisme.where(statut: 'valide', etat: 'Actif').pluck(:id)
-                     end
-    @chiffres = Chiffre.where(organisme_id: @organismes_id).includes(:organisme, :user).order(created_at: :desc)
+    @organismes_id = current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif').pluck(:id) if @statut_user == 'Bureau Sectoriel'
+    @chiffres = if @statut_user == 'Controleur'
+                  current_user.chiffres.includes(:organisme).order(created_at: :desc)
+                elsif @statut_user == 'Bureau Sectoriel'
+                  Chiffre.where(organisme_id: @organismes_id).includes(:organisme).order(created_at: :desc)
+                else
+                  Chiffre.all.includes(:organisme).order(created_at: :desc)
+                end
   end
 end
