@@ -1,0 +1,25 @@
+<div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll">
+  <table>
+    <caption><%= chiffres_organismes.length %></caption>
+    <thead>
+    <tr>
+      <th scope="col">Organisme</th>
+      <th scope="col">Budget initial</th>
+      <th scope="col">Budget rectificatif</th>
+      <th scope="col">Compte financier</th>
+      <th scope="col"></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% chiffres_organismes.each do |data|%>
+      <tr>
+        <td><%= link_to organisme_chiffres_path(data[0]) do%><%= data[1]%><% if data[2] && !data[2].blank? %> - <%= data[2] %><%end %><%end %></td>
+        <td><%= render partial: "chiffres/badge_examen", locals: {examen: data[3]} %></td>
+        <td><%= render partial: "chiffres/badge_examen", locals: {examen: data[4]} %></td>
+        <td><%= render partial: "chiffres/badge_examen", locals: {examen: data[5]} %></td>
+        <td><%= link_to organisme_chiffres_path(data[0]), class:"fr-btn" do%>Consulter<%end %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

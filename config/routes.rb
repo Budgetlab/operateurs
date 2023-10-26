@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   get '/chiffres-historique' => 'chiffres#historique'
   post '/filter_chiffres' => 'chiffres#filtre_chiffres'
   post '/update_phase' => 'chiffres#update_phase'
+  get '/chiffres-suivi' => 'chiffres#suivi'
   post '/import_organismes' => 'organismes#import'
   get '/organismes_ajout' => 'organismes#organismes_ajout'
   post '/recherche_organismes' => 'organismes#recherche_organismes'

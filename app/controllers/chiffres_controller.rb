@@ -8,6 +8,11 @@ class ChiffresController < ApplicationController
     @chiffres = @organisme.chiffres
     @date = Date.today.year
     liste_budgets(@date, @chiffres)
+    filename = "chiffres clés #{@organisme.nom}.xlsx"
+    respond_to do |format|
+      format.html
+      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
+    end
   end
 
   def show_dates
@@ -160,6 +165,34 @@ class ChiffresController < ApplicationController
     end
   end
 
+  def suivi
+    @chiffres_organismes_2022 = []
+    @chiffres_organismes_2023 = []
+    @chiffres_organismes_2024 = []
+    @organismes = case @statut_user
+                  when '2B2O'
+                    Organisme.includes(:chiffres).sort_by { |organisme| normalize_name(organisme.nom) }
+                  when 'Controleur'
+                    current_user.controleur_organismes.where(statut: 'valide').includes(:chiffres).sort_by { |organisme| normalize_name(organisme.nom) }
+                  when 'Bureau Sectoriel'
+                    current_user.bureau_organismes.where(statut: 'valide').includes(:chiffres).sort_by { |organisme| normalize_name(organisme.nom) }
+                  end
+    @organismes.each do |organisme|
+      organisme_chiffres = {}
+      # Filtrer les chiffres en fonction du type_budget et exercice_budgetaire
+      [2022, 2023, 2024].each do |date|
+        organisme_chiffres[date] = []
+        budget_initial = RisqueValue(organisme, 'Budget initial', date)
+        budget_rectificatif = RisqueValue(organisme, 'Budget rectificatif', date)
+        compte_financier = RisqueValue(organisme, 'Compte financier', date)
+        organisme_chiffres[date] << [organisme.id, organisme.nom, organisme.acronyme, budget_initial, budget_rectificatif, compte_financier]
+      end
+      @chiffres_organismes_2022.concat(organisme_chiffres[2022])
+      @chiffres_organismes_2023.concat(organisme_chiffres[2023])
+      @chiffres_organismes_2024.concat(organisme_chiffres[2024])
+    end
+  end
+
   private
 
   def chiffre_params
@@ -215,5 +248,19 @@ class ChiffresController < ApplicationController
                 else
                   Chiffre.all.includes(:organisme).order(created_at: :desc)
                 end
+  end
+
+  def normalize_name(name)
+    # Supprime les accents et met le texte en minuscules
+    I18n.transliterate(name).downcase
+  end
+
+  def RisqueValue(organisme, type_budget, exercice)
+    chiffre = organisme.chiffres ? organisme.chiffres.order(created_at: :desc).select { |chiffre| chiffre.type_budget == type_budget && chiffre.exercice_budgetaire == exercice} : []
+    if chiffre.empty?
+      type_budget == 'Budget rectificatif' ? 'Aucun' : 'Non renseigné'
+    else
+      chiffre.first.risque_insolvabilite ? chiffre.first.risque_insolvabilite : 'Brouillon' #first prend le dernier BR car ordre desc
+    end
   end
 end

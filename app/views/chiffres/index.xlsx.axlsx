@@ -1,11 +1,13 @@
 
     wb = xlsx_package.workbook
-  	wb.add_worksheet(name: "Historique") do |sheet| 	
-    	sheet.add_row %W{ Date Organisme Exercice Budget Phase Examen}
+    s = wb.styles
+    header = s.add_style bg_color: 'c3cffa'
+  	wb.add_worksheet(name: "Chiffres clés") do |sheet| 	
+    	sheet.add_row %W{ Exercice Budget Date\ de\ saisie Phase Examen}, style: header
 
       @chiffres.each do |chiffre|
       examen = chiffre.statut == 'valide' ? chiffre.risque_insolvabilite : 'Brouillon'
-        sheet.add_row [chiffre.created_at, chiffre.organisme.nom, chiffre.exercice_budgetaire, chiffre.type_budget, chiffre.phase, examen ]
+        sheet.add_row [chiffre.exercice_budgetaire, chiffre.type_budget, chiffre.created_at, chiffre.phase, examen ]
       end
   	end
  

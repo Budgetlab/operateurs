@@ -1,0 +1,13 @@
+<% if examen == "Brouillon" %>
+  <p class="fr-badge fr-badge--new fr-badge--no-icon"><%= examen %></p>
+<% elsif examen == "Situation saine" %>
+  <p class="fr-badge fr-badge--no-icon fr-badge--success"><%= examen %></p>
+<% elsif examen == "Situation saine a priori mais à surveiller" %>
+  <p class="fr-badge fr-badge--no-icon fr-badge--green-tilleul-verveine"><%= examen %></p>
+<% elsif examen == "Risque d’insoutenabilité à moyen terme" %>
+  <p class="fr-badge fr-badge--no-icon fr-badge--warning"><%= examen %></p>
+<% elsif examen == "Risque d’insoutenabilité élevé" %>
+  <p class="fr-badge fr-badge--no-icon fr-badge--error"><%= examen %></p>
+<% elsif examen == "Non renseigné" || examen == "Aucun" %>
+  <p class="fr-badge"><%= examen %></p>
+<% end  %>
