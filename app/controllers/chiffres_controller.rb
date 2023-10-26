@@ -3,8 +3,12 @@
 # Controller Pages Chiffres
 class ChiffresController < ApplicationController
   before_action :find_organisme, only: %i[index show_dates]
+  before_action :set_famille, only: %i[index show_dates]
+  before_action :find_chiffre_and_organisme, only: %i[edit update update_phase]
   def index
-    @est_editeur = current_user == @organisme.controleur || current_user == @organisme.bureau
+    @est_editeur = current_user == @organisme.controleur
+    redirect_to root_path and return unless @statut_user == '2B2O' || @est_editeur || @familles&.include?(@organisme.famille)
+
     @chiffres = @organisme.chiffres
     @date = Date.today.year
     liste_budgets(@date, @chiffres)
@@ -29,20 +33,15 @@ class ChiffresController < ApplicationController
   end
 
   def new
-    redirect_to root_path and return unless @statut_user == 'Bureau Sectoriel' || @statut_user == 'Controleur'
+    redirect_to root_path and return unless @statut_user == 'Controleur'
 
     @chiffre = Chiffre.new
-    @organismes = if @statut_user == 'Controleur'
-                    current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif')
-                  else
-                    current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif')
-                  end
+    @organismes = current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif')
   end
 
   def select_comptabilite
     comptabilite = Organisme.where(id: params[:organisme])&.first&.comptabilite_budgetaire
     comptabilite = comptabilite != 'Non' if comptabilite
-
     response = { comptabilite: comptabilite }
     render json: response
   end
@@ -60,19 +59,17 @@ class ChiffresController < ApplicationController
                 else
                   false
                 end
-
     response = { operateur: operateur || false }
     render json: response
   end
 
   def create
     @organisme = Organisme.find(params[:chiffre][:organisme_id])
-    @can_edit = @organisme && (current_user == @organisme.controleur || current_user == @organisme.bureau)
-    redirect_to root_path and return unless @can_edit
+    redirect_unless_can_edit
 
     @chiffre_exist = !Chiffre.where(organisme_id: @organisme.id,
-                                   exercice_budgetaire: params[:chiffre][:exercice_budgetaire],
-                                   type_budget: params[:chiffre][:type_budget]).empty?
+                                    exercice_budgetaire: params[:chiffre][:exercice_budgetaire],
+                                    type_budget: params[:chiffre][:type_budget]).empty?
     if @chiffre_exist
       respond_to do |format|
         format.turbo_stream do
@@ -93,31 +90,24 @@ class ChiffresController < ApplicationController
   end
 
   def edit
-    @chiffre = Chiffre.find(params[:id])
-    @organisme = @chiffre.organisme
+    redirect_unless_can_edit
     @steps = @chiffre.comptabilite_budgetaire == true ? 6 : 5
   end
 
   def update
-    @chiffre = Chiffre.find(params[:id])
-    @organisme = @chiffre.organisme
-    @can_edit = @organisme && (current_user == @organisme.controleur || current_user == @organisme.bureau)
-    redirect_to root_path and return unless @can_edit
+    redirect_unless_can_edit
 
-    if params[:chiffre][:statut] && params[:chiffre][:statut] != 'valide'
-      step = params[:chiffre][:statut].to_i + 1
-      params[:chiffre][:statut] = @chiffre.statut.to_i > params[:chiffre][:statut].to_i ? @chiffre.statut : params[:chiffre][:statut] # pour garder dernière étape sauvegardee si retour en arrière
+    if update_chiffre(@chiffre, chiffre_params)
+      @message = ' ' if @chiffre.statut != 'valide'
+      redirect_path = @chiffre.statut == 'valide' ? organisme_chiffres_path(@organisme) : edit_chiffre_path(@chiffre, step: @step)
+      redirect_to redirect_path, flash: { notice: @message }
+    else
+      render :edit
     end
-    @chiffre.update(chiffre_params)
-    message = @chiffre.statut == 'valide' ? 'maj' : 'creation'
-    redirect_path = @chiffre.statut == 'valide' ? organisme_chiffres_path(@organisme) : edit_chiffre_path(@chiffre, step: step)
-    redirect_to redirect_path, flash: { notice: message }
   end
 
   def update_phase
-    @chiffre = Chiffre.find(params[:id])
-    @organisme = @chiffre.organisme
-    @can_edit = @organisme && (current_user == @organisme.controleur || current_user == @organisme.bureau)
+    @can_edit = @organisme && current_user == @organisme.controleur
     redirect_to root_path and return unless @can_edit && params[:phase]
 
     if params[:phase] == 'Budget non approuvé'
@@ -150,7 +140,7 @@ class ChiffresController < ApplicationController
     @chiffres = @chiffres.select { |el| params[:budgets].include?(el.type_budget) } if params[:budgets] && params[:budgets].length != 3
     @chiffres = @chiffres.select { |el| params[:phases].include?(el.phase) } if params[:phases] && params[:phases].length != 4
     @chiffres = @chiffres.select { |el| params[:exercices].include?(el.exercice_budgetaire.to_s) } if params[:exercices] && params[:exercices].length != @exercices.length
-    if params[:risque_insolvabilites] && params[:risque_insolvabilites].include?("Brouillon")
+    if params[:risque_insolvabilites]&.include?("Brouillon")
       @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) || el.statut != 'valide'}
     else
       @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) } if params[:risque_insolvabilites] && params[:risque_insolvabilites].length != 5
@@ -171,11 +161,11 @@ class ChiffresController < ApplicationController
     @chiffres_organismes_2024 = []
     @organismes = case @statut_user
                   when '2B2O'
-                    Organisme.includes(:chiffres).sort_by { |organisme| normalize_name(organisme.nom) }
+                    Organisme.where(statut: 'valide', etat: 'Actif').includes(:chiffres).sort_by { |organisme| normalize_name(organisme.nom) }
                   when 'Controleur'
-                    current_user.controleur_organismes.where(statut: 'valide').includes(:chiffres).sort_by { |organisme| normalize_name(organisme.nom) }
+                    current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif').includes(:chiffres).sort_by { |organisme| normalize_name(organisme.nom) }
                   when 'Bureau Sectoriel'
-                    current_user.bureau_organismes.where(statut: 'valide').includes(:chiffres).sort_by { |organisme| normalize_name(organisme.nom) }
+                    current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif').includes(:chiffres).sort_by { |organisme| normalize_name(organisme.nom) }
                   end
     @organismes.each do |organisme|
       organisme_chiffres = {}
@@ -263,4 +253,33 @@ class ChiffresController < ApplicationController
       chiffre.first.risque_insolvabilite ? chiffre.first.risque_insolvabilite : 'Brouillon' #first prend le dernier BR car ordre desc
     end
   end
+
+  def set_famille
+    if @statut_user == 'Controleur'
+      @familles = current_user.controleur_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
+      @familles += ['Universités'] if current_user.nom == 'CBCM MEN-MESRI'
+    elsif @statut_user == 'Bureau Sectoriel'
+      @familles = current_user.bureau_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
+    end
+  end
+
+  def find_chiffre_and_organisme
+    @chiffre = Chiffre.find(params[:id])
+    @organisme = @chiffre.organisme
+  end
+
+  def redirect_unless_can_edit
+    return redirect_to(root_path) unless @organisme && current_user == @organisme.controleur
+  end
+
+  def update_chiffre(chiffre, params)
+    @message = chiffre.statut == 'valide' ? 'maj chiffres' : 'creation chiffres'
+    if params[:statut] && params[:statut] != 'valide'
+      @step = params[:statut].to_i + 1
+      # pour garder dernière étape sauvegardee si retour en arrière
+      params[:statut] = chiffre.statut.to_i > params[:statut].to_i ? chiffre.statut : params[:statut]
+    end
+    chiffre.update(chiffre_params)
+  end
+
 end

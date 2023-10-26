@@ -16,7 +16,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.comptabilite_budgetaire == true %><%= format_nombre(chiffre.tresorerie_finale/@den) %><%else %>x<%end %> Jours</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.comptabilite_budgetaire == true %>x<%else %>x<%end %> Jours</p>
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@
         <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
             <p class="fr-mb-0 fr-text--center">Trésorerie non fléchée en jours de fonctionnement</p>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.tresorerie_finale_non_flechee/@den) %> Jours</p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"> Jours</p>
           </div>
         </div>
       </div>
@@ -111,7 +111,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Niveau le plus haut de trésorerie en jours de fonctionnement</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.comptabilite_budgetaire == true %><%= format_nombre(chiffre.tresorerie_max/@den)  %><%else %>x<%end %> Jours</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.comptabilite_budgetaire == true %>X<%else %>x<%end %> Jours</p>
         </div>
       </div>
     </div>
@@ -127,7 +127,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Niveau le plus bas de trésorerie en jours de fonctionnement</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.comptabilite_budgetaire == true %><%= format_nombre(chiffre.tresorerie_min/@den)  %><%else %>x<%end %> Jours</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.comptabilite_budgetaire == true %>X<%else %>x<%end %> Jours</p>
         </div>
       </div>
     </div>

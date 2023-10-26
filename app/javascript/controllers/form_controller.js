@@ -845,20 +845,20 @@ export default class extends Controller {
         const indicateur_fr_initial = document.getElementById("indicateur_fr_initial");
         const fr_f =this.numberFormat(document.getElementById("fonds_roulement_final").value) || 0;
         const fr_i = fonds_roulement_variation + fr_f;
-        this.indicateurRatio(fonds_roulement_final_field,indicateur_fr_initial,fr_i,1,1);
+        this.indicateurRatio(fonds_roulement_variation_field,indicateur_fr_initial,fr_i,1,1);
         //Variation du besoin en fonds de roulement
         const tresorerie_variation = this.numberFormat(document.getElementById("tresorerie_variation").value) || 0;
         const variation_bfr = fonds_roulement_variation - tresorerie_variation;
-        this.indicateurRatio(fonds_roulement_final_field,indicateur_besoin_fr,variation_bfr,1,1);
+        this.indicateurRatio(fonds_roulement_variation_field,indicateur_besoin_fr,variation_bfr,1,1);
         // niveau initial besoin fr
         const indicateur_bfr_initial = document.getElementById("indicateur_bfr_initial");
         const bfr_f =this.numberFormat(document.getElementById("fonds_roulement_besoin_final").value) || 0;
         const bfr_i = variation_bfr + bfr_f ;
-        this.indicateurRatio(fonds_roulement_final_field,indicateur_bfr_initial,bfr_i,1,1);
+        this.indicateurRatio(fonds_roulement_variation_field,indicateur_bfr_initial,bfr_i,1,1);
         //risque insolvalibilite
 
         const solde_budgetaire = 10;
-        this.calculRisque(solde_budgetaire, tresorerie_variation, fonds_roulement_variation, variation_besoin_fr)
+        this.calculRisque(solde_budgetaire, tresorerie_variation, fonds_roulement_variation, variation_bfr)
     }
     updateRisque(value){
         const risque_insolvabilite = document.getElementById("risque_insolvabilite");
