@@ -20,9 +20,14 @@
           <% if @chiffre.statut != "valide" %>
             <%= f.hidden_field :statut, value: @chiffre.statut.to_i + 1  %>
           <%end %>
-          <%= f.hidden_field :credits_cp_total, id: "credits_cp_total", value: @chiffre.credits_cp_total %>
-          <%= f.hidden_field :credits_cp_investissement, id: "credits_cp_investissement", value: @chiffre.credits_cp_investissement %>
-          <%= f.hidden_field :credits_restes_a_payer, id: "credits_restes_a_payer", value: @chiffre.credits_restes_a_payer %>
+          <% if @chiffre.comptabilite_budgetaire == true  %>
+            <% @den = @chiffre.credits_cp_total - @chiffre.credits_cp_investissement %>
+            <div id="den" data-form-den="<%=@den %>"></div>
+            <div id="crap" data-form-crap="<%=@chiffre.credits_restes_a_payer %>"></div>
+          <% else %>
+            <% @den = @chiffre.emplois_charges_personnel + @chiffre.charges_fonctionnement + @chiffre.charges_intervention - @chiffre.charges_non_decaissables %>
+            <div id="den" data-form-den="<%=@den %>"></div>
+          <% end  %>
           <h2>Niveaux de trésorerie</h2>
           <% if @chiffre.comptabilite_budgetaire == true  %>
             <div class="fr-grid-row fr-grid-row--gutters">
@@ -103,7 +108,7 @@
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
                       <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_jours">-</span> %</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_jours">-</span> Jours</p>
                     </div>
                   </div>
                 </div>
@@ -133,6 +138,7 @@
                 </div>
               </div>
             </div>
+            <% if @chiffre.comptabilite_budgetaire == true  %>
             <div class="fr-col-12 fr-col-lg-6">
               <div>
                 <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
@@ -143,6 +149,7 @@
                 </div>
               </div>
             </div>
+            <% end %>
           </div>
           <% if @chiffre.comptabilite_budgetaire == true  %>
             <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">

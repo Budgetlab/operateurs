@@ -32,11 +32,11 @@
                 </div>
               <%else %>
                 <div class="fr-mb-2w">
-                  <div class="fr-card fr-card--gey fr-p-2w fr-card--no-border">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
                       <p class="fr-mb-0 fr-text--center">Charges de personnel</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= @chiffre.emplois_charges_personnel %> €</p>
-                      <% f.hidden_field :emplois_charges_personnel,id: "charges_personnel", value: @chiffre.emplois_charges_personnel %>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@chiffre.emplois_charges_personnel) %> €</p>
+                      <%= f.hidden_field :emplois_charges_personnel,id: "charges_personnel", value: @chiffre.emplois_charges_personnel %>
                     </div>
                   </div>
                 </div>
@@ -171,7 +171,7 @@
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-8">
-              <h2>Capacité d’autofinancement</h2>
+              <h2 class="fr-mt-4w">Capacité d’autofinancement</h2>
               <div class="fr-input-group">
                 <label for="capacite_autofinancement" class="fr-label">Capacité d’autofinancement*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
@@ -182,7 +182,7 @@
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
-              <h2>Emplois</h2>
+              <h2 class="fr-mt-4w">Emplois</h2>
               <div class="fr-input-group">
                 <label for="emplois_cout_total" class="fr-label">Total des emplois*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
@@ -197,7 +197,7 @@
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-4">
-              <h2>Ressources</h2>
+              <h2 class="fr-mt-4w">Ressources</h2>
               <div class="fr-input-group">
                 <label for="ressources_total" class="fr-label">Total des ressources*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">

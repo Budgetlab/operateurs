@@ -54,7 +54,7 @@ export default class extends Controller {
         if (document.getElementById("tresorerie") != null ) {
             this.changeTresorerie();
         }
-        if (document.getElementById("capacite_autofinancement") != null ) {
+        if (document.getElementById("fonds_roulement_variation") != null ) {
             this.changeAnalyse();
         }
         this.validateForm(this.formTarget);
@@ -571,7 +571,7 @@ export default class extends Controller {
         const emplois_non_remuneres = this.numberFormat(document.getElementById("emplois_non_remuneres").value) || 0;
         const emplois_autre_entite = this.numberFormat(document.getElementById("emplois_autre_entite").value) || 0;
         const indicateur_cout_autre = document.getElementById("indicateur_cout_autre");
-        const num = emplois_total - emplois_non_remuneres + emplois_autre_entite;
+        const num = emplois_total + emplois_non_remuneres - emplois_autre_entite;
         let field = document.getElementById("emplois_total");
         if (document.getElementById("emplois_non_remuneres").value == "" ){
             field = document.getElementById("emplois_non_remuneres");
@@ -715,12 +715,26 @@ export default class extends Controller {
     changeComptabilite(){
         this.changeTotalComptabilite();
         this.changeRessources();
+        if (document.getElementById("encaissements_operations") != null){
+            this.changeONB();
+        }
         this.validateForm();
     }
     changeTotalComptabilite(){
-        const indicateur_charges = document.getElementById("indicateur_charges");
         const indicateur_produits = document.getElementById("indicateur_produits");
+        const indicateur_charges = document.getElementById("indicateur_charges");
         const indicateur_resultat = document.getElementById("indicateur_resultat");
+        const charges_total = this.TotalCharges();
+        const produits_total = this.TotalProduits();
+        const resultat =  produits_total - charges_total;
+        if (indicateur_produits.innerHTML == "-" || indicateur_charges.innerHTML == "-" ){
+            indicateur_resultat.innerHTML = "-"
+        }else{
+            indicateur_resultat.innerHTML = resultat.toLocaleString("fr-FR");
+        }
+    }
+    TotalCharges(){
+        const indicateur_charges = document.getElementById("indicateur_charges");
         const indicateur_charges_personnel = document.getElementById("indicateur_charges_personnel");
         const indicateur_charges_fonctionnement = document.getElementById("indicateur_charges_fonctionnement");
         const indicateur_charges_intervention = document.getElementById("indicateur_charges_intervention");
@@ -731,25 +745,39 @@ export default class extends Controller {
         const charges_fonctionnement = this.numberFormat(charges_fonctionnement_field.value) || 0;
         const charges_intervention_field = document.getElementById("charges_intervention")
         const charges_intervention = this.numberFormat(charges_intervention_field.value) || 0;
-        const charges_total = charge_personnel + charges_fonctionnement + charges_intervention;
-        indicateur_charges.innerHTML = charges_total.toLocaleString("fr-FR");
         const charges_non_decaissables = this.numberFormat(document.getElementById("charges_non_decaissables").value) || 0;
+        const charges_total = charge_personnel + charges_fonctionnement + charges_intervention;
         const charges_dec = charges_total - charges_non_decaissables;
-        indicateur_charges_dec.innerHTML = charges_dec.toLocaleString("fr-FR");
-        const produits_total = this.TotalProduits();
-        indicateur_produits.innerHTML = produits_total.toLocaleString("fr-FR");
-        const resultat = charges_total - produits_total;
-        indicateur_resultat.innerHTML = resultat.toLocaleString("fr-FR");
         this.indicateurRatio(charge_personnel_field,indicateur_charges_personnel,charge_personnel,charges_total,100);
         this.indicateurRatio(charges_fonctionnement_field,indicateur_charges_fonctionnement,charges_fonctionnement,charges_total,100);
         this.indicateurRatio(charges_intervention_field,indicateur_charges_intervention,charges_intervention,charges_total,100);
+        if (charge_personnel_field.value == "" && charges_fonctionnement_field.value == "" && charges_intervention_field.value == ""){
+            indicateur_charges.innerHTML = "-";
+            indicateur_charges_dec.innerHTML = "-";
+        }else{
+            indicateur_charges.innerHTML = charges_total.toLocaleString("fr-FR");
+            indicateur_charges_dec.innerHTML = charges_dec.toLocaleString("fr-FR");
+        }
+
+        return charges_total
     }
     TotalProduits(){
-        const produits_subventions_etat = this.numberFormat(document.getElementById("produits_subventions_etat").value) || 0;
-        const produits_fiscalite_affectee = this.numberFormat(document.getElementById("produits_fiscalite_affectee").value) || 0;
-        const produits_subventions_autres = this.numberFormat(document.getElementById("produits_subventions_autres").value) || 0;
-        const produits_autres = this.numberFormat(document.getElementById("produits_autres").value) || 0;
-        return produits_subventions_etat + produits_fiscalite_affectee + produits_subventions_autres + produits_autres;
+        const indicateur_produits = document.getElementById("indicateur_produits");
+        const produits_subventions_etat_field = document.getElementById("produits_subventions_etat")
+        const produits_subventions_etat = this.numberFormat(produits_subventions_etat_field.value) || 0;
+        const produits_fiscalite_affectee_field = document.getElementById("produits_fiscalite_affectee")
+        const produits_fiscalite_affectee = this.numberFormat(produits_fiscalite_affectee_field.value) || 0;
+        const produits_subventions_autres_field = document.getElementById("produits_subventions_autres")
+        const produits_subventions_autres = this.numberFormat(produits_subventions_autres_field.value) || 0;
+        const produits_autres_field = document.getElementById("produits_autres")
+        const produits_autres = this.numberFormat(produits_autres_field.value) || 0;
+        const produits_total = produits_subventions_etat + produits_fiscalite_affectee + produits_subventions_autres + produits_autres;
+        if (produits_subventions_etat_field.value == "" && produits_fiscalite_affectee_field.value == "" && produits_subventions_autres_field.value == "" && produits_autres_field.value == ""){
+            indicateur_produits.innerHTML = "-";
+        }else{
+            indicateur_produits.innerHTML = produits_total.toLocaleString("fr-FR");
+        }
+        return produits_total
     }
     changeRessources(){
         const indicateur_ressources = document.getElementById("indicateur_ressources");
@@ -759,24 +787,76 @@ export default class extends Controller {
         const ressources_autres = this.numberFormat(document.getElementById("ressources_autres").value) || 0;
         const ressources_total = this.numberFormat(document.getElementById("ressources_total").value) || 0;
         const capacite_autofinancement = this.numberFormat(document.getElementById("capacite_autofinancement").value) || 0;
-        if (produits_total-produits_non_encaissables+ressources_total != 0){
-            const taux = (produits_autres - produits_non_encaissables + ressources_autres)/(produits_total-produits_non_encaissables+ressources_total-capacite_autofinancement);
-            indicateur_ressources.innerHTML = taux.toLocaleString("fr-FR");
-        }else{
+        if (document.getElementById("produits_autres").value == "" || document.getElementById("produits_non_encaissables").value == "" || document.getElementById("ressources_autres").value == "" || document.getElementById("ressources_total").value == "" || document.getElementById("capacite_autofinancement").value == "" ){
             indicateur_ressources.innerHTML = "-"
+        }else{
+            this.indicateurRatio(document.getElementById("ressources_total"),indicateur_ressources,produits_autres - produits_non_encaissables + ressources_autres,produits_total - produits_non_encaissables + ressources_total - capacite_autofinancement,100);
         }
 
 
     }
+    changeONB(){
+        const indicateur_dec = document.getElementById("indicateur_dec");
+        const indicateur_enc = document.getElementById("indicateur_enc");
+        const decaissements_operations_field = document.getElementById("decaissements_operations");
+        const decaissements_operations = this.numberFormat(decaissements_operations_field.value) || 0;
+        const encaissements_operations_field = document.getElementById("encaissements_operations");
+        const encaissements_operations = this.numberFormat(encaissements_operations_field.value) || 0;
+        let dec = decaissements_operations
+        let enc = encaissements_operations
+        if (document.getElementById("encaissements_emprunts") != null){
+            const encaissements_emprunts = this.numberFormat(document.getElementById("encaissements_emprunts").value) || 0;
+            const decaissements_emprunts = this.numberFormat(document.getElementById("decaissements_emprunts").value) || 0;
+            const encaissements_autres = this.numberFormat(document.getElementById("encaissements_autres").value) || 0;
+            const decaissements_autres = this.numberFormat(document.getElementById("decaissements_autres").value) || 0;
+            enc = enc + encaissements_emprunts + encaissements_autres;
+            dec = dec + decaissements_emprunts + decaissements_autres;
+        }
+        if ((decaissements_operations_field.value == "" && document.getElementById("decaissements_emprunts") == null) || (document.getElementById("decaissements_emprunts") != null && decaissements_operations_field.value == "" && document.getElementById("decaissements_emprunts").value == "" && document.getElementById("decaissements_autres").value == "")){
+            indicateur_dec.innerHTML = "-"
+        }else{
+            indicateur_dec.innerHTML = dec.toLocaleString("fr-FR");
+        }
+        if ((encaissements_operations_field.value == "" && document.getElementById("encaissements_emprunts") == null) || (document.getElementById("encaissements_emprunts") != null && encaissements_operations_field.value == "" && document.getElementById("encaissements_emprunts").value == "" && document.getElementById("encaissements_autres").value == "")){
+            indicateur_enc.innerHTML = "-"
+        }else{
+            indicateur_enc.innerHTML = enc.toLocaleString("fr-FR");
+        }
+
+    }
     changeTresorerie(){
+        this.changeIndicateurTresoInit();
         this.changeIndicateurTresoJours();
-        this.changeIndicateurInit();
+        // pour les Orga en CB
         if (document.getElementById("indicateur_treso_non_flechee") != null){
             this.changeIndicateurTresoNonFlechee();
+            this.changeIndicateurTresoRAP();
         }
-        this.changeIndicateurTresoRAP();
         this.changeIndicateurTresoExtremesJours();
         this.validateForm();
+    }
+    changeIndicateurTresoInit(){
+        const tresorerie_indicateur_initial = document.getElementById("tresorerie_indicateur_initial");
+        const tresorerie_finale = this.numberFormat(document.getElementById("tresorerie_finale").value) || 0;
+        const tresorerie_variation = this.numberFormat(document.getElementById("tresorerie_variation").value) || 0;
+        const tresorie_initiale = tresorerie_finale - tresorerie_variation;
+        if (document.getElementById("tresorerie_finale").value == "" || document.getElementById("tresorerie_variation").value == ""){
+            tresorerie_indicateur_initial.innerHTML = "-";
+        }else{
+            tresorerie_indicateur_initial.innerHTML = tresorie_initiale.toLocaleString("fr-FR");
+        }
+
+    }
+    changeIndicateurTresoJours(){
+        const indicateur_treso_jours = document.getElementById("indicateur_treso_jours");
+        const tresorerie_finale_field = document.getElementById("tresorerie_finale");
+        const tresorerie_finale = this.numberFormat(tresorerie_finale_field.value) || 0;
+        const den = this.calculateTresoDen();
+        this.indicateurRatio(tresorerie_finale_field,indicateur_treso_jours,tresorerie_finale,den,1);
+    }
+    calculateTresoDen(){
+        const den = document.getElementById("den").getAttribute("data-form-den");
+        return den/360 || 0;
     }
     changeIndicateurTresoNonFlechee(){
         const indicateur_treso_non_flechee = document.getElementById("indicateur_treso_non_flechee");
@@ -793,31 +873,12 @@ export default class extends Controller {
         const den = this.calculateTresoDen();
         this.indicateurRatio(tresorerie_finale_non_flechee_field,indicateur_treso_non_flechee_jours,tresorerie_finale_non_flechee,den,1);
     }
-    changeIndicateurInit(){
-        const tresorerie_indicateur_initial = document.getElementById("tresorerie_indicateur_initial");
-        const tresorerie_finale = this.numberFormat(document.getElementById("tresorerie_finale").value) || 0;
-        const tresorerie_variation = this.numberFormat(document.getElementById("tresorerie_variation").value) || 0;
-        const tresorie_initiale = tresorerie_finale - tresorerie_variation;
-        tresorerie_indicateur_initial.innerHTML = tresorie_initiale.toLocaleString("fr-FR");
-    }
-    changeIndicateurTresoJours(){
-        const indicateur_treso_jours = document.getElementById("indicateur_treso_jours");
-        const tresorerie_finale_field = document.getElementById("tresorerie_finale");
-        const tresorerie_finale = this.numberFormat(tresorerie_finale_field.value) || 0;
-        const den = this.calculateTresoDen();
-        this.indicateurRatio(tresorerie_finale_field,indicateur_treso_jours,tresorerie_finale,den,1);
-    }
     changeIndicateurTresoRAP(){
         const indicateur_treso_rap = document.getElementById("indicateur_treso_rap");
         const tresorerie_finale_field = document.getElementById("tresorerie_finale")
         const tresorerie_finale = this.numberFormat(tresorerie_finale_field.value) || 0;
-        const credits_restes_a_payer = this.numberFormat(document.getElementById("credits_restes_a_payer").value) || 0;
+        const credits_restes_a_payer = document.getElementById("den").getAttribute("data-form-crap");
         this.indicateurRatio(tresorerie_finale_field,indicateur_treso_rap,tresorerie_finale,credits_restes_a_payer,100);
-    }
-    calculateTresoDen(){
-        const credits_cp_total = this.numberFormat(document.getElementById("credits_cp_total").value) || 0;
-        const credits_cp_investissement = this.numberFormat(document.getElementById("credits_cp_investissement").value) || 0;
-        return (credits_cp_total - credits_cp_investissement)/360;
     }
     changeIndicateurTresoExtremesJours(){
         const indicateur_treso_max = document.getElementById("indicateur_treso_max");
@@ -856,9 +917,7 @@ export default class extends Controller {
         const bfr_i = variation_bfr + bfr_f ;
         this.indicateurRatio(fonds_roulement_variation_field,indicateur_bfr_initial,bfr_i,1,1);
         //risque insolvalibilite
-
-        const solde_budgetaire = 10;
-        this.calculRisque(solde_budgetaire, tresorerie_variation, fonds_roulement_variation, variation_bfr)
+        this.calculRisque(tresorerie_variation, fonds_roulement_variation, variation_bfr)
     }
     updateRisque(value){
         const risque_insolvabilite = document.getElementById("risque_insolvabilite");
@@ -866,59 +925,83 @@ export default class extends Controller {
         risque_insolvabilite.value = value;
         indicateur_examen.innerHTML = value
     }
-    calculRisque(solde_budgetaire, tresorerie_variation, fonds_roulement_variation, variation_besoin_fr){
+    calculRisque(tresorerie_variation, fonds_roulement_variation, variation_besoin_fr){
         const commentaire = document.getElementById("commentaire");
-        if (solde_budgetaire > 0 && tresorerie_variation > 0 && fonds_roulement_variation > 0){
-            this.updateRisque("Situation saine")
-            commentaire.innerHTML = "la soutenabilité est atteinte à court et moyen termes, que la variation du besoin en fonds de roulement soit positive ou négative."
-        }else if (solde_budgetaire > 0 && tresorerie_variation < 0 && fonds_roulement_variation > 0 && variation_besoin_fr > 0 ){
-            this.updateRisque("Situation saine")
-            commentaire.innerHTML = "la soutenabilité est atteinte à court et moyen termes, dès lors que la variation du besoin en fonds de roulement est positive. \n" +
-                "Il convient de vérifier si des décaissements liés à des opérations de trésorerie non budgétaires peuvent expliquer cette situation (opérations au nom et pour le compte de tiers par exemple)."
+        const comptabilite_budgetaire = document.getElementById("comptabilite_budgetaire").value;
+        if (comptabilite_budgetaire == true){
+            const solde_budgetaire = 10;
+            if (solde_budgetaire > 0 && tresorerie_variation > 0 && fonds_roulement_variation > 0){
+                this.updateRisque("Situation saine")
+                commentaire.innerHTML = "la soutenabilité est atteinte à court et moyen termes, que la variation du besoin en fonds de roulement soit positive ou négative."
+            }else if (solde_budgetaire > 0 && tresorerie_variation < 0 && fonds_roulement_variation > 0 && variation_besoin_fr > 0 ){
+                this.updateRisque("Situation saine")
+                commentaire.innerHTML = "la soutenabilité est atteinte à court et moyen termes, dès lors que la variation du besoin en fonds de roulement est positive. \n" +
+                    "Il convient de vérifier si des décaissements liés à des opérations de trésorerie non budgétaires peuvent expliquer cette situation (opérations au nom et pour le compte de tiers par exemple)."
+            }
+            else if (solde_budgetaire > 0 && tresorerie_variation > 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0 ){
+                this.updateRisque("Situation saine a priori mais à surveiller");
+                commentaire.innerHTML = "la situation est viable à court terme notamment si le besoin en fonds est structurellement négatif.\n" +
+                    "Il conviendra de vérifier si la variation à la baisse du fonds de roulement est ponctuelle ou répétée.";
+            }
+            else if (solde_budgetaire > 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0 ){
+                this.updateRisque("Situation saine a priori mais à surveiller");
+                commentaire.innerHTML = "la situation est viable si la variation du besoin en fonds de roulement est négative, en particulier si le niveau de besoin en fonds de roulement est structurellement négatif.\n" +
+                    "Il convient de vérifier si des décaissements liés à des opérations non budgétaires peuvent expliquer cette situation. ";
+            }
+            else if (solde_budgetaire < 0 && tresorerie_variation > 0 && fonds_roulement_variation > 0 && variation_besoin_fr > 0 ){
+                this.updateRisque("Situation saine a priori mais à surveiller");
+                commentaire.innerHTML = "a situation est viable si la variation du besoin en fonds de roulement est positive. \n" +
+                    "Des décalages de flux d’encaissement peuvent expliquer que ponctuellement le solde budgétaire soit négatif. Il convient de vérifier si cela est dû à des opérations pluriannuelles.";
+            }
+            else if (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation > 0 && variation_besoin_fr > 0 ){
+                this.updateRisque("Situation saine a priori mais à surveiller");
+                commentaire.innerHTML = "la situation est viable si la variation du besoin en fonds de roulement est positive. \n" +
+                    "Des décalages de flux d’encaissement peuvent expliquer que ponctuellement le solde budgétaire est négatif. Si le niveau du besoin est structurellement élevé, l’organisme doit disposer d’un niveau de trésorerie important.";
+            }
+            else if (solde_budgetaire > 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr > 0 ){
+                this.updateRisque("Risque d’insoutenabilité à moyen terme");
+                commentaire.innerHTML = "un risque d’insoutenabilité existe à moyen terme si la variation du besoin en fonds de roulement est positive. En effet, il existe un risque que le fonds de roulement ne se redresse pas pour couvrir le besoin en fonds de roulement. \n" +
+                    "Dans ce cas, il convient de vérifier si le solde budgétaire positif est dû à des opérations non budgétaires qui généreraient des décalage de flux de trésorerie important (exemple : remboursements d’emprunts). ";
+            }
+            else if (solde_budgetaire < 0 && tresorerie_variation > 0 && fonds_roulement_variation > 0 && variation_besoin_fr < 0 ){
+                this.updateRisque("Risque d’insoutenabilité à moyen terme");
+                commentaire.innerHTML = "il y a un risque d’insoutenabilité à moyen terme si la variation du besoin en fonds de roulement est négative. \n" +
+                    "Une variation du besoin en fonds de roulement devrait, a priori, permettre de dégager un solde budgétaire positif. Il convient donc de vérifier si le solde budgétaire négatif est dû à des opérations pluriannuelles (fléchées ou non) qui généreraient des décalages de flux de trésorerie importants. ";
+            }
+            else if (solde_budgetaire < 0 && tresorerie_variation > 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0 ){
+                this.updateRisque("Risque d’insoutenabilité élevé");
+                commentaire.innerHTML = "Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs. Il convient de vérifier si des opérations de trésorerie non budgétaires peuvent expliquer la variation de trésorerie.";
+            }
+            else if (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr > 0 ){
+                this.updateRisque("Risque d’insoutenabilité élevé");
+                commentaire.innerHTML = "le risque d'insoutenabilité est élevé car le fonds de roulement ne finance pas le besoin en fonds de roulement et seule la trésorerie est mise à contribution.\n" +
+                    "Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs.";
+            }
+            else if (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0 ){
+                this.updateRisque("Risque d’insoutenabilité élevé");
+                commentaire.innerHTML = "le risque d'insoutenabilité est élevé car malgré la capacité d'encaisser avant de décaisser, le solde budgétaire est négatif. Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs. ll convient de vérifier si des opérations de trésorerie non budgétaires peuvent expliquer la variation de trésorerie.";
+            }
+        }else{
+            if (tresorerie_variation > 0 && fonds_roulement_variation > 0){
+                this.updateRisque("Situation saine")
+                commentaire.innerHTML = "La soutenabilité est atteinte à court et moyen termes, que la variation du besoin en fonds de roulement soit positive ou négative."
+            }else if (tresorerie_variation < 0 && fonds_roulement_variation > 0 && variation_besoin_fr > 0 ){
+                this.updateRisque("Situation saine a priori mais à surveiller")
+                commentaire.innerHTML = "En présence  d’une variation de trésorerie négative mais d’une variation de fonds de roulement positive, la situation est viable a priori car des décalages de flux d'encaissement peuvent expliquer que ponctuellement la trésorerie soit négative. Si le niveau de besoin en fonds de roulement est structurellement élevé, l'organisme doit disposer d'un niveau de trésorerie important."
+            }else if (tresorerie_variation > 0 && fonds_roulement_variation > 0 && variation_besoin_fr < 0 ){
+                this.updateRisque("Situation saine a priori mais à surveiller")
+                commentaire.innerHTML = "la situation est viable à court terme notamment si le besoin en fonds est structurellement négatif.\n" +
+                    "Il conviendra de vérifier si la variation à la baisse du fonds de roulement est ponctuelle ou répétée."
+            }else if (tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr > 0){
+                this.updateRisque("Risque d’insoutenabilité élevé")
+                commentaire.innerHTML = "En présence d’une variation de fonds de roulement et d’une variation de trésorerie négatifs et d’une variation du besoin en fonds de roulement positive, le risque d’insolvabilité est élevé car le fonds de roulement ne finance pas le besoin en fonds de roulement et seule la trésorerie est mise à contribution. Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur la trésorerie sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs."
+            }
+            else if (tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0){
+                this.updateRisque("Risque d’insoutenabilité élevé")
+                commentaire.innerHTML = "En présence d’une variation de fonds de roulement, d’une variation de trésorerie et d’une variation du besoin en fonds de roulement négatifs, le risque d’insolvabilité est élevé car malgré la capacité d'encaisser avant de décaisser, la trésorerie est négative. Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur la trésorerie sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs. Il convient de vérifier si des opérations de trésorerie non budgétaires peuvent expliquer l'abondement de la trésorerie (nouvel emprunt, opérations pour au nom et pour le compte de tiers, etc...)."
+            }
         }
-        else if (solde_budgetaire > 0 && tresorerie_variation > 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0 ){
-            this.updateRisque("Situation saine a priori mais à surveiller");
-            commentaire.innerHTML = "la situation est viable à court terme notamment si le besoin en fonds est structurellement négatif.\n" +
-                "Il conviendra de vérifier si la variation à la baisse du fonds de roulement est ponctuelle ou répétée.";
-        }
-        else if (solde_budgetaire > 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0 ){
-            this.updateRisque("Situation saine a priori mais à surveiller");
-            commentaire.innerHTML = "la situation est viable si la variation du besoin en fonds de roulement est négative, en particulier si le niveau de besoin en fonds de roulement est structurellement négatif.\n" +
-                "Il convient de vérifier si des décaissements liés à des opérations non budgétaires peuvent expliquer cette situation. ";
-        }
-        else if (solde_budgetaire < 0 && tresorerie_variation > 0 && fonds_roulement_variation > 0 && variation_besoin_fr > 0 ){
-            this.updateRisque("Situation saine a priori mais à surveiller");
-            commentaire.innerHTML = "a situation est viable si la variation du besoin en fonds de roulement est positive. \n" +
-                "Des décalages de flux d’encaissement peuvent expliquer que ponctuellement le solde budgétaire soit négatif. Il convient de vérifier si cela est dû à des opérations pluriannuelles.";
-        }
-        else if (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation > 0 && variation_besoin_fr > 0 ){
-            this.updateRisque("Situation saine a priori mais à surveiller");
-            commentaire.innerHTML = "la situation est viable si la variation du besoin en fonds de roulement est positive. \n" +
-                "Des décalages de flux d’encaissement peuvent expliquer que ponctuellement le solde budgétaire est négatif. Si le niveau du besoin est structurellement élevé, l’organisme doit disposer d’un niveau de trésorerie important.";
-        }
-        else if (solde_budgetaire > 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr > 0 ){
-            this.updateRisque("Risque d’insoutenabilité à moyen terme");
-            commentaire.innerHTML = "un risque d’insoutenabilité existe à moyen terme si la variation du besoin en fonds de roulement est positive. En effet, il existe un risque que le fonds de roulement ne se redresse pas pour couvrir le besoin en fonds de roulement. \n" +
-                "Dans ce cas, il convient de vérifier si le solde budgétaire positif est dû à des opérations non budgétaires qui généreraient des décalage de flux de trésorerie important (exemple : remboursements d’emprunts). ";
-        }
-        else if (solde_budgetaire < 0 && tresorerie_variation > 0 && fonds_roulement_variation > 0 && variation_besoin_fr < 0 ){
-            this.updateRisque("Risque d’insoutenabilité à moyen terme");
-            commentaire.innerHTML = "il y a un risque d’insoutenabilité à moyen terme si la variation du besoin en fonds de roulement est négative. \n" +
-                "Une variation du besoin en fonds de roulement devrait, a priori, permettre de dégager un solde budgétaire positif. Il convient donc de vérifier si le solde budgétaire négatif est dû à des opérations pluriannuelles (fléchées ou non) qui généreraient des décalages de flux de trésorerie importants. ";
-        }
-        else if (solde_budgetaire < 0 && tresorerie_variation > 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0 ){
-            this.updateRisque("Risque d’insoutenabilité élevé");
-            commentaire.innerHTML = "Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs. Il convient de vérifier si des opérations de trésorerie non budgétaires peuvent expliquer la variation de trésorerie.";
-        }
-        else if (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr > 0 ){
-            this.updateRisque("Risque d’insoutenabilité élevé");
-            commentaire.innerHTML = "le risque d'insoutenabilité est élevé car le fonds de roulement ne finance pas le besoin en fonds de roulement et seule la trésorerie est mise à contribution.\n" +
-                "Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs.";
-        }
-        else if (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0 ){
-            this.updateRisque("Risque d’insoutenabilité élevé");
-            commentaire.innerHTML = "le risque d'insoutenabilité est élevé car malgré la capacité d'encaisser avant de décaisser, le solde budgétaire est négatif. Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs. ll convient de vérifier si des opérations de trésorerie non budgétaires peuvent expliquer la variation de trésorerie.";
-        }
+
     }
 
     changePhase(){
@@ -942,12 +1025,14 @@ export default class extends Controller {
     }
     afficherInfos(e){
         e.preventDefault();
+        const bouton = document.getElementById("btn-plus")
         const blocs = document.querySelectorAll(".options");
         blocs.forEach(element => {
             element.classList.remove("fr-hidden");
         })
         const section = document.getElementById("chiffres");
         this.scrollToSection(section);
+        this.hideField(bouton);
     }
     changeTextToFloat(event){
         event.preventDefault();
