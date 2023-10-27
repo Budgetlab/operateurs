@@ -25,14 +25,16 @@
     </div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
+    <% if chiffre.comptabilite_budgetaire == true  %>
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center">€</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@solde) %>€</p>
         </div>
       </div>
     </div>
+    <% end  %>
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
@@ -57,6 +59,7 @@
         </div>
       </div>
     </div>
+    <div class="fr-text--center fr-mb-2w"><span class="fr-icon-arrow-down-fill" aria-hidden="true"></span></div>
     <div class="fr-mb-2w">
       <div class="fr-card <% if chiffre.risque_insolvabilite == 'Situation saine' %>fr-card--vert<%elsif chiffre.risque_insolvabilite == 'Situation saine a priori mais à surveiller'%>fr-card--jaune<%elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité à moyen terme'%>fr-card--orange<%elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité élevé'%>fr-card--rouge<%end %> fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">

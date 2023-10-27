@@ -311,13 +311,14 @@
 </div>
 
 <h3 class="fr-h4 fr-mt-4w">Solde budgétaire</h3>
+<% @solde = @total_recettes_globalisees + @total_recettes_flechees-chiffre.credits_cp_total %>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_recettes_globalisees + @total_recettes_flechees-chiffre.credits_cp_total)%> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@solde)%> €</p>
         </div>
       </div>
     </div>

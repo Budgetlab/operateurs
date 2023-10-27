@@ -20,12 +20,19 @@
           <% if @chiffre.statut != "valide" %>
             <%= f.hidden_field :statut, value: @chiffre.statut.to_i + 1  %>
           <%end %>
-          <%= f.hidden_field :tresorerie_variation, id: "tresorerie_variation", value: @chiffre.tresorerie_variation %>
+          <div id="tvar" data-form-tvar="<%= @chiffre.tresorerie_variation %>"></div>
+          <div id="cb" data-form-cb="<%= @chiffre.comptabilite_budgetaire %>"></div>
+          <% if @chiffre.comptabilite_budgetaire == true %>
+            <% if @chiffre.operateur == true %>
+              <div id="solde" data-form-solde="<%= @chiffre.credits_subvention_sp + @chiffre.credits_subvention_investissement_globalisee + @chiffre.credits_subvention_investissement_flechee + @chiffre.credits_financements_etat_autres + @chiffre.credits_financements_etat_fleches + @chiffre.credits_fiscalite_affectee + @chiffre.credits_financements_publics_autres + @chiffre.credits_financements_publics_fleches - @chiffre.credits_cp_total %>"></div>
+            <% else %>
+              <div id="solde" data-form-solde="<%= @chiffre.credits_financements_etat_autres + @chiffre.credits_financements_etat_fleches + @chiffre.credits_fiscalite_affectee + @chiffre.credits_financements_publics_autres + @chiffre.credits_financements_publics_fleches - @chiffre.credits_cp_total %>"></div>
+            <% end  %>
+          <%end %>
           <%= f.hidden_field :risque_insolvabilite, id: "risque_insolvabilite", value: @chiffre.risque_insolvabilite %>
-          <%= f.hidden_field :comptabilite_budgetaire, id: "comptabilite_budgetaire", value: @chiffre.comptabilite_budgetaire %>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-6">
-              <h2 class="fr-mt-4w">Fonds de roulement</h2>
+              <h2>Fonds de roulement</h2>
               <div class="fr-input-group">
                 <label for="fonds_roulement_variation" class="fr-label">Variation du fonds de roulement*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
@@ -63,6 +70,7 @@
 
             </div>
             <div class="fr-col-12 fr-col-lg-6">
+              <h2>Degré de risque d'insolvabilité</h2>
               <% if @chiffre.comptabilite_budgetaire == true %>
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
@@ -98,8 +106,9 @@
                   </div>
                 </div>
               </div>
+              <div class="fr-text--center fr-mb-2w"><span class="fr-icon-arrow-down-fill" aria-hidden="true"></span></div>
               <div class="fr-mb-2w">
-                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border" id="card_examen">
                   <div class="fr-cart__body">
                     <p class="fr-mb-0 fr-text--center">Examen à moyen-court termes</p>
                     <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_examen">-</span></p>
