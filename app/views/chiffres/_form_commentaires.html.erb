@@ -41,7 +41,7 @@
                     <%end %>
                   </li>
                   <li>
-                    <%= f.submit("#{@chiffre.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton", action: "click->form#changeTextToFloat" }, aria: { label: "Valider"}) %>
+                    <%= f.submit("#{@chiffre.statut != 'valide' ? 'Valider et sauvegarder' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton", action: "click->form#changeTextToFloat" }, aria: { label: "Valider"}) %>
                   </li>
                 </ul>
               </div>

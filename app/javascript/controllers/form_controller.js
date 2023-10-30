@@ -719,8 +719,10 @@ export default class extends Controller {
     }
     changeComptabilite(){
         this.changeTotalComptabilite();
-        this.changeRessources();
-        if (document.getElementById("encaissements_operations") != null){
+        if (document.getElementById("indicateur_ressources") != null){
+            this.changeRessources();
+        }
+        if (document.getElementById("indicateur_dec") != null){
             this.changeONB();
         }
         this.validateForm();
@@ -753,9 +755,12 @@ export default class extends Controller {
         const charges_non_decaissables = this.numberFormat(document.getElementById("charges_non_decaissables").value) || 0;
         const charges_total = charge_personnel + charges_fonctionnement + charges_intervention;
         const charges_dec = charges_total - charges_non_decaissables;
-        this.indicateurRatio(charge_personnel_field,indicateur_charges_personnel,charge_personnel,charges_total,100);
-        this.indicateurRatio(charges_fonctionnement_field,indicateur_charges_fonctionnement,charges_fonctionnement,charges_total,100);
-        this.indicateurRatio(charges_intervention_field,indicateur_charges_intervention,charges_intervention,charges_total,100);
+        if (document.getElementById("indicateur_charges_personnel") != null){
+            this.indicateurRatio(charge_personnel_field,indicateur_charges_personnel,charge_personnel,charges_total,100);
+            this.indicateurRatio(charges_fonctionnement_field,indicateur_charges_fonctionnement,charges_fonctionnement,charges_total,100);
+            this.indicateurRatio(charges_intervention_field,indicateur_charges_intervention,charges_intervention,charges_total,100);
+        }
+
         if (charge_personnel_field.value == "" && charges_fonctionnement_field.value == "" && charges_intervention_field.value == ""){
             indicateur_charges.innerHTML = "-";
             indicateur_charges_dec.innerHTML = "-";
@@ -873,7 +878,8 @@ export default class extends Controller {
         const tresorerie_finale_flechee = this.numberFormat(document.getElementById("tresorerie_finale_flechee").value) || 0;
         const total = tresorerie_finale_flechee + tresorerie_finale_non_flechee;
         tresorerie_finale.value = total;
-        tresorerie_finale_text.innerHTML = total.toLocaleString("fr-FR");
+        const condition_vide = tresorerie_finale_non_flechee_field.value == "" && document.getElementById("tresorerie_finale_flechee").value == "";
+        this.updateValueIndicateur(condition_vide,tresorerie_finale_text, total);
         this.indicateurRatio(tresorerie_finale_non_flechee_field,indicateur_treso_non_flechee,tresorerie_finale_non_flechee,total,100);
         const den = this.calculateTresoDen();
         this.indicateurRatio(tresorerie_finale_non_flechee_field,indicateur_treso_non_flechee_jours,tresorerie_finale_non_flechee,den,1);
@@ -967,7 +973,6 @@ export default class extends Controller {
         const fonds_roulement_variation = this.numberFormat(fonds_roulement_variation_field.value) || 0;
         const variation_besoin_fr = fonds_roulement_variation - tresorerie_variation ;
         const comptabilite_budgetaire = document.getElementById("cb").getAttribute("data-form-cb");
-
         if (fonds_roulement_variation_field.value == ""){
             commentaire.innerHTML = "";
             const risque_insolvabilite = document.getElementById("risque_insolvabilite");
@@ -978,8 +983,8 @@ export default class extends Controller {
             card.className = card.className.replace(/\bfr-card--\S+/g, 'fr-card--blue');
             card.classList.add('fr-card--no-border')
         }else{
-            if (comptabilite_budgetaire == true){
-                const solde_budgetaire = document.getElementById("solde").getAttribute("data-form-solde");;
+            if (comptabilite_budgetaire == "true"){
+                const solde_budgetaire = document.getElementById("solde").getAttribute("data-form-solde");
                 if (solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0){
                     this.updateRisque("Situation saine")
                     commentaire.innerHTML = "La soutenabilité est atteinte à court et moyen termes, que la variation du besoin en fonds de roulement soit positive ou négative."
@@ -1032,6 +1037,7 @@ export default class extends Controller {
                     commentaire.innerHTML = "Le risque d'insoutenabilité est élevé car malgré la capacité d'encaisser avant de décaisser, le solde budgétaire est négatif. Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs. ll convient de vérifier si des opérations de trésorerie non budgétaires peuvent expliquer la variation de trésorerie.";
                 }
             }else{
+
                 if (tresorerie_variation >= 0 && fonds_roulement_variation >= 0){
                     this.updateRisque("Situation saine")
                     commentaire.innerHTML = "La soutenabilité est atteinte à court et moyen termes, que la variation du besoin en fonds de roulement soit positive ou négative."

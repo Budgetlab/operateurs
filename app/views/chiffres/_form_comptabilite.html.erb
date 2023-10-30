@@ -81,6 +81,7 @@
                 </div>
               </div>
             </div>
+            <% if @chiffre.comptabilite_budgetaire == false %>
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-mb-2w fr-mt-8w">
                 <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
@@ -107,6 +108,7 @@
                 </div>
               </div>
             </div>
+            <% end %>
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
@@ -217,6 +219,7 @@
                 </div>
               </div>
             </div>
+            <% if @chiffre.comptabilite_budgetaire == false %>
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
@@ -227,6 +230,7 @@
                 </div>
               </div>
             </div>
+            <% end %>
           </div>
           <div class="fr-mt-2w options fr-hidden">
             <h2>Opérations non budgétaires</h2>
@@ -251,15 +255,16 @@
                     <%= f.text_field :decaissements_autres, data: {action: 'input->form#changeNumber'}, value: @chiffre.decaissements_autres, id:"decaissements_autres", class:"fr-input" %>
                   </div>
                 </div>
-                <% end  %>
-                <div class="fr-mb-2w">
-                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                    <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Décaissements non budgétaires</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_dec">-</span> €</p>
+                  <div class="fr-mb-2w">
+                    <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                      <div class="fr-cart__body">
+                        <p class="fr-mb-0 fr-text--center">Décaissements non budgétaires</p>
+                        <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_dec">-</span> €</p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                <% end  %>
+
               </div>
               <div class="fr-col-12 fr-col-lg-4">
                 <div class="fr-input-group fr-input-group--option">
@@ -281,15 +286,16 @@
                       <%= f.text_field :encaissements_autres, data: {action: 'input->form#changeNumber'}, value: @chiffre.encaissements_autres, id:"encaissements_autres", class:"fr-input" %>
                     </div>
                   </div>
-                <% end  %>
-                <div class="fr-mb-2w">
-                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                    <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Encaissements non budgétaires</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_enc">-</span> €</p>
+                  <div class="fr-mb-2w">
+                    <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                      <div class="fr-cart__body">
+                        <p class="fr-mb-0 fr-text--center">Encaissements non budgétaires</p>
+                        <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_enc">-</span> €</p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                <% end  %>
+
               </div>
             </div>
           </div>

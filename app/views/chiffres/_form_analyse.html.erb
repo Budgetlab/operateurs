@@ -23,11 +23,15 @@
           <div id="tvar" data-form-tvar="<%= @chiffre.tresorerie_variation %>"></div>
           <div id="cb" data-form-cb="<%= @chiffre.comptabilite_budgetaire %>"></div>
           <% if @chiffre.comptabilite_budgetaire == true %>
+            <% @total_recettes_globalisees = @chiffre.credits_financements_etat_autres +  @chiffre.credits_fiscalite_affectee + @chiffre.credits_financements_publics_autres + @chiffre.credits_recettes_propres_globalisees%>
+            <% @total_recettes_flechees = @chiffre.credits_financements_etat_fleches + @chiffre.credits_financements_publics_fleches + @chiffre.credits_recettes_propres_flechees %>
             <% if @chiffre.operateur == true %>
-              <div id="solde" data-form-solde="<%= @chiffre.credits_subvention_sp + @chiffre.credits_subvention_investissement_globalisee + @chiffre.credits_subvention_investissement_flechee + @chiffre.credits_financements_etat_autres + @chiffre.credits_financements_etat_fleches + @chiffre.credits_fiscalite_affectee + @chiffre.credits_financements_publics_autres + @chiffre.credits_financements_publics_fleches - @chiffre.credits_cp_total %>"></div>
-            <% else %>
-              <div id="solde" data-form-solde="<%= @chiffre.credits_financements_etat_autres + @chiffre.credits_financements_etat_fleches + @chiffre.credits_fiscalite_affectee + @chiffre.credits_financements_publics_autres + @chiffre.credits_financements_publics_fleches - @chiffre.credits_cp_total %>"></div>
-            <% end  %>
+              <% @total_recettes_globalisees = @total_recettes_globalisees + @chiffre.credits_subvention_sp + @chiffre.credits_subvention_investissement_globalisee %>
+              <% @total_recettes_flechees = @total_recettes_flechees + @chiffre.credits_subvention_investissement_flechee %>
+            <%end %>
+            <% @total_recettes = @total_recettes_globalisees + @total_recettes_flechees %>
+            <% @solde = @total_recettes - @chiffre.credits_cp_total %>
+            <div id="solde" data-form-solde="<%= @solde %>"></div>
           <%end %>
           <%= f.hidden_field :risque_insolvabilite, id: "risque_insolvabilite", value: @chiffre.risque_insolvabilite %>
           <div class="fr-grid-row fr-grid-row--gutters">
@@ -45,7 +49,7 @@
                   <%= f.text_field :fonds_roulement_final, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.fonds_roulement_final, id:"fonds_roulement_final", class:"fr-input" %>
                 </div>
               </div>
-              <div class="fr-mb-2w">
+              <div class="fr-mb-2w options fr-hidden">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
                     <p class="fr-mb-0 fr-text--center">Niveau initial du fonds de roulement</p>
@@ -72,11 +76,12 @@
             <div class="fr-col-12 fr-col-lg-6">
               <h2>Degré de risque d'insolvabilité</h2>
               <% if @chiffre.comptabilite_budgetaire == true %>
+
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
                     <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center">€</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@solde) %> €</p>
                   </div>
                 </div>
               </div>
@@ -115,7 +120,7 @@
                   </div>
                 </div>
               </div>
-              <div id="commentaire"></div>
+              <div class="fr-text--italic" id="commentaire"></div>
             </div>
           </div>
 

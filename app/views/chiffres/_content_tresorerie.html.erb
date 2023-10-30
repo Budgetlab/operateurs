@@ -76,7 +76,7 @@
     </div>
   </div>
 <% end  %>
-<div class="fr-grid-row fr-grid-row--gutters">
+<div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
@@ -93,7 +93,7 @@
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
     <div>Variation de la trésorerie </div>
-    <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_variation) %> €</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.tresorerie_variation) %> €</div>
     <% if chiffre.comptabilite_budgetaire == true  %>
       <div class="options fr-hidden">
         <div>Variation de la trésorerie fléchée </div>
