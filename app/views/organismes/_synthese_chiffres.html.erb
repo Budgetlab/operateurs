@@ -34,9 +34,9 @@
                   <div class="fr-cart__body">
                     <p class="fr-mb-0 fr-text--center">Coût moyen par ETPT</p>
                     <% if chiffre.comptabilite_budgetaire == true %>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.emplois_depenses_personnel/chiffre.emplois_total) %> €</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_depenses_personnel,chiffre.emplois_total,1)) %> €</p>
                     <%else %>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.emplois_charges_personnel/chiffre.emplois_total) %> €</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_charges_personnel,chiffre.emplois_total,1)) %> €</p>
                     <% end %>
                   </div>
                 </div>

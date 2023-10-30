@@ -1,7 +1,7 @@
 <% if chiffre.comptabilite_budgetaire == true  %>
   <% @den = (chiffre.credits_cp_total - chiffre.credits_cp_investissement)/360 %>
 <% else %>
-  <% @den = (chiffre.emplois_charges_personnel + chiffre.charges_fonctionnement + chiffre.charges_intervention - chiffre.charges_non_decaissables)/360 %>
+  <% @den = @charges_decaissables/360 %>
 <% end  %>
 <h3 class="fr-h4">Niveaux de trésorerie</h3>
 <div class="fr-grid-row fr-grid-row--gutters">
@@ -18,14 +18,6 @@
     <%else %>
       <div>Niveau final de trésorerie</div>
       <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.tresorerie_finale) %> €</div>
-      <div class="fr-mb-2w">
-        <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-          <div class="fr-cart__body">
-            <p class="fr-mb-0 fr-text--center">Niveau initial de trésorerie</p>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.tresorerie_finale-chiffre.tresorerie_variation) %> €</p>
-          </div>
-        </div>
-      </div>
     <%end %>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
@@ -83,20 +75,19 @@
       </div>
     </div>
   </div>
-  <div class="fr-grid-row fr-grid-row--gutters">
-    <div class="fr-col-12 fr-col-lg-6">
-      <div class="fr-mb-2w">
-        <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-          <div class="fr-cart__body">
-            <p class="fr-mb-0 fr-text--center">Niveau initial de trésorerie</p>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.tresorerie_finale-chiffre.tresorerie_variation) %> €</p>
-          </div>
+<% end  %>
+<div class="fr-grid-row fr-grid-row--gutters">
+  <div class="fr-col-12 fr-col-lg-6">
+    <div class="fr-mb-2w">
+      <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Niveau initial de trésorerie</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.tresorerie_finale-chiffre.tresorerie_variation) %> €</p>
         </div>
       </div>
     </div>
   </div>
-<% end  %>
-
+</div>
 
 <h3 class="fr-h4 fr-mt-4w">Variation</h3>
 <div class="fr-grid-row fr-grid-row--gutters">

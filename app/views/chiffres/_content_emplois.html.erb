@@ -16,7 +16,7 @@
         <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
             <p class="fr-mb-0 fr-text--center">Hors-plafond / total effectifs rémunérés par l'organisme</p>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.emplois_hors_plafond*100/chiffre.emplois_total) %> %</p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_hors_plafond,chiffre.emplois_total,100)) %> %</p>
           </div>
         </div>
       </div>
@@ -58,9 +58,9 @@
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Coût moyen par ETPT</p>
           <% if chiffre.comptabilite_budgetaire == true %>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.emplois_depenses_personnel/chiffre.emplois_total) %> €</p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_depenses_personnel,chiffre.emplois_total,1)) %> €</p>
           <%else %>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.emplois_charges_personnel/chiffre.emplois_total) %> €</p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_charges_personnel,chiffre.emplois_total,1)) %> €</p>
           <% end %>
         </div>
       </div>
@@ -112,7 +112,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Coût moyen des emplois titulaires</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.emplois_titulaires_montant %><%= format_nombre_entier(chiffre.emplois_titulaires_montant/chiffre.emplois_titulaires) %><%else %>-<%end %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_titulaires_montant,chiffre.emplois_titulaires,1)) %> €</p>
         </div>
       </div>
     </div>
@@ -128,7 +128,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Part des contractuels dans le total des emplois rémunérés par l’organisme</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.emplois_contractuels %><%= format_nombre_entier(chiffre.emplois_contractuels*1000/chiffre.emplois_total) %><%else %>-<%end %> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_contractuels,chiffre.emplois_total,100)) %> %</p>
         </div>
       </div>
     </div>
@@ -144,7 +144,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Coût moyen des emplois contractuels</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.emplois_contractuels_montant %><%= format_nombre_entier(chiffre.emplois_contractuels_montant/chiffre.emplois_contractuels) %><%else %>-<%end %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_contractuels_montant,chiffre.emplois_contractuels,1)) %> €</p>
         </div>
       </div>
     </div>
@@ -164,10 +164,10 @@
   </div>
   <div class="fr-col-12 fr-col-lg-6">
     <div>
-      <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+      <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Part des personnels exerçant leurs missions dans l’organisme dans le total des emplois rémunérés directement par l’organisme</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.emplois_autre_entite %><%= format_nombre_entier((chiffre.emplois_total-chiffre.emplois_non_remuneres+chiffre.emplois_autre_entite)*100/chiffre.emplois_total) %><%else %>-<%end %> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.emplois_autre_entite %><%= format_nombre_entier(ratio(chiffre.emplois_total-chiffre.emplois_non_remuneres+chiffre.emplois_autre_entite,chiffre.emplois_total,100)) %><%else %>-<%end %> %</p>
         </div>
       </div>
     </div>

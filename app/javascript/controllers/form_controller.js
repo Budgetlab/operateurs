@@ -990,7 +990,7 @@ export default class extends Controller {
                 }
                 else if (solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0 ){
                     this.updateRisque("Situation saine a priori mais à surveiller");
-                    commentaire.innerHTML = "la situation est viable à court terme notamment si le besoin en fonds est structurellement négatif.\n" +
+                    commentaire.innerHTML = "La situation est viable à court terme notamment si le besoin en fonds est structurellement négatif.\n" +
                         "Il conviendra de vérifier si la variation à la baisse du fonds de roulement est ponctuelle ou répétée.";
                 }
                 else if (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0 ){
@@ -1005,12 +1005,12 @@ export default class extends Controller {
                 }
                 else if (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_besoin_fr >= 0 ){
                     this.updateRisque("Situation saine a priori mais à surveiller");
-                    commentaire.innerHTML = "la situation est viable si la variation du besoin en fonds de roulement est positive. \n" +
+                    commentaire.innerHTML = "La situation est viable si la variation du besoin en fonds de roulement est positive. \n" +
                         "Des décalages de flux d’encaissement peuvent expliquer que ponctuellement le solde budgétaire est négatif. Si le niveau du besoin est structurellement élevé, l’organisme doit disposer d’un niveau de trésorerie important.";
                 }
                 else if (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr >= 0 ){
                     this.updateRisque("Risque d’insoutenabilité à moyen terme");
-                    commentaire.innerHTML = "un risque d’insoutenabilité existe à moyen terme si la variation du besoin en fonds de roulement est positive. En effet, il existe un risque que le fonds de roulement ne se redresse pas pour couvrir le besoin en fonds de roulement. \n" +
+                    commentaire.innerHTML = "Un risque d’insoutenabilité existe à moyen terme si la variation du besoin en fonds de roulement est positive. En effet, il existe un risque que le fonds de roulement ne se redresse pas pour couvrir le besoin en fonds de roulement. \n" +
                         "Dans ce cas, il convient de vérifier si le solde budgétaire positif est dû à des opérations non budgétaires qui généreraient des décalage de flux de trésorerie important (exemple : remboursements d’emprunts). ";
                 }
                 else if (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0 && variation_besoin_fr < 0 ){

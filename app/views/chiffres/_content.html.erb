@@ -68,9 +68,9 @@
     <h2 class="title-btn">Commentaires <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
     <% if chiffre.statut == "valide" %>
       <h3 class="fr-h4">Commentaire sur le budget</h3>
-      <div><%= chiffre.commentaire %></div>
+      <div><%= auto_link(simple_format(format_boolean(chiffre.commentaire),{}, wrapper_tag: "span"), :html => { :target => '_blank' })%></div>
       <h3 class="fr-h4 fr-mt-4w">Autres points de vigilance</h3>
-      <div><%= chiffre.commentaire_annexe %></div>
+      <div><%= auto_link(simple_format(format_boolean(chiffre.commentaire_annexe),{}, wrapper_tag: "span"), :html => { :target => '_blank' })%></div>
     <% else  %>
       <p class="fr-badge fr-badge--warning">Non renseigné</p>
     <% end %>
