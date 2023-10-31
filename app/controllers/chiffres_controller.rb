@@ -157,31 +157,22 @@ class ChiffresController < ApplicationController
   end
 
   def suivi
-    @chiffres_organismes_2022 = []
-    @chiffres_organismes_2023 = []
-    @chiffres_organismes_2024 = []
-    @organismes = case @statut_user
-                  when '2B2O'
-                    Organisme.where(statut: 'valide', etat: 'Actif').includes(:chiffres).sort_by { |organisme| normalize_name(organisme.nom) }
-                  when 'Controleur'
-                    current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif').includes(:chiffres).sort_by { |organisme| normalize_name(organisme.nom) }
-                  when 'Bureau Sectoriel'
-                    current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif').includes(:chiffres).sort_by { |organisme| normalize_name(organisme.nom) }
-                  end
-    @organismes.each do |organisme|
-      organisme_chiffres = {}
-      # Filtrer les chiffres en fonction du type_budget et exercice_budgetaire
-      [2022, 2023, 2024].each do |date|
-        organisme_chiffres[date] = []
-        budget_initial = RisqueValue(organisme, 'Budget initial', date)
-        budget_rectificatif = RisqueValue(organisme, 'Budget rectificatif', date)
-        compte_financier = RisqueValue(organisme, 'Compte financier', date)
-        organisme_chiffres[date] << [organisme.id, organisme.nom, organisme.acronyme, budget_initial, budget_rectificatif, compte_financier]
-      end
-      @chiffres_organismes_2022.concat(organisme_chiffres[2022])
-      @chiffres_organismes_2023.concat(organisme_chiffres[2023])
-      @chiffres_organismes_2024.concat(organisme_chiffres[2024])
-    end
+    @liste_organismes = case @statut_user
+                        when '2B2O'
+                          Organisme.where(statut: 'valide', etat: 'Actif').pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
+                        when 'Controleur'
+                          current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif').pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
+                        when 'Bureau Sectoriel'
+                          current_user.bureau_organismes.pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
+                        end
+    @liste_chiffres_organismes = case @statut_user
+                                 when '2B2O'
+                                   Organisme.where(statut: 'valide', etat: 'Actif').joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite")
+                                 when 'Controleur'
+                                   current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif').joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite")
+                                 when 'Bureau Sectoriel'
+                                   current_user.bureau_organismes.joins(:chiffres).pluck(:id, "chiffres.type_budget AS chiffre_budget", "chiffres.statut AS chiffre_statut","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite")
+                                 end
   end
 
   private
@@ -244,15 +235,6 @@ class ChiffresController < ApplicationController
   def normalize_name(name)
     # Supprime les accents et met le texte en minuscules
     I18n.transliterate(name).downcase
-  end
-
-  def RisqueValue(organisme, type_budget, exercice)
-    chiffre = organisme.chiffres ? organisme.chiffres.order(created_at: :desc).select { |chiffre| chiffre.type_budget == type_budget && chiffre.exercice_budgetaire == exercice} : []
-    if chiffre.empty?
-      type_budget == 'Budget rectificatif' ? 'Aucun' : 'Non renseigné'
-    else
-      chiffre.first.risque_insolvabilite ? chiffre.first.risque_insolvabilite : 'Brouillon' #first prend le dernier BR car ordre desc
-    end
   end
 
   def set_famille
