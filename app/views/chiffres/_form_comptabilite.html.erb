@@ -21,7 +21,7 @@
               <%= f.hidden_field :statut, value: @chiffre.statut.to_i + 1  %>
           <%end %>
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <h2>Charges</h2>
               <% if @chiffre.comptabilite_budgetaire == true %>
                 <div class="fr-input-group">
@@ -54,7 +54,7 @@
                 </div>
               </div>
             </div>
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <h2>Produits</h2>
               <div class="fr-input-group">
                 <label for="produits_subventions_etat" class="fr-label">Subventions de l’Etat*</label>
@@ -111,7 +111,7 @@
             <% end %>
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
@@ -121,7 +121,7 @@
                 </div>
               </div>
             </div>
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
@@ -133,7 +133,7 @@
             </div>
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-8">
+            <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-12<%else %>fr-col-lg-8<% end %>">
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
@@ -146,7 +146,7 @@
           </div>
           <hr class="fr-my-2w">
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <div class="fr-input-group">
                 <label for="charges_non_decaissables" class="fr-label">Charges non décaissables*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
@@ -162,7 +162,7 @@
                 </div>
               </div>
             </div>
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <div class="fr-input-group">
                 <label for="produits_non_encaissables" class="fr-label">Produits non encaissables*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
@@ -172,7 +172,7 @@
             </div>
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-8">
+            <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-12<%else %>fr-col-lg-8<% end %>">
               <h2 class="fr-mt-4w">Capacité d’autofinancement</h2>
               <div class="fr-input-group">
                 <label for="capacite_autofinancement" class="fr-label">Capacité d’autofinancement*</label>
@@ -183,7 +183,7 @@
             </div>
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <h2 class="fr-mt-4w">Emplois</h2>
               <div class="fr-input-group">
                 <label for="emplois_cout_total" class="fr-label">Total des emplois*</label>
@@ -198,7 +198,7 @@
                 </div>
               </div>
             </div>
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <h2 class="fr-mt-4w">Ressources</h2>
               <div class="fr-input-group">
                 <label for="ressources_total" class="fr-label">Total des ressources*</label>
@@ -235,7 +235,7 @@
           <div class="fr-mt-2w options fr-hidden">
             <h2>Opérations non budgétaires</h2>
             <div class="fr-grid-row fr-grid-row--gutters">
-              <div class="fr-col-12 fr-col-lg-4">
+              <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
                 <div class="fr-input-group fr-input-group--option">
                   <label for="decaissements_operations" class="fr-label">Opérations au nom et pour le compte de tiers <% if @chiffre.comptabilite_budgetaire == true %>(besoins)<%else %>(débits)<%end %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
@@ -266,7 +266,7 @@
                 <% end  %>
 
               </div>
-              <div class="fr-col-12 fr-col-lg-4">
+              <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
                 <div class="fr-input-group fr-input-group--option">
                   <label for="encaissements_operations" class="fr-label">Opérations au nom et pour le compte de tiers <% if @chiffre.comptabilite_budgetaire == true %>(financements)<%else %>(crédits)<%end %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">

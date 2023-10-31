@@ -92,6 +92,7 @@ class ChiffresController < ApplicationController
 
   def edit
     redirect_unless_can_edit
+    redirect_to organisme_chiffres_path(@organisme) unless @chiffre.statut != 'valide' || params[:step]
     @steps = @chiffre.comptabilite_budgetaire == true ? 6 : 5
   end
 
