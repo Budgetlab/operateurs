@@ -155,6 +155,10 @@ select:disabled {
   overflow-x: hidden;
 }
 
+.fr-table--min-height{
+  min-height: 20rem;
+}
+
 .fr-td--overflow{
   overflow: hidden;
   text-overflow: ellipsis ;
@@ -223,4 +227,7 @@ select:disabled {
 }
 .filter-table--btn[aria-expanded=true]::after {
   transform: rotate(-180deg);
+}
+.fr-card--shadow{
+  z-index: calc(var(--ground) + 400) !important;
 }

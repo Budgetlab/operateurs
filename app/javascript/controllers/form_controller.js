@@ -1037,10 +1037,10 @@ export default class extends Controller {
                 if (tresorerie_variation >= 0 && fonds_roulement_variation >= 0){
                     this.updateRisque("Situation saine")
                     commentaire.innerHTML = "La soutenabilité est atteinte à court et moyen termes, que la variation du besoin en fonds de roulement soit positive ou négative."
-                }else if (tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_besoin_fr >= 0 ){
+                }else if (tresorerie_variation < 0 && fonds_roulement_variation >= 0 ){
                     this.updateRisque("Situation saine a priori mais à surveiller")
                     commentaire.innerHTML = "En présence  d’une variation de trésorerie négative mais d’une variation de fonds de roulement positive, la situation est viable a priori car des décalages de flux d'encaissement peuvent expliquer que ponctuellement la trésorerie soit négative. Si le niveau de besoin en fonds de roulement est structurellement élevé, l'organisme doit disposer d'un niveau de trésorerie important."
-                }else if (tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0 ){
+                }else if (tresorerie_variation >= 0 && fonds_roulement_variation < 0 ){
                     this.updateRisque("Situation saine a priori mais à surveiller")
                     commentaire.innerHTML = "La situation est viable à court terme notamment si le besoin en fonds est structurellement négatif.\n" +
                         "Il conviendra de vérifier si la variation à la baisse du fonds de roulement est ponctuelle ou répétée."

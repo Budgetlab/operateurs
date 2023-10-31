@@ -106,6 +106,7 @@ class ChiffresController < ApplicationController
       params[:chiffre][:statut] = @chiffre.statut.to_i > params[:chiffre][:statut].to_i ? @chiffre.statut : params[:chiffre][:statut]
     end
     @chiffre.update(chiffre_params)
+    updateRisque(@chiffre)
 
     @message = ' ' if @chiffre.statut != 'valide'
     redirect_path = @chiffre.statut == 'valide' ? organisme_chiffres_path(@organisme) : edit_chiffre_path(@chiffre, step: @step)
@@ -163,22 +164,43 @@ class ChiffresController < ApplicationController
   end
 
   def suivi
-    @liste_organismes = case @statut_user
-                        when '2B2O'
-                          Organisme.where(statut: 'valide', etat: 'Actif').pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
-                        when 'Controleur'
-                          current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif').pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
-                        when 'Bureau Sectoriel'
-                          current_user.bureau_organismes.pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
-                        end
-    @liste_chiffres_organismes = case @statut_user
-                                 when '2B2O'
-                                   Organisme.where(statut: 'valide', etat: 'Actif').joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite")
-                                 when 'Controleur'
-                                   current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif').joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite")
-                                 when 'Bureau Sectoriel'
-                                   current_user.bureau_organismes.joins(:chiffres).pluck(:id, "chiffres.type_budget AS chiffre_budget", "chiffres.statut AS chiffre_statut","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite")
-                                 end
+    liste_organisme
+    @liste_organismes = @organismes.pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
+    @liste_chiffres_organismes = @organismes.joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite")
+  end
+
+  def filtre_suivi
+    liste_organisme
+    @liste_organismes = @organismes.pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
+    @liste_chiffres_organismes = @organismes.joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite")
+    @liste_organismes_filter_id = []
+    [[params[:budget_bis], 'Budget initial'], [params[:budget_brs], 'Budget rectificatif'], [params[:budget_cfs], 'Compte financier']].each do |param|
+      if param[0]&.include?('Brouillon')
+        @liste_chiffres_brouillon_id = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i && el[3] != 'valide' }.map { |el| el[0] }.uniq
+        @liste_organismes_filter_id += @liste_chiffres_brouillon_id
+      end
+      if param[0]&.include?('Non renseigné') || param[0]&.include?('Aucun')
+        id_orga_chiffres = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i}.map { |el| el[0] }.uniq
+        @liste_organismes_nr_id = @liste_organismes.reject { |el| id_orga_chiffres.include?(el[0]) }.map { |el| el[0] }.uniq
+        @liste_organismes_filter_id += @liste_organismes_nr_id
+      end
+      if param[0] && param[0].length != 6
+        @liste_chiffres_risque_id = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i && param[0].include?(el[4]) }.map { |el| el[0] }.uniq
+        @liste_organismes_filter_id += @liste_chiffres_risque_id
+      end
+    end
+    if params[:budget_bis].length != 6 || params[:budget_brs].length != 6 || params[:budget_cfs].length != 6
+      @liste_organismes = @liste_organismes.select { |el| @liste_organismes_filter_id.include?(el[0]) }
+    end
+    puts @liste_organismes.length
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.update("suivi_table_body#{params[:exercice].to_s}", partial: 'chiffres/suivi_table_body', locals: { exercice: params[:exercice].to_i, liste_organismes: @liste_organismes, liste_chiffres_organismes: @liste_chiffres_organismes }),
+          turbo_stream.update("total_table#{params[:exercice].to_s}", partial: 'chiffres/suivi_table_total', locals: { total: @liste_organismes.length })
+        ]
+      end
+    end
   end
 
   private
@@ -259,6 +281,49 @@ class ChiffresController < ApplicationController
 
   def redirect_unless_can_edit
     return redirect_to(root_path) unless @organisme && current_user == @organisme.controleur
+  end
+
+  def liste_organisme
+    @organismes = case @statut_user
+                        when '2B2O'
+                          Organisme.where(statut: 'valide', etat: 'Actif')
+                        when 'Controleur'
+                          current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif')
+                        when 'Bureau Sectoriel'
+                          current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif')
+                        end
+  end
+
+  def updateRisque(chiffre)
+    if chiffre.comptabilite_budgetaire == true && chiffre.statut == 'valide'
+      @solde = chiffre.credits_financements_etat_autres + chiffre.credits_fiscalite_affectee + chiffre.credits_financements_publics_autres + chiffre.credits_recettes_propres_globalisees + chiffre.credits_financements_etat_fleches + chiffre.credits_financements_publics_fleches + chiffre.credits_recettes_propres_flechees - chiffre.credits_cp_total
+      @solde = chiffre.operateur == true ? @solde + chiffre.credits_subvention_sp + chiffre.credits_subvention_investissement_globalisee + chiffre.credits_subvention_investissement_flechee : @solde
+    else
+      @solde = nil
+    end
+    chiffre.risque_insolvabilite = calculateRisque(@solde, chiffre.tresorerie_variation, chiffre.fonds_roulement_variation,chiffre.fonds_roulement_variation-chiffre.tresorerie_variation ) if chiffre.statut == 'valide'
+    chiffre.save
+  end
+  def calculateRisque(solde_budgetaire, tresorerie_variation,fonds_roulement_variation, variation_besoin_fr)
+    if !solde_budgetaire.nil?
+      if (solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0) || (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_besoin_fr >= 0)
+        'Situation saine'
+      elsif (solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0) || (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0) || (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0 && variation_besoin_fr >= 0) || (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_besoin_fr >= 0)
+        'Situation saine a priori mais à surveiller'
+      elsif (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr >= 0) || (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0 && variation_besoin_fr < 0)
+        "Risque d’insoutenabilité à moyen terme"
+      elsif (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0) || (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr >= 0) || (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0)
+        "Risque d’insoutenabilité élevé"
+      end
+    else
+      if tresorerie_variation >= 0 && fonds_roulement_variation >= 0
+        'Situation saine'
+      elsif (tresorerie_variation < 0 && fonds_roulement_variation >= 0) || (tresorerie_variation >= 0 && fonds_roulement_variation < 0)
+        'Situation saine a priori mais à surveiller'
+      elsif tresorerie_variation < 0 && fonds_roulement_variation < 0
+        "Risque d’insoutenabilité élevé"
+      end
+    end
   end
 
 end

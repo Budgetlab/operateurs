@@ -1,0 +1,12 @@
+<% liste_organismes.each do |organisme| %>
+  <% chiffre_bi = liste_chiffres_organismes.select { |el| el[0] == organisme[0] && el[1] == "Budget initial" && el[2] == exercice} %>
+  <% chiffre_br = liste_chiffres_organismes.select { |el| el[0] == organisme[0] && el[1] == "Budget rectificatif" && el[2] == exercice} %>
+  <% chiffre_cf = liste_chiffres_organismes.select { |el| el[0] == organisme[0] && el[1] == "Compte financier" && el[2] == exercice} %>
+  <tr>
+    <td><%= link_to organisme_chiffres_path(organisme[0]) do%><%= organisme[1]%><% if organisme[2] && !organisme[2].blank? %> - <%= organisme[2] %><%end %><%end %></td>
+    <td><% if chiffre_bi[0].nil? %><%= render partial: "chiffres/badge_examen", locals: {examen: "Non renseigné"} %><% elsif chiffre_bi[0][3] == "valide" %><%= render partial: "chiffres/badge_examen", locals: {examen: chiffre_bi[0][4]} %><% else %><%= render partial: "chiffres/badge_examen", locals: {examen: "Brouillon"} %><% end %></td>
+    <td><% if chiffre_br[0].nil? %><%= render partial: "chiffres/badge_examen", locals: {examen: "Aucun"} %><% elsif chiffre_br[0][3] == "valide" %><%= render partial: "chiffres/badge_examen", locals: {examen: chiffre_br[0][4]} %><% else %><%= render partial: "chiffres/badge_examen", locals: {examen: "Brouillon"} %><% end %></td>
+    <td><% if chiffre_cf[0].nil? %><%= render partial: "chiffres/badge_examen", locals: {examen: "Non renseigné"} %><% elsif chiffre_cf[0][3] == "valide" %><%= render partial: "chiffres/badge_examen", locals: {examen: chiffre_cf[0][4]} %><% else %><%= render partial: "chiffres/badge_examen", locals: {examen: "Brouillon"} %><% end %></td>
+    <td><%= link_to organisme_chiffres_path(organisme[0]), class:"fr-btn" do%>Consulter<%end %></td>
+  </tr>
+<% end %>

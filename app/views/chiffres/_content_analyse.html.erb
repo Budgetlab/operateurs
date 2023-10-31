@@ -94,7 +94,6 @@
     <% elsif @solde < 0 && chiffre.tresorerie_variation < 0 && chiffre.fonds_roulement_variation < 0 && @variation_brf >= 0 %>
     Le risque d'insoutenabilité est élevé car le fonds de roulement ne finance pas le besoin en fonds de roulement et seule la trésorerie est mise à contribution.<br>Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs.
     <% elsif @solde < 0 && chiffre.tresorerie_variation < 0 && chiffre.fonds_roulement_variation < 0 && @variation_brf < 0 %>
-    else if (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0 ){
     Le risque d'insoutenabilité est élevé car malgré la capacité d'encaisser avant de décaisser, le solde budgétaire est négatif. Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs. ll convient de vérifier si des opérations de trésorerie non budgétaires peuvent expliquer la variation de trésorerie.
     <% end %>
   <% else %>

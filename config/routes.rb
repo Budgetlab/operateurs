@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   post '/filter_chiffres' => 'chiffres#filtre_chiffres'
   post '/update_phase' => 'chiffres#update_phase'
   get '/budgets-suivi' => 'chiffres#suivi'
+  post '/filtre_suivi' => 'chiffres#filtre_suivi'
   post '/import_organismes' => 'organismes#import'
   get '/organismes_ajout' => 'organismes#organismes_ajout'
   post '/recherche_organismes' => 'organismes#recherche_organismes'
