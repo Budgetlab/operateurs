@@ -20,6 +20,7 @@ class ChiffresController < ApplicationController
   end
 
   def show_dates
+    @est_editeur = current_user == @organisme.controleur
     @chiffres = @organisme.chiffres
     @date = params[:exercice_budgetaire].to_i
     liste_budgets(@date, @chiffres)

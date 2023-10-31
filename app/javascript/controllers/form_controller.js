@@ -51,7 +51,7 @@ export default class extends Controller {
         if (document.getElementById("comptabilite_ge") != null ) {
             this.changeComptabilite();
         }
-        if (document.getElementById("tresorerie") != null ) {
+        if (document.getElementById("form_tresorerie") != null ) {
             this.changeTresorerie();
         }
         if (document.getElementById("fonds_roulement_variation") != null ) {
@@ -533,7 +533,8 @@ export default class extends Controller {
         const total_field = document.getElementById("emplois_total");
         const total_text = document.getElementById("emplois_total_text");
         total_field.value = emplois_total;
-        total_text.innerHTML = emplois_total.toLocaleString("fr-FR");
+        const condition_vide = document.getElementById("emplois_plafond").value == "" && document.getElementById("emplois_hors_plafond").value == "";
+        this.updateValueIndicateur(condition_vide,total_text, emplois_total);
     }
     changeIndicateurHorsPlafond(){
         const emplois_hors_plafond_field = document.getElementById("emplois_hors_plafond");
@@ -689,13 +690,19 @@ export default class extends Controller {
         }
         const solde = somme_total_recettes - credits_cp_total;
         const solde_fleche = somme_total_recettes_flechees - credits_cp_recettes_flechees;
-        indicateur_solde_budgetaire.innerHTML = solde.toLocaleString("fr-FR");
-        indicateur_solde_budgetaire_fleche.innerHTML = solde_fleche.toLocaleString("fr-FR");
-        indicateur_subv_etat.innerHTML = somme_total_subv_etat.toLocaleString("fr-FR");
-        indicateur_total_recettes_propres.innerHTML = somme_total_recettes_propres.toLocaleString("fr-FR");
-        indicateur_total_recettes_globalisees.innerHTML = somme_total_recettes_globalisees.toLocaleString("fr-FR");
-        indicateur_total_recettes_flechees.innerHTML = somme_total_recettes_flechees.toLocaleString("fr-FR");
-        indicateur_total_recettes.innerHTML = somme_total_recettes.toLocaleString("fr-FR");
+        const condition_vide_subv_etats = (document.getElementById("credits_financements_etat_autres").value == "" && document.getElementById("credits_financements_etat_fleches").value == "" && document.getElementById("credits_subvention_sp") == null) || (document.getElementById("credits_financements_etat_autres").value == "" && document.getElementById("credits_financements_etat_fleches").value == "" && document.getElementById("credits_subvention_sp").value == "" && document.getElementById("credits_subvention_investissement_flechee").value == "" && document.getElementById("credits_subvention_investissement_flechee").value == "")
+        this.updateValueIndicateur(condition_vide_subv_etats,indicateur_subv_etat, somme_total_subv_etat);
+        const condition_vide_recettes_propres = document.getElementById("credits_recettes_propres_globalisees").value == "" && document.getElementById("credits_recettes_propres_flechees").value == ""
+        this.updateValueIndicateur(condition_vide_recettes_propres,indicateur_total_recettes_propres, somme_total_recettes_propres);
+        const condition_vide_recettes_globalisees = document.getElementById("credits_recettes_propres_globalisees").value == "" && document.getElementById("credits_financements_etat_autres").value == "" && document.getElementById("credits_fiscalite_affectee").value == "" && document.getElementById("credits_financements_publics_autres").value == ""
+        this.updateValueIndicateur(condition_vide_recettes_globalisees,indicateur_total_recettes_globalisees, somme_total_recettes_globalisees);
+        const condition_vide_recettes_flechees = document.getElementById("credits_recettes_propres_flechees").value == "" && document.getElementById("credits_financements_etat_fleches").value == "" && document.getElementById("credits_financements_publics_fleches").value == ""
+        this.updateValueIndicateur(condition_vide_recettes_flechees,indicateur_total_recettes_flechees, somme_total_recettes_flechees);
+        const condition_vide_recettes = condition_vide_recettes_flechees || condition_vide_recettes_globalisees
+        this.updateValueIndicateur(condition_vide_recettes,indicateur_total_recettes, somme_total_recettes);
+        this.updateValueIndicateur(condition_vide_recettes,indicateur_solde_budgetaire, solde);
+        const condition_vide_solde_fleche = condition_vide_recettes_flechees && document.getElementById("credits_cp_recettes_flechees").value == ""
+        this.updateValueIndicateur(condition_vide_solde_fleche,indicateur_solde_budgetaire_fleche, solde_fleche);
         this.indicateurRatio(document.getElementById("credits_recettes_propres_globalisees"),indicateur_taux_recettes_propres,somme_total_recettes_propres,somme_total_recettes,100);
         this.indicateurRatio(document.getElementById("credits_recettes_propres_globalisees"),indicateur_poids_recettes_globalisees,somme_total_recettes_globalisees,somme_total_recettes,100);
         this.indicateurRatio(document.getElementById("credits_financements_etat_autres"),indicateur_poids_financements_etat,somme_total_subv_etat,somme_total_recettes,100);
@@ -706,7 +713,8 @@ export default class extends Controller {
         const credits_ae_total = this.numberFormat(document.getElementById("credits_ae_total").value) || 0;
         const credits_cp_total = this.numberFormat(document.getElementById("credits_cp_total").value) || 0;
         const variation = credits_ae_total - credits_cp_total;
-        indicateur_variation_rap.innerHTML = variation.toLocaleString("fr-FR");
+        const condition_vide = document.getElementById("credits_ae_total").value == "" && document.getElementById("credits_cp_total").value == ""
+        this.updateValueIndicateur(condition_vide,indicateur_variation_rap, variation);
     }
     changeIndicateurPoidsRaP() {
         const indicateur_poids_rap = document.getElementById("indicateur_poids_rap");
@@ -734,11 +742,9 @@ export default class extends Controller {
         const charges_total = this.TotalCharges();
         const produits_total = this.TotalProduits();
         const resultat =  produits_total - charges_total;
-        if (indicateur_produits.innerHTML == "-" || indicateur_charges.innerHTML == "-" ){
-            indicateur_resultat.innerHTML = "-"
-        }else{
-            indicateur_resultat.innerHTML = resultat.toLocaleString("fr-FR");
-        }
+        const condition_vide = indicateur_produits.innerHTML == "-" || indicateur_charges.innerHTML == "-"
+        this.updateValueIndicateur(condition_vide,indicateur_resultat, resultat);
+
     }
     TotalCharges(){
         const indicateur_charges = document.getElementById("indicateur_charges");
@@ -760,15 +766,9 @@ export default class extends Controller {
             this.indicateurRatio(charges_fonctionnement_field,indicateur_charges_fonctionnement,charges_fonctionnement,charges_total,100);
             this.indicateurRatio(charges_intervention_field,indicateur_charges_intervention,charges_intervention,charges_total,100);
         }
-
-        if (charge_personnel_field.value == "" && charges_fonctionnement_field.value == "" && charges_intervention_field.value == ""){
-            indicateur_charges.innerHTML = "-";
-            indicateur_charges_dec.innerHTML = "-";
-        }else{
-            indicateur_charges.innerHTML = charges_total.toLocaleString("fr-FR");
-            indicateur_charges_dec.innerHTML = charges_dec.toLocaleString("fr-FR");
-        }
-
+        const condition_vide =charge_personnel_field.value == "" && charges_fonctionnement_field.value == "" && charges_intervention_field.value == ""
+        this.updateValueIndicateur(condition_vide,indicateur_charges, charges_total);
+        this.updateValueIndicateur(condition_vide,indicateur_charges_dec, charges_dec);
         return charges_total
     }
     TotalProduits(){
@@ -782,11 +782,8 @@ export default class extends Controller {
         const produits_autres_field = document.getElementById("produits_autres")
         const produits_autres = this.numberFormat(produits_autres_field.value) || 0;
         const produits_total = produits_subventions_etat + produits_fiscalite_affectee + produits_subventions_autres + produits_autres;
-        if (produits_subventions_etat_field.value == "" && produits_fiscalite_affectee_field.value == "" && produits_subventions_autres_field.value == "" && produits_autres_field.value == ""){
-            indicateur_produits.innerHTML = "-";
-        }else{
-            indicateur_produits.innerHTML = produits_total.toLocaleString("fr-FR");
-        }
+        const condition_vide = produits_subventions_etat_field.value == "" && produits_fiscalite_affectee_field.value == "" && produits_subventions_autres_field.value == "" && produits_autres_field.value == ""
+        this.updateValueIndicateur(condition_vide,indicateur_produits, produits_total);
         return produits_total
     }
     changeRessources(){
@@ -822,51 +819,22 @@ export default class extends Controller {
             enc = enc + encaissements_emprunts + encaissements_autres;
             dec = dec + decaissements_emprunts + decaissements_autres;
         }
-        if ((decaissements_operations_field.value == "" && document.getElementById("decaissements_emprunts") == null) || (document.getElementById("decaissements_emprunts") != null && decaissements_operations_field.value == "" && document.getElementById("decaissements_emprunts").value == "" && document.getElementById("decaissements_autres").value == "")){
-            indicateur_dec.innerHTML = "-"
-        }else{
-            indicateur_dec.innerHTML = dec.toLocaleString("fr-FR");
-        }
-        if ((encaissements_operations_field.value == "" && document.getElementById("encaissements_emprunts") == null) || (document.getElementById("encaissements_emprunts") != null && encaissements_operations_field.value == "" && document.getElementById("encaissements_emprunts").value == "" && document.getElementById("encaissements_autres").value == "")){
-            indicateur_enc.innerHTML = "-"
-        }else{
-            indicateur_enc.innerHTML = enc.toLocaleString("fr-FR");
-        }
-
+        const condition_vide_dec = (decaissements_operations_field.value == "" && document.getElementById("decaissements_emprunts") == null) || (document.getElementById("decaissements_emprunts") != null && decaissements_operations_field.value == "" && document.getElementById("decaissements_emprunts").value == "" && document.getElementById("decaissements_autres").value == "")
+        this.updateValueIndicateur(condition_vide_dec,indicateur_dec, dec);
+        const condition_vide_enc = (encaissements_operations_field.value == "" && document.getElementById("encaissements_emprunts") == null) || (document.getElementById("encaissements_emprunts") != null && encaissements_operations_field.value == "" && document.getElementById("encaissements_emprunts").value == "" && document.getElementById("encaissements_autres").value == "")
+        this.updateValueIndicateur(condition_vide_enc,indicateur_enc, enc);
     }
     changeTresorerie(){
-        this.changeIndicateurTresoInit();
-        this.changeIndicateurTresoJours();
+
         // pour les Orga en CB
         if (document.getElementById("indicateur_treso_non_flechee") != null){
             this.changeIndicateurTresoNonFlechee();
             this.changeIndicateurTresoRAP();
         }
+        this.changeIndicateurTresoInit();
+        this.changeIndicateurTresoJours();
         this.changeIndicateurTresoExtremesJours();
         this.validateForm();
-    }
-    changeIndicateurTresoInit(){
-        const tresorerie_indicateur_initial = document.getElementById("tresorerie_indicateur_initial");
-        const tresorerie_finale = this.numberFormat(document.getElementById("tresorerie_finale").value) || 0;
-        const tresorerie_variation = this.numberFormat(document.getElementById("tresorerie_variation").value) || 0;
-        const tresorie_initiale = tresorerie_finale - tresorerie_variation;
-        if (document.getElementById("tresorerie_finale").value == "" || document.getElementById("tresorerie_variation").value == ""){
-            tresorerie_indicateur_initial.innerHTML = "-";
-        }else{
-            tresorerie_indicateur_initial.innerHTML = tresorie_initiale.toLocaleString("fr-FR");
-        }
-
-    }
-    changeIndicateurTresoJours(){
-        const indicateur_treso_jours = document.getElementById("indicateur_treso_jours");
-        const tresorerie_finale_field = document.getElementById("tresorerie_finale");
-        const tresorerie_finale = this.numberFormat(tresorerie_finale_field.value) || 0;
-        const den = this.calculateTresoDen();
-        this.indicateurRatio(tresorerie_finale_field,indicateur_treso_jours,tresorerie_finale,den,1);
-    }
-    calculateTresoDen(){
-        const den = document.getElementById("den").getAttribute("data-form-den");
-        return den/360 || 0;
     }
     changeIndicateurTresoNonFlechee(){
         const indicateur_treso_non_flechee = document.getElementById("indicateur_treso_non_flechee");
@@ -884,12 +852,40 @@ export default class extends Controller {
         const den = this.calculateTresoDen();
         this.indicateurRatio(tresorerie_finale_non_flechee_field,indicateur_treso_non_flechee_jours,tresorerie_finale_non_flechee,den,1);
     }
+    changeIndicateurTresoInit(){
+        const tresorerie_indicateur_initial = document.getElementById("tresorerie_indicateur_initial");
+        const tresorerie_finale = this.numberFormat(document.getElementById("tresorerie_finale").value) || 0;
+        const tresorerie_variation = this.numberFormat(document.getElementById("tresorerie_variation").value) || 0;
+        const tresorie_initiale = tresorerie_finale - tresorerie_variation;
+        const condition_vide = (document.getElementById("tresorerie_finale").value == "" && document.getElementById("tresorerie_finale_flechee") == null) || (document.getElementById("tresorerie_finale_flechee") != null && document.getElementById("tresorerie_finale_flechee").value == "" && document.getElementById("tresorerie_finale_non_flechee").value == "") || document.getElementById("tresorerie_variation").value == ""
+        this.updateValueIndicateur(condition_vide,tresorerie_indicateur_initial, tresorie_initiale);
+    }
+    calculateTresoDen(){
+        const den = document.getElementById("den").getAttribute("data-form-den");
+        return den/360 || 0;
+    }
+    changeIndicateurTresoJours(){
+        const indicateur_treso_jours = document.getElementById("indicateur_treso_jours");
+        const tresorerie_finale_field = document.getElementById("tresorerie_finale");
+        const tresorerie_finale = this.numberFormat(tresorerie_finale_field.value) || 0;
+        const den = this.calculateTresoDen();
+        if ((document.getElementById("tresorerie_finale").value == "" && document.getElementById("tresorerie_finale_flechee") == null) || (document.getElementById("tresorerie_finale_flechee") != null && document.getElementById("tresorerie_finale_flechee").value == "" && document.getElementById("tresorerie_finale_non_flechee").value == "")){
+            indicateur_treso_jours.innerHTML = "-";
+        }else{
+            this.indicateurRatio(tresorerie_finale_field,indicateur_treso_jours,tresorerie_finale,den,1);
+        }
+
+    }
     changeIndicateurTresoRAP(){
         const indicateur_treso_rap = document.getElementById("indicateur_treso_rap");
         const tresorerie_finale_field = document.getElementById("tresorerie_finale")
         const tresorerie_finale = this.numberFormat(tresorerie_finale_field.value) || 0;
         const credits_restes_a_payer = document.getElementById("crap").getAttribute("data-form-crap");
-        this.indicateurRatio(tresorerie_finale_field,indicateur_treso_rap,tresorerie_finale,credits_restes_a_payer,100);
+        if ((document.getElementById("tresorerie_finale").value == "" && document.getElementById("tresorerie_finale_flechee") == null) || (document.getElementById("tresorerie_finale_flechee") != null && document.getElementById("tresorerie_finale_flechee").value == "" && document.getElementById("tresorerie_finale_non_flechee").value == "")){
+            indicateur_treso_rap.innerHTML = "-";
+        }else{
+            this.indicateurRatio(tresorerie_finale_field,indicateur_treso_rap,tresorerie_finale,credits_restes_a_payer,100);
+        }
     }
     changeIndicateurTresoExtremesJours(){
         const indicateur_treso_max = document.getElementById("indicateur_treso_max");
