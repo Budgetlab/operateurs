@@ -98,14 +98,19 @@ class ChiffresController < ApplicationController
 
   def update
     redirect_unless_can_edit
-
-    if update_chiffre(@chiffre, chiffre_params)
-      @message = ' ' if @chiffre.statut != 'valide'
-      redirect_path = @chiffre.statut == 'valide' ? organisme_chiffres_path(@organisme) : edit_chiffre_path(@chiffre, step: @step)
-      redirect_to redirect_path, flash: { notice: @message }
-    else
-      render :edit
+    @steps = @chiffre.comptabilite_budgetaire == true ? 6 : 5
+    @message = @chiffre.statut == 'valide' ? 'maj chiffres' : 'creation chiffres'
+    if params[:chiffre][:statut] && params[:chiffre][:statut] != 'valide'
+      @step = params[:chiffre][:statut].to_i + 1
+      # pour garder dernière étape sauvegardee si retour en arrière
+      params[:chiffre][:statut] = @chiffre.statut.to_i > params[:chiffre][:statut].to_i ? @chiffre.statut : params[:chiffre][:statut]
     end
+    @chiffre.update(chiffre_params)
+
+    @message = ' ' if @chiffre.statut != 'valide'
+    redirect_path = @chiffre.statut == 'valide' ? organisme_chiffres_path(@organisme) : edit_chiffre_path(@chiffre, step: @step)
+    redirect_to redirect_path, flash: { notice: @message }
+
   end
 
   def update_phase
@@ -254,16 +259,6 @@ class ChiffresController < ApplicationController
 
   def redirect_unless_can_edit
     return redirect_to(root_path) unless @organisme && current_user == @organisme.controleur
-  end
-
-  def update_chiffre(chiffre, params)
-    @message = chiffre.statut == 'valide' ? 'maj chiffres' : 'creation chiffres'
-    if params[:statut] && params[:statut] != 'valide'
-      @step = params[:statut].to_i + 1
-      # pour garder dernière étape sauvegardee si retour en arrière
-      params[:statut] = chiffre.statut.to_i > params[:statut].to_i ? chiffre.statut : params[:statut]
-    end
-    chiffre.update(chiffre_params)
   end
 
 end

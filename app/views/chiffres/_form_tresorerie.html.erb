@@ -1,10 +1,10 @@
 <% if @chiffre.statut != "valide" %>
   <div class="fr-stepper">
     <h2 class="fr-stepper__title">
-      <span class="fr-stepper__state">Étape <%= @chiffre.statut.to_i + 1 %> sur <%= @steps %></span>
+      <span class="fr-stepper__state">Étape <%= @steps-2 %> sur <%= @steps %></span>
       Trésorerie
     </h2>
-    <div class="fr-stepper__steps" data-fr-current-step="<%= @chiffre.statut.to_i + 1 %>" data-fr-steps="<%= @steps %>"></div>
+    <div class="fr-stepper__steps" data-fr-current-step="<%= @steps-2 %>" data-fr-steps="<%= @steps %>"></div>
     <p class="fr-stepper__details">
       <span class="fr-text--bold">Étape suivante :</span> Analyse financière
     </p>
@@ -18,7 +18,7 @@
         <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#changeTresorerie turbo:before-fetch-request->form#submitForm"}) do |f|%>
           <%= f.hidden_field :user_id, value: current_user.id %>
           <% if @chiffre.statut != "valide" %>
-            <%= f.hidden_field :statut, value: @chiffre.statut.to_i + 1  %>
+            <%= f.hidden_field :statut, value: @steps-2  %>
           <%end %>
           <% if @chiffre.comptabilite_budgetaire == true  %>
             <% @den = @chiffre.credits_cp_total - @chiffre.credits_cp_investissement %>
@@ -260,6 +260,6 @@
 
 <% if @chiffre.statut != "valide" %>
   <dialog id="fr-modal-1" class="fr-modal">
-    <%= render partial: 'chiffres/modal_retour',locals: {step: @chiffre.statut.to_i} %>
+    <%= render partial: 'chiffres/modal_retour',locals: {step: @steps-3} %>
   </dialog>
 <% end %>

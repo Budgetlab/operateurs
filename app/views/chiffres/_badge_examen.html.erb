@@ -8,6 +8,8 @@
   <p class="fr-badge fr-badge--no-icon fr-badge--warning"><%= examen %></p>
 <% elsif examen == "Risque d’insoutenabilité élevé" %>
   <p class="fr-badge fr-badge--no-icon fr-badge--error"><%= examen %></p>
-<% elsif examen == "Non renseigné" || examen == "Aucun" %>
+<% elsif examen == "Non renseigné" %>
+  <p class="fr-badge fr-badge--purple-glycine"><%= examen %></p>
+<% elsif examen == "Aucun" %>
   <p class="fr-badge"><%= examen %></p>
 <% end  %>
