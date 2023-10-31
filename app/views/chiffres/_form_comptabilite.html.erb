@@ -42,7 +42,7 @@
                 </div>
               <% end  %>
               <div class="fr-input-group">
-                <label for="charges_fonctionnement" class="fr-label">Charges de fonctionnement*</label>
+                <label for="charges_fonctionnement" class="fr-label">Charges de fonctionnement (hors charges de personnel)*</label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :charges_fonctionnement, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.charges_fonctionnement, id:"charges_fonctionnement", class:"fr-input" %>
                 </div>

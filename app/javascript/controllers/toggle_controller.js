@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
   static get targets() {
-    return ['commentaireLong','commentaireCourt'];
+    return ['commentaireLong','commentaireCourt', 'nav'];
   }
   connect() {
   }
@@ -20,5 +20,12 @@ export default class extends Controller {
   afficherMoins() {
     this.commentaireCourtTarget.style.display = 'inline';
     this.commentaireLongTarget.style.display = 'none';
+  }
+
+  changeNav(event){
+    this.navTargets.forEach((nav) => {
+      nav.removeAttribute("aria-current");
+    });
+    event.currentTarget.setAttribute("aria-current", "page");
   }
 }

@@ -2,9 +2,12 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
     static get targets() {
-        return ['section', 'nav'];
+        return ['section'];
     }
     connect() {
+        this.initialiserSection();
+    }
+    initialiserSection(){
         if (document.getElementById("budget-initial-tab") != null ){
             const activeTab = document.getElementById("budget-initial-tab");
 
@@ -45,10 +48,4 @@ export default class extends Controller {
         }
     }
 
-    changeNav(event){
-        this.navTargets.forEach((nav) => {
-            nav.removeAttribute("aria-current");
-        });
-        event.currentTarget.setAttribute("aria-current", "page")
-    }
 }

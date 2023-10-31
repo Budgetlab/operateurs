@@ -1,5 +1,5 @@
 <% content_for :title do %>Chiffres clés de l'organisme <%= @organisme.nom %> | OPERA <% end %>
-<main role="main" data-controller="tab">
+<main role="main" data-controller="toggle">
   <div class="fr-container" >
     <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
       <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
@@ -76,24 +76,24 @@
           <nav role="navigation" class="fr-pagination" aria-label="Pagination">
             <ul class="fr-pagination__list">
               <li>
-                <%= link_to show_dates_path(exercice_budgetaire: Date.today.year - 1, organisme_id: @organisme.id), data: {'tab-target': 'nav', action: "click->tab#changeNav","turbo-method": :post}, class: "fr-pagination__link" do %>
+                <%= link_to show_dates_path(exercice_budgetaire: Date.today.year - 1, organisme_id: @organisme.id), data: {'toggle-target': 'nav', action: "click->toggle#changeNav","turbo-method": :post}, class: "fr-pagination__link" do %>
                   <%= Date.today.year - 1 %>
                 <%end %>
               </li>
               <li>
-                <%= link_to show_dates_path(exercice_budgetaire: Date.today.year, organisme_id: @organisme.id), data: {'tab-target': 'nav', action: "click->tab#changeNav","turbo-method": :post}, class: "fr-pagination__link", aria: { current: 'page' } do %>
+                <%= link_to show_dates_path(exercice_budgetaire: Date.today.year, organisme_id: @organisme.id), data: {'toggle-target': 'nav', action: "click->toggle#changeNav","turbo-method": :post}, class: "fr-pagination__link", aria: { current: 'page' } do %>
                   <%= Date.today.year %>
                 <%end %>
               </li>
               <li>
-                <%= link_to show_dates_path(exercice_budgetaire: Date.today.year + 1, organisme_id: @organisme.id), data: {'tab-target': 'nav', action: "click->tab#changeNav","turbo-method": :post}, class: "fr-pagination__link" do %>
+                <%= link_to show_dates_path(exercice_budgetaire: Date.today.year + 1, organisme_id: @organisme.id), data: {'toggle-target': 'nav', action: "click->toggle#changeNav","turbo-method": :post}, class: "fr-pagination__link" do %>
                   <%= Date.today.year + 1 %>
                 <%end %>
               </li>
             </ul>
           </nav>
         </div>
-        <div id="tabs" data-controller="toggle">
+        <div id="tabs">
           <%= render 'chiffres/tabs' %>
         </div>
       </div>

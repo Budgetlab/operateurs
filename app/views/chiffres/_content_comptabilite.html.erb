@@ -24,7 +24,7 @@
       </div>
     </div>
     <% end %>
-    <div class="fr-mt-1w">Dont charges de fonctionnement (autres que les charges de personnel)</div>
+    <div class="fr-mt-1w">Dont charges de fonctionnement (hors charges de personnel)</div>
     <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.charges_fonctionnement) %> €</div>
     <% if chiffre.comptabilite_budgetaire == false %>
     <div class="fr-mb-2w options fr-hidden">
@@ -96,7 +96,7 @@
     </div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Produits non décaissables</div>
+    <div>Produits non encaissables</div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.produits_non_encaissables) %> €</div>
   </div>
 </div>
