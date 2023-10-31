@@ -1,0 +1,198 @@
+<% @total_charges = chiffre.emplois_charges_personnel + chiffre.charges_fonctionnement + chiffre.charges_intervention %>
+<% @total_produits = chiffre.produits_subventions_etat + chiffre.produits_fiscalite_affectee + chiffre.produits_subventions_autres + chiffre.produits_autres %>
+<% @charges_decaissables = @total_charges - chiffre.charges_non_decaissables %>
+<div class="fr-grid-row fr-grid-row--gutters">
+  <div class="fr-col-12 fr-col-lg-6">
+    <h3 class="fr-h4">Charges</h3>
+    <div class="fr-mb-2w">
+      <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Total des charges</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_charges) %> €</p>
+        </div>
+      </div>
+    </div>
+    <div class="fr-mt-1w">Dont charges de personnel</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.emplois_charges_personnel) %> €</div>
+    <% if chiffre.comptabilite_budgetaire == false %>
+    <div class="fr-mb-2w">
+      <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Poids relatif des charges de personnel </p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_charges_personnel,@total_charges,100)) %> %</p>
+        </div>
+      </div>
+    </div>
+    <% end %>
+    <div class="fr-mt-1w">Dont charges de fonctionnement (autres que les charges de personnel)</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.charges_fonctionnement) %> €</div>
+    <% if chiffre.comptabilite_budgetaire == false %>
+    <div class="fr-mb-2w options fr-hidden">
+      <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Poids des charges de fonctionnement </p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.charges_fonctionnement,@total_charges,100)) %> %</p>
+        </div>
+      </div>
+    </div>
+    <% end %>
+    <div class="fr-mt-1w">Dont charges d’intervention</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.charges_intervention) %> €</div>
+    <% if chiffre.comptabilite_budgetaire == false %>
+    <div class="fr-mb-2w options fr-hidden">
+      <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Poids des charges d'intervention </p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.charges_intervention,@total_charges,100)) %> %</p>
+        </div>
+      </div>
+    </div>
+    <% end %>
+  </div>
+  <div class="fr-col-12 fr-col-lg-6">
+    <h3 class="fr-h4">Produits</h3>
+    <div class="fr-mb-2w">
+      <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Total des produits</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_produits) %> €</p>
+        </div>
+      </div>
+    </div>
+    <div class="fr-mt-1w">Dont subventions de l’Etat</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.produits_subventions_etat) %> €</div>
+    <div class="fr-mt-1w">Dont fiscalité affectée</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.produits_fiscalite_affectee) %> €</div>
+    <div class="fr-mt-1w">Dont autres subventions</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.produits_subventions_autres) %> €</div>
+    <div class="fr-mt-1w">Dont autres produits</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.produits_autres) %> €</div>
+  </div>
+</div>
+
+<div class="fr-grid-row fr-grid-row--gutters">
+  <div class="fr-col-12 fr-col-lg-12">
+    <div class="fr-mb-2w">
+      <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Résultat</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_produits - @total_charges) %> €</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="fr-grid-row fr-grid-row--gutters">
+  <div class="fr-col-12 fr-col-lg-6">
+    <div>Charges non décaissables</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.charges_non_decaissables) %> €</div>
+    <div>
+      <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Charges décaissables</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@charges_decaissables) %> €</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="fr-col-12 fr-col-lg-6">
+    <div>Produits non décaissables</div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.produits_non_encaissables) %> €</div>
+  </div>
+</div>
+<h3 class="fr-h4 fr-mt-4w">Capacité d’autofinancement</h3>
+<div class="fr-grid-row fr-grid-row--gutters">
+  <div class="fr-col-12 fr-col-lg-6">
+    <div>Capacité d’autofinancement</div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.capacite_autofinancement) %> €</div>
+  </div>
+</div>
+<div class="fr-grid-row fr-grid-row--gutters">
+  <div class="fr-col-12 fr-col-lg-6">
+    <h3 class="fr-h4 fr-mt-4w">Emplois</h3>
+    <div>Total des emplois</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.emplois_cout_total)%> €</div>
+    <div class="fr-mt-1w">Dont investissements</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.emplois_cout_investissements)%> €</div>
+  </div>
+  <div class="fr-col-12 fr-col-lg-6">
+    <h3 class="fr-h4 fr-mt-4w">Ressources</h3>
+    <div>Total des ressources </div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.ressources_total)%> €</div>
+    <div class="fr-mt-1w">Dont financement de l’actif par l’Etat </div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.ressources_financement_etat)%> €</div>
+    <div class="fr-mt-1w">Dont autres ressources</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.ressources_autres)%> €</div>
+    <% if chiffre.comptabilite_budgetaire == false %>
+    <div class="fr-mb-2w">
+      <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Taux de ressources propres</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.produits_autres - chiffre.produits_non_encaissables + chiffre.ressources_autres,@total_produits - chiffre.produits_non_encaissables + chiffre.ressources_total - chiffre.capacite_autofinancement,100)) %> %</p>
+        </div>
+      </div>
+    </div>
+    <% end  %>
+  </div>
+</div>
+<div class="options fr-hidden">
+  <h3 class="fr-h4 fr-mt-4w">Opérations non budgétaires</h3>
+
+  <div class="fr-grid-row fr-grid-row--gutters">
+    <div class="fr-col-12 fr-col-lg-6">
+      <div>Opérations au nom et pour le compte de tiers <% if chiffre.comptabilite_budgetaire == true %>(besoins)<%else %>(débits)<%end %></div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.decaissements_operations)%> €</div>
+    </div>
+    <div class="fr-col-12 fr-col-lg-6">
+      <div>Opérations au nom et pour le compte de tiers <% if chiffre.comptabilite_budgetaire == true %>(financements)<%else %>(crédits)<%end %></div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.encaissements_operations)%> €</div>
+    </div>
+  </div>
+  <% if chiffre.comptabilite_budgetaire == true %>
+    <% @total_encaissement = (chiffre.encaissements_operations || 0) + (chiffre.encaissements_emprunts || 0) + (chiffre.encaissements_autres || 0) %>
+    <% @total_decaissement = (chiffre.decaissements_operations || 0) + (chiffre.decaissements_emprunts || 0) + (chiffre.decaissements_autres || 0) %>
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-6">
+        <div>Emprunts, Prêts, Dépôts et cautionnements (besoins)</div>
+        <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.decaissements_emprunts)%> €</div>
+      </div>
+      <div class="fr-col-12 fr-col-lg-6">
+        <div>Emprunts, Prêts, Dépôts et cautionnements (financements)</div>
+        <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.encaissements_emprunts)%> €</div>
+      </div>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-6">
+        <div>Autres décaissements non budgétaires</div>
+        <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.decaissements_autres)%> €</div>
+      </div>
+      <div class="fr-col-12 fr-col-lg-6">
+        <div>Autres encaissements non budgétaires</div>
+        <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.encaissements_autres)%> €</div>
+      </div>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-6">
+        <div class="fr-mb-2w">
+          <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+            <div class="fr-cart__body">
+              <p class="fr-mb-0 fr-text--center">Décaissements non budgétaires</p>
+              <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.decaissements_operations.nil? && chiffre.decaissements_emprunts.nil? && chiffre.decaissements_autres.nil? %>-<%else %><%= format_nombre(@total_decaissement) %><%end %> €</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="fr-col-12 fr-col-lg-6">
+        <div class="fr-mb-2w">
+          <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+            <div class="fr-cart__body">
+              <p class="fr-mb-0 fr-text--center">Encaissements non budgétaires</p>
+              <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.encaissements_operations.nil? && chiffre.encaissements_emprunts.nil? && chiffre.encaissements_autres.nil? %>-<%else %><%= format_nombre(@total_encaissement) %><%end %> €</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end  %>
+
+</div>

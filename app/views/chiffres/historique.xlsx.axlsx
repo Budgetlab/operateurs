@@ -1,0 +1,11 @@
+
+    wb = xlsx_package.workbook
+  	wb.add_worksheet(name: "Historique") do |sheet| 	
+    	sheet.add_row %W{ Date Organisme Exercice Budget Phase Examen}
+
+      @chiffres.each do |chiffre|
+      examen = chiffre.statut == 'valide' ? chiffre.risque_insolvabilite : 'Brouillon'
+        sheet.add_row [chiffre.created_at, chiffre.organisme.nom, chiffre.exercice_budgetaire, chiffre.type_budget, chiffre.phase, examen ]
+      end
+  	end
+ 

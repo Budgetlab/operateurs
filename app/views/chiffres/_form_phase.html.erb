@@ -1,0 +1,49 @@
+<% unless chiffre.nil?%>
+  <div class="fr-container fr-container--fluid fr-container-md">
+    <div class="fr-grid-row fr-grid-row--center">
+      <div class="fr-col-12 fr-col-md-10 fr-col-lg-9">
+        <div class="fr-modal__body">
+          <div class="fr-modal__header">
+            <button class="fr-btn--close fr-btn" aria-controls="modal-1" title="Fermer">
+              Fermer
+            </button>
+          </div>
+          <div class="fr-modal__content" data-controller="form">
+            <h1 id="modal-1-title" class="fr-modal__title">
+              <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true"></span>
+              Modification de la phase <%= chiffre.phase %>
+            </h1>
+            <div class="fr-text--bold fr-mb-2w"><%= chiffre.type_budget %> - <%= chiffre.exercice_budgetaire %></div>
+            <div class="fr-mb-4w">Sélectionnez la nouvelle phase en cours puis validez, les données renseignées restent inchangées pour cette nouvelle phase. Vous aurez ensuite la possibilité de modifier les données nécessitant d’être changées d’une phase à l’autre. Vous pouvez également compléter votre précédent commentaire.</div>
+            <%= form_with(url: update_phase_path, data: {'form-target': "form", action: "input->form#changePhase turbo:before-fetch-request->form#submitForm"}) do |f|%>
+              <%= f.hidden_field :id, value: chiffre.id %>
+              <div class="fr-select-group">
+                <label for="phase" class="fr-label">Phase</label>
+                <%= f.select :phase,[["- sélectionner -", ""], ["pré-CA", "pré-CA"], ["CA", "CA"], ["Budget voté", "Budget voté"], ["Budget non approuvé par les tutelles après son adoption par l’organe délibérant", "Budget non approuvé"]],{selected: chiffre.phase}, {data: {'form-target': 'fieldRequire'}, id:"phase",class:"fr-select"}%>
+              </div>
+              <div class="fr-alert fr-alert--warning fr-mb-2w fr-hidden" id="phase_error">
+                <h3 class="fr-alert__title">
+                  Vous êtes sur le point de supprimer toutes les données de ce budget
+                </h3>
+                <p>Attention, si vous validez "Budget non approuvé par les tutelles", les données concernant le budget seront écrasées et vous devrez saisir intégralement le nouveau budget.</p>
+              </div>
+              <div class="fr-my-4w">
+                <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
+                  <li>
+                    <button class="fr-btn fr-btn--secondary" aria-controls="modal-1" title="Fermer"  >
+                      Annuler
+                    </button>
+                  </li>
+                  <li>
+                    <%= f.submit("Valider", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: {controls: "modal-1", label: "Valider"}) %>
+                  </li>
+                </ul>
+              </div>
+            <% end  %>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<% end %>

@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+#one:
+#  organisme: one
+#  exercice_budgetaire: 1
+#  type_budget: MyString
+#  phase: MyString
+#  statut: MyString
+#  commentaire: MyString
+#  comptabilite_budgetaire: false
+#  operateur: false
+
+

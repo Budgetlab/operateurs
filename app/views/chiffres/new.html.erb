@@ -1,0 +1,59 @@
+<% content_for :title do %>Formulaire création d'un budget | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h1 class="fr-my-4w">Formulaire de création d'un nouveau budget</h1>
+        <div class="fr-mb-6w">
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6 fr-col-offset-3">
+          <div class="fr-card  fr-card--no-arrow">
+            <div class="fr-card__body" data-controller="form">
+              <div class="fr-card__content" id="new_content">
+                <%= form_with(model: @chiffre, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
+                  <%= f.hidden_field :statut, value: "0" %>
+                  <%= f.hidden_field :user_id, value: current_user.id %>
+
+                  <div class="fr-select-group">
+                    <label for="organisme" class="fr-label">Organisme*</label>
+                    <%= f.select :organisme_id,options_for_select([["- sélectionner -", ""], *@organismes.map { |organisme| [organisme.nom, organisme.id] }]),{}, {data: {action: 'change->form#changeNomChiffres','form-target': 'fieldRequire'}, id:"organisme",class:"fr-select"}%>
+                  </div>
+                  <div class="fr-select-group">
+                    <label for="exercice" class="fr-label">Exercice budgétaire*</label>
+                    <%= f.select :exercice_budgetaire,[["- sélectionner -", ""], [Date.today.year+1, Date.today.year+1], [Date.today.year, Date.today.year], [Date.today.year-1, Date.today.year-1]],{}, {data: {action: 'change->form#changeExerciceChiffres','form-target': 'fieldRequire'}, id:"exercice",class:"fr-select"}%>
+                  </div>
+                  <div class="fr-select-group">
+                    <label for="budget" class="fr-label">Type de budget*</label>
+                    <%= f.select :type_budget,[["- sélectionner -", ""], ["Budget initial", "Budget initial"], ["Budget rectificatif", "Budget rectificatif"], ["Compte financier", "Compte financier"]],{}, {data: {action: 'change->form#changeBudget','form-target': 'fieldRequire'}, id:"budget",class:"fr-select"}%>
+                  </div>
+                  <div class="fr-select-group">
+                    <label for="comptabilite" class="fr-label">Comptabilité budgétaire*</label>
+                    <%= f.select :comptabilite_budgetaire,[["- sélectionner -", ""], ["Oui", true], ["Non", false]],{}, {data: {'form-target': 'fieldRequire'}, id:"comptabilite",class:"fr-select"}%>
+                  </div>
+                  <div class="fr-select-group">
+                    <label for="operateur" class="fr-label">Opérateur*</label>
+                    <%= f.select :operateur,[["- sélectionner -", ""],["Oui", true], ["Non", false]],{}, {data: {'form-target': 'fieldRequire'}, id:"operateur",class:"fr-select"}%>
+                  </div>
+                  <div class="fr-select-group">
+                    <label for="phase" class="fr-label">Phase*</label>
+                    <%= f.select :phase,[["- sélectionner -", ""], ["pré-CA", "pré-CA"], ["CA", "CA"], ["Budget voté", "Budget voté"]],{}, {data: {'form-target': 'fieldRequire'}, id:"phase",class:"fr-select"}%>
+                  </div>
+
+                  <div class="fr-my-4w">
+                    <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
+                      <li>
+                        <%= f.submit("Valider", class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"}) %>
+                      </li>
+                    </ul>
+                  </div>
+                <%end %>
+              </div>
+            </div>
+          </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

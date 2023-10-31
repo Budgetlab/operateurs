@@ -1,0 +1,102 @@
+<% content_for :title do %>Chiffres clés de l'organisme <%= @organisme.nom %> | OPERA <% end %>
+<main role="main" data-controller="tab">
+  <div class="fr-container" >
+    <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
+      <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+      <div class="fr-collapse" id="breadcrumb-1">
+        <ol class="fr-breadcrumb__list">
+          <li>
+            <%= link_to root_path, class:"fr-breadcrumb__link" do %>Accueil<%end %>
+          </li>
+          <li>
+            <%= link_to organismes_path, class:"fr-breadcrumb__link" do %>Liste des organismes<%end %>
+          </li>
+          <li>
+            <a class="fr-breadcrumb__link" aria-current="page"><%= @organisme.nom %></a>
+          </li>
+        </ol>
+      </div>
+    </nav>
+
+    <h1 class="fr-mb-4w title-btn"><%= @organisme.nom %></h1>
+    <%= render 'chiffres/success'%>
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-4">
+        <nav class="fr-sidemenu fr-sidemenu--sticky-full-height" aria-labelledby="fr-sidemenu-title">
+          <div class="fr-sidemenu__inner">
+            <button class="fr-sidemenu__btn" hidden aria-controls="fr-sidemenu-wrapper" aria-expanded="false">
+              Dans cette rubrique
+            </button>
+            <div class="fr-collapse" id="fr-sidemenu-wrapper">
+              <div class="fr-sidemenu__title" id="fr-sidemenu-title">Sections</div>
+              <ul class="fr-sidemenu__list">
+                <li class="fr-sidemenu__item">
+                  <%= link_to organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>Fiche d'identité<%end %>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <button class="fr-sidemenu__btn" aria-expanded="true" aria-controls="fr-sidemenu-item-0" aria-current="true">
+                    Chiffres clés
+                  </button>
+                  <div class="fr-collapse" id="fr-sidemenu-item-0">
+                    <ul class="fr-sidemenu__list">
+                      <li class="fr-sidemenu__item">
+                        <a class="fr-sidemenu__link" href="#emplois" target="_self">Emplois</a>
+                      </li>
+                      <li class="fr-sidemenu__item" id="nav_credits">
+                        <a class="fr-sidemenu__link" href="#credits" target="_self">Crédits</a>
+                      </li>
+                      <li class="fr-sidemenu__item">
+                        <a class="fr-sidemenu__link" href="#comptabilite" target="_self">Comptabilité générale</a>
+                      </li>
+                      <li class="fr-sidemenu__item">
+                        <a class="fr-sidemenu__link" href="#tresorerie" target="_self">Trésorerie</a>
+                      </li>
+                      <li class="fr-sidemenu__item">
+                        <a class="fr-sidemenu__link" href="#analyse" target="_self">Analyse financière</a>
+                      </li>
+                      <li class="fr-sidemenu__item">
+                        <a class="fr-sidemenu__link" href="#commentaires" target="_self">Commentaires</a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+        </nav>
+
+      </div>
+
+      <div class="fr-col-12 fr-col-lg-8" >
+        <div class="title-btn">
+          <div class="fr-download">
+            <p><%= link_to "/opera/organismes/#{@organisme.id}/chiffres.xlsx", format: :xslx, class: "fr-download__link" do %>Télécharger les chiffres clés<span class="fr-download__detail">Format .xlsx</span><%end %></p>
+          </div>
+          <nav role="navigation" class="fr-pagination" aria-label="Pagination">
+            <ul class="fr-pagination__list">
+              <li>
+                <%= link_to show_dates_path(exercice_budgetaire: Date.today.year - 1, organisme_id: @organisme.id), data: {'tab-target': 'nav', action: "click->tab#changeNav","turbo-method": :post}, class: "fr-pagination__link" do %>
+                  <%= Date.today.year - 1 %>
+                <%end %>
+              </li>
+              <li>
+                <%= link_to show_dates_path(exercice_budgetaire: Date.today.year, organisme_id: @organisme.id), data: {'tab-target': 'nav', action: "click->tab#changeNav","turbo-method": :post}, class: "fr-pagination__link", aria: { current: 'page' } do %>
+                  <%= Date.today.year %>
+                <%end %>
+              </li>
+              <li>
+                <%= link_to show_dates_path(exercice_budgetaire: Date.today.year + 1, organisme_id: @organisme.id), data: {'tab-target': 'nav', action: "click->tab#changeNav","turbo-method": :post}, class: "fr-pagination__link" do %>
+                  <%= Date.today.year + 1 %>
+                <%end %>
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <div id="tabs" data-controller="toggle">
+          <%= render 'chiffres/tabs' %>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

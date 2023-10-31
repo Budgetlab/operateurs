@@ -1,0 +1,115 @@
+<% content_for :title do %>Historique des budgets | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container " data-controller="filter">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h1 class="fr-my-4w">Historique des budgets</h1>
+      </div>
+    </div>
+    <div class="fr-download">
+      <p><%= link_to "/opera/budgets-historique.xlsx", format: :xslx, class: "fr-download__link" do %> Télécharger l'historique des budgets
+          <span class="fr-download__detail">Format .xlsx</span>
+        <%end %></p>
+    </div>
+    <div class="fr-table fr-table--bordered fr-table--layout-fixed--lg fr-table--vscroll fr-mb-6w">
+      <%= form_with(url: filter_chiffres_path, method: :post, data: { 'filter-target': "form"}) do |f|%>
+      <table>
+        <caption>Liste des résultats <span id="total_table"><%= render partial: "chiffres/table_historique_total", locals: {total: @chiffres.length} %></span></caption>
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Organisme</th>
+            <th scope="col">Exercice
+              <% if !@exercices.empty? %>
+              <div class="fr-translate fr-nav fr-nav-filter">
+                <button class="filter-table--btn" aria-controls="exercice" aria-expanded="false" title="Filtrer par exercice" data-action="click->filter#Dropdown">
+                </button>
+                <div class="fr-collapse fr-menu" id="exercice">
+                  <ul class="fr-menu__list filter-table--list">
+                    <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-exercice">
+                      <div class="fr-fieldset__element">
+                        <% @exercices.each_with_index do |exercice,i| %>
+                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                            <%= f.check_box "exercices[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-exercice-#{i}"}, exercice%>
+                            <label class="fr-label" for="checkboxes-exercice-<%= i %>"><%= exercice %></label>
+                          </div>
+                        <%end %>
+                      </div>
+                    </fieldset></li>
+                  </ul>
+                </div>
+              </div>
+              <% end %>
+            </th>
+            <th scope="col">Budget
+              <div class="fr-translate fr-nav fr-nav-filter">
+                <button class="filter-table--btn" aria-controls="budget" aria-expanded="false" title="Filtrer par budget" data-action="click->filter#Dropdown">
+                </button>
+                <div class="fr-collapse fr-menu" id="budget">
+                  <ul class="fr-menu__list filter-table--list">
+                    <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-budget">
+                      <div class="fr-fieldset__element">
+                        <% ["Budget initial","Budget rectificatif","Compte financier"].each_with_index do |budget,i| %>
+                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                            <%= f.check_box "budgets[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-budget-#{i}"}, budget%>
+                            <label class="fr-label" for="checkboxes-budget-<%= i %>"><%= budget %></label>
+                          </div>
+                        <%end %>
+                      </div>
+                    </fieldset></li>
+                  </ul>
+                </div>
+              </div>
+            </th>
+            <th scope="col">Phase
+              <div class="fr-translate fr-nav fr-nav-filter">
+                <button class="filter-table--btn" aria-controls="phase" aria-expanded="false" title="Filtrer par phase" data-action="click->filter#Dropdown">
+                </button>
+                <div class="fr-collapse fr-menu" id="phase">
+                  <ul class="fr-menu__list filter-table--list">
+                    <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-phase">
+                      <div class="fr-fieldset__element">
+                        <% ["pré-CA","CA","Budget voté", "CF arrêté"].each_with_index do |phase,i| %>
+                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                            <%= f.check_box "phases[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-phase-#{i}"}, phase%>
+                            <label class="fr-label" for="checkboxes-phase-<%= i %>"><%= phase %></label>
+                          </div>
+                        <%end %>
+                      </div>
+                    </fieldset></li>
+                  </ul>
+                </div>
+              </div>
+            </th>
+            <th scope="col">Examen
+              <div class="fr-translate fr-nav fr-nav-filter">
+                <button class="filter-table--btn" aria-controls="examen" aria-expanded="false" title="Filtrer par examen" data-action="click->filter#Dropdown">
+                </button>
+                <div class="fr-collapse fr-menu" id="examen">
+                  <ul class="fr-menu__list filter-table--list">
+                    <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-examen">
+                      <div class="fr-fieldset__element">
+                        <% ["Situation saine","Situation saine a priori mais à surveiller","Risque d’insoutenabilité à moyen terme","Risque d’insoutenabilité élevé", "Brouillon"].each_with_index do |examen,i| %>
+                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
+                            <%= f.check_box "risque_insolvabilites[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-examen-#{i}"}, examen%>
+                            <label class="fr-label" for="checkboxes-examen-<%= i %>"><%= examen %></label>
+                          </div>
+                        <%end %>
+                      </div>
+                    </fieldset></li>
+                  </ul>
+                </div>
+              </div>
+            </th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody id="table_historique">
+          <%= render partial: 'chiffres/table_historique', locals: {chiffres: @chiffres} %>
+        </tbody>
+      </table>
+
+      <% end  %>
+    </div>
+  </div>
+</main>

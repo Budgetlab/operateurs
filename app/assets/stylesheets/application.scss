@@ -31,28 +31,13 @@
 .fr-text--italic{
   font-style: italic;
 }
+.fr-text--center{
+  text-align: center;
+}
 
 .shadow{
   filter: drop-shadow(var(--lifted-shadow)) !important;
 }
-
-@media (min-width: 62em) {
-  .fr-table--layout-fixed--lg table {
-    display: table !important;
-    table-layout: fixed !important;
-  }
-}
-.fr-card--custom-blue{
-    border-bottom-right-radius: 40px;
-    background-color: var(--background-action-high-blue-france) !important;
-  &:hover, &:active{
-    background-color: var(--background-action-high-blue-france-hover) !important;
-  }
-}
-.fr-card--custom-blue .fr-card__desc, .fr-card--custom-blue .fr-card__title a[href], .fr-card--custom-blue:before{
-  color: var(--text-inverted-blue-france) !important;
-}
-
 select:disabled {
   opacity: 1 !important;
   color: var(--text-disabled-grey) !important;
@@ -61,7 +46,104 @@ select:disabled {
 .fr-label--warning{
   color: var(--text-default-warning);
 }
-
+.fr-input-group--option label{
+  color: var(--border-action-high-info) !important;
+}
+.fr-input-group--option .fr-input, .fr-input-group--option .fr-select {
+  box-shadow: inset 0 -2px 0 0 var(--border-action-high-info) !important;
+}
+.fr-input-group--option::before {
+  background-image: linear-gradient(0deg, var(--border-action-high-info), var(--border-action-high-info)) !important;
+}
+.fr-input-group--option::before {
+  content: "";
+  display: block;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  right: -0.75rem;
+  bottom: 0;
+  left: -0.75rem;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 0.125rem 100%;
+}
+/**
+  * CARD
+  */
+.fr-card--custom-blue{
+  border-bottom-right-radius: 40px;
+  background-color: var(--background-action-high-blue-france) !important;
+  &:hover, &:active{
+    background-color: var(--background-action-high-blue-france-hover) !important;
+  }
+}
+.fr-card--custom-blue .fr-card__desc, .fr-card--custom-blue .fr-card__title a[href], .fr-card--custom-blue:before{
+  color: var(--text-inverted-blue-france) !important;
+}
+.fr-card--blue {
+  background-color: var(--background-contrast-info) !important;
+  --idle: transparent;
+  --hover: var(--background-contrast-info-hover);
+  --active: var(--background-contrast-info-active);
+  color: var(--background-action-high-blue-france);
+}
+.fr-card--rouge {
+  background-color: var(--background-contrast-error) !important;
+  --idle: transparent;
+  --hover: var(--background-contrast-error-hover);
+  --active: var(--background-contrast-error-active);
+  color: var(--text-default-error);
+}
+.fr-card--orange {
+  color: var(--text-default-warning);
+  background-color: var(--background-contrast-warning) !important;
+  --idle: transparent;
+  --hover: var(--background-contrast-warning-hover);
+  --active: var(--background-contrast-warning-active);
+}
+.fr-card--jaune {
+  color: var(--text-label-green-tilleul-verveine);
+  background-color: var(--background-contrast-green-tilleul-verveine) !important;
+  --idle: transparent;
+  --hover: var(--background-contrast-green-tilleul-verveine-hover);
+  --active: var(--background-contrast-green-tilleul-verveine-active);
+}
+.fr-card--vert {
+  color: var(--text-label-green-archipel);
+  background-color: var(--background-contrast-green-archipel) !important;
+  --idle: transparent;
+  --hover: var(--background-contrast-green-archipel-hover);
+  --active: var(--background-contrast-green-archipel-active);
+}
+/**
+  * TABLES
+  */
+.fr-table td, .fr-table th {
+  max-width:20rem !important;
+}
+.fr-table thead th {
+  position: sticky;
+  top: 0px;
+  background-color: var(--background-contrast-grey);
+  background-size: 100% 2px;
+  background-position: bottom;
+  background-repeat: no-repeat;
+  background-image: linear-gradient(0deg, var(--border-plain-grey), var(--border-plain-grey));
+  min-width:8rem !important;
+}
+@media (min-width: 62em) {
+  .fr-table--layout-fixed--lg table {
+    display: table !important;
+    table-layout: fixed !important;
+  }
+}
+.fr-table--vscroll table {
+  max-height: 35rem;
+  overflow: auto;
+  min-height: 18rem !important;
+}
+// tables présentes dans onglets
 .fr-table--onglet-vscroll{
   max-height: 25rem;
   overflow: auto;
@@ -76,4 +158,69 @@ select:disabled {
 .fr-td--overflow{
   overflow: hidden;
   text-overflow: ellipsis ;
+}
+// tables avec filtres
+.fr-nav-filter{
+  position:absolute !important;
+  right:0 !important;
+  top: 0 !important;
+  height: 100% !important;
+}
+.fr-nav-filter .fr-menu{
+  right: 0 !important;
+  pointer-events: none;
+  position: absolute;
+  top: 100%;
+  z-index: calc(var(--ground) + 1000);
+}
+.filter-table--list{
+  background-color: var(--background-overlap-grey);
+  display: grid;
+  grid-template-rows: repeat(var(--rows), auto);
+  grid-auto-flow: column;
+  pointer-events: auto;
+}
+.filter-table--list .fr-fieldset {
+  max-height: 10rem;
+  overflow: auto;
+  margin-bottom: 0rem !important;
+  padding: 0.75rem 1rem !important;
+}
+.filter-table--list .fr-checkbox-group{
+  margin-right: 0.5rem !important;
+}
+
+.filter-table--btn{
+  height: 100%;
+  width: auto;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  padding: 0.25rem 0.25rem;
+}
+.filter-table--btn::after {
+  flex: 0 0 auto;
+  display: inline-block;
+  vertical-align: calc((0.75em - var(--icon-size)) * 0.5);
+  background-color: currentColor;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-image: image-url("icons/system/arrow-down-s-fill.svg");
+  mask-image: image-url("icons/system/arrow-down-s-fill.svg");
+  --icon-size: 1rem;
+  content: "";
+  margin-left: auto;
+  transition: transform 0.3s;
+}
+.filter-table--btn[aria-expanded=true]{
+  color: var(--text-active-blue-france);
+  background-color: var(--background-open-blue-france);
+  --idle: transparent;
+  --hover: var(--background-open-blue-france-hover);
+  --active: var(--background-open-blue-france-active);
+}
+.filter-table--btn[aria-expanded=true]::after {
+  transform: rotate(-180deg);
 }

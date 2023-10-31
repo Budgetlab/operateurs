@@ -1,0 +1,13 @@
+<% if flash.any? %>
+  <% flash.each do |type, msg| %>
+    <% if msg == "maj chiffres" %>
+      <div class="fr-alert fr-alert--success fr-mb-2w">
+        <h3 class="fr-alert__title">Le budget a été mis à jour avec succès.</h3>
+      </div>
+      <%elsif msg == "creation chiffres" %>
+      <div class="fr-alert fr-alert--success fr-mb-2w">
+        <h3 class="fr-alert__title">Le budget a été créé avec succès.</h3>
+      </div>
+      <% end %>
+    <% end %>
+<% end %>

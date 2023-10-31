@@ -1,0 +1,104 @@
+<% if chiffre %>
+  <% @steps = chiffre.comptabilite_budgetaire == true ? 6 : 5 %>
+  <% if chiffre.statut != "valide" %>
+    <div class="fr-mb-4w title-btn">
+      <p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p>
+      <%= link_to edit_chiffre_path(chiffre), class: "fr-btn"  do %>Reprendre le brouillon<% end %>
+    </div>
+  <% end %>
+  <div id="content_phase">
+      <%= render partial: 'chiffres/content_phase', locals: {chiffre: chiffre} %>
+  </div>
+  <div class="fr-toggle">
+    <input type="checkbox" class="fr-toggle__input" aria-describedby="toggle-698-hint-text" id="toggle-698" data-action="click->toggle#toggle">
+    <label class="fr-toggle__label" for="toggle-698" >Données complètes</label>
+    <p class="fr-hint-text" id="toggle-698-hint-text">Cliquez sur l’interrupteur pour afficher l’ensemble des données</p>
+  </div>
+  <hr class="fr-my-2w">
+  <div data-tab-target="section" data-tab-value="emplois" class="fr-mb-4w">
+    <h2 class="title-btn">Emplois<% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+    <% if chiffre.statut == "valide" || chiffre.statut.to_i > 0 %>
+      <%= render partial: "chiffres/content_emplois", locals: {chiffre: chiffre} %>
+      <%else %>
+      <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <% end %>
+  </div>
+
+  <% if chiffre.comptabilite_budgetaire == true %>
+    <hr class="fr-my-2w">
+    <div data-tab-target="section" data-tab-value="credits" class="fr-mb-4w">
+      <h2 class="title-btn">Crédits <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps-4), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+      <% if chiffre.statut == "valide" || chiffre.statut.to_i > 1 %>
+        <%= render partial: "chiffres/content_credits", locals: {chiffre: chiffre} %>
+      <% else %>
+        <p class="fr-badge fr-badge--warning">Non renseigné</p>
+      <% end  %>
+    </div>
+  <% end %>
+
+  <hr class="fr-my-2w">
+  <div data-tab-target="section" data-tab-value="comptabilite" class="fr-mb-4w">
+    <h2 class="title-btn">Comptabilité générale <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps-3), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+    <% if chiffre.statut == "valide" || chiffre.statut.to_i > @steps-4 %>
+      <%= render partial: "chiffres/content_comptabilite", locals: {chiffre: chiffre} %>
+    <%else %>
+      <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <% end %>
+  </div>
+  <hr class="fr-my-2w">
+  <div data-tab-target="section" data-tab-value="tresorerie" class="fr-mb-4w">
+    <h2 class="title-btn">Trésorerie <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps-2), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+    <% if chiffre.statut == "valide" || chiffre.statut.to_i > @steps-3 %>
+      <%= render partial: "chiffres/content_tresorerie", locals: {chiffre: chiffre} %>
+    <% else %>
+      <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <% end %>
+  </div>
+  <hr class="fr-my-2w">
+  <div data-tab-target="section" data-tab-value="analyse" class="fr-mb-4w">
+    <h2 class="title-btn">Analyse financière <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps-1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+    <% if chiffre.statut == "valide" || chiffre.statut.to_i > @steps-2 %>
+      <%= render partial: "chiffres/content_analyse", locals: {chiffre: chiffre} %>
+    <% else %>
+      <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <% end %>
+  </div>
+  <hr class="fr-my-2w">
+  <div data-tab-target="section" data-tab-value="commentaires" class="fr-mb-4w">
+    <h2 class="title-btn">Commentaires <% if chiffre.statut == "valide" && @est_editeur %><%= link_to edit_chiffre_path(chiffre, step: @steps), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+    <% if chiffre.statut == "valide" %>
+      <h3 class="fr-h4">Commentaire sur le budget</h3>
+      <div><%= auto_link(simple_format(format_boolean(chiffre.commentaire),{}, wrapper_tag: "span"), :html => { :target => '_blank' })%></div>
+      <h3 class="fr-h4 fr-mt-4w">Autres points de vigilance</h3>
+      <div><%= auto_link(simple_format(format_boolean(chiffre.commentaire_annexe),{}, wrapper_tag: "span"), :html => { :target => '_blank' })%></div>
+    <% else  %>
+      <p class="fr-badge fr-badge--warning">Non renseigné</p>
+    <% end %>
+  </div>
+<% else %>
+  <div data-tab-target="section" data-tab-value="emplois" class="fr-mb-4w">
+    <h2>Emplois</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="credits" class="fr-mb-4w">
+    <h2>Crédits</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="comptabilite" class="fr-mb-4w">
+    <h2>Comptabilité générale</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="tresorerie" class="fr-mb-4w">
+    <h2>Trésorerie</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="analyse" class="fr-mb-4w">
+    <h2>Analyse financière</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+  <div data-tab-target="section" data-tab-value="commentaires" class="fr-mb-4w">
+    <h2>Commentaires</h2>
+    <p class="fr-badge fr-badge--warning">Non renseigné</p>
+  </div>
+<% end %>
+

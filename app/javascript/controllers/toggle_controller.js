@@ -8,12 +8,10 @@ export default class extends Controller {
   }
   toggle(event) {
     const isChecked = event.target.checked;
-    const sectionId = event.target.getAttribute("data-section");
-    const section = this.findSection(sectionId);
-    section.classList.toggle("fr-hidden");
-  }
-  findSection(sectionId) {
-    return document.getElementById(sectionId);
+    const blocs = document.querySelectorAll(".options");
+    blocs.forEach(element => {
+      element.classList.toggle("fr-hidden");
+    })
   }
   afficherPlus() {
     this.commentaireLongTarget.style.display = 'inline';

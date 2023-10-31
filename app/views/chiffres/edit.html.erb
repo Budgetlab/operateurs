@@ -1,0 +1,29 @@
+<% content_for :title do %>Formulaire du budget de l'organisme <%= @organisme.nom %> | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h1 class="fr-my-4w">Chiffres clés <%= @organisme.nom %></h1>
+        <div class="fr-mb-4w">
+          <% if @chiffre.operateur == true %><p class="fr-badge fr-badge--info fr-badge--no-icon">Opérateur</p><% else %><p class="fr-badge fr-badge--beige-gris-galet">Non opérateur</p><% end %>
+          <% if @chiffre.comptabilite_budgetaire == true %><p class="fr-badge fr-badge--success fr-badge--no-icon">Comptabilité budgétaire</p><%else %><p class="fr-badge fr-badge--purple-glycine">Hors comptabilité budgétaire</p><%end %>
+          <p class="fr-badge <% if @chiffre.phase == 'pré-CA' %>fr-badge--brown-opera<%elsif @chiffre.phase == 'CA' %>fr-badge--green-archipel<%else %>fr-badge--blue-ecume<%end %>"><%= @chiffre.phase %></p>
+          <p class="fr-badge"><%= @chiffre.exercice_budgetaire %></p>
+        </div>
+        <% if (@chiffre.statut != "valide" && @chiffre.statut.to_i == 0) || params[:step].to_i == 1 %>
+          <%= render 'form_emplois' %>
+        <% elsif @chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 1 || params[:step].to_i == 2) %>
+          <%= render 'form_credits' %>
+        <% elsif (@chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 2 || params[:step].to_i == 3)) ||  (@chiffre.comptabilite_budgetaire == false && (@chiffre.statut.to_i == 1 || params[:step].to_i == 2))%>
+          <%= render 'form_comptabilite' %>
+        <% elsif (@chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 3 || params[:step].to_i == 4)) ||  (@chiffre.comptabilite_budgetaire == false && (@chiffre.statut.to_i == 2 || params[:step].to_i == 3))%>
+          <%= render 'form_tresorerie' %>
+        <% elsif (@chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 4 || params[:step].to_i == 5)) ||  (@chiffre.comptabilite_budgetaire == false && (@chiffre.statut.to_i == 3 || params[:step].to_i == 4))%>
+          <%= render 'form_analyse' %>
+        <% elsif (@chiffre.comptabilite_budgetaire == true && (@chiffre.statut.to_i == 5 || params[:step].to_i == 6)) ||  (@chiffre.comptabilite_budgetaire == false && (@chiffre.statut.to_i == 4 || params[:step].to_i == 5))%>
+          <%= render 'form_commentaires' %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</main>

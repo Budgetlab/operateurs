@@ -72,6 +72,7 @@ class OrganismesController < ApplicationController
     @modifications_rejetees_organisme = modifications.select { |modification| modification.statut == 'refusée' }
     @modifications_attente_organisme = modifications.select { |modification| modification.statut == 'En attente' }
     @organisme_destinations = OrganismeRattachement.where(organisme_destination_id: @organisme.id)
+    @chiffre = @organisme.chiffres.order(created_at: :desc).first
     filename = 'fiche_organisme.xlsx'
     respond_to do |format|
       format.html

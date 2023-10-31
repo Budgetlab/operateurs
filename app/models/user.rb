@@ -13,6 +13,7 @@ class User < ApplicationRecord
   has_many :controleur_organismes,
            foreign_key: :controleur_id,
            class_name: 'Organisme'
+  has_many :chiffres
 
   def self.import(file)
     User.where.not(statut: '2B2O').destroy_all
