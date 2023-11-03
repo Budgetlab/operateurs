@@ -1,11 +1,14 @@
 <% if chiffre.comptabilite_budgetaire == true %>
   <% @total_recettes_globalisees = chiffre.credits_financements_etat_autres + chiffre.credits_fiscalite_affectee + chiffre.credits_financements_publics_autres + chiffre.credits_recettes_propres_globalisees%>
   <% @total_recettes_flechees = chiffre.credits_financements_etat_fleches + chiffre.credits_financements_publics_fleches + chiffre.credits_recettes_propres_flechees %>
-  <% @solde = @total_recettes_globalisees + @total_recettes_flechees - chiffre.credits_cp_total %>
   <% @total_subv_etat = chiffre.credits_financements_etat_autres + chiffre.credits_financements_etat_fleches %>
   <% if chiffre.operateur == true %>
+    <% @total_recettes_globalisees = @total_recettes_globalisees + chiffre.credits_subvention_sp + chiffre.credits_subvention_investissement_globalisee %>
+    <% @total_recettes_flechees = @total_recettes_flechees + chiffre.credits_subvention_investissement_flechee %>
     <% @total_subv_etat = @total_subv_etat + chiffre.credits_subvention_sp + chiffre.credits_subvention_investissement_globalisee + chiffre.credits_subvention_investissement_flechee %>
-  <% end %>
+  <%end %>
+  <% @total_recettes = @total_recettes_globalisees + @total_recettes_flechees %>
+  <% @solde = @total_recettes - chiffre.credits_cp_total %>
   <% @den = (chiffre.credits_cp_total - chiffre.credits_cp_investissement)/360 %>
 <% else  %>
   <% @den = (chiffre.emplois_charges_personnel + chiffre.charges_fonctionnement + chiffre.charges_intervention - chiffre.charges_non_decaissables)/360 %>
@@ -67,7 +70,7 @@
                   <div class="fr-cart__body">
                     <% if chiffre.comptabilite_budgetaire == true %>
                     <p class="fr-mb-0 fr-text--center">Total des recettes</p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_recettes_globalisees + @total_recettes_flechees) %> €</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_recettes) %> €</p>
                     <% else %>
                       <p class="fr-mb-0 fr-text--center">Total des ressources</p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.ressources_total)%> €</p>
@@ -111,7 +114,7 @@
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
                       <p class="fr-mb-0 fr-text--center">Taux de recettes propres</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_recettes_propres_globalisees+chiffre.credits_recettes_propres_flechees,@total_recettes_globalisees + @total_recettes_flechees,1)) %> %</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_recettes_propres_globalisees+chiffre.credits_recettes_propres_flechees,@total_recettes,1)) %> %</p>
                     </div>
                   </div>
                 </div>
@@ -121,7 +124,7 @@
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
                       <p class="fr-mb-0 fr-text--center">Poids des financements de l’Etat</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(@total_subv_etat,@total_recettes_globalisees + @total_recettes_flechees,1)) %> %</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(@total_subv_etat,@total_recettes,1)) %> %</p>
                     </div>
                   </div>
                 </div>
