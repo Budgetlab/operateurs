@@ -1,9 +1,9 @@
 <% if chiffre %>
   <% @steps = chiffre.comptabilite_budgetaire == true ? 6 : 5 %>
-  <% if chiffre.statut != "valide" %>
+  <% if chiffre.statut != "valide"%>
     <div class="fr-mb-4w title-btn">
       <p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p>
-      <%= link_to edit_chiffre_path(chiffre), class: "fr-btn"  do %>Reprendre le brouillon<% end %>
+      <% if @est_editeur%><%= link_to edit_chiffre_path(chiffre), class: "fr-btn"  do %>Reprendre le brouillon<% end %><%end %>
     </div>
   <% end %>
   <div id="content_phase">
