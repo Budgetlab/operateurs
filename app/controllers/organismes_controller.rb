@@ -5,9 +5,7 @@ class OrganismesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_famille, only: [:show, :recherche_organismes]
   def index
-    redirect_to root_path and return unless @statut_user == '2B2O' || @statut_user == 'Controleur'
-
-    organismes = @statut_user == '2B2O' ? Organisme.all : current_user.controleur_organismes.where(statut: 'valide')
+    organismes = liste_organisme
     @organismes = organismes.sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:id, :nom, :statut, :etat, :acronyme)
     @organismes_actifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Actif' }
     @organismes_inactifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Inactif' }
@@ -59,8 +57,8 @@ class OrganismesController < ApplicationController
   def show
     @organisme = Organisme.includes(:ministere, :bureau, :controleur, :organisme_ministeres).find(params[:id])
     est_controleur = current_user == @organisme.controleur
-    est_famille = @familles && @familles.include?(@organisme.famille)
-    redirect_to root_path and return unless @statut_user == '2B2O' || est_controleur || est_famille
+    est_bureau_ou_famille = current_user == @organisme.bureau || @familles&.include?(@organisme.famille)
+    redirect_to root_path and return unless @statut_user == '2B2O' || est_controleur || est_bureau_ou_famille
 
     @admin = @statut_user == '2B2O' || (est_controleur && @organisme.etat != 'Inactif')
     @est_valide = @organisme.statut == 'valide'
@@ -203,6 +201,16 @@ class OrganismesController < ApplicationController
       @familles += ['Universités'] if current_user.nom == 'CBCM MEN-MESRI'
     elsif @statut_user == 'Bureau Sectoriel'
       @familles = current_user.bureau_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
+    end
+  end
+  def liste_organisme
+    case @statut_user
+    when '2B2O'
+      Organisme.all
+    when 'Controleur'
+      current_user.controleur_organismes.where(statut: 'valide')
+    when 'Bureau Sectoriel'
+      current_user.bureau_organismes.where(statut: 'valide')
     end
   end
 

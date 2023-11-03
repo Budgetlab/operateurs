@@ -2,12 +2,14 @@
 
 # Controller Pages Chiffres
 class ChiffresController < ApplicationController
+  before_action :authenticate_user!
   before_action :find_organisme, only: %i[index show_dates]
   before_action :set_famille, only: %i[index show_dates]
   before_action :find_chiffre_and_organisme, only: %i[edit update update_phase]
   def index
     @est_editeur = current_user == @organisme.controleur
-    redirect_to root_path and return unless @statut_user == '2B2O' || @est_editeur || @familles&.include?(@organisme.famille)
+    est_bureau_ou_famille = current_user == @organisme.bureau || @familles&.include?(@organisme.famille)
+    redirect_to root_path and return unless @statut_user == '2B2O' || @est_editeur || est_bureau_ou_famille
 
     @chiffres = @organisme.chiffres
     @chiffres_export = @chiffres.where(statut: 'valide')

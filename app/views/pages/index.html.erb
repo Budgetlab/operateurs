@@ -3,7 +3,7 @@
   <div class="fr-container">
     <h1 class="fr-my-6w"><%= current_user.nom %></h1>
 
-    <% if @statut_user == "2B2O" || @statut_user == "Controleur"%>
+
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
       <div class="fr-col-12 fr-col-lg-4">
         <div class="fr-card fr-enlarge-link fr-card--shadow">
@@ -22,9 +22,12 @@
               <% if @statut_user == "2B2O" %>
               <h3 class="fr-card__title"><%= link_to modifications_path do %>Gérer les demandes de modifications contrôleurs<%end %></h3>
               <p class="fr-card__desc">Suivre l'historique des modifications effectuées par les contrôleurs.</p>
-              <% else %>
+              <% elsif @statut_user == "Controleur" %>
                 <h3 class="fr-card__title"><%= link_to modifications_path do %>Suivre mes modifications<%end %></h3>
               <p class="fr-card__desc">Accéder à l'historique des modifications effectuées sur les organismes de mon périmètre.</p>
+              <% elsif @statut_user == "Bureau Sectoriel" %>
+                <h3 class="fr-card__title"><%= link_to budgets_historique_path do %>Suivre l'historique des budgets<%end %></h3>
+                <p class="fr-card__desc">Accéder à l'historique des budgets sur les organismes de mon périmètre.</p>
               <%end %>
             </div>
           </div>
@@ -37,16 +40,19 @@
               <% if @statut_user == "2B2O" %>
               <h3 class="fr-card__title"><%= link_to new_organisme_path do %>Créer la fiche d'un organisme<%end %></h3>
               <p class="fr-card__desc">Créer la fiche d'un organisme directement au sein de l'outil.</p>
-              <% else %>
+              <% elsif @statut_user == "Controleur" %>
               <h3 class="fr-card__title"><%= link_to new_chiffre_path do %>Renseigner un nouveau budget<%end %></h3>
               <p class="fr-card__desc">Renseigner le budget d’un organisme de mon périmètre à chaque étape du cycle budgétaire.</p>
+              <% elsif @statut_user == "Bureau Sectoriel" %>
+                <h3 class="fr-card__title"><%= link_to budgets_suivi_path do %>Suivre les budgets par organisme<%end %></h3>
+                <p class="fr-card__desc">Pour chaque organisme, suivez l’évolution du budget au cours de l’exercice budgétaire.</p>
               <%end %>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <%end %>
+
 
     <h2>Rechercher un organisme</h2>
     <%= render 'organismes/form_search' %>

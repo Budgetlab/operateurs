@@ -8,7 +8,11 @@
     <td><%= render partial: "chiffres/badge_examen", locals: {examen: chiffre.statut != "valide" ? "Brouillon" : chiffre.risque_insolvabilite}  %></td>
      <td>
       <% if chiffre.statut != "valide" %>
-        <% if current_user == chiffre.user %><%= link_to edit_chiffre_path(chiffre), class: "fr-btn fr-btn--sm" do %>Reprendre<% end %><% end %>
+        <% if current_user == chiffre.user %>
+           <%= link_to edit_chiffre_path(chiffre), class: "fr-btn fr-btn--sm" do %>Reprendre<% end %>
+         <% else %>
+           <%= link_to organisme_chiffres_path(chiffre.organisme), class: "fr-btn fr-btn--sm" do %>Consulter<% end %>
+         <% end %>
       <% else  %>
       <%= link_to organisme_chiffres_path(chiffre.organisme), class: "fr-btn fr-btn--sm" do %>Consulter<% end %>
       <%end %>

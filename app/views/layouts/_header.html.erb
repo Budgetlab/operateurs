@@ -51,7 +51,6 @@
           <li class="fr-nav__item">
             <%= active_link_to root_path, class: "fr-nav__link", target: "_self", :active => [['pages'],['index']] do%>Accueil<%end%>
           </li>
-          <% if @statut_user == "2B2O" ||  @statut_user == "Controleur"%>
 
           <li class="fr-nav__item">
             <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-776" <%= current_page?(organismes_path) || current_page?(new_organisme_path) ? 'aria-current="true"' : '' %>>Organismes</button>
@@ -68,35 +67,34 @@
               </ul>
             </div>
           </li>
-
+          <% if @statut_user == "2B2O" ||  @statut_user == "Controleur"%>
           <li class="fr-nav__item">
             <%= active_link_to modifications_path, class: "fr-nav__link", target: "_self" do%>
               Gestion des modifications
               <% if @modifications_attente.length > 0 %><p class="fr-badge fr-badge--warning fr-badge--no-icon"><span class="fr-icon-alarm-warning-fill fr-icon--sm" aria-hidden="true"></span> [<%= @modifications_attente.length%>]<%end %></p>
             <%end%>
           </li>
-            <li class="fr-nav__item">
-              <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-chiffres" <%= current_page?(budgets_historique_path) || current_page?(new_chiffre_path) ? 'aria-current="true"' : '' %>>Cycle budgétaire</button>
-              <div class="fr-collapse fr-menu" id="menu-chiffres">
-                <ul class="fr-menu__list">
-                  <% if @statut_user == 'Controleur' %>
-                    <li>
-                      <%= active_link_to new_chiffre_path, class: "fr-nav__link", target: "_self" do%>Renseigner un budget<%end%>
-                    </li>
-                  <% end %>
-                  <li>
-                    <%= active_link_to budgets_historique_path, class: "fr-nav__link", target: "_self" do%>Historique des budgets<%end %>
-                  </li>
-
-                  <li>
-                    <%= active_link_to budgets_suivi_path, class: "fr-nav__link", target: "_self" do%>Budgets par organisme<%end%>
-                  </li>
-                </ul>
-              </div>
-
-            </li>
-
           <%end %>
+          <li class="fr-nav__item">
+            <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-chiffres" <%= current_page?(budgets_historique_path) || current_page?(new_chiffre_path) ? 'aria-current="true"' : '' %>>Cycle budgétaire</button>
+            <div class="fr-collapse fr-menu" id="menu-chiffres">
+              <ul class="fr-menu__list">
+                <% if @statut_user == 'Controleur' %>
+                  <li>
+                    <%= active_link_to new_chiffre_path, class: "fr-nav__link", target: "_self" do%>Renseigner un budget<%end%>
+                  </li>
+                <% end %>
+                <li>
+                  <%= active_link_to budgets_historique_path, class: "fr-nav__link", target: "_self" do%>Historique des budgets<%end %>
+                </li>
+
+                <li>
+                  <%= active_link_to budgets_suivi_path, class: "fr-nav__link", target: "_self" do%>Budgets par organisme<%end%>
+                </li>
+              </ul>
+            </div>
+
+          </li>
         </ul>
       </nav>
     </div>
