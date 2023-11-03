@@ -1,19 +1,144 @@
 
     wb = xlsx_package.workbook
     s = wb.styles
-    tbl_header = s.add_style b: true, alignment: { horizontal: :center }, bg_color: 'bfccfb',border: { style: :thin, color: '161616' }
-    col_header = s.add_style bg_color: 'FFDFDEDF', b: true
-  	wb.add_worksheet(name: "Chiffres clés") do |sheet| 	
-      sheet.add_row %W{ Général nil nil nil nil nil nil Emplois nil nil nil nil nil nil nil nil nil nil nil nil nil nil Crédits Comptabilité\ générale Trésorerie Analyse\ financière}, style: tbl_header
-    	sheet.add_row %W{ Exercice Budget Date\ de\ saisie Phase Examen Commentaire Commentaire\ Annexe Emplois\ sous\ plafond\ LFI Emplois\ hors\ plafond\ LFI Total\ Emplois Dépenses\ personnel Charges\ personnel Rappel\ plafond\ emplois Rappel\ plafond\ emplois\ prénotifié schéma\ emplois schéma\ emplois\ prénotifiés Emplois\ non\ rémunérés Emplois\ titulaires Cout\ emplois\ titulaires Emplois\ emplois_contractuels Cout\ emplois\ emplois_contractuels Emplois\ autre\ entité Total\ AE AE\ fonctionnement AE\ intervention AE\ investissement CP\ total CP\ fonctionnement CP\ intervention CP\ investissement CP\ operations CP\ recettes\ fléchées Subvention\ pour\ charges\ de\ service\ public}, style: col_header
+    titre_header = s.add_style b: true
+    col_header_blue = s.add_style bg_color: 'bdd7ee'
+    tbl_cell_blue = s.add_style bg_color: 'bdd7ee',border: { style: :thin, color: '161616' }, alignment:{ :horizontal => :right }
+    col_header_grey = s.add_style bg_color: 'FFDFDEDF'
+    tbl_cell = s.add_style border: { style: :thin, color: '161616' }, alignment:{ :horizontal => :right }
 
-      @chiffres.each do |chiffre|
-      examen = chiffre.statut == 'valide' ? chiffre.risque_insolvabilite : 'Brouillon'
-        sheet.add_row [chiffre.exercice_budgetaire, chiffre.type_budget, chiffre.created_at, chiffre.phase, examen, format_boolean(chiffre.commentaire), format_boolean(chiffre.commentaire_annexe), format_boolean(chiffre.emplois_plafond), format_boolean(chiffre.emplois_hors_plafond),format_boolean(chiffre.emplois_total), format_boolean(chiffre.emplois_depenses_personnel),format_boolean(chiffre.emplois_charges_personnel), format_boolean(chiffre.emplois_plafond_rappel), format_boolean(chiffre.emplois_plafond_prenotifie), format_boolean(chiffre.emplois_schema), format_boolean(chiffre.emplois_schema_prenotifie), format_boolean(chiffre.emplois_non_remuneres),format_boolean(chiffre.emplois_titulaires), format_boolean(chiffre.emplois_titulaires_montant), format_boolean(chiffre.emplois_contractuels), format_boolean(chiffre.emplois_contractuels_montant), format_boolean(chiffre.emplois_autre_entite), format_boolean(chiffre.credits_ae_total), format_boolean(chiffre.credits_ae_fonctionnement), format_boolean(chiffre.credits_ae_intervention), format_boolean(chiffre.credits_ae_investissement), format_boolean(chiffre.credits_cp_total),format_boolean(chiffre.credits_cp_fonctionnement), format_boolean(chiffre.credits_cp_intervention), format_boolean(chiffre.credits_cp_investissement), format_boolean(chiffre.credits_cp_operations), format_boolean(chiffre.credits_cp_recettes_flechees), format_boolean(chiffre.credits_subvention_sp), format_boolean(chiffre.credits_subvention_investissement_globalisee), format_boolean(chiffre.credits_subvention_investissement_flechee), format_boolean(chiffre.credits_financements_etat_autres), format_boolean(chiffre.credits_financements_etat_fleches), format_boolean(chiffre.credits_fiscalite_affectee),format_boolean(chiffre.credits_financements_publics_autres), format_boolean(chiffre.credits_financements_publics_fleches), format_boolean(chiffre.credits_recettes_propres_globalisees), format_boolean(chiffre.credits_recettes_propres_flechees), format_boolean(chiffre.credits_restes_a_payer), format_boolean(chiffre.tresorerie_finale_flechee),format_boolean(chiffre.tresorerie_finale_non_flechee), format_boolean(chiffre.tresorerie_finale), format_boolean(chiffre.tresorerie_variation), format_boolean(chiffre.tresorerie_variation_flechee), format_boolean(chiffre.tresorerie_variation_non_flechee), format_boolean(chiffre.tresorerie_min),format_boolean(chiffre.tresorerie_max), format_boolean(chiffre.tresorerie_min_date), format_boolean(chiffre.tresorerie_max_date), format_boolean(chiffre.capacite_autofinancement), format_boolean(chiffre.fonds_roulement_final), format_boolean(chiffre.fonds_roulement_variation),format_boolean(chiffre.fonds_roulement_besoin_final), format_boolean(chiffre.charges_fonctionnement), format_boolean(chiffre.charges_intervention), format_boolean(chiffre.charges_non_decaissables), format_boolean(chiffre.produits_subventions_etat), format_boolean(chiffre.produits_fiscalite_affectee),format_boolean(chiffre.produits_subventions_autres), format_boolean(chiffre.produits_autres), format_boolean(chiffre.produits_non_encaissables), format_boolean(chiffre.emplois_cout_total), format_boolean(chiffre.emplois_cout_investissements),format_boolean(chiffre.ressources_financement_etat), format_boolean(chiffre.ressources_autres), format_boolean(chiffre.decaissements_emprunts), format_boolean(chiffre.encaissements_emprunts),format_boolean(chiffre.decaissements_operations), format_boolean(chiffre.encaissements_operations), format_boolean(chiffre.decaissements_autres), format_boolean(chiffre.encaissements_autres),format_boolean(chiffre.ressources_total)]
+  	wb.add_worksheet(name: "Chiffres clés") do |sheet| 	
+      sheet.add_row [@organisme.nom], style: titre_header
+      sheet.add_border "A1", {edges: :all, style: :thick}
+      
+      @tableau = [nil, nil] + @chiffres_export.pluck(:type_budget,:exercice_budgetaire).map { |sous_tableau| sous_tableau.join(' ') }
+      sheet.add_row(@tableau)
+      
+      @colonnes = ["EMPLOIS", "Plafonds","Total des emplois rémunérés par l'organisme (en ETPT)","Dont Emplois sous plafond LFI (en ETPT)","Dont Emplois hors plafond LFI (en ETPT)","Hors plafond/ total effectif rémunérés par l'organisme", "Rappel du plafond", "Rappel du plafond d'emplois (en ETPT) inscrit en PLF / en LFI","Plafond d'emplois (en ETPT) pré-notifié à l'organisme par le RPROG","Total des dépenses/charges de personnel", "Coût moyen par ETPT", "SCHEMA d'emplois", "Schéma d'emplois (en ETP)", "Schéma d'emplois (en ETPT) pré-notifié à l'organisme par le RPROG", "Autres emplois en fonction dans l'organismes", "Emplois en fonction dans l'organisme, non rémunérés par lui (en ETPT) - emplois T2, MAD entrantes remboursées ou non", "Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisation d'emplois (en ETPT) - MAD sortantes / Pour les OHCB : Emplois en fonction dans une autre entité, rémunérés par l'organisme (en ETPT) - MAD sortantes", "Part des personnels exerçant leurs missions dans l'organisme dans letotal des emplois rémunérés directement par l'organisme", "Répartition des emplois et dépenses par statut","Total des emplois titulaires","Total des emplois contractuels", "Part des contractuels dans le total des emplois rémunérés par l'organisme","Dépenses/charges de personnel des emplois titulaires","Cout moyen des emplois titulaires","Dépenses/charges de personnel des emplois contractuels","Cout moyen des emplois contractuels"]
+      
+      sheet.add_row [@colonnes[0]], style: titre_header
+      sheet.add_row [@colonnes[1]], style: titre_header
+      
+      @emplois_total = [@colonnes[2],nil] + @chiffres_export.pluck(:emplois_total)
+      sheet.add_row(@emplois_total) 
+      sheet.add_style "A5", bg_color: "FFDFDEDF"
+      
+      @emplois_plafond = [@colonnes[3],nil] + @chiffres_export.pluck(:emplois_plafond)
+      sheet.add_row(@emplois_plafond)
+      
+      @emplois_hors_plafond = [@colonnes[4],nil] + @chiffres_export.pluck(:emplois_hors_plafond)
+      sheet.add_row(@emplois_hors_plafond)
+
+      @taux = [@colonnes[5],nil] + @chiffres_export.pluck(:emplois_hors_plafond, :emplois_total).map { |x, y| ratio(x,y,1) }
+      sheet.add_row(@taux)
+
+      sheet.add_row [@colonnes[6]], style: titre_header
+
+      @emplois_plafond_rappel = [@colonnes[7],nil] + @chiffres_export.pluck(:emplois_plafond_rappel)
+      sheet.add_row(@emplois_plafond_rappel)
+
+      @emplois_plafond_prenotifie = [@colonnes[8],nil] + @chiffres_export.pluck(:emplois_plafond_prenotifie)
+      sheet.add_row(@emplois_plafond_prenotifie)
+
+      sheet.add_row
+      @emplois_charges_personnel = [@colonnes[9],nil] + @chiffres_export.pluck(:emplois_charges_personnel)
+      sheet.add_row(@emplois_charges_personnel)
+
+      @cout_etp = [@colonnes[10],nil] + @chiffres_export.pluck(:emplois_charges_personnel, :emplois_total).map { |x, y| ratio(x,y,1) }
+      sheet.add_row(@cout_etp)
+      
+      sheet.add_row
+      sheet.add_row [@colonnes[11]], style: titre_header
+
+      @emplois_schema = [@colonnes[12],nil] + @chiffres_export.pluck(:emplois_schema)
+      sheet.add_row(@emplois_schema)
+
+      sheet.add_row 
+      @emplois_schema_prenotifie = [@colonnes[13],nil] + @chiffres_export.pluck(:emplois_schema_prenotifie)
+      sheet.add_row(@emplois_schema_prenotifie)
+
+      sheet.add_row
+      sheet.add_row [@colonnes[14]], style: titre_header 
+      @emplois_non_remuneres = [@colonnes[15],nil] + @chiffres_export.pluck(:emplois_non_remuneres)
+      sheet.add_row(@emplois_non_remuneres)
+
+      @emplois_autre_entite = [@colonnes[16],nil] + @chiffres_export.pluck(:emplois_autre_entite)
+      sheet.add_row(@emplois_autre_entite)
+
+      @part_emplois = [@colonnes[17],nil] + @chiffres_export.pluck(:emplois_non_remuneres, :emplois_autre_entite, :emplois_total).map { |x, y, z| ratio(y+z-x,z,1) if y }
+      sheet.add_row(@part_emplois)
+      
+      sheet.add_row
+      sheet.add_row [@colonnes[18]], style: titre_header
+
+      @emplois_titulaires = [@colonnes[19],nil] + @chiffres_export.pluck(:emplois_titulaires)
+      sheet.add_row(@emplois_titulaires)
+      @emplois_contractuels = [@colonnes[20],nil] + @chiffres_export.pluck(:emplois_contractuels)
+      sheet.add_row(@emplois_contractuels)
+      @part_contractuels = [@colonnes[21],nil] + @chiffres_export.pluck(:emplois_contractuels, :emplois_total).map { |x, y| ratio(x,y,1) }
+      sheet.add_row(@part_contractuels)
+      
+      @emplois_titulaires_montant = [@colonnes[22],nil] + @chiffres_export.pluck(:emplois_titulaires_montant)
+      sheet.add_row(@emplois_titulaires_montant)
+      @cout_titutlaire = [@colonnes[23],nil] + @chiffres_export.pluck(:emplois_titulaires_montant, :emplois_titulaires).map { |x, y| ratio(x,y,1) }
+      sheet.add_row(@cout_titutlaire)
+
+      @emplois_contractuels_montant = [@colonnes[24],nil] + @chiffres_export.pluck(:emplois_contractuels_montant)
+      sheet.add_row(@emplois_contractuels_montant)
+      @cout_contractuel = [@colonnes[25],nil] + @chiffres_export.pluck(:emplois_contractuels_montant, :emplois_contractuels).map { |x, y| ratio(x,y,1) }
+      sheet.add_row(@cout_contractuel)
+      
+
+      @array_border = [5,6,7,10,11,13,17,19,22,23,27,28,30]
+      @array_border_blue = [8,14,24,29,31,33]
+      @array_border.each do |row_index|
+        row = sheet.rows[row_index - 1]
+        row.cells.each_with_index do |cell,i|
+          if i > 1
+            cell.style = tbl_cell
+          end
+        end
       end
-      ['A1:G1','H1:U1','V1:AG1','AH1:AZ1','BB1:BC1'].each do |range| 
-        sheet.merge_cells(range) 
+      @array_border_blue.each do |row_index|
+        row = sheet.rows[row_index - 1]
+        row.cells.each_with_index do |cell,i|
+          if i == 0
+            cell.add_style bg_color: "bdd7ee"
+          elsif i > 1
+            cell.style = tbl_cell_blue
+          end
+        end
       end
-      sheet.column_widths 8, 14, 14, 14, 14,14,14,14, 14, 14, 14,14,14,14, 14, 14, 14,14,14
+      @array_euro = [13,14,30,31,32,33]
+      @array_euro.each do |row_index|
+        row = sheet.rows[row_index - 1]
+        row.cells.each_with_index do |cell,i|
+          if i > 1
+            cell.add_style num_fmt: 7
+          end
+        end
+      end
+      @array_percent = [8,24,29]
+      @array_percent.each do |row_index|
+        row = sheet.rows[row_index - 1]
+        row.cells.each_with_index do |cell,i|
+          if i > 1
+            cell.add_style num_fmt: 9
+          end
+        end
+      end
+
+      sheet.rows.each do |row|
+        row.cells.each do |cell|
+          cell.add_style font_name: 'Calibri', sz: 13, alignment:{ :vertical => :center ,:wrap_text => true}
+        end
+      end
+
+      
+      @length = @tableau.length
+      @sheet_col = @sheet_col = [50, 4] + Array.new(@length-2, 20)
+      sheet.column_widths(*@sheet_col)
+    	
+      
   	end
  

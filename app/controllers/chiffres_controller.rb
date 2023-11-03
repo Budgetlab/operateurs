@@ -10,6 +10,7 @@ class ChiffresController < ApplicationController
     redirect_to root_path and return unless @statut_user == '2B2O' || @est_editeur || @familles&.include?(@organisme.famille)
 
     @chiffres = @organisme.chiffres
+    @chiffres_export = @chiffres.where(statut: 'valide')
     @date = Date.today.year
     liste_budgets(@date, @chiffres)
     filename = "chiffres clés #{@organisme.nom}.xlsx"
