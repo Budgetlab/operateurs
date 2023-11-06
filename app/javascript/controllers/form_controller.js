@@ -494,12 +494,14 @@ export default class extends Controller {
         }
     }
     numberFormat(number){
+       if (number != undefined){
         const sanitizedValue = number.replace(/\u202F/g, "");
         // Remplacez la virgule par un point pour permettre les décimaux
         const sanitizedValueWithDot = sanitizedValue.replace(',', '.');
         // Analysez la valeur en tant que nombre à virgule flottante
         const parsedValue = parseFloat(sanitizedValueWithDot);
         return parsedValue;
+       }
     }
     changeEmplois(){
         if (document.getElementById("emplois_plafond") != null && document.getElementById("emplois_hors_plafond") != null){

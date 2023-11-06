@@ -37,7 +37,15 @@ export default class extends Controller {
             section.id = section.getAttribute("data-tab-value");
         });
         this.afficherCredits();
-
+        // reset tab check false
+        const elements = document.querySelectorAll(".fr-toggle__input");
+        elements.forEach(element =>{
+            element.checked = false;
+        })
+        const blocs = document.querySelectorAll(".options");
+        blocs.forEach(element => {
+            element.classList.add("fr-hidden");
+        })
     }
     afficherCredits(){
         const nav_credits = document.getElementById("nav_credits");

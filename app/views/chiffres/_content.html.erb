@@ -10,9 +10,9 @@
       <%= render partial: 'chiffres/content_phase', locals: {chiffre: chiffre} %>
   </div>
   <div class="fr-toggle">
-    <input type="checkbox" class="fr-toggle__input" aria-describedby="toggle-698-hint-text" id="toggle-698" data-action="click->toggle#toggle">
-    <label class="fr-toggle__label" for="toggle-698" >Données complètes</label>
-    <p class="fr-hint-text" id="toggle-698-hint-text">Cliquez sur l’interrupteur pour afficher l’ensemble des données</p>
+    <input type="checkbox" class="fr-toggle__input" aria-describedby="toggle-698-hint-text" id="toggle-<%=chiffre.id %>" data-action="click->toggle#toggle">
+    <label class="fr-toggle__label" for="toggle-<%=chiffre.id %>" >Données complètes</label>
+    <p class="fr-hint-text" id="toggle-<%=chiffre.id %>-hint-text">Cliquez sur l’interrupteur pour afficher l’ensemble des données</p>
   </div>
   <hr class="fr-my-2w">
   <div data-tab-target="section" data-tab-value="emplois" class="fr-mb-4w">

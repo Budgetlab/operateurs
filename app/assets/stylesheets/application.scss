@@ -34,7 +34,9 @@
 .fr-text--center{
   text-align: center;
 }
-
+.fr-text--underline{
+  text-decoration: underline;
+}
 .shadow{
   filter: drop-shadow(var(--lifted-shadow)) !important;
 }

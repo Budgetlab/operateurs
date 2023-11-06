@@ -1,0 +1,95 @@
+<button class="fr-btn--tooltip fr-btn" aria-describedby="<%= num_id %>-<%=chiffre.id %>" data-action="form#Dropdown">
+  Information contextuelle
+</button>
+<span class="fr-tooltip fr-placement" id="<%= num_id %>-<%=chiffre.id %>" role="tooltip" aria-hidden="true">
+<% if num_id == "emplois_plafond_t" %>
+  Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+  > Tableau pour vote de l'organe délibérant <br>
+  > Cellule "Sous plafond LFI (a)"
+<% elsif num_id == "emplois_hors_plafond_t" %>
+  Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+  > Tableau pour vote de l'organe délibérant <br>
+  > Cellule "Hors plafond LFI (b)"
+<% elsif num_id == "emplois_total_t" %>
+  Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+  > Tableau pour vote de l'organe délibérant <br>
+  > Cellule "Plafond organisme (=a+b)"
+<% elsif num_id == "emplois_total2_t" %>
+  Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+  > Tableau pour vote de l'organe délibérant <br>
+    <% if chiffre.comptabilite_budgetaire == true %>
+    > Cellule "Plafond organisme"
+    <% else  %>
+    > Cellule "Total organisme"
+    <% end  %>
+<% elsif num_id == "emplois_depenses_personnel_t" %>
+  Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+  > Tableau pour vote de l'organe délibérant <br>
+  > Cellule "Total des emplois rémunérés par l'organisme et des autres dépenses de personnel” / Plafond organisme / <%= chiffre&.comptabilite_budgetaire ? 'Dépenses' : 'Charges' %> de personnel"<br>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      OU <br>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+  > Tableau "Dépenses" <br>
+  > Cellule "Personnel" (en CP) <br>
+  <span class="fr-text--italic">Rappel : L'article 181 du décret GBCP prévoit que s'agissant des dépenses de personnel, le montant des autorisations d'engagement est égal au montant des crédits de paiement.</span>
+      <% end %>
+<% elsif num_id == "emplois_plafond_rappel_t" %>
+    Source : <span class="fr-text--underline">PAP</span><br>
+    >  Partie Opérateurs<br>
+    > Tableau "Consolidation des emplois de l'opérateur"<br>
+    > Cellule "Emplois rémunérés par l'opérateur / Sous plafond / PLF N"<br>
+<% elsif num_id == "emplois_plafond_prenotifie_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    >  Cellule "Rappel du plafond d'emploi notifié par le responsable de programme en ETPT"<br>
+    OU<br>
+    Source : <span class="fr-text--underline">Pré-notification soumise à l'avis du contrôleur budgétaire</span> <br>
+<% elsif num_id == "emplois_schema_t" %>
+  Source : <span class="fr-text--underline">Tableau n°1 "Suivi des emplois" du Document prévisionnel de gestion des emplois et des crédits de personnel (DPGECP)"</span><br>
+  <span class="fr-text--italic">Rappel : en application de l'article 182 du décret GBCP, les organismes soumis à la comptabilité budgétaire doivent établir un DPGECP. L'ordonnateur de l'organisme doit transmettre le DPGECP à l'autorité en charge du contrôle et aux autorités de tutelle obligatoirement préalablement à l'envoi du projet de BI aux membre de l'organe délibérant dans un délai compatible avec l'examen du projet de BI. <br>
+  En pratique, la communication du DPGECP est un préalable à la réunion préparatoire au conseil d'administration relatif au BI (préCA). L'ordonnateur doit également le transmettre aux mêmes autorités à l'occasion de l'envoi du compte financier aux membres de l'organe délibérant. <br>
+  Par ailleurs, comme prévu par le vademecum relatif à la gestion budgétaire et comptablie des organismes publics et des opérateurs de l'Etat, les opérateurs qui ne seraient pas soumis à la comptabilité budgétaire ou au titre III du décret GBCP doivent néanmoins produire des DPGECP.</span>
+<% elsif num_id == "emplois_schema_prenotifie_t" %>
+    Source : <span class="fr-text--underline">Pré-notification soumise à l'avis du contrôleur budgétaire </span>
+<% elsif num_id == "emplois_titulaires_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    > Tableau "Pour information de l'organe délibérant"<br>
+    > Cellule  "Titulaires / Plafond organisme / ETPT"<br>
+<% elsif num_id == "emplois_titulaires_montant_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    > Tableau "Pour information de l'organe délibérant"<br>
+    > Cellule "Titulaires / Plafond organisme / <%= chiffre&.comptabilite_budgetaire ? 'Dépenses' : 'Charges' %> de personnel"<br>
+<% elsif num_id == "emplois_contractuels_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    > Tableau "Pour information de l'organe délibérant"<br>
+    > Cellule  "Contractuels / Plafond organisme / ETPT"<br>
+<% elsif num_id == "emplois_contractuels_montant_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    > Tableau "Pour information de l'organe délibérant"<br>
+    > Cellule "Contractuels / Plafond organisme / <%= chiffre&.comptabilite_budgetaire ? 'Dépenses' : 'Charges' %> de personnel"<br>
+<% elsif num_id == "emplois_non_remuneres_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    <% if chiffre.comptabilite_budgetaire == true %>
+    > Tableau  "Pour information : tableau détaillé des emplois rémunérés par d'autres personnes morales et ne décomptant pas dans le plafond des autorisations d'emplois de l'organisme"<br>
+    <%else %>
+    > Tableau  "Pour information : tableau détaillé des emplois rémunérés par d'autres personnes morales"<br>
+    <% end %>
+    > Cellule "Emplois rémunérés par d'autres personnes morales (en ETPT)" <br>
+<% elsif num_id == "emplois_autre_entite_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    <% if chiffre.comptabilite_budgetaire == true %>
+    > Tableau "Pour information : tableau détaillé des emplois rémunérés par l'organisme et décomptant le plafond des autorisations d'emplois de l'organisme mais en fonction dans une autre entité"<br>
+    <% else %>
+    > Tableau "Pour information : tableau détaillé des emplois rémunérés par l'organisme en fonction dans une autre entité"
+    <% end %>
+    > Cellule "Emplois rémunérés par l'organisme" <br>
+<% elsif num_id == "indicateur_cout_t" %>
+    Cet indicateur permet de mesurer le coût moyen chargé d'un ETPT, facilitant ainsi la comparaison dans le temps, en identifiant la part de la variation des dépenses de personnel d'un exercice à un autre non liée à la variation des effectifs.
+<% elsif num_id == "indicateur_cout_autre_t" %>
+    Formule de calcul : <br>
+    <% if chiffre.comptabilite_budgetaire == true %>
+    (Total autorisations d'emplois rémunérés par l'organisme - Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisations d'emplois + Emplois en fonction dans l'organisme, non rémunérés par lui) / Total autorisations d'emplois rémunérés par l'organisme
+    <%else %>
+    (Total emplois rémunérés par l'organisme - Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'emplois + Emplois en fonction dans l'organisme, non rémunérés par lui) / Total emplois rémunérés par l'organisme
+    <%end %>
+<% end %>
+</span>
