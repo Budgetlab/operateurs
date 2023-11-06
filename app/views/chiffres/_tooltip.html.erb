@@ -1,22 +1,22 @@
-<button class="fr-btn--tooltip fr-btn" aria-describedby="<%= num_id %>-<%=chiffre.id %>" data-action="form#Dropdown">
-  Information contextuelle
-</button>
+<a class="fr-link" aria-describedby="<%= num_id %>-<%=chiffre.id %>" id="link-<%= num_id %>-<%=chiffre.id %>" href="#">
+  <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true"></span>
+</a>
 <span class="fr-tooltip fr-placement" id="<%= num_id %>-<%=chiffre.id %>" role="tooltip" aria-hidden="true">
 <% if num_id == "emplois_plafond_t" %>
   Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
-  > Tableau pour vote de l'organe délibérant <br>
+  > Tableau "Pour vote de l'organe délibérant" <br>
   > Cellule "Sous plafond LFI (a)"
 <% elsif num_id == "emplois_hors_plafond_t" %>
   Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
-  > Tableau pour vote de l'organe délibérant <br>
+  > Tableau "Pour vote de l'organe délibérant" <br>
   > Cellule "Hors plafond LFI (b)"
 <% elsif num_id == "emplois_total_t" %>
   Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
-  > Tableau pour vote de l'organe délibérant <br>
+  > Tableau "Pour vote de l'organe délibérant" <br>
   > Cellule "Plafond organisme (=a+b)"
 <% elsif num_id == "emplois_total2_t" %>
   Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
-  > Tableau pour vote de l'organe délibérant <br>
+    > Tableau "Pour vote de l'organe délibérant" <br>
     <% if chiffre.comptabilite_budgetaire == true %>
     > Cellule "Plafond organisme"
     <% else  %>
@@ -24,7 +24,7 @@
     <% end  %>
 <% elsif num_id == "emplois_depenses_personnel_t" %>
   Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
-  > Tableau pour vote de l'organe délibérant <br>
+  > Tableau "Pour information de l'organe délibérant" <br>
   > Cellule "Total des emplois rémunérés par l'organisme et des autres dépenses de personnel” / Plafond organisme / <%= chiffre&.comptabilite_budgetaire ? 'Dépenses' : 'Charges' %> de personnel"<br>
     <% if chiffre.comptabilite_budgetaire == true %>
       OU <br>
@@ -35,7 +35,7 @@
       <% end %>
 <% elsif num_id == "emplois_plafond_rappel_t" %>
     Source : <span class="fr-text--underline">PAP</span><br>
-    >  Partie Opérateurs<br>
+    > Partie Opérateurs<br>
     > Tableau "Consolidation des emplois de l'opérateur"<br>
     > Cellule "Emplois rémunérés par l'opérateur / Sous plafond / PLF N"<br>
 <% elsif num_id == "emplois_plafond_prenotifie_t" %>
@@ -85,11 +85,12 @@
 <% elsif num_id == "indicateur_cout_t" %>
     Cet indicateur permet de mesurer le coût moyen chargé d'un ETPT, facilitant ainsi la comparaison dans le temps, en identifiant la part de la variation des dépenses de personnel d'un exercice à un autre non liée à la variation des effectifs.
 <% elsif num_id == "indicateur_cout_autre_t" %>
-    Formule de calcul : <br>
+    <span class="fr-text--bold">Formule de calcul : <br>
     <% if chiffre.comptabilite_budgetaire == true %>
     (Total autorisations d'emplois rémunérés par l'organisme - Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisations d'emplois + Emplois en fonction dans l'organisme, non rémunérés par lui) / Total autorisations d'emplois rémunérés par l'organisme
     <%else %>
     (Total emplois rémunérés par l'organisme - Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'emplois + Emplois en fonction dans l'organisme, non rémunérés par lui) / Total emplois rémunérés par l'organisme
     <%end %>
+    </span>
 <% end %>
 </span>
