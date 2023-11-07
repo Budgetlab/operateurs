@@ -11,11 +11,11 @@
 <h3 class="fr-h4 fr-mt-4w">Dépenses</h3>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Total des autorisations d’engagement (AE)</div>
+    <div>Total des autorisations d’engagement (AE) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_ae_total_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_ae_total) %> €</div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Total des crédits de paiement (CP)</div>
+    <div>Total des crédits de paiement (CP)<%= render partial: "chiffres/tooltip", locals: {num_id: "credits_cp_total_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_cp_total) %> €</div>
   </div>
 </div>
@@ -34,7 +34,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Dont total des dépenses de personnel (CP)</p>
+          <p class="fr-mb-0 fr-text--center">Dont total des dépenses de personnel (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_cp_personnel_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.emplois_depenses_personnel) %> €</p>
         </div>
       </div>
@@ -46,7 +46,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids relatif des dépenses de personnel</p>
+          <p class="fr-mb-0 fr-text--center">Poids relatif des dépenses de personnel <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_poids_personnel_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_depenses_personnel,chiffre.credits_cp_total-chiffre.credits_cp_investissement,100)) %> %</p>
         </div>
       </div>
@@ -56,12 +56,12 @@
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
     <div class="options fr-hidden">
-      <div>Dont total des dépenses de fonctionnement (AE)</div>
+      <div>Dont total des dépenses de fonctionnement (AE) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_ae_fonctionnement_t", chiffre: chiffre} %></div>
       <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_ae_fonctionnement) %> €</div>
     </div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Dont total des dépenses de fonctionnement (CP)</div>
+    <div>Dont total des dépenses de fonctionnement (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_cp_fonctionnement_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_cp_fonctionnement) %> €</div>
   </div>
 </div>
@@ -80,12 +80,12 @@
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
     <div class="options fr-hidden">
-      <div>Dont total des dépenses d'intervention (AE)</div>
+      <div>Dont total des dépenses d'intervention (AE) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_ae_intervention_t", chiffre: chiffre} %></div>
       <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_ae_intervention) %> €</div>
     </div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Dont total des dépenses d'intervention (CP)</div>
+    <div>Dont total des dépenses d'intervention (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_cp_intervention_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_cp_intervention) %> €</div>
   </div>
 </div>
@@ -104,12 +104,12 @@
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
     <div class="options fr-hidden">
-      <div>Dont total des dépenses d'investissement (AE)</div>
+      <div>Dont total des dépenses d'investissement (AE) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_ae_investissement_t", chiffre: chiffre} %></div>
       <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_ae_investissement) %> €</div>
     </div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Dont total des dépenses de investissement (CP)</div>
+    <div>Dont total des dépenses de investissement (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_cp_investissement_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_cp_investissement) %> €</div>
   </div>
 </div>
@@ -127,14 +127,14 @@
 </div>
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Total des crédits de paiement ouverts en N pour des opérations pluriannuelles</div>
+    <div>Total des crédits de paiement ouverts en N pour des opérations pluriannuelles <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_cp_operations_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_cp_operations) %> €</div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids des crédits de paiement au titre d'opérations pluriannuelles</p>
+          <p class="fr-mb-0 fr-text--center">Poids des crédits de paiement au titre d'opérations pluriannuelles <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_operations_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_cp_operations,chiffre.credits_cp_total,100)) %> %</p>
         </div>
       </div>
@@ -143,7 +143,7 @@
 </div>
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Total des dépenses sur recettes fléchées (en CP)</div>
+    <div>Total des dépenses sur recettes fléchées (en CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_cp_recettes_flechees_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_cp_recettes_flechees) %> €</div>
   </div>
 </div>
@@ -152,54 +152,54 @@
 <% if chiffre.operateur == true %>
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-12 fr-col-lg-6">
-      <div>Subvention pour charges de service public</div>
+      <div>Subvention pour charges de service public <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_subvention_sp_t", chiffre: chiffre} %></div>
       <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_subvention_sp) %> €</div>
     </div>
   </div>
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-12 fr-col-lg-6">
-      <div>Subvention pour charges d'investissement globalisée</div>
+      <div>Subvention pour charges d'investissement globalisée <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_subvention_investissement_globalisee_t", chiffre: chiffre} %></div>
       <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_subvention_investissement_globalisee) %> €</div>
     </div>
     <div class="fr-col-12 fr-col-lg-6">
-      <div>Subvention pour charges d'investissement fléchée</div>
+      <div>Subvention pour charges d'investissement fléchée <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_subvention_investissement_flechee_t", chiffre: chiffre} %></div>
       <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_subvention_investissement_flechee) %> €</div>
     </div>
   </div>
 <% end  %>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Autres financements de l’Etat</div>
+    <div>Autres financements de l’Etat <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_financements_etat_autres_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_financements_etat_autres) %> €</div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Autres financements de l’Etat fléchés</div>
+    <div>Autres financements de l’Etat fléchés <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_financements_etat_fleches_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_financements_etat_fleches) %> €</div>
   </div>
 </div>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Fiscalité affectée</div>
+    <div>Fiscalité affectée <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_fiscalite_affectee_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_fiscalite_affectee) %> €</div>
   </div>
 </div>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Autres financements publics</div>
+    <div>Autres financements publics <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_financements_publics_autres_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_financements_publics_autres) %> €</div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Autres financements publics fléchés</div>
+    <div>Autres financements publics fléchés <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_financements_publics_fleches_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_financements_publics_fleches) %> €</div>
   </div>
 </div>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Recettes propres globalisées</div>
+    <div>Recettes propres globalisées <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_recettes_propres_globalisees_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_recettes_propres_globalisees) %> €</div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Recettes propres fléchées</div>
+    <div>Recettes propres fléchées <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_recettes_propres_flechees_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_recettes_propres_flechees) %> €</div>
   </div>
 </div>
@@ -230,7 +230,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Total des recettes</p>
+          <p class="fr-mb-0 fr-text--center">Total des recettes <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_total_recettes_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_recettes) %> €</p>
         </div>
       </div>
@@ -287,7 +287,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Taux de couverture des dépenses de personnel et de fonctionnement par de la SCSP</p>
+          <p class="fr-mb-0 fr-text--center">Taux de couverture des dépenses de personnel et de fonctionnement par de la SCSP <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_taux_sp_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_subvention_sp,chiffre.emplois_depenses_personnel+chiffre.credits_cp_fonctionnement,1))%> %</p>
         </div>
       </div>
@@ -301,7 +301,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Total des recettes propres</p>
+          <p class="fr-mb-0 fr-text--center">Total des recettes propres <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_total_recettes_propres_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.credits_recettes_propres_globalisees+chiffre.credits_recettes_propres_flechees) %> €</p>
         </div>
       </div>
@@ -311,7 +311,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Taux de recettes propres</p>
+          <p class="fr-mb-0 fr-text--center">Taux de recettes propres <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_taux_recettes_propres_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_recettes_propres_globalisees+chiffre.credits_recettes_propres_flechees,@total_recettes,1)) %> %</p>
         </div>
       </div>
@@ -324,7 +324,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
+          <p class="fr-mb-0 fr-text--center">Solde budgétaire <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_solde_budgetaire_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@solde)%> €</p>
         </div>
       </div>
@@ -345,7 +345,7 @@
 <h3 class="fr-h4 fr-mt-4w">Restes à payer</h3>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Niveau final des restes à payer</div>
+    <div>Niveau final des restes à payer <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_restes_a_payer_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.credits_restes_a_payer) %> €</div>
   </div>
 </div>
@@ -364,7 +364,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids des restes à payer</p>
+          <p class="fr-mb-0 fr-text--center">Poids des restes à payer <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_rap_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_restes_a_payer,chiffre.credits_cp_total-chiffre.emplois_depenses_personnel,100)) %> %</p>
         </div>
       </div>

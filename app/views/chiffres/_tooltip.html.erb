@@ -2,95 +2,225 @@
   <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true"></span>
 </a>
 <span class="fr-tooltip fr-placement" id="<%= num_id %>-<%=chiffre.id %>" role="tooltip" aria-hidden="true">
-<% if num_id == "emplois_plafond_t" %>
-  Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
-  > Tableau "Pour vote de l'organe délibérant" <br>
-  > Cellule "Sous plafond LFI (a)"
-<% elsif num_id == "emplois_hors_plafond_t" %>
-  Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
-  > Tableau "Pour vote de l'organe délibérant" <br>
-  > Cellule "Hors plafond LFI (b)"
-<% elsif num_id == "emplois_total_t" %>
-  Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
-  > Tableau "Pour vote de l'organe délibérant" <br>
-  > Cellule "Plafond organisme (=a+b)"
-<% elsif num_id == "emplois_total2_t" %>
-  Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+  <% if num_id == "emplois_plafond_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
     > Tableau "Pour vote de l'organe délibérant" <br>
-    <% if chiffre.comptabilite_budgetaire == true %>
-    > Cellule "Plafond organisme"
-    <% else  %>
-    > Cellule "Total organisme"
-    <% end  %>
-<% elsif num_id == "emplois_depenses_personnel_t" %>
-  Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
-  > Tableau "Pour information de l'organe délibérant" <br>
-  > Cellule "Total des emplois rémunérés par l'organisme et des autres dépenses de personnel” / Plafond organisme / <%= chiffre&.comptabilite_budgetaire ? 'Dépenses' : 'Charges' %> de personnel"<br>
+    > Cellule "Sous plafond LFI (a)"
+  <% elsif num_id == "emplois_hors_plafond_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    > Tableau "Pour vote de l'organe délibérant" <br>
+    > Cellule "Hors plafond LFI (b)"
+  <% elsif num_id == "emplois_total_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    > Tableau "Pour vote de l'organe délibérant" <br>
+    > Cellule "Plafond organisme (=a+b)"
+  <% elsif num_id == "emplois_total2_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    > Tableau "Pour vote de l'organe délibérant" <br>
+    > Cellule <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme' : 'Total organisme' %>
+  <% elsif num_id == "emplois_depenses_personnel_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    > Tableau "Pour information de l'organe délibérant" <br>
+
+    > Cellule "Total des emplois rémunérés par l'organisme et des autres dépenses de personnel / <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme / Dépenses' : 'Total organisme / Charges' %> de personnel"<br>
     <% if chiffre.comptabilite_budgetaire == true %>
       OU <br>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-  > Tableau "Dépenses" <br>
-  > Cellule "Personnel" (en CP) <br>
-  <span class="fr-text--italic">Rappel : L'article 181 du décret GBCP prévoit que s'agissant des dépenses de personnel, le montant des autorisations d'engagement est égal au montant des crédits de paiement.</span>
-      <% end %>
-<% elsif num_id == "emplois_plafond_rappel_t" %>
+    > Tableau "Dépenses" <br>
+    > Cellule "Personnel" (en CP) <br>
+    <span class="fr-text--italic">Rappel : L'article 181 du décret GBCP prévoit que s'agissant des dépenses de personnel, le montant des autorisations d'engagement est égal au montant des crédits de paiement.</span>
+   <% end %>
+  <% elsif num_id == "emplois_plafond_rappel_t" %>
     Source : <span class="fr-text--underline">PAP</span><br>
     > Partie Opérateurs<br>
     > Tableau "Consolidation des emplois de l'opérateur"<br>
     > Cellule "Emplois rémunérés par l'opérateur / Sous plafond / PLF N"<br>
-<% elsif num_id == "emplois_plafond_prenotifie_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+  <% elsif num_id == "emplois_plafond_prenotifie_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
     >  Cellule "Rappel du plafond d'emploi notifié par le responsable de programme en ETPT"<br>
     OU<br>
     Source : <span class="fr-text--underline">Pré-notification soumise à l'avis du contrôleur budgétaire</span> <br>
-<% elsif num_id == "emplois_schema_t" %>
-  Source : <span class="fr-text--underline">Tableau n°1 "Suivi des emplois" du Document prévisionnel de gestion des emplois et des crédits de personnel (DPGECP)"</span><br>
-  <span class="fr-text--italic">Rappel : en application de l'article 182 du décret GBCP, les organismes soumis à la comptabilité budgétaire doivent établir un DPGECP. L'ordonnateur de l'organisme doit transmettre le DPGECP à l'autorité en charge du contrôle et aux autorités de tutelle obligatoirement préalablement à l'envoi du projet de BI aux membre de l'organe délibérant dans un délai compatible avec l'examen du projet de BI. <br>
-  En pratique, la communication du DPGECP est un préalable à la réunion préparatoire au conseil d'administration relatif au BI (préCA). L'ordonnateur doit également le transmettre aux mêmes autorités à l'occasion de l'envoi du compte financier aux membres de l'organe délibérant. <br>
-  Par ailleurs, comme prévu par le vademecum relatif à la gestion budgétaire et comptablie des organismes publics et des opérateurs de l'Etat, les opérateurs qui ne seraient pas soumis à la comptabilité budgétaire ou au titre III du décret GBCP doivent néanmoins produire des DPGECP.</span>
-<% elsif num_id == "emplois_schema_prenotifie_t" %>
+  <% elsif num_id == "emplois_schema_t" %>
+    Source : <span class="fr-text--underline">Tableau n°1 "Suivi des emplois" du Document prévisionnel de gestion des emplois et des crédits de personnel (DPGECP)"</span><br>
+     <span class="fr-text--italic">Rappel : en application de l'article 182 du décret GBCP, les organismes soumis à la comptabilité budgétaire doivent établir un DPGECP. L'ordonnateur de l'organisme doit transmettre le DPGECP à l'autorité en charge du contrôle et aux autorités de tutelle obligatoirement préalablement à l'envoi du projet de BI aux membre de l'organe délibérant dans un délai compatible avec l'examen du projet de BI. <br>
+    En pratique, la communication du DPGECP est un préalable à la réunion préparatoire au conseil d'administration relatif au BI (préCA). L'ordonnateur doit également le transmettre aux mêmes autorités à l'occasion de l'envoi du compte financier aux membres de l'organe délibérant. <br>
+    Par ailleurs, comme prévu par le vademecum relatif à la gestion budgétaire et comptablie des organismes publics et des opérateurs de l'Etat, les opérateurs qui ne seraient pas soumis à la comptabilité budgétaire ou au titre III du décret GBCP doivent néanmoins produire des DPGECP.</span>
+  <% elsif num_id == "emplois_schema_prenotifie_t" %>
     Source : <span class="fr-text--underline">Pré-notification soumise à l'avis du contrôleur budgétaire </span>
-<% elsif num_id == "emplois_titulaires_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+  <% elsif num_id == "emplois_titulaires_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
     > Tableau "Pour information de l'organe délibérant"<br>
-    > Cellule  "Titulaires / Plafond organisme / ETPT"<br>
-<% elsif num_id == "emplois_titulaires_montant_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    > Cellule  "Titulaires / <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme' : 'Total organisme' %> / ETPT"<br>
+  <% elsif num_id == "emplois_titulaires_montant_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
     > Tableau "Pour information de l'organe délibérant"<br>
-    > Cellule "Titulaires / Plafond organisme / <%= chiffre&.comptabilite_budgetaire ? 'Dépenses' : 'Charges' %> de personnel"<br>
-<% elsif num_id == "emplois_contractuels_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    > Cellule "Titulaires / <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme / Dépenses' : 'Total organisme / Charges' %> de personnel"<br>
+  <% elsif num_id == "emplois_contractuels_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
     > Tableau "Pour information de l'organe délibérant"<br>
-    > Cellule  "Contractuels / Plafond organisme / ETPT"<br>
-<% elsif num_id == "emplois_contractuels_montant_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    > Cellule  "Contractuels / <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme' : 'Total organisme' %> / ETPT"<br>
+  <% elsif num_id == "emplois_contractuels_montant_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
     > Tableau "Pour information de l'organe délibérant"<br>
-    > Cellule "Contractuels / Plafond organisme / <%= chiffre&.comptabilite_budgetaire ? 'Dépenses' : 'Charges' %> de personnel"<br>
-<% elsif num_id == "emplois_non_remuneres_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    > Cellule "Contractuels / <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme / Dépenses' : 'Total organisme / Charges' %> de personnel"<br>
+  <% elsif num_id == "emplois_non_remuneres_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
     <% if chiffre.comptabilite_budgetaire == true %>
     > Tableau  "Pour information : tableau détaillé des emplois rémunérés par d'autres personnes morales et ne décomptant pas dans le plafond des autorisations d'emplois de l'organisme"<br>
     <%else %>
     > Tableau  "Pour information : tableau détaillé des emplois rémunérés par d'autres personnes morales"<br>
     <% end %>
     > Cellule "Emplois rémunérés par d'autres personnes morales (en ETPT)" <br>
-<% elsif num_id == "emplois_autre_entite_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse budgétaire - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+  <% elsif num_id == "emplois_autre_entite_t" %>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
     <% if chiffre.comptabilite_budgetaire == true %>
     > Tableau "Pour information : tableau détaillé des emplois rémunérés par l'organisme et décomptant le plafond des autorisations d'emplois de l'organisme mais en fonction dans une autre entité"<br>
     <% else %>
-    > Tableau "Pour information : tableau détaillé des emplois rémunérés par l'organisme en fonction dans une autre entité"
+    > Tableau "Pour information : tableau détaillé des emplois rémunérés par l'organisme en fonction dans une autre entité"<br>
     <% end %>
     > Cellule "Emplois rémunérés par l'organisme" <br>
-<% elsif num_id == "indicateur_cout_t" %>
+  <% elsif num_id == "indicateur_cout_t" %>
     Cet indicateur permet de mesurer le coût moyen chargé d'un ETPT, facilitant ainsi la comparaison dans le temps, en identifiant la part de la variation des dépenses de personnel d'un exercice à un autre non liée à la variation des effectifs.
-<% elsif num_id == "indicateur_cout_autre_t" %>
+  <% elsif num_id == "indicateur_cout_autre_t" %>
     <span class="fr-text--bold">Formule de calcul : <br>
     <% if chiffre.comptabilite_budgetaire == true %>
     (Total autorisations d'emplois rémunérés par l'organisme - Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisations d'emplois + Emplois en fonction dans l'organisme, non rémunérés par lui) / Total autorisations d'emplois rémunérés par l'organisme
     <%else %>
-    (Total emplois rémunérés par l'organisme - Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'emplois + Emplois en fonction dans l'organisme, non rémunérés par lui) / Total emplois rémunérés par l'organisme
+    (Total emplois rémunérés par l'organisme - Emplois en fonction dans une autre entité, rémunérés par l'organisme + Emplois en fonction dans l'organisme, non rémunérés par lui) / Total emplois rémunérés par l'organisme
     <%end %>
     </span>
-<% end %>
+  <% elsif num_id == "credits_ae_total_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Cellule "Total des dépenses en AE"
+  <% elsif num_id == "credits_cp_total_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Cellule "Total des dépenses en CP"
+  <% elsif num_id == "credits_cp_personnel_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Dépenses"<br>
+    > Cellule "Personnel" (en CP) <br>
+    Rappel : L'article 181 du décret GBCP prévoit que s'agissant des dépenses de personnel, le montant des autorisations d'engagement est égal au montant des crédits de paiement.
+  <% elsif num_id == "credits_poids_personnel_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des dépenses de personnel / Total des dépenses hors investissement</span><br><br>
+    Cet indicateur permet de mesurer le degré de rigidité du budget lié à la part des dépenses destinées à la rémunération des personnel. <br>
+    L'exclusion des dépenses d'investissement permet d'éviter les éventuelles évolutions erratiques liées à la réalisation d'opérations ponctuelles de montants significatifs.
+  <% elsif num_id == "credits_ae_fonctionnement_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Dépenses"<br>
+    > Cellule "Fonctionnement (en AE)"
+  <% elsif num_id == "credits_cp_fonctionnement_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Dépenses"<br>
+    > Cellule "Fonctionnement (en CP)"
+  <% elsif num_id == "credits_ae_intervention_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Dépenses"<br>
+    > Cellule "Intervention" (en AE)
+  <% elsif num_id == "credits_cp_intervention_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Dépenses"<br>
+    > Cellule "Intervention" (en CP)
+  <% elsif num_id == "credits_ae_investissement_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Dépenses"<br>
+    > Cellule "Investissement" (en AE)
+  <% elsif num_id == "credits_cp_investissement_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Dépenses"<br>
+    > Cellule "Investissement" (en CP)
+  <% elsif num_id == "credits_cp_recettes_flechees_t" %>
+    Source : <span class="fr-text--underline">Tableau 8 de la liasse budgétaire - "Opérations sur recettes fléchées"</span><br>
+    > Cellule "Dépenses sur recettes fléchées (CP) - année N"
+  <% elsif num_id == "credits_cp_operations_t" %>
+    Source : <span class="fr-text--underline"> Tableau 9 de la liasse budgétaire - "Exécution Prévision” </span><br>
+    > Cellule "Total des CP ouverts en N"
+  <% elsif num_id == "indicateur_operations_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des crédits de paiement ouverts en N pour des opérations pluriannuelles / Total des crédits de paiement</span><br><br>
+    Cet indicateur permet de mesurer le poids, dans le budget de l'organisme, des "décaissements inéluctables" car liés à des opérations pluriannuelles.
+  <% elsif num_id == "credits_subvention_sp_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Recettes"<br>
+    > Partie "Recettes globalisées"<br>
+    > Cellule "Subvention pour charges de service public" <br>
+    Rappel : ne concerne que les opérateurs de l'Etat
+  <% elsif num_id == "indicateur_taux_sp_t" %>
+    <span class="fr-text--bold">Formule de calcul : Subvention pour charges de service public / (total des dépenses de personnel (CP) + Total des dépenses de fonctionnement (CP))</span><br><br>
+    La subvention pour charges de service public constitue par nature une subvention de fonctionnement annuelle destinée à couvrir indistinctement des dépenses de fonctionnement et de personnel des opérateurs. Elle n'a toutefois pas vocation à être la source exclusivde de financement de ces dépenses.
+  <% elsif num_id == "credits_subvention_investissement_globalisee_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Recettes"<br>
+    > Partie "Recettes globalisées"<br>
+    > Cellule "Subvention pour charges d'investissement"
+  <% elsif num_id == "credits_subvention_investissement_flechee_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Recettes"<br>
+    > Partie "Recettes globalisées"<br>
+    > Cellule "Subvention pour charges d'investissement fléchée"
+  <% elsif num_id == "credits_financements_etat_autres_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Recettes"<br>
+    > Partie "Recettes globalisées"<br>
+    > Cellule  "Autres financements de l'Etat"
+  <% elsif num_id == "credits_financements_etat_fleches_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Recettes"<br>
+    > Partie "Recettes fléchées"<br>
+    > Cellule  "Autres financements de l'Etat fléchés"
+  <% elsif num_id == "credits_fiscalite_affectee_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Recettes"<br>
+    > Partie "Recettes globalisées"<br>
+    > Cellule "Fiscalité affectée"
+  <% elsif num_id == "credits_financements_publics_autres_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Recettes"<br>
+    > Partie "Recettes globalisées"<br>
+    > Cellule "Autres financements publics"
+  <% elsif num_id == "credits_financements_publics_fleches_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Recettes"<br>
+    > Partie "Recettes fléchées"<br>
+    > Cellule "Autres financements publics fléchés"
+  <% elsif num_id == "credits_recettes_propres_globalisees_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Recettes"<br>
+    > Partie "Recettes globalisées"<br>
+    > Cellule "Recettes propres"
+  <% elsif num_id == "credits_recettes_propres_flechees_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Recettes"<br>
+    > Partie "Recettes fléchées"<br>
+    > Cellule "Recettes propres fléchées"
+  <% elsif num_id == "indicateur_total_recettes_propres_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Tableau "Recettes"<br>
+    > Cellule "Recettes propres" + Cellule "Recettes propres fléchées"
+  <% elsif num_id == "indicateur_total_recettes_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Cellule "Total des recettes"
+  <% elsif num_id == "indicateur_taux_recettes_propres_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des recettes propres / total des recettes</span><br><br>
+    Cet indicateur permet de mesurer le taux de dépendance de l'organisme vis-a-vis des financements publics.
+  <% elsif num_id == "indicateur_solde_budgetaire_t" %>
+    Le solde budgétaire correspond à la différence entre les recettes encaissées et les CP de l'année, soit à la variation de trésorerie générée par les opérations budgétaires et constitue à ce titre un solde primaire de la variation de trésorerie, excluant les opérations de trésorerie non budgétaires. <br>
+    Le solde budgétaire doit être analysé en tenant compte des modalités de financement de l'organisme et de la programmation de ses opérations pluriannuelles. Il peut arriver que d'un exercice sur l'autre ce solde varie sensiblement voire même qu'il soit déficitaire. <br>
+    Dans cette hypothèse, il convient d'isoler ce qui relève des opérations fléchées car celles-ci peuvent générer des décalages de flux importants.
+  <% elsif num_id == "credits_restes_a_payer_t" %>
+    Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -  "Synthèse budgétaire et comptable” </span><br>
+    > Cellule "Niveau final des restes à payer" <br><br>
+    Les restes-à-payer (RAP) correspondent à la différence entre les AE consommées et les paiements effectués sur ces engagements (AE consommées – CP consommés).<br>
+    Ils permettent ainsi d’évaluer les paiements qui devront intervenir sur un (ou des) exercice(s) ultérieur(s) compte tenu des engagements souscrits.<br>
+    Les RAP permettent d’appréhender la soutenabilité sur le moyen et le long terme. Ils représentent un montant de décaissements à venir incontournable, correspondant à la somme des CP restant à mobiliser. Ils peuvent ainsi s’apparenter à de la « quasi-dette ». <br>
+    L’absence de maîtrise des RAP constitue un risque susceptible de porter atteinte à la soutenabilité de l’organisme. <br>
+    Tout comme un niveau d’endettement, les RAP sont à analyser au regard de trois critères : <br>
+    - leur évolution ;<br>
+    - la durée sur laquelle ils s’étalent ; <br>
+    - les ressources de l’organisme permettant de couvrir ces futurs décaissements. <br>
+    Un niveau de RAP augmentant d’année en année peut indiquer un risque à venir sur la trésorerie ; une telle situation suppose de vérifier que des financements passés (trésorerie accumulée) ou à venir (restes à encaisser) permettent de couvrir ces RAP, à défaut cette « quasi-dette » risque de conduire à une impasse budgétaire.<br>
+    De plus, il est nécessaire de vérifier la durée moyenne des RAP : l’appréciation de la soutenabilité d’un volume de RAP dont le dénouement s’opère sur une année sera différente de celle effectuée pour un même volume de RAP dont les décaissements s’échelonnent sur 5 ans. Les échéanciers de CP, notamment précisés dans les tableaux des opérations pluriannuelles, permettent de vérifier la concentration de CP sur tel ou tel exercice ou à l’inverse le lissage des CP et par là même la capacité de l’organisme à faire face à ces décaissements.<br>
+    Les RAP représentent un indicateur majeur en matière d’analyse de la soutenabilité budgétaire car ils englobent a minima toutes les dettes fournisseurs ainsi que les charges à payer, ces dernières représentant les paiements les plus imminents.
+  <% elsif num_id == "indicateur_poids_rap_t" %>
+    <span class="fr-text--bold">Formule de calcul : Niveau final des restes à payer / (Total des crédits de paiement - total des dépenses de personnel)</span><br><br>
+    Cet indicateur permet de mesurer le degré de rigidité de la dépense (hors dépenses de personnel qui ne génèrent aucun reste à payer) et l'inertie générée par les engagements pris au cours de l'exercice en cours et des exercices précédents.
+  <% end %>
 </span>
