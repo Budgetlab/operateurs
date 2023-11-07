@@ -3,13 +3,14 @@
   <div class="fr-container">
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-12">
-        <h1 class="fr-my-4w">Formulaire de création d'un nouveau budget</h1>
+        <h1 class="fr-my-4w">Renseigner un nouveau budget</h1>
         <div class="fr-mb-6w">
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-6 fr-col-offset-3">
-          <div class="fr-card  fr-card--no-arrow">
+            <div class="fr-col-12 fr-col-lg-6 fr-col-offset-lg-3">
+              <div class="fr-card  fr-card--no-arrow">
             <div class="fr-card__body" data-controller="form">
               <div class="fr-card__content" id="new_content">
+                <%= render 'organismes/form_notice' %>
                 <%= form_with(model: @chiffre, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
                   <%= f.hidden_field :statut, value: "0" %>
                   <%= f.hidden_field :user_id, value: current_user.id %>
