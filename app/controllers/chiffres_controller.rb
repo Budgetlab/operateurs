@@ -74,7 +74,7 @@ class ChiffresController < ApplicationController
     @chiffre_exist = !Chiffre.where(organisme_id: @organisme.id,
                                     exercice_budgetaire: params[:chiffre][:exercice_budgetaire],
                                     type_budget: params[:chiffre][:type_budget]).empty?
-    if @chiffre_exist
+    if @chiffre_exist && params[:chiffre][:type_budget] != 'Budget rectificatif'
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
@@ -121,6 +121,7 @@ class ChiffresController < ApplicationController
     @can_edit = @organisme && current_user == @organisme.controleur
     redirect_to root_path and return unless @can_edit && params[:phase]
 
+    @est_editeur = current_user == @organisme.controleur
     if params[:phase] == 'Budget non approuvé'
       @chiffre.destroy
       redirect_to organisme_chiffres_path(@organisme)
@@ -129,7 +130,7 @@ class ChiffresController < ApplicationController
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.update('content_phase', partial: 'chiffres/content_phase', locals: { chiffre: @chiffre })
+            turbo_stream.update("content_phase-#{@chiffre.id}", partial: 'chiffres/content_phase', locals: { chiffre: @chiffre })
           ]
         end
       end
@@ -249,7 +250,7 @@ class ChiffresController < ApplicationController
   end
 
   def filter_chiffres(type_budget, exercice_budgetaire, chiffres)
-    chiffres.select { |el| el.type_budget == type_budget && el.exercice_budgetaire == exercice_budgetaire }
+    chiffres.order(created_at: :asc).select { |el| el.type_budget == type_budget && el.exercice_budgetaire == exercice_budgetaire }
   end
 
   def select_chiffres

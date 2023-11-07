@@ -6,7 +6,7 @@
       <% if @est_editeur%><%= link_to edit_chiffre_path(chiffre), class: "fr-btn"  do %>Reprendre le brouillon<% end %><%end %>
     </div>
   <% end %>
-  <div id="content_phase">
+  <div id="content_phase-<%=chiffre.id %>">
       <%= render partial: 'chiffres/content_phase', locals: {chiffre: chiffre} %>
   </div>
   <div class="fr-toggle">
