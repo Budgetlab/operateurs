@@ -2,23 +2,23 @@
   <div class="fr-col-12 fr-col-lg-6">
     <h3 class="fr-h4">Fonds de roulement</h3>
     <% @variation_brf = chiffre.fonds_roulement_variation - chiffre.tresorerie_variation %>
-    <div class="fr-mt-1w">Niveau final du fonds de roulement</div>
+    <div class="fr-mt-1w">Niveau final du fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "fonds_roulement_final_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w fr-mb-2w"><%= format_nombre(chiffre.fonds_roulement_final) %> €</div>
     <div class="fr-mb-2w options fr-hidden">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Niveau initial du fonds de roulement</p>
+          <p class="fr-mb-0 fr-text--center">Niveau initial du fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_fr_initial_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.fonds_roulement_final - chiffre.fonds_roulement_variation) %> €</p>
         </div>
       </div>
     </div>
     <div class="options fr-hidden">
-      <div class="fr-mt-1w">Niveau final du besoin en fonds de roulement</div>
+      <div class="fr-mt-1w">Niveau final du besoin en fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "fonds_roulement_besoin_final_t", chiffre: chiffre} %></div>
       <div class="fr-text--bold fr-mt-1w fr-mb-2w"><%= format_nombre(chiffre.fonds_roulement_besoin_final) %> €</div>
       <div class="fr-mb-2w">
         <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
-            <p class="fr-mb-0 fr-text--center">Niveau initial du besoin en fonds de roulement</p>
+            <p class="fr-mb-0 fr-text--center">Niveau initial du besoin en fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_bfr_initial_t", chiffre: chiffre} %></p>
             <p class="fr-text--bold fr-mb-0 fr-text--center"><%if chiffre.fonds_roulement_besoin_final %><%= format_nombre(chiffre.fonds_roulement_besoin_final - @variation_brf) %><%else %>-<%end %> €</p>
           </div>
         </div>
@@ -47,7 +47,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Variation du fonds de roulement</p>
+          <p class="fr-mb-0 fr-text--center">Variation du fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "fonds_roulement_variation_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.fonds_roulement_variation) %> €</p>
         </div>
       </div>
@@ -55,7 +55,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Variation du besoin en fonds de roulement</p>
+          <p class="fr-mb-0 fr-text--center">Variation du besoin en fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_besoin_fr_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@variation_brf) %> €</p>
         </div>
       </div>

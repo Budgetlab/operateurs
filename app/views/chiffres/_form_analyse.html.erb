@@ -38,13 +38,13 @@
             <div class="fr-col-12 fr-col-lg-6">
               <h2>Fonds de roulement</h2>
               <div class="fr-input-group">
-                <label for="fonds_roulement_variation" class="fr-label">Variation du fonds de roulement*</label>
+                <label for="fonds_roulement_variation" class="fr-label">Variation du fonds de roulement* <%= render partial: "chiffres/tooltip", locals: {num_id: "fonds_roulement_variation_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :fonds_roulement_variation, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.fonds_roulement_variation, id:"fonds_roulement_variation", class:"fr-input" %>
                 </div>
               </div>
               <div class="fr-input-group">
-                <label for="fonds_roulement_final" class="fr-label">Niveau final du fonds de roulement*</label>
+                <label for="fonds_roulement_final" class="fr-label">Niveau final du fonds de roulement* <%= render partial: "chiffres/tooltip", locals: {num_id: "fonds_roulement_final_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :fonds_roulement_final, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.fonds_roulement_final, id:"fonds_roulement_final", class:"fr-input" %>
                 </div>
@@ -52,13 +52,13 @@
               <div class="fr-mb-2w options fr-hidden">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Niveau initial du fonds de roulement</p>
+                    <p class="fr-mb-0 fr-text--center">Niveau initial du fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_fr_initial_t", chiffre: @chiffre} %></p>
                     <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_fr_initial">-</span> €</p>
                   </div>
                 </div>
               </div>
               <div class="fr-input-group options fr-hidden fr-input-group--option">
-                <label for="fonds_roulement_besoin_final" class="fr-label">Niveau final du besoin en fonds de roulement</label>
+                <label for="fonds_roulement_besoin_final" class="fr-label">Niveau final du besoin en fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "fonds_roulement_besoin_final_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :fonds_roulement_besoin_final, data: {action: 'input->form#changeNumber'}, value: @chiffre.fonds_roulement_besoin_final, id:"fonds_roulement_besoin_final", class:"fr-input" %>
                 </div>
@@ -66,7 +66,7 @@
               <div class="fr-mb-2w options fr-hidden">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Niveau initial du besoin en fonds de roulement</p>
+                    <p class="fr-mb-0 fr-text--center">Niveau initial du besoin en fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_bfr_initial_t", chiffre: @chiffre} %></p>
                     <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_bfr_initial">-</span> €</p>
                   </div>
                 </div>
@@ -106,7 +106,7 @@
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Variation du besoin en fonds de roulement</p>
+                    <p class="fr-mb-0 fr-text--center">Variation du besoin en fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_besoin_fr_t", chiffre: @chiffre} %></p>
                     <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_besoin_fr">-</span> €</p>
                   </div>
                 </div>

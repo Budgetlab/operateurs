@@ -454,5 +454,55 @@
     Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
     > Tableau "Variation et niveau du fonds de roulement, du besoin en fonds de roulement et de la trésorerie" <br>
     > Cellule "Niveau final de la TRESORERIE"
+    <!-- ANALYSE -->
+  <% elsif num_id == "fonds_roulement_variation_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+        Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - "Situation patrimoniale" </span><br>
+    <%else %>
+        Source : <span class="fr-text--underline"> Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <%end %>
+    > Tableau "Variation et niveau du fonds de roulement, du besoin en fonds de roulement et de la trésorerie" <br>
+    > Cellule "Variation du FONDS DE ROULEMENT : AUGMENTATION ou DIMINUTION"
+  <% elsif num_id == "fonds_roulement_final_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+        Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - "Situation patrimoniale" </span><br>
+    <%else %>
+        Source : <span class="fr-text--underline"> Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <%end %>
+    > Tableau "Variation et niveau du fonds de roulement, du besoin en fonds de roulement et de la trésorerie" <br>
+    > Cellule "Niveau final du FONDS DE ROULEMENT"
+  <% elsif num_id == "indicateur_fr_initial_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -"Synthèse budgétaire et comptable"</span><br>
+      > Cellule "Niveau initial du fonds de roulement"
+    <%else %>
+        Donnée calculée
+    <%end %>
+  <% elsif num_id == "fonds_roulement_besoin_final_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -"Synthèse budgétaire et comptable"</span><br>
+      > Cellule "Niveau final du besoin en fonds de roulement"
+    <%else %>
+        Source : <span class="fr-text--underline"> Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+        > Tableau "Variation et niveau du fonds de roulement, du besoin en fonds de roulement et de la trésorerie" <br>
+        > Cellule "Niveau final du BESOIN EN FONDS DE ROULEMENT"
+    <%end %>
+  <% elsif num_id == "indicateur_bfr_initial_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+        Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -"Synthèse budgétaire et comptable"</span><br>
+       > Cellule "Niveau initial du besoin en fonds de roulement"
+    <%else %>
+        Donnée calculée
+    <%end %>
+  <% elsif num_id == "indicateur_besoin_fr_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+        Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - "Situation patrimoniale" </span><br>
+    <%else %>
+        Source : <span class="fr-text--underline"> Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <%end %>
+    > Tableau  "Variation et niveau du fonds de roulement, du besoin en fonds de roulement et de la trésorerie"<br>
+    >  Cellule "Variation du BESOIN en FONDS DE ROULEMENT (FONDS DE ROULEMENT - TRESORERIE)"<br>
+    Un besoin en fonds de roulement > 0 indique que l'organisme décaisse plus vite qu'il encaisse et donc qu'il est nécessaire de prélever sur sa trésorerie afin de financer les opérations lancées.<br>
+    A l'inverse, un besoin en fonds de roulement < 0 indique que l'organisme encaisse plus vite qu'il ne décaisse et donc que la trésorerie est abondée.
   <% end %>
 </span>
