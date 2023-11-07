@@ -75,7 +75,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Résultat</p>
+          <p class="fr-mb-0 fr-text--center">Résultat <%= render partial: "chiffres/tooltip", locals: {num_id: "resultat_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_produits - @total_charges) %> €</p>
         </div>
       </div>

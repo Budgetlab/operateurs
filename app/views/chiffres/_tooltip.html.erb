@@ -1,4 +1,4 @@
-<a class="fr-link" aria-describedby="<%= num_id %>-<%=chiffre.id %>" id="link-<%= num_id %>-<%=chiffre.id %>" href="#" data-action="form#Dropdown">
+<a class="fr-link" aria-describedby="<%= num_id %>-<%=chiffre.id %>" id="link-<%= num_id %>-<%=chiffre.id %>" href="#" data-controller="filter" data-action="filter#Dropdown">
   <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true"></span>
 </a>
 <span class="fr-tooltip fr-placement" id="<%= num_id %>-<%=chiffre.id %>" role="tooltip" aria-hidden="true">
@@ -314,8 +314,20 @@
     <% end %>
     > Tableau "Calcul de la capacité d'autofinancement" <br>
     > Cellule "Reprise sur amortissements, dépréciations et provisions" + Cellule "Produits de cessions d'éléments d'actifs" + Cellule "Quote-part reprise au résultat des financements rattachés à des actifs"
+  <% elsif num_id == "resultat_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Compte de résultat prévisionnel/exécuté" <br>
+    > Cellule "Résultat"<br>
   <% elsif num_id == "capacite_autofinancement_t" %>
-    Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
     > Tableau "Etat prévisionnel/exécuté de l'évolution de la situation patrimoniale en droits constatés"<br>
     >  Cellule "Insuffisance d'autofinancement" ou "Capacité d'autofinancement" <br>
     La capacité d'autofinancement représente la capacité d'un organisme à dégager un flux de trésorerie à partir de son activité.
@@ -402,5 +414,45 @@
     <span class="fr-text--bold">Formule de calcul : (Autres produits - Produits non encaissables + Autres ressources) / (Total des produits - Produits non encaissables + Total des ressources - CAF) </span><br><br>
     NB : Dans le dénominateur seule la CAF (c'est-à-dire si le montant dans le champ "CAF" est positif) est à retirer du total des ressources. L'IAF (c'est-à-dire si le montant dans le champ "CAF" est négatif) n'a pas à être retirée / ajoutée : n'a pas d'impact sur le total des ressources.<br>
     Cet indicateur permet de mesurer le taux de dépendance de l'organisme vis-a-vis des financements publics.
+    <!-- TRESORERIE -->
+  <% elsif num_id == "tresorerie_finale_flechee_t" %>
+    Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -"Synthèse budgétaire et comptable"</span><br>
+    > Cellule "Dont niveau final de la trésorerie fléchée"
+  <% elsif num_id == "tresorerie_finale_non_flechee_t" %>
+    Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -"Synthèse budgétaire et comptable"</span><br>
+    > Cellule "Dont niveau final de la trésorerie non fléchée"
+  <% elsif num_id == "tresorerie_finale_text_t" %>
+    Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -"Synthèse budgétaire et comptable"</span><br>
+    > Cellule "Niveau final de la TRESORERIE"<br>
+    ou <br>
+    Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - "Situation patrimoniale"</span><br>
+    > Tableau  "Variation et niveau du fonds de roulement, du besoin en fonds de roulement et de la trésorerie"<br>
+    >  Cellule "Variation de la TRESORERIE : ABONDEMENT ou PRELEVEMENT"
+  <% elsif num_id == "tresorerie_indicateur_initial_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 7 de la liasse budgétaire - "Plan de trésorerie"</span><br>
+    <%else %>
+        Source : <span class="fr-text--underline">Tableau 5 de la liasse - "Plan de trésorerie"</span><br>
+    <%end %>
+    > Cellule "SOLDE INITIAL (début de mois)"
+  <% elsif num_id == "tresorerie_variation_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+        Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - "Situation patrimoniale" </span><br>
+    <%else %>
+        Source : <span class="fr-text--underline"> Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <%end %>
+    > Tableau  "Variation et niveau du fonds de roulement, du besoin en fonds de roulement et de la trésorerie"<br>
+    >  Cellule "Variation de la TRESORERIE : ABONDEMENT ou PRELEVEMENT"
+  <% elsif num_id == "tresorerie_variation_flechee_t" %>
+    Source : <span class="fr-text--underline">Tableau 4 de la liasse budgétaire -  "Equilibre financier"</span><br>
+    > Cellule "Abondement de la trésorerie fléchée" ou "Prélèvement sur la trésorerie fléchée"
+  <% elsif num_id == "tresorerie_max_t" %>
+    Source : <span class="fr-text--underline">Tableau 7 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "Plan de trésorerie"</span><br>
+  <% elsif num_id == "tresorerie_min_t" %>
+    Source : <span class="fr-text--underline">Tableau 7 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "Plan de trésorerie"</span><br>
+  <% elsif num_id == "tresorerie_finale_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    > Tableau "Variation et niveau du fonds de roulement, du besoin en fonds de roulement et de la trésorerie" <br>
+    > Cellule "Niveau final de la TRESORERIE"
   <% end %>
 </span>

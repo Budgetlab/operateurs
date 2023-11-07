@@ -33,7 +33,7 @@
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-input-group">
-                  <label for="tresorerie_finale_flechee" class="fr-label">Niveau final trésorerie fléchée*</label>
+                  <label for="tresorerie_finale_flechee" class="fr-label">Niveau final trésorerie fléchée* <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_finale_flechee_t", chiffre: @chiffre} %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                     <%= f.text_field :tresorerie_finale_flechee, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_finale_flechee, id:"tresorerie_finale_flechee", class:"fr-input" %>
                   </div>
@@ -53,7 +53,7 @@
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-input-group">
-                  <label for="tresorerie_finale_non_flechee" class="fr-label">Niveau final trésorerie non fléchée*</label>
+                  <label for="tresorerie_finale_non_flechee" class="fr-label">Niveau final trésorerie non fléchée* <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_finale_non_flechee_t", chiffre: @chiffre} %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                     <%= f.text_field :tresorerie_finale_non_flechee, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_finale_non_flechee, id:"tresorerie_finale_non_flechee", class:"fr-input" %>
                   </div>
@@ -75,7 +75,7 @@
                 <div class="fr-mb-2w">
                   <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Niveau final de trésorerie</p>
+                      <p class="fr-mb-0 fr-text--center">Niveau final de trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_finale_text_t", chiffre: @chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="tresorerie_finale_text">-</span> €</p>
                       <%= f.hidden_field :tresorerie_finale, id: "tresorerie_finale", value: @chiffre.tresorerie_finale %>
                     </div>
@@ -97,7 +97,7 @@
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-input-group">
-                  <label for="tresorerie_finale" class="fr-label">Niveau final trésorerie*</label>
+                  <label for="tresorerie_finale" class="fr-label">Niveau final trésorerie* <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_finale_t", chiffre: @chiffre} %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                     <%= f.text_field :tresorerie_finale, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_finale, id:"tresorerie_finale", class:"fr-input" %>
                   </div>
@@ -120,7 +120,7 @@
               <div class="options fr-hidden">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Niveau initial de trésorerie</p>
+                    <p class="fr-mb-0 fr-text--center">Niveau initial de trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_indicateur_initial_t", chiffre: @chiffre} %></p>
                     <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="tresorerie_indicateur_initial">-</span> €</p>
                   </div>
                 </div>
@@ -144,7 +144,7 @@
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-6">
               <div class="fr-input-group">
-                <label for="tresorerie_variation" class="fr-label">Variation de la trésorerie*</label>
+                <label for="tresorerie_variation" class="fr-label">Variation de la trésorerie* <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_variation_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :tresorerie_variation, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_variation, id:"tresorerie_variation", class:"fr-input" %>
                 </div>
@@ -155,7 +155,7 @@
             <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-input-group fr-input-group--option">
-                  <label for="tresorerie_variation_flechee" class="fr-label">Variation de trésorerie fléchée</label>
+                  <label for="tresorerie_variation_flechee" class="fr-label">Variation de trésorerie fléchée <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_variation_flechee_t", chiffre: @chiffre} %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                     <%= f.text_field :tresorerie_variation_flechee, data: {action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_variation_flechee, id:"tresorerie_variation_flechee", class:"fr-input" %>
                   </div>
@@ -179,7 +179,7 @@
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-input-group fr-input-group--option">
-                  <label for="tresorerie_max" class="fr-label">Point le plus haut dans le plan de trésorerie</label>
+                  <label for="tresorerie_max" class="fr-label">Point le plus haut dans le plan de trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_max_t", chiffre: @chiffre} %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                     <%= f.text_field :tresorerie_max, data: {action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_max, id:"tresorerie_max", class:"fr-input" %>
                   </div>
@@ -207,7 +207,7 @@
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-input-group fr-input-group--option">
-                  <label for="tresorerie_min" class="fr-label">Point le plus bas dans le plan de trésorerie</label>
+                  <label for="tresorerie_min" class="fr-label">Point le plus bas dans le plan de trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_min_t", chiffre: @chiffre} %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                     <%= f.text_field :tresorerie_min, data: {action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_min, id:"tresorerie_min", class:"fr-input" %>
                   </div>
