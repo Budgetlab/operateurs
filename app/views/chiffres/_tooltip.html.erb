@@ -1,4 +1,4 @@
-<a class="fr-link" aria-describedby="<%= num_id %>-<%=chiffre.id %>" id="link-<%= num_id %>-<%=chiffre.id %>" href="#">
+<a class="fr-link" aria-describedby="<%= num_id %>-<%=chiffre.id %>" id="link-<%= num_id %>-<%=chiffre.id %>" href="#" data-action="form#Dropdown">
   <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true"></span>
 </a>
 <span class="fr-tooltip fr-placement" id="<%= num_id %>-<%=chiffre.id %>" role="tooltip" aria-hidden="true">
@@ -21,15 +21,19 @@
   <% elsif num_id == "emplois_depenses_personnel_t" %>
     Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
     > Tableau "Pour information de l'organe délibérant" <br>
-
     > Cellule "Total des emplois rémunérés par l'organisme et des autres dépenses de personnel / <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme / Dépenses' : 'Total organisme / Charges' %> de personnel"<br>
-    <% if chiffre.comptabilite_budgetaire == true %>
       OU <br>
+    <% if chiffre.comptabilite_budgetaire == true %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
     > Tableau "Dépenses" <br>
     > Cellule "Personnel" (en CP) <br>
     <span class="fr-text--italic">Rappel : L'article 181 du décret GBCP prévoit que s'agissant des dépenses de personnel, le montant des autorisations d'engagement est égal au montant des crédits de paiement.</span>
-   <% end %>
+   <% else %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span> <br>
+    > Tableau "Compte de résultat prévisionnel/exécuté" <br>
+    > Colonne "Charges" <br>
+    > Cellule "Personnel"<br>
+    <% end %>
   <% elsif num_id == "emplois_plafond_rappel_t" %>
     Source : <span class="fr-text--underline">PAP</span><br>
     > Partie Opérateurs<br>
@@ -89,6 +93,7 @@
     (Total emplois rémunérés par l'organisme - Emplois en fonction dans une autre entité, rémunérés par l'organisme + Emplois en fonction dans l'organisme, non rémunérés par lui) / Total emplois rémunérés par l'organisme
     <%end %>
     </span>
+    <!-- CREDITS -->
   <% elsif num_id == "credits_ae_total_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
     > Cellule "Total des dépenses en AE"
@@ -154,7 +159,7 @@
   <% elsif num_id == "credits_subvention_investissement_flechee_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
     > Tableau "Recettes"<br>
-    > Partie "Recettes globalisées"<br>
+    > Partie "Recettes fléchées"<br>
     > Cellule "Subvention pour charges d'investissement fléchée"
   <% elsif num_id == "credits_financements_etat_autres_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
@@ -206,7 +211,7 @@
     Le solde budgétaire doit être analysé en tenant compte des modalités de financement de l'organisme et de la programmation de ses opérations pluriannuelles. Il peut arriver que d'un exercice sur l'autre ce solde varie sensiblement voire même qu'il soit déficitaire. <br>
     Dans cette hypothèse, il convient d'isoler ce qui relève des opérations fléchées car celles-ci peuvent générer des décalages de flux importants.
   <% elsif num_id == "credits_restes_a_payer_t" %>
-    Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -  "Synthèse budgétaire et comptable” </span><br>
+    Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -  "Synthèse budgétaire et comptable" </span><br>
     > Cellule "Niveau final des restes à payer" <br><br>
     Les restes-à-payer (RAP) correspondent à la différence entre les AE consommées et les paiements effectués sur ces engagements (AE consommées – CP consommés).<br>
     Ils permettent ainsi d’évaluer les paiements qui devront intervenir sur un (ou des) exercice(s) ultérieur(s) compte tenu des engagements souscrits.<br>
@@ -222,5 +227,180 @@
   <% elsif num_id == "indicateur_poids_rap_t" %>
     <span class="fr-text--bold">Formule de calcul : Niveau final des restes à payer / (Total des crédits de paiement - total des dépenses de personnel)</span><br><br>
     Cet indicateur permet de mesurer le degré de rigidité de la dépense (hors dépenses de personnel qui ne génèrent aucun reste à payer) et l'inertie générée par les engagements pris au cours de l'exercice en cours et des exercices précédents.
+    <!-- COMPTA GE -->
+  <% elsif num_id == "charges_personnel_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+    Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    > Tableau "Compte de résultat prévisionnel/exécuté" <br>
+    > Colonne "Charges" <br>
+    > Cellule "Personnel"
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 1 de la liasse - "Présentation des emplois"</span><br>
+    > Tableau “Pour information de l'organe délibérant"<br>
+    > Cellule "Total des emplois rémunérés par l'organisme et des autres dépenses de personnel / Total organisme / Charges de personnel" <br>
+    OU<br>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    > Tableau "Compte de résultat prévisionnel/exécuté" <br>
+    > Colonne "Charges" <br>
+    > Cellule "Personnel"
+    <% end %>
+  <% elsif num_id == "charges_fonctionnement_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+    Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Compte de résultat prévisionnel/exécuté" <br>
+    > Colonne "Charges" <br>
+    > Cellule "Fonctionnement autres que les charges de personnel"
+  <% elsif num_id == "charges_intervention_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+    Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Compte de résultat prévisionnel/exécuté" <br>
+    > Colonne "Charges" <br>
+    > Cellule "Intervention (le cas échéant)"
+  <% elsif num_id == "produits_subventions_etat_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+    Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Compte de résultat prévisionnel/exécuté" <br>
+    > Colonne "Produits" <br>
+    > Cellule "Subventions de l'Etat"
+  <% elsif num_id == "produits_fiscalite_affectee_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+    Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Compte de résultat prévisionnel/exécuté" <br>
+    > Colonne "Produits" <br>
+    > Cellule "Fiscalité affectée"
+  <% elsif num_id == "produits_subventions_autres_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+    Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Compte de résultat prévisionnel/exécuté" <br>
+    > Colonne "Produits" <br>
+    > Cellule "Autres subventions"
+  <% elsif num_id == "produits_autres_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Compte de résultat prévisionnel/exécuté" <br>
+    > Colonne "Produits" <br>
+    > Cellule "Autres produits"
+  <% elsif num_id == "charges_non_decaissables_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Calcul de la capacité d'autofinancement" <br>
+    > Cellule "dotations aux amortissements, dépréciations et provisions" + Cellule "valeur nette comptable des éléments d'actifs cédés"
+  <% elsif num_id == "produits_non_encaissables_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Calcul de la capacité d'autofinancement" <br>
+    > Cellule "Reprise sur amortissements, dépréciations et provisions" + Cellule "Produits de cessions d'éléments d'actifs" + Cellule "Quote-part reprise au résultat des financements rattachés à des actifs"
+  <% elsif num_id == "capacite_autofinancement_t" %>
+    Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    > Tableau "Etat prévisionnel/exécuté de l'évolution de la situation patrimoniale en droits constatés"<br>
+    >  Cellule "Insuffisance d'autofinancement" ou "Capacité d'autofinancement" <br>
+    La capacité d'autofinancement représente la capacité d'un organisme à dégager un flux de trésorerie à partir de son activité.
+  <% elsif num_id == "emplois_cout_total_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Etat prévisionnel/exécuté de l'évolution de la situation patrimoniale en droits constatés"<br>
+    > Colonne "Emplois" <br>
+    > Cellule "Total des emplois"
+  <% elsif num_id == "emplois_cout_investissements_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Etat prévisionnel/exécuté de l'évolution de la situation patrimoniale en droits constatés"<br>
+    > Cellule "Investissements"
+  <% elsif num_id == "ressources_total_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Etat prévisionnel/exécuté de l'évolution de la situation patrimoniale en droits constatés" <br>
+    > Colonne "Ressources" <br>
+    > Cellule "Total des ressources"
+  <% elsif num_id == "ressources_financement_etat_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Etat prévisionnel/exécuté de l'évolution de la situation patrimoniale en droits constatés" <br>
+    > Cellule "Financement de l'actif par l'État"
+  <% elsif num_id == "ressources_autres_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+      Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - " Situation patrimoniale"</span><br>
+    <% else  %>
+      Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
+    <% end %>
+    > Tableau "Etat prévisionnel/exécuté de l'évolution de la situation patrimoniale en droits constatés" <br>
+    > Cellule "Autres ressources"
+  <% elsif num_id == "decaissements_operations_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+    Source : <span class="fr-text--underline">Tableau 4 de la liasse budgétaire - "Equilibre financier"</span><br>
+    > Cellule "Opérations au nom et pour le compte de tiers (c1)"
+    <% else %>
+    Source : <span class="fr-text--underline">Tableau 4 de la liasse - "Opérations pour comptes de tiers"</span><br>
+    > Cellule "TOTAL Débits"
+    <% end %>
+  <% elsif num_id == "decaissements_emprunts_t" %>
+    Source : <span class="fr-text--underline">Tableau 4 de la liasse budgétaire - "Equilibre financier"</span><br>
+    > Cellule "Remboursements d'emprunts (capital) ; Nouveaux prêts (capital) ; Dépôts et cautionnements (b1)"
+  <% elsif num_id == "decaissements_autres_t" %>
+    Source : <span class="fr-text--underline">Tableau 4 de la liasse budgétaire - "Equilibre financier"</span><br>
+    > Cellule "Autres décaissements non budgétaires (e1)"
+  <% elsif num_id == "indicateur_dec_t" %>
+    Source : <span class="fr-text--underline">Tableau 4 de la liasse budgétaire - "Equilibre financier"</span><br>
+    > Somme des cellules "Remboursements d'emprunts (capital) ; Nouveaux prêts (capital) ; Dépôts et cautionnements (b1)" + "Opérations au nom et pour le compte de tiers (c1)** + "Autres décaissements non budgétaires (e1)"
+  <% elsif num_id == "encaissements_operations_t" %>
+    <% if chiffre.comptabilite_budgetaire == true %>
+    Source : <span class="fr-text--underline">Tableau 4 de la liasse budgétaire - "Equilibre financier"</span><br>
+    > Cellule "Opérations au nom et pour le compte de tiers (c2)"
+    <% else %>
+    Source : <span class="fr-text--underline">Tableau 4 de la liasse - "Opérations pour comptes de tiers"</span><br>
+    > Cellule "TOTAL Crédits"
+    <% end %>
+  <% elsif num_id == "encaissements_emprunts_t" %>
+    Source : <span class="fr-text--underline">Tableau 4 de la liasse budgétaire - "Equilibre financier"</span><br>
+    > Cellule "Nouveaux emprunts (capital) ; Remboursements de prêts (capital) ; Dépôts et cautionnements (b2)"
+  <% elsif num_id == "encaissements_autres_t" %>
+    Source : <span class="fr-text--underline">Tableau 4 de la liasse budgétaire - "Equilibre financier"</span><br>
+    > Cellule "Autres encaissements non budgétaires (e2)"
+  <% elsif num_id == "indicateur_enc_t" %>
+    Source : <span class="fr-text--underline">Tableau 4 de la liasse budgétaire - "Equilibre financier"</span><br>
+    > Somme des cellules "Nouveaux emprunts (capital) ; Remboursements de prêts (capital) ; Dépôts et cautionnements (b2)"+ "Opérations au nom et pour le compte de tiers (c2)**" + "Autres encaissements non budgétaires (e2)"
+  <% elsif num_id == "indicateur_charges_personnel_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des charges de personnel / Total des charges décaissables</span><br><br>
+    Cet indicateur permet de mesurer le degré de rigidité du budget lié à la part des dépenses destinées à la rémunération des personnel.
+  <% elsif num_id == "indicateur_ressources_t" %>
+    <span class="fr-text--bold">Formule de calcul : (Autres produits - Produits non encaissables + Autres ressources) / (Total des produits - Produits non encaissables + Total des ressources - CAF) </span><br><br>
+    NB : Dans le dénominateur seule la CAF (c'est-à-dire si le montant dans le champ "CAF" est positif) est à retirer du total des ressources. L'IAF (c'est-à-dire si le montant dans le champ "CAF" est négatif) n'a pas à être retirée / ajoutée : n'a pas d'impact sur le total des ressources.<br>
+    Cet indicateur permet de mesurer le taux de dépendance de l'organisme vis-a-vis des financements publics.
   <% end %>
 </span>

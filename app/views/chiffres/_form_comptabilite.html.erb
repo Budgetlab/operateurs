@@ -25,7 +25,7 @@
               <h2>Charges</h2>
               <% if @chiffre.comptabilite_budgetaire == true %>
                 <div class="fr-input-group">
-                  <label for="charges_personnel" class="fr-label">Charges de personnel*</label>
+                  <label for="charges_personnel" class="fr-label">Charges de personnel* <%= render partial: "chiffres/tooltip", locals: {num_id: "charges_personnel_t", chiffre: @chiffre} %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                     <%= f.text_field :emplois_charges_personnel, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.emplois_charges_personnel, id:"charges_personnel", class:"fr-input" %>
                   </div>
@@ -34,7 +34,7 @@
                 <div class="fr-mb-2w">
                   <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Charges de personnel</p>
+                      <p class="fr-mb-0 fr-text--center">Charges de personnel <%= render partial: "chiffres/tooltip", locals: {num_id: "charges_personnel_t", chiffre: @chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@chiffre.emplois_charges_personnel) %> €</p>
                       <%= f.hidden_field :emplois_charges_personnel,id: "charges_personnel", value: @chiffre.emplois_charges_personnel %>
                     </div>
@@ -42,13 +42,13 @@
                 </div>
               <% end  %>
               <div class="fr-input-group">
-                <label for="charges_fonctionnement" class="fr-label">Charges de fonctionnement (hors charges de personnel)*</label>
+                <label for="charges_fonctionnement" class="fr-label">Charges de fonctionnement (hors charges de personnel)* <%= render partial: "chiffres/tooltip", locals: {num_id: "charges_fonctionnement_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :charges_fonctionnement, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.charges_fonctionnement, id:"charges_fonctionnement", class:"fr-input" %>
                 </div>
               </div>
               <div class="fr-input-group">
-                <label for="charges_intervention" class="fr-label">Charges d’intervention*</label>
+                <label for="charges_intervention" class="fr-label">Charges d’intervention* <%= render partial: "chiffres/tooltip", locals: {num_id: "charges_intervention_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :charges_intervention, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.charges_intervention, id:"charges_intervention", class:"fr-input" %>
                 </div>
@@ -57,25 +57,25 @@
             <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <h2>Produits</h2>
               <div class="fr-input-group">
-                <label for="produits_subventions_etat" class="fr-label">Subventions de l’Etat*</label>
+                <label for="produits_subventions_etat" class="fr-label">Subventions de l’Etat* <%= render partial: "chiffres/tooltip", locals: {num_id: "produits_subventions_etat_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :produits_subventions_etat, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.produits_subventions_etat, id:"produits_subventions_etat", class:"fr-input" %>
                 </div>
               </div>
               <div class="fr-input-group">
-                <label for="produits_fiscalite_affectee" class="fr-label">Fiscalité affectée*</label>
+                <label for="produits_fiscalite_affectee" class="fr-label">Fiscalité affectée* <%= render partial: "chiffres/tooltip", locals: {num_id: "produits_fiscalite_affectee_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :produits_fiscalite_affectee, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.produits_fiscalite_affectee, id:"produits_fiscalite_affectee", class:"fr-input" %>
                 </div>
               </div>
               <div class="fr-input-group">
-                <label for="produits_subventions_autres" class="fr-label">Autres subventions*</label>
+                <label for="produits_subventions_autres" class="fr-label">Autres subventions* <%= render partial: "chiffres/tooltip", locals: {num_id: "produits_subventions_autres_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :produits_subventions_autres, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.produits_subventions_autres, id:"produits_subventions_autres", class:"fr-input" %>
                 </div>
               </div>
               <div class="fr-input-group">
-                <label for="produits_autres" class="fr-label">Autres produits*</label>
+                <label for="produits_autres" class="fr-label">Autres produits* <%= render partial: "chiffres/tooltip", locals: {num_id: "produits_autres_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :produits_autres, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.produits_autres, id:"produits_autres", class:"fr-input" %>
                 </div>
@@ -86,7 +86,7 @@
               <div class="fr-mb-2w fr-mt-8w">
                 <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Poids relatif des charges de personnel</p>
+                    <p class="fr-mb-0 fr-text--center">Poids relatif des charges de personnel <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_personnel_t", chiffre: @chiffre} %></p>
                     <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_charges_personnel">-</span> %</p>
                   </div>
                 </div>
@@ -148,7 +148,7 @@
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <div class="fr-input-group">
-                <label for="charges_non_decaissables" class="fr-label">Charges non décaissables*</label>
+                <label for="charges_non_decaissables" class="fr-label">Charges non décaissables* <%= render partial: "chiffres/tooltip", locals: {num_id: "charges_non_decaissables_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :charges_non_decaissables, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.charges_non_decaissables, id:"charges_non_decaissables", class:"fr-input" %>
                 </div>
@@ -164,7 +164,7 @@
             </div>
             <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <div class="fr-input-group">
-                <label for="produits_non_encaissables" class="fr-label">Produits non encaissables*</label>
+                <label for="produits_non_encaissables" class="fr-label">Produits non encaissables* <%= render partial: "chiffres/tooltip", locals: {num_id: "produits_non_encaissables_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :produits_non_encaissables, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.produits_non_encaissables, id:"produits_non_encaissables", class:"fr-input" %>
                 </div>
@@ -175,7 +175,7 @@
             <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-12<%else %>fr-col-lg-8<% end %>">
               <h2 class="fr-mt-4w">Capacité d’autofinancement</h2>
               <div class="fr-input-group">
-                <label for="capacite_autofinancement" class="fr-label">Capacité d’autofinancement*</label>
+                <label for="capacite_autofinancement" class="fr-label">Capacité d’autofinancement* <%= render partial: "chiffres/tooltip", locals: {num_id: "capacite_autofinancement_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :capacite_autofinancement, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.capacite_autofinancement, id:"capacite_autofinancement", class:"fr-input" %>
                 </div>
@@ -186,13 +186,13 @@
             <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <h2 class="fr-mt-4w">Emplois</h2>
               <div class="fr-input-group">
-                <label for="emplois_cout_total" class="fr-label">Total des emplois*</label>
+                <label for="emplois_cout_total" class="fr-label">Total des emplois* <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_cout_total_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :emplois_cout_total, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.emplois_cout_total, id:"emplois_cout_total", class:"fr-input" %>
                 </div>
               </div>
               <div class="fr-input-group">
-                <label for="emplois_cout_investissements" class="fr-label">Dont investissements*</label>
+                <label for="emplois_cout_investissements" class="fr-label">Dont investissements* <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_cout_investissements_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :emplois_cout_investissements, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.emplois_cout_investissements, id:"emplois_cout_investissements", class:"fr-input" %>
                 </div>
@@ -201,19 +201,19 @@
             <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
               <h2 class="fr-mt-4w">Ressources</h2>
               <div class="fr-input-group">
-                <label for="ressources_total" class="fr-label">Total des ressources*</label>
+                <label for="ressources_total" class="fr-label">Total des ressources* <%= render partial: "chiffres/tooltip", locals: {num_id: "ressources_total_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :ressources_total, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.ressources_total, id:"ressources_total", class:"fr-input" %>
                 </div>
               </div>
               <div class="fr-input-group">
-                <label for="ressources_financement_etat" class="fr-label">Dont financement de l'actif par l'Etat*</label>
+                <label for="ressources_financement_etat" class="fr-label">Dont financement de l'actif par l'Etat* <%= render partial: "chiffres/tooltip", locals: {num_id: "ressources_financement_etat_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :ressources_financement_etat, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.ressources_financement_etat, id:"ressources_financement_etat", class:"fr-input" %>
                 </div>
               </div>
               <div class="fr-input-group">
-                <label for="ressources_autres" class="fr-label">Dont autres ressources*</label>
+                <label for="ressources_autres" class="fr-label">Dont autres ressources* <%= render partial: "chiffres/tooltip", locals: {num_id: "ressources_autres_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                   <%= f.text_field :ressources_autres, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.ressources_autres, id:"ressources_autres", class:"fr-input" %>
                 </div>
@@ -224,7 +224,7 @@
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Taux de ressources propres</p>
+                    <p class="fr-mb-0 fr-text--center">Taux de ressources propres <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_ressources_t", chiffre: @chiffre} %></p>
                     <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_ressources">-</span> %</p>
                   </div>
                 </div>
@@ -237,20 +237,20 @@
             <div class="fr-grid-row fr-grid-row--gutters">
               <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
                 <div class="fr-input-group fr-input-group--option">
-                  <label for="decaissements_operations" class="fr-label">Opérations au nom et pour le compte de tiers <% if @chiffre.comptabilite_budgetaire == true %>(besoins)<%else %>(débits)<%end %></label>
+                  <label for="decaissements_operations" class="fr-label">Opérations au nom et pour le compte de tiers <% if @chiffre.comptabilite_budgetaire == true %>(besoins)<%else %>(débits)<%end %> <%= render partial: "chiffres/tooltip", locals: {num_id: "decaissements_operations_t", chiffre: @chiffre} %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                     <%= f.text_field :decaissements_operations, data: {action: 'input->form#changeNumber'}, value: @chiffre.decaissements_operations, id:"decaissements_operations", class:"fr-input" %>
                   </div>
                 </div>
                 <% if @chiffre.comptabilite_budgetaire == true %>
                 <div class="fr-input-group fr-input-group--option">
-                  <label for="decaissements_emprunts" class="fr-label">Emprunts, Prêts, Dépôts et cautionnements (besoins)</label>
+                  <label for="decaissements_emprunts" class="fr-label">Emprunts, Prêts, Dépôts et cautionnements (besoins) <%= render partial: "chiffres/tooltip", locals: {num_id: "decaissements_emprunts_t", chiffre: @chiffre} %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                     <%= f.text_field :decaissements_emprunts, data: {action: 'input->form#changeNumber'}, value: @chiffre.decaissements_emprunts, id:"decaissements_emprunts", class:"fr-input" %>
                   </div>
                 </div>
                 <div class="fr-input-group fr-input-group--option">
-                  <label for="decaissements_autres" class="fr-label">Autres décaissements non budgétaires</label>
+                  <label for="decaissements_autres" class="fr-label">Autres décaissements non budgétaires <%= render partial: "chiffres/tooltip", locals: {num_id: "decaissements_autres_t", chiffre: @chiffre} %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                     <%= f.text_field :decaissements_autres, data: {action: 'input->form#changeNumber'}, value: @chiffre.decaissements_autres, id:"decaissements_autres", class:"fr-input" %>
                   </div>
@@ -258,7 +258,7 @@
                   <div class="fr-mb-2w">
                     <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                       <div class="fr-cart__body">
-                        <p class="fr-mb-0 fr-text--center">Décaissements non budgétaires</p>
+                        <p class="fr-mb-0 fr-text--center">Décaissements non budgétaires <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_dec_t", chiffre: @chiffre} %></p>
                         <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_dec">-</span> €</p>
                       </div>
                     </div>
@@ -268,20 +268,20 @@
               </div>
               <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
                 <div class="fr-input-group fr-input-group--option">
-                  <label for="encaissements_operations" class="fr-label">Opérations au nom et pour le compte de tiers <% if @chiffre.comptabilite_budgetaire == true %>(financements)<%else %>(crédits)<%end %></label>
+                  <label for="encaissements_operations" class="fr-label">Opérations au nom et pour le compte de tiers <% if @chiffre.comptabilite_budgetaire == true %>(financements)<%else %>(crédits)<%end %> <%= render partial: "chiffres/tooltip", locals: {num_id: "encaissements_operations_t", chiffre: @chiffre} %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                     <%= f.text_field :encaissements_operations, data: {action: 'input->form#changeNumber'}, value: @chiffre.encaissements_operations, id:"encaissements_operations", class:"fr-input" %>
                   </div>
                 </div>
                 <% if @chiffre.comptabilite_budgetaire == true %>
                   <div class="fr-input-group fr-input-group--option">
-                    <label for="encaissements_emprunts" class="fr-label">Emprunts, Prêts, Dépôts et cautionnements (financements)</label>
+                    <label for="encaissements_emprunts" class="fr-label">Emprunts, Prêts, Dépôts et cautionnements (financements) <%= render partial: "chiffres/tooltip", locals: {num_id: "encaissements_emprunts_t", chiffre: @chiffre} %></label>
                     <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                       <%= f.text_field :encaissements_emprunts, data: {action: 'input->form#changeNumber'}, value: @chiffre.encaissements_emprunts, id:"encaissements_emprunts", class:"fr-input" %>
                     </div>
                   </div>
                   <div class="fr-input-group fr-input-group--option">
-                    <label for="encaissements_autres" class="fr-label">Autres encaissements non budgétaires</label>
+                    <label for="encaissements_autres" class="fr-label">Autres encaissements non budgétaires <%= render partial: "chiffres/tooltip", locals: {num_id: "encaissements_autres_t", chiffre: @chiffre} %></label>
                     <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                       <%= f.text_field :encaissements_autres, data: {action: 'input->form#changeNumber'}, value: @chiffre.encaissements_autres, id:"encaissements_autres", class:"fr-input" %>
                     </div>
@@ -289,7 +289,7 @@
                   <div class="fr-mb-2w">
                     <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                       <div class="fr-cart__body">
-                        <p class="fr-mb-0 fr-text--center">Encaissements non budgétaires</p>
+                        <p class="fr-mb-0 fr-text--center">Encaissements non budgétaires <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_enc_t", chiffre: @chiffre} %></p>
                         <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_enc">-</span> €</p>
                       </div>
                     </div>
