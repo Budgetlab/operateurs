@@ -114,7 +114,7 @@
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
                       <p class="fr-mb-0 fr-text--center">Taux de recettes propres</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_recettes_propres_globalisees+chiffre.credits_recettes_propres_flechees,@total_recettes,1)) %> %</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_recettes_propres_globalisees+chiffre.credits_recettes_propres_flechees,@total_recettes,100)) %> %</p>
                     </div>
                   </div>
                 </div>
@@ -124,7 +124,7 @@
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
                       <p class="fr-mb-0 fr-text--center">Poids des financements de l’Etat</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(@total_subv_etat,@total_recettes,1)) %> %</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(@total_subv_etat,@total_recettes,100)) %> %</p>
                     </div>
                   </div>
                 </div>

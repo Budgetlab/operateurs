@@ -243,7 +243,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Poids des recettes non fléchées</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(@total_recettes_globalisees,@total_recettes,1)) %> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(@total_recettes_globalisees,@total_recettes,100)) %> %</p>
         </div>
       </div>
     </div>
@@ -265,7 +265,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Poids des financements de l’Etat</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(@total_subv_etat,@total_recettes,1)) %> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(@total_subv_etat,@total_recettes,100)) %> %</p>
         </div>
       </div>
     </div>
@@ -278,7 +278,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Poids de la SCSP sur recettes totales</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(ratio(chiffre.credits_subvention_sp,@total_recettes,1))%> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_subvention_sp,@total_recettes,100))%> %</p>
         </div>
       </div>
     </div>
@@ -288,7 +288,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Taux de couverture des dépenses de personnel et de fonctionnement par de la SCSP <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_taux_sp_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_subvention_sp,chiffre.emplois_depenses_personnel+chiffre.credits_cp_fonctionnement,1))%> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_subvention_sp,chiffre.emplois_depenses_personnel+chiffre.credits_cp_fonctionnement,100))%> %</p>
         </div>
       </div>
     </div>
@@ -312,7 +312,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Taux de recettes propres <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_taux_recettes_propres_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_recettes_propres_globalisees+chiffre.credits_recettes_propres_flechees,@total_recettes,1)) %> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_recettes_propres_globalisees+chiffre.credits_recettes_propres_flechees,@total_recettes,100)) %> %</p>
         </div>
       </div>
     </div>
