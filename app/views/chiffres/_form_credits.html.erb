@@ -87,7 +87,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
-                  <p class="fr-mb-0 fr-text--center">Poids des dépenses de fonctionnement (CP)</p>
+                  <p class="fr-mb-0 fr-text--center">Part des dépenses de fonctionnement (CP) dans le total des dépenses (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_fonctionnement_t", chiffre: @chiffre} %></p>
                   <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_poids_fonctionnement">-</span>%</p>
                 </div>
               </div>
@@ -113,7 +113,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
-                  <p class="fr-mb-0 fr-text--center">Poids des dépenses d’intervention (CP)</p>
+                  <p class="fr-mb-0 fr-text--center">Part des dépenses d’intervention (CP) dans le total des dépenses (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_intervention_t", chiffre: @chiffre} %></p>
                   <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_poids_intervention">-</span>%</p>
                 </div>
               </div>
@@ -139,7 +139,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
-                  <p class="fr-mb-0 fr-text--center">Poids des dépenses d’investissement (CP)</p>
+                  <p class="fr-mb-0 fr-text--center">Part des dépenses d’investissement (CP) dans le total des dépenses (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_investissement_t", chiffre: @chiffre} %></p>
                   <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_poids_investissement">-</span>%</p>
                 </div>
               </div>
@@ -283,7 +283,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
-                  <p class="fr-mb-0 fr-text--center">Poids des financements de l’Etat</p>
+                  <p class="fr-mb-0 fr-text--center">Poids des financements de l’Etat <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_financements_etat_t", chiffre: @chiffre} %></p>
                   <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_poids_financements_etat">-</span>%</p>
                 </div>
               </div>
@@ -319,7 +319,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
-                  <p class="fr-mb-0 fr-text--center">Total des recettes globalisées</p>
+                  <p class="fr-mb-0 fr-text--center">Total des recettes globalisées <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_total_recettes_globalisees_t", chiffre: @chiffre} %></p>
                   <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_total_recettes_globalisees">-</span>€</p>
                 </div>
               </div>
@@ -327,7 +327,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
-                  <p class="fr-mb-0 fr-text--center">Total des recettes fléchées</p>
+                  <p class="fr-mb-0 fr-text--center">Total des recettes fléchées <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_total_recettes_flechees_t", chiffre: @chiffre} %></p>
                   <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_total_recettes_flechees">-</span>€</p>
                 </div>
               </div>
@@ -335,7 +335,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
-                  <p class="fr-mb-0 fr-text--center">Poids des recettes non fléchées</p>
+                  <p class="fr-mb-0 fr-text--center">Poids des recettes non fléchées <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_recettes_globalisees_t", chiffre: @chiffre} %></p>
                   <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_poids_recettes_globalisees">-</span>%</p>
                 </div>
               </div>
@@ -373,8 +373,8 @@
             <div class="fr-col-12 fr-col-lg-4 options fr-hidden">
               <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
-                  <p class="fr-mb-0 fr-text--center">Solde budgétaire résultant des opérations fléchées</p>
-                  <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_solde_budgetaire_fleche">-</span>%</p>
+                  <p class="fr-mb-0 fr-text--center">Solde budgétaire résultant des opérations fléchées <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_solde_budgetaire_fleche_t", chiffre: @chiffre} %></p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_solde_budgetaire_fleche">-</span>€</p>
                 </div>
               </div>
             </div>
@@ -392,7 +392,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
-                  <p class="fr-mb-0 fr-text--center">Variation des restes à payer</p>
+                  <p class="fr-mb-0 fr-text--center">Variation des restes à payer <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_variation_rap_t", chiffre: @chiffre} %></p>
                   <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_variation_rap">-</span>€</p>
                 </div>
               </div>

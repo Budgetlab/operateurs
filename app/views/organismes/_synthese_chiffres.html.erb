@@ -11,7 +11,7 @@
   <% @solde = @total_recettes - chiffre.credits_cp_total %>
   <% @den = (chiffre.credits_cp_total - chiffre.credits_cp_investissement)/360 %>
 <% else  %>
-  <% @den = (chiffre.emplois_charges_personnel + chiffre.charges_fonctionnement + chiffre.charges_intervention - chiffre.charges_non_decaissables)/360 %>
+  <% @den = (chiffre.emplois_charges_personnel + chiffre.charges_fonctionnement + chiffre.charges_intervention - (chiffre.charges_non_decaissables || 0))/360 %>
 <% end  %>
   <div class="fr-card">
     <div class="fr-card__body">
@@ -159,7 +159,7 @@
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
                       <p class="fr-mb-0 fr-text--center">Taux de ressources propres</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.produits_autres - chiffre.produits_non_encaissables + chiffre.ressources_autres,chiffre.produits_subventions_etat + chiffre.produits_fiscalite_affectee + chiffre.produits_subventions_autres + chiffre.produits_autres - chiffre.produits_non_encaissables + chiffre.ressources_total - chiffre.capacite_autofinancement,100)) %> %</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.produits_autres - (chiffre.produits_non_encaissables || 0) + chiffre.ressources_autres,chiffre.produits_subventions_etat + chiffre.produits_fiscalite_affectee + chiffre.produits_subventions_autres + chiffre.produits_autres - (chiffre.produits_non_encaissables || 0) + chiffre.ressources_total - chiffre.capacite_autofinancement,100)) %> %</p>
                     </div>
                   </div>
                 </div>

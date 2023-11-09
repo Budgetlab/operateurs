@@ -70,7 +70,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids relatif des dépenses de fonctionnement (CP)</p>
+          <p class="fr-mb-0 fr-text--center">Part relatif des dépenses de fonctionnement (CP) dans le total des dépenses (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_fonctionnement_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_cp_fonctionnement,chiffre.credits_cp_total,100)) %> %</p>
         </div>
       </div>
@@ -94,7 +94,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids relatif des dépenses d'intervention (CP)</p>
+          <p class="fr-mb-0 fr-text--center">Part relatif des dépenses d'intervention (CP) dans le total des dépenses (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_intervention_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_cp_intervention,chiffre.credits_cp_total,100)) %> %</p>
         </div>
       </div>
@@ -118,7 +118,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids relatif des dépenses d'investissement (CP)</p>
+          <p class="fr-mb-0 fr-text--center">Part relatif des dépenses d'investissement (CP) dans le total des dépenses (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_investissement_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_cp_investissement,chiffre.credits_cp_total,100)) %> %</p>
         </div>
       </div>
@@ -208,7 +208,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Total des recettes globalisées</p>
+          <p class="fr-mb-0 fr-text--center">Total des recettes globalisées <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_total_recettes_globalisees_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_recettes_globalisees) %> €</p>
         </div>
       </div>
@@ -218,7 +218,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Total des recettes fléchées</p>
+          <p class="fr-mb-0 fr-text--center">Total des recettes fléchées <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_total_recettes_flechees_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_recettes_flechees) %> €</p>
         </div>
       </div>
@@ -242,7 +242,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids des recettes non fléchées</p>
+          <p class="fr-mb-0 fr-text--center">Poids des recettes non fléchées <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_recettes_globalisees_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(@total_recettes_globalisees,@total_recettes,100)) %> %</p>
         </div>
       </div>
@@ -264,7 +264,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids des financements de l’Etat</p>
+          <p class="fr-mb-0 fr-text--center">Poids des financements de l’Etat <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_financements_etat_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(@total_subv_etat,@total_recettes,100)) %> %</p>
         </div>
       </div>
@@ -334,7 +334,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Solde budgétaire résultant des opérations fléchées</p>
+          <p class="fr-mb-0 fr-text--center">Solde budgétaire résultant des opérations fléchées <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_solde_budgetaire_fleche_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.credits_cp_recettes_flechees %><%= format_nombre(@total_recettes_flechees-chiffre.credits_cp_recettes_flechees) %><%else %>-<%end %> €</p>
         </div>
       </div>
@@ -354,7 +354,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Variations des restes à payer</p>
+          <p class="fr-mb-0 fr-text--center">Variations des restes à payer <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_variation_rap_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.credits_ae_total-chiffre.credits_cp_total) %> €</p>
         </div>
       </div>

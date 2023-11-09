@@ -146,12 +146,12 @@
             </div>
           </div>
           <hr class="fr-my-2w">
-          <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
             <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
-              <div class="fr-input-group">
-                <label for="charges_non_decaissables" class="fr-label">Charges non décaissables* <%= render partial: "chiffres/tooltip", locals: {num_id: "charges_non_decaissables_t", chiffre: @chiffre} %></label>
+              <div class="fr-input-group fr-input-group--option">
+                <label for="charges_non_decaissables" class="fr-label">Charges non décaissables <%= render partial: "chiffres/tooltip", locals: {num_id: "charges_non_decaissables_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :charges_non_decaissables, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.charges_non_decaissables, id:"charges_non_decaissables", class:"fr-input" %>
+                  <%= f.text_field :charges_non_decaissables, data: {action: 'input->form#changeNumber'}, value: @chiffre.charges_non_decaissables, id:"charges_non_decaissables", class:"fr-input" %>
                 </div>
               </div>
               <div class="fr-mb-2w">
@@ -164,10 +164,10 @@
               </div>
             </div>
             <div class="fr-col-12 <% if @chiffre.comptabilite_budgetaire == true %>fr-col-lg-6<%else %>fr-col-lg-4<% end %>">
-              <div class="fr-input-group">
-                <label for="produits_non_encaissables" class="fr-label">Produits non encaissables* <%= render partial: "chiffres/tooltip", locals: {num_id: "produits_non_encaissables_t", chiffre: @chiffre} %></label>
+              <div class="fr-input-group fr-input-group--option">
+                <label for="produits_non_encaissables" class="fr-label">Produits non encaissables <%= render partial: "chiffres/tooltip", locals: {num_id: "produits_non_encaissables_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :produits_non_encaissables, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.produits_non_encaissables, id:"produits_non_encaissables", class:"fr-input" %>
+                  <%= f.text_field :produits_non_encaissables, data: {action: 'input->form#changeNumber'}, value: @chiffre.produits_non_encaissables, id:"produits_non_encaissables", class:"fr-input" %>
                 </div>
               </div>
             </div>

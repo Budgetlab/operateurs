@@ -13,7 +13,7 @@
   <% elsif num_id == "emplois_total_t" %>
     Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
     > Tableau "Pour vote de l'organe délibérant" <br>
-    > Cellule "Plafond organisme (=a+b)"
+    > Cellule "Plafond organisme"
   <% elsif num_id == "emplois_total2_t" %>
     Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
     > Tableau "Pour vote de l'organe délibérant" <br>
@@ -96,48 +96,56 @@
     <!-- CREDITS -->
   <% elsif num_id == "credits_ae_total_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Partie "Dépenses"<br>
     > Cellule "Total des dépenses en AE"
   <% elsif num_id == "credits_cp_total_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Partie "Dépenses"<br>
     > Cellule "Total des dépenses en CP"
   <% elsif num_id == "credits_cp_personnel_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Dépenses"<br>
+    > Partie "Dépenses"<br>
     > Cellule "Personnel" (en CP) <br>
     Rappel : L'article 181 du décret GBCP prévoit que s'agissant des dépenses de personnel, le montant des autorisations d'engagement est égal au montant des crédits de paiement.
   <% elsif num_id == "credits_poids_personnel_t" %>
     <span class="fr-text--bold">Formule de calcul : Total des dépenses de personnel / Total des dépenses hors investissement</span><br><br>
     Cet indicateur permet de mesurer le degré de rigidité du budget lié à la part des dépenses destinées à la rémunération des personnel. <br>
     L'exclusion des dépenses d'investissement permet d'éviter les éventuelles évolutions erratiques liées à la réalisation d'opérations ponctuelles de montants significatifs.
+  <% elsif num_id == "indicateur_poids_fonctionnement_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des dépenses de fonctionnement (CP) / Total des crédits de paiement (CP)</span>
+  <% elsif num_id == "indicateur_poids_intervention_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des dépenses d'intervention (CP) / Total des crédits de paiement (CP)</span>
+  <% elsif num_id == "indicateur_poids_investissement_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des dépenses d'investissement (CP) / Total des crédits de paiement (CP)</span>
   <% elsif num_id == "credits_ae_fonctionnement_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Dépenses"<br>
+    > Partie "Dépenses"<br>
     > Cellule "Fonctionnement (en AE)"
   <% elsif num_id == "credits_cp_fonctionnement_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Dépenses"<br>
+    > Partie "Dépenses"<br>
     > Cellule "Fonctionnement (en CP)"
   <% elsif num_id == "credits_ae_intervention_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Dépenses"<br>
+    > Partie "Dépenses"<br>
     > Cellule "Intervention" (en AE)
   <% elsif num_id == "credits_cp_intervention_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Dépenses"<br>
+    > Partie "Dépenses"<br>
     > Cellule "Intervention" (en CP)
   <% elsif num_id == "credits_ae_investissement_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Dépenses"<br>
+    > Partie "Dépenses"<br>
     > Cellule "Investissement" (en AE)
   <% elsif num_id == "credits_cp_investissement_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Dépenses"<br>
+    > Partie "Dépenses"<br>
     > Cellule "Investissement" (en CP)
   <% elsif num_id == "credits_cp_recettes_flechees_t" %>
     Source : <span class="fr-text--underline">Tableau 8 de la liasse budgétaire - "Opérations sur recettes fléchées"</span><br>
     > Cellule "Dépenses sur recettes fléchées (CP) - année N"
   <% elsif num_id == "credits_cp_operations_t" %>
-    Source : <span class="fr-text--underline"> Tableau 9 de la liasse budgétaire - "Exécution Prévision” </span><br>
+    Source : <span class="fr-text--underline"> Tableau 9 de la liasse budgétaire - "Opérations pluriannuelles - Exécution Prévision" </span><br>
     > Cellule "Total des CP ouverts en N"
   <% elsif num_id == "indicateur_operations_t" %>
     <span class="fr-text--bold">Formule de calcul : Total des crédits de paiement ouverts en N pour des opérations pluriannuelles / Total des crédits de paiement</span><br><br>
@@ -153,55 +161,68 @@
     La subvention pour charges de service public constitue par nature une subvention de fonctionnement annuelle destinée à couvrir indistinctement des dépenses de fonctionnement et de personnel des opérateurs. Elle n'a toutefois pas vocation à être la source exclusivde de financement de ces dépenses.
   <% elsif num_id == "credits_subvention_investissement_globalisee_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Recettes"<br>
-    > Partie "Recettes globalisées"<br>
+    > Partie "Recettes"<br>
+    > Sous-partie "Recettes globalisées"<br>
     > Cellule "Subvention pour charges d'investissement"
   <% elsif num_id == "credits_subvention_investissement_flechee_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Recettes"<br>
-    > Partie "Recettes fléchées"<br>
+    > Partie "Recettes"<br>
+    > Sous-partie "Recettes fléchées"<br>
     > Cellule "Subvention pour charges d'investissement fléchée"
   <% elsif num_id == "credits_financements_etat_autres_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Recettes"<br>
-    > Partie "Recettes globalisées"<br>
+    > Partie "Recettes"<br>
+    > Sous-partie "Recettes globalisées"<br>
     > Cellule  "Autres financements de l'Etat"
   <% elsif num_id == "credits_financements_etat_fleches_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Recettes"<br>
-    > Partie "Recettes fléchées"<br>
+    > Partie "Recettes"<br>
+    > Sous-partie "Recettes fléchées"<br>
     > Cellule  "Autres financements de l'Etat fléchés"
   <% elsif num_id == "credits_fiscalite_affectee_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Recettes"<br>
-    > Partie "Recettes globalisées"<br>
+    > Partie "Recettes"<br>
+    > Sous-partie "Recettes globalisées"<br>
     > Cellule "Fiscalité affectée"
   <% elsif num_id == "credits_financements_publics_autres_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Recettes"<br>
-    > Partie "Recettes globalisées"<br>
+    > Partie "Recettes"<br>
+    > Sous-partie "Recettes globalisées"<br>
     > Cellule "Autres financements publics"
   <% elsif num_id == "credits_financements_publics_fleches_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Recettes"<br>
-    > Partie "Recettes fléchées"<br>
+    > Partie "Recettes"<br>
+    > Sous-partie "Recettes fléchées"<br>
     > Cellule "Autres financements publics fléchés"
+  <% elsif num_id == "indicateur_poids_financements_etat_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des subventions de l'Etat / Total des recettes</span>
+  <% elsif num_id == "indicateur_poids_recettes_globalisees_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des recettes globalisées / Total des recettes</span>
+  <% elsif num_id == "indicateur_total_recettes_globalisees_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Partie "Recettes"<br>
+    > Cellule "Recettes globalisées"
+  <% elsif num_id == "indicateur_total_recettes_flechees_t" %>
+    Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Partie "Recettes"<br>
+    > Cellule "Recettes fléchées"
   <% elsif num_id == "credits_recettes_propres_globalisees_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Recettes"<br>
-    > Partie "Recettes globalisées"<br>
+    > Partie "Recettes"<br>
+    > Sous-partie "Recettes globalisées"<br>
     > Cellule "Recettes propres"
   <% elsif num_id == "credits_recettes_propres_flechees_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Recettes"<br>
-    > Partie "Recettes fléchées"<br>
+    > Partie "Recettes"<br>
+    > Sous-partie "Recettes fléchées"<br>
     > Cellule "Recettes propres fléchées"
   <% elsif num_id == "indicateur_total_recettes_propres_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
-    > Tableau "Recettes"<br>
+    > Partie "Recettes"<br>
     > Cellule "Recettes propres" + Cellule "Recettes propres fléchées"
   <% elsif num_id == "indicateur_total_recettes_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse budgétaire - "Autorisations budgétaires" </span><br>
+    > Partie "Recettes"<br>
     > Cellule "Total des recettes"
   <% elsif num_id == "indicateur_taux_recettes_propres_t" %>
     <span class="fr-text--bold">Formule de calcul : Total des recettes propres / total des recettes</span><br><br>
@@ -210,6 +231,10 @@
     Le solde budgétaire correspond à la différence entre les recettes encaissées et les CP de l'année, soit à la variation de trésorerie générée par les opérations budgétaires et constitue à ce titre un solde primaire de la variation de trésorerie, excluant les opérations de trésorerie non budgétaires. <br>
     Le solde budgétaire doit être analysé en tenant compte des modalités de financement de l'organisme et de la programmation de ses opérations pluriannuelles. Il peut arriver que d'un exercice sur l'autre ce solde varie sensiblement voire même qu'il soit déficitaire. <br>
     Dans cette hypothèse, il convient d'isoler ce qui relève des opérations fléchées car celles-ci peuvent générer des décalages de flux importants.
+  <% elsif num_id == "indicateur_solde_budgetaire_fleche_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des recettes fléchées - Total des dépenses sur recettes fléchées</span>
+  <% elsif num_id == "indicateur_variation_rap_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des autorisations d'engagement - Total des crédits de paiement</span>
   <% elsif num_id == "credits_restes_a_payer_t" %>
     Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -  "Synthèse budgétaire et comptable" </span><br>
     > Cellule "Niveau final des restes à payer" <br><br>
@@ -421,13 +446,21 @@
   <% elsif num_id == "tresorerie_finale_non_flechee_t" %>
     Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -"Synthèse budgétaire et comptable"</span><br>
     > Cellule "Dont niveau final de la trésorerie non fléchée"
-  <% elsif num_id == "tresorerie_finale_text_t" %>
+  <% elsif num_id == "indicateur_treso_non_flechee_t" %>
+    <span class="fr-text--bold">Formule de calcul : Niveau final de trésorerie non fléchée / Niveau final de la trésorerie</span>
+  <% elsif num_id == "indicateur_treso_rap_t" %>
+    <span class="fr-text--bold">Formule de calcul : Niveau final de la trésorerie / Niveau final des restes à payer</span>
+  <% elsif num_id == "indicateur_treso_non_flechee_jours_t" %>
+    <span class="fr-text--bold">Formule de calcul : Formule de calcul : Niveau final de trésorerie non fléchée / ((Total des crédits de paiements - Total des dépenses d'investissement (CP)) / 360) </span>
+  <% elsif num_id == "indicateur_treso_jours_t" %>
+    <span class="fr-text--bold">Formule de calcul : Formule de calcul : Niveau final de trésorerie / <%= chiffre&.comptabilite_budgetaire ? "((Total des crédits de paiements - Total des dépenses d'investissement (CP)) / 360)" : "(Charges décaissables / 360)"%> </span>
+  <% elsif num_id == "indicateur_treso_non_flechee_t" %>
     Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -"Synthèse budgétaire et comptable"</span><br>
     > Cellule "Niveau final de la TRESORERIE"<br>
     ou <br>
     Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - "Situation patrimoniale"</span><br>
     > Tableau  "Variation et niveau du fonds de roulement, du besoin en fonds de roulement et de la trésorerie"<br>
-    >  Cellule "Variation de la TRESORERIE : ABONDEMENT ou PRELEVEMENT"
+    >  Cellule "Niveau final de la TRESORERIE"
   <% elsif num_id == "tresorerie_indicateur_initial_t" %>
     <% if chiffre.comptabilite_budgetaire == true %>
       Source : <span class="fr-text--underline">Tableau 7 de la liasse budgétaire - "Plan de trésorerie"</span><br>
@@ -446,10 +479,15 @@
   <% elsif num_id == "tresorerie_variation_flechee_t" %>
     Source : <span class="fr-text--underline">Tableau 4 de la liasse budgétaire -  "Equilibre financier"</span><br>
     > Cellule "Abondement de la trésorerie fléchée" ou "Prélèvement sur la trésorerie fléchée"
+  <% elsif num_id == "tresorerie_variation_non_flechee_t" %>
+    Source : <span class="fr-text--underline">Tableau 4 de la liasse budgétaire -  "Equilibre financier"</span><br>
+    > Cellule "Abondement de la trésorerie non fléchée" ou "Prélèvement sur la trésorerie non fléchée"
   <% elsif num_id == "tresorerie_max_t" %>
     Source : <span class="fr-text--underline">Tableau 7 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "Plan de trésorerie"</span><br>
+    Ligne "Solde Cumulé"
   <% elsif num_id == "tresorerie_min_t" %>
     Source : <span class="fr-text--underline">Tableau 7 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "Plan de trésorerie"</span><br>
+    Ligne "Solde Cumulé"
   <% elsif num_id == "tresorerie_finale_t" %>
     Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
     > Tableau "Variation et niveau du fonds de roulement, du besoin en fonds de roulement et de la trésorerie" <br>

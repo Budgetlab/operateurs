@@ -70,7 +70,11 @@ class OrganismesController < ApplicationController
     @modifications_rejetees_organisme = modifications.select { |modification| modification.statut == 'refusée' }
     @modifications_attente_organisme = modifications.select { |modification| modification.statut == 'En attente' }
     @organisme_destinations = OrganismeRattachement.where(organisme_destination_id: @organisme.id)
-    @chiffre = @organisme.chiffres.where(statut: 'valide').order(created_at: :desc).first
+    @chiffre = @organisme.chiffres.where(statut: 'valide').order(Arel.sql(" exercice_budgetaire DESC, CASE
+      WHEN type_budget = 'Compte financier' THEN 1
+      WHEN type_budget = 'Budget rectificatif' THEN 2
+      ELSE 3
+    END, created_at DESC")).first
     filename = 'fiche_organisme.xlsx'
     respond_to do |format|
       format.html

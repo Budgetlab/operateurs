@@ -796,7 +796,7 @@ export default class extends Controller {
         const ressources_autres = this.numberFormat(document.getElementById("ressources_autres").value) || 0;
         const ressources_total = this.numberFormat(document.getElementById("ressources_total").value) || 0;
         const capacite_autofinancement = this.numberFormat(document.getElementById("capacite_autofinancement").value) || 0;
-        if (document.getElementById("produits_autres").value == "" || document.getElementById("produits_non_encaissables").value == "" || document.getElementById("ressources_autres").value == "" || document.getElementById("ressources_total").value == "" || document.getElementById("capacite_autofinancement").value == "" ){
+        if (document.getElementById("produits_autres").value == "" || document.getElementById("ressources_autres").value == "" || document.getElementById("ressources_total").value == "" || document.getElementById("capacite_autofinancement").value == "" ){
             indicateur_ressources.innerHTML = "-"
         }else{
             this.indicateurRatio(document.getElementById("ressources_total"),indicateur_ressources,produits_autres - produits_non_encaissables + ressources_autres,produits_total - produits_non_encaissables + ressources_total - capacite_autofinancement,100);

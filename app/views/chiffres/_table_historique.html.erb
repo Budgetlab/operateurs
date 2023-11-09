@@ -3,7 +3,7 @@
     <td><%= l(chiffre.created_at,format: "%e/%m/%y")%></td>
     <td><%= link_to organisme_path(chiffre.organisme) do %><%= chiffre.organisme.nom %><% end %></td>
     <td><%= chiffre.exercice_budgetaire %></td>
-    <td><%= chiffre.type_budget %></td>
+    <td><%= chiffre.type_budget %> <% if chiffre.type_budget == 'Budget rectificatif'%> n°<%= chiffre.organisme.chiffres.where(exercice_budgetaire: chiffre.exercice_budgetaire, type_budget: 'Budget rectificatif').order(created_at: :asc).pluck(:id).index(chiffre.id)+1%> <%end %></td>
     <td><%= chiffre.phase %></td>
     <td><%= render partial: "chiffres/badge_examen", locals: {examen: chiffre.statut != "valide" ? "Brouillon" : chiffre.risque_insolvabilite}  %></td>
      <td>

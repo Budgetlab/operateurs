@@ -26,7 +26,7 @@
             <div id="den" data-form-den="<%=@den %>"></div>
             <div id="crap" data-form-crap="<%=@chiffre.credits_restes_a_payer %>"></div>
           <% else %>
-            <% @den = @chiffre.emplois_charges_personnel + @chiffre.charges_fonctionnement + @chiffre.charges_intervention - @chiffre.charges_non_decaissables %>
+            <% @den = @chiffre.emplois_charges_personnel + @chiffre.charges_fonctionnement + @chiffre.charges_intervention - (@chiffre.charges_non_decaissables || 0) %>
             <div id="den" data-form-den="<%=@den %>"></div>
           <% end  %>
           <h2>Niveaux de trésorerie</h2>
@@ -44,7 +44,7 @@
                 <div class="fr-mb-2w">
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Poids de la trésorerie non fléchée</p>
+                      <p class="fr-mb-0 fr-text--center">Poids de la trésorerie non fléchée <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_non_flechee_t", chiffre: @chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_non_flechee">-</span> %</p>
                     </div>
                   </div>
@@ -64,7 +64,7 @@
                 <div class="fr-mb-2w">
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Trésorerie non fléchée en jours de fonctionnement</p>
+                      <p class="fr-mb-0 fr-text--center">Trésorerie non fléchée en jours de fonctionnement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_non_flechee_jours_t", chiffre: @chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_non_flechee_jours">-</span> Jours</p>
                     </div>
                   </div>
@@ -87,7 +87,7 @@
                 <div>
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement</p>
+                      <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_jours_t", chiffre: @chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_jours">-</span> Jours</p>
                     </div>
                   </div>
@@ -132,7 +132,7 @@
                 <div>
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Taux de couverture des restes à payer par la trésorerie</p>
+                      <p class="fr-mb-0 fr-text--center">Taux de couverture des restes à payer par la trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_rap_t", chiffre: @chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_treso_rap">-</span> %</p>
                     </div>
                   </div>
@@ -166,7 +166,7 @@
             <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-input-group fr-input-group--option">
-                  <label for="tresorerie_variation_non_flechee" class="fr-label">Variation de la trésorerie non fléchée</label>
+                  <label for="tresorerie_variation_non_flechee" class="fr-label">Variation de la trésorerie non fléchée <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_variation_non_flechee_t", chiffre: @chiffre} %></label>
                   <div class="fr-input-wrap fr-icon-money-euro-circle-line">
                     <%= f.text_field :tresorerie_variation_non_flechee, data: {action: 'input->form#changeNumber'}, value: @chiffre.tresorerie_variation_non_flechee, id:"tresorerie_variation_non_flechee", class:"fr-input" %>
                   </div>

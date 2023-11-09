@@ -24,7 +24,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement</p>
+          <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_jours_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(ratio(chiffre.tresorerie_finale,@den,1)) %> Jours</p>
         </div>
       </div>
@@ -33,7 +33,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Taux de couverture des restes à payer par la trésorerie</p>
+          <p class="fr-mb-0 fr-text--center">Taux de couverture des restes à payer par la trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_rap_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(ratio(chiffre.tresorerie_finale,chiffre.credits_restes_a_payer,100)) %> %</p>
         </div>
       </div>
@@ -52,7 +52,7 @@
       <div class="fr-mb-2w">
         <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
-            <p class="fr-mb-0 fr-text--center">Poids de la trésorerie non fléchée</p>
+            <p class="fr-mb-0 fr-text--center">Poids de la trésorerie non fléchée <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_non_flechee_t", chiffre: chiffre} %></p>
             <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(ratio(chiffre.tresorerie_finale_non_flechee,chiffre.tresorerie_finale,100))%> %</p>
           </div>
         </div>
@@ -68,7 +68,7 @@
       <div class="fr-mb-2w">
         <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
-            <p class="fr-mb-0 fr-text--center">Trésorerie non fléchée en jours de fonctionnement</p>
+            <p class="fr-mb-0 fr-text--center">Trésorerie non fléchée en jours de fonctionnement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_non_flechee_jours_t", chiffre: chiffre} %></p>
             <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(ratio(chiffre.tresorerie_finale_non_flechee,@den,1)) %> Jours</p>
           </div>
         </div>
@@ -98,7 +98,7 @@
       <div class="options fr-hidden">
         <div>Variation de la trésorerie fléchée <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_variation_flechee_t", chiffre: chiffre} %></div>
         <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.tresorerie_variation_flechee) %> €</div>
-        <div>Variation de la trésorerie non fléchée </div>
+        <div>Variation de la trésorerie non fléchée <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_variation_non_flechee_t", chiffre: chiffre} %></div>
         <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.tresorerie_variation_non_flechee) %> €</div>
       </div>
     <% end  %>

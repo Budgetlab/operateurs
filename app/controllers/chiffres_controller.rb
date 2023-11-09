@@ -12,7 +12,11 @@ class ChiffresController < ApplicationController
     redirect_to root_path and return unless @statut_user == '2B2O' || @est_editeur || est_bureau_ou_famille
 
     @chiffres = @organisme.chiffres
-    @chiffres_export = @chiffres.where(statut: 'valide')
+    @chiffres_export = @chiffres.where(statut: 'valide').order(Arel.sql(" exercice_budgetaire DESC, CASE
+      WHEN type_budget = 'Compte financier' THEN 1
+      WHEN type_budget = 'Budget rectificatif' THEN 2
+      ELSE 3
+    END, created_at DESC"))
     @date = Date.today.year
     liste_budgets(@date, @chiffres)
     filename = "chiffres clés #{@organisme.nom}.xlsx"
@@ -97,6 +101,7 @@ class ChiffresController < ApplicationController
     redirect_unless_can_edit
     redirect_to organisme_chiffres_path(@organisme) unless @chiffre.statut != 'valide' || params[:step]
     @steps = @chiffre.comptabilite_budgetaire == true ? 6 : 5
+    @numero_br = @chiffre.type_budget == 'Budget rectificatif' ? @organisme.chiffres.where(exercice_budgetaire: @chiffre.exercice_budgetaire, type_budget: 'Budget rectificatif').order(created_at: :asc).pluck(:id).index(@chiffre.id)+1 : ""
   end
 
   def update

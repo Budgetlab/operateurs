@@ -4,7 +4,7 @@
     titre_header = s.add_style b: true
     col_header_blue = s.add_style bg_color: 'bdd7ee'
     tbl_cell_blue = s.add_style bg_color: 'bdd7ee',border: { style: :thin, color: '161616' }, alignment:{ :horizontal => :right }
-    col_header_grey = s.add_style bg_color: 'FFDFDEDF'
+    col_cell_grey = s.add_style bg_color: 'FFDFDEDF'
     tbl_cell = s.add_style border: { style: :thin, color: '161616' }, alignment:{ :horizontal => :right }
 
   	wb.add_worksheet(name: "Chiffres clés") do |sheet| 	
@@ -13,15 +13,19 @@
       
       @tableau = [nil, nil] + @chiffres_export.pluck(:type_budget,:exercice_budgetaire).map { |sous_tableau| sous_tableau.join(' ') }
       sheet.add_row(@tableau)
+
+      @array_compta = ["OCB/OHCB",nil] + @chiffres_export.pluck(:comptabilite_budgetaire).map { |value| value ? "OCB" : "OHCB" }
+      sheet.add_row(@array_compta)
+      @array_op = ["Op/non Op",nil] + @chiffres_export.pluck(:operateur).map { |value| value ? "Op" : "non Op" }
+      sheet.add_row(@array_op)
       
-      @colonnes = ["EMPLOIS", "Plafonds","Total des emplois rémunérés par l'organisme (en ETPT)","Dont Emplois sous plafond LFI (en ETPT)","Dont Emplois hors plafond LFI (en ETPT)","Hors plafond/ total effectif rémunérés par l'organisme", "Rappel du plafond", "Rappel du plafond d'emplois (en ETPT) inscrit en PLF / en LFI","Plafond d'emplois (en ETPT) pré-notifié à l'organisme par le RPROG","Total des dépenses/charges de personnel", "Coût moyen par ETPT", "SCHEMA d'emplois", "Schéma d'emplois (en ETP)", "Schéma d'emplois (en ETPT) pré-notifié à l'organisme par le RPROG", "Autres emplois en fonction dans l'organismes", "Emplois en fonction dans l'organisme, non rémunérés par lui (en ETPT) - emplois T2, MAD entrantes remboursées ou non", "Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisation d'emplois (en ETPT) - MAD sortantes / Pour les OHCB : Emplois en fonction dans une autre entité, rémunérés par l'organisme (en ETPT) - MAD sortantes", "Part des personnels exerçant leurs missions dans l'organisme dans le total des emplois rémunérés directement par l'organisme", "Répartition des emplois et dépenses par statut","Total des emplois titulaires","Total des emplois contractuels", "Part des contractuels dans le total des emplois rémunérés par l'organisme","Dépenses/charges de personnel des emplois titulaires","Cout moyen des emplois titulaires","Dépenses/charges de personnel des emplois contractuels","Cout moyen des emplois contractuels"]
+      @colonnes = ["EMPLOIS", "Plafonds","Total des emplois rémunérés par l'organisme (en ETPT)","Dont Emplois sous plafond LFI (en ETPT)","Dont Emplois hors plafond LFI (en ETPT)","Hors plafond/ total effectif rémunérés par l'organisme", "Rappel du plafond", "Rappel du plafond d'emplois (en ETPT) inscrit en PLF / en LFI","Plafond d'emplois (en ETPT) pré-notifié à l'organisme par le RPROG","Total des dépenses (pour OCB) ou charges (pour OHCB) de personnel", "Coût moyen par ETPT", "SCHEMA d'emplois (concerne les opérateurs)", "Schéma d'emplois (en ETP)", "Schéma d'emplois (en ETPT) pré-notifié à l'organisme par le RPROG", "Autres emplois en fonction dans l'organismes", "Emplois en fonction dans l'organisme, non rémunérés par lui (en ETPT) - emplois T2, MAD entrantes remboursées ou non", "Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisation d'emplois (en ETPT) - MAD sortantes / Pour les OHCB : Emplois en fonction dans une autre entité, rémunérés par l'organisme (en ETPT) - MAD sortantes", "Part des personnels exerçant leurs missions dans l'organisme dans le total des emplois rémunérés directement par l'organisme", "Répartition des emplois et dépenses par statut","Total des emplois titulaires","Total des emplois contractuels", "Part des contractuels dans le total des emplois rémunérés par l'organisme","Dépenses (pour OCB) ou charges (pour OHCB) de personnel des emplois titulaires","Cout moyen des emplois titulaires","Dépenses (pour OCB) ou charges (pour OHCB) de personnel des emplois contractuels","Cout moyen des emplois contractuels"]
       
       sheet.add_row [@colonnes[0]], style: titre_header
       sheet.add_row [@colonnes[1]], style: titre_header
       
       @emplois_total = [@colonnes[2],nil] + @chiffres_export.pluck(:emplois_total)
-      sheet.add_row(@emplois_total) 
-      sheet.add_style "A5", bg_color: "FFDFDEDF"
+      sheet.add_row(@emplois_total)
       
       @emplois_plafond = [@colonnes[3],nil] + @chiffres_export.pluck(:emplois_plafond)
       sheet.add_row(@emplois_plafond)
@@ -41,23 +45,28 @@
       sheet.add_row(@emplois_plafond_prenotifie)
 
       sheet.add_row
-      @emplois_charges_personnel = [@colonnes[9],nil] + @chiffres_export.pluck(:emplois_charges_personnel)
-      sheet.add_row(@emplois_charges_personnel)
+      @emplois_depenses_personnel = @chiffres_export.pluck(:emplois_depenses_personnel)
+      @emplois_charges_personnel = @chiffres_export.pluck(:emplois_charges_personnel)
+      @emplois_personnel = [@colonnes[9],nil]
+      row = sheet.rows[2]
+      row.cells.each_with_index do |cell,i|
+        if cell.value == "OCB"
+          @emplois_personnel << @emplois_depenses_personnel[i-2]
+        elsif cell.value == "OHCB"
+          @emplois_personnel << @emplois_charges_personnel[i-2]
+        end
+      end
 
-      @cout_etp = [@colonnes[10],nil] + @chiffres_export.pluck(:emplois_charges_personnel, :emplois_total).map { |x, y| ratio(x,y,1) }
+      sheet.add_row(@emplois_personnel)
+      @cout_etp = [@colonnes[10],nil] + @emplois_personnel[2..-1].zip(@emplois_total[2..-1]).map { |x, y| ratio(x,y,1) }
       sheet.add_row(@cout_etp)
-      
-      sheet.add_row
-      sheet.add_row [@colonnes[11]], style: titre_header
 
+      sheet.add_row [@colonnes[11]], style: titre_header
       @emplois_schema = [@colonnes[12],nil] + @chiffres_export.pluck(:emplois_schema)
       sheet.add_row(@emplois_schema)
-
-      sheet.add_row 
       @emplois_schema_prenotifie = [@colonnes[13],nil] + @chiffres_export.pluck(:emplois_schema_prenotifie)
       sheet.add_row(@emplois_schema_prenotifie)
 
-      sheet.add_row
       sheet.add_row [@colonnes[14]], style: titre_header 
       @emplois_non_remuneres = [@colonnes[15],nil] + @chiffres_export.pluck(:emplois_non_remuneres)
       sheet.add_row(@emplois_non_remuneres)
@@ -67,8 +76,7 @@
 
       @part_emplois = [@colonnes[17],nil] + @chiffres_export.pluck(:emplois_non_remuneres, :emplois_autre_entite, :emplois_total).map { |x, y, z| ratio(y+z-x,z,1) if y }
       sheet.add_row(@part_emplois)
-      
-      sheet.add_row
+
       sheet.add_row [@colonnes[18]], style: titre_header
 
       @emplois_titulaires = [@colonnes[19],nil] + @chiffres_export.pluck(:emplois_titulaires)
@@ -87,14 +95,298 @@
       sheet.add_row(@emplois_contractuels_montant)
       @cout_contractuel = [@colonnes[25],nil] + @chiffres_export.pluck(:emplois_contractuels_montant, :emplois_contractuels).map { |x, y| ratio(x,y,1) }
       sheet.add_row(@cout_contractuel)
-      
 
-      @array_border = [5,6,7,10,11,13,17,19,22,23,27,28,30]
-      @array_border_blue = [8,14,24,29,31,33]
-      @array_border.each do |row_index|
-        row = sheet.rows[row_index - 1]
+      sheet.add_row
+      @colonnes_credits = ["CREDITS","Dépenses","Total des autorisations d'engagement (AE)","Dont total des dépenses de personnel (AE)","Dont total des dépenses de fonctionnement (AE)","Dont total des dépenses d'intervention (AE)","Dont total des dépenses d'investissement (AE)","Total des crédits de paiement (CP)","Dont total des dépenses de personnel (CP)","Poids relatif des dépenses de personnel","Total des dépenses de fonctionnement (CP)","Poids  des dépenses de fonctionnement (CP)","Total des dépenses d'intervention (CP)","Poids  des dépenses d'intervention (CP)","Dont total des dépenses d'investissement (CP)","Poids  des dépenses d'investissement (CP)","Total des dépenses sur recettes fléchées (en CP)","Total des crédits de paiement ouverts en N pour des opérations pluriannuelles","Poids des CP au titre d'opérations pluriannuelles",
+      "Recettes","Total des recettes","Total des recettes globalisées","Dont Subvention pour charges de service public","Dont Subvention pour charges d'investissement globalisée","Dont Autres financements de l'Etat","Dont Fiscalité affectée","Dont Autres financements publics","Dont Recettes propres globalisées","Total des recettes fléchées","Poids des recettes non fléchées","Dont Subvention pour charges d'investissement fléchée","Dont Autres financements de l'Etat fléchés","Dont Autres financements publics fléchés","Dont Recettes propres fléchées",
+      "Total des subventions de l'Etat","Poids des financements de l'Etat","Taux de couverture des dépenses de personnel et de fonctionnement par la SCSP","Total des recettes propres","Taux de recettes propres","Poids de la SCSP sur recettes totales","Solde budgétaire","Solde budgétaire résultant des opérations fléchées","Niveau final des restes à payer","Variation des restes à payer","Poids des restes à payer"]
+
+      sheet.add_row [@colonnes_credits[0]], style: titre_header
+      sheet.add_row [@colonnes_credits[1]], style: titre_header
+
+      @credits_ae_total = [@colonnes_credits[2],nil] + @chiffres_export.pluck(:credits_ae_total)
+      sheet.add_row(@credits_ae_total)
+      @credits_ae_personnel = [@colonnes_credits[3],nil] + @emplois_depenses_personnel
+      sheet.add_row(@credits_ae_personnel)
+      @credits_ae_fonctionnement = [@colonnes_credits[4],nil] + @chiffres_export.pluck(:credits_ae_fonctionnement)
+      sheet.add_row(@credits_ae_fonctionnement)
+      @credits_ae_intervention = [@colonnes_credits[5],nil] + @chiffres_export.pluck(:credits_ae_intervention)
+      sheet.add_row(@credits_ae_intervention)
+      @credits_ae_investissement = [@colonnes_credits[6],nil] + @chiffres_export.pluck(:credits_ae_investissement)
+      sheet.add_row(@credits_ae_investissement)
+
+      @credits_cp_total = [@colonnes_credits[7],nil] + @chiffres_export.pluck(:credits_cp_total)
+      sheet.add_row(@credits_cp_total)
+      @credits_cp_personnel = [@colonnes_credits[8],nil] + @emplois_depenses_personnel
+      sheet.add_row(@credits_cp_personnel)
+      @poids_cp_personnel = [@colonnes_credits[9],nil] + @credits_cp_personnel[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      sheet.add_row(@poids_cp_personnel)
+      @credits_cp_fonctionnement = [@colonnes_credits[10],nil] + @chiffres_export.pluck(:credits_cp_fonctionnement)
+      sheet.add_row(@credits_cp_fonctionnement)
+      @poids_cp_fonctionnement = [@colonnes_credits[11],nil] + @credits_cp_fonctionnement[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      sheet.add_row(@poids_cp_fonctionnement)
+      @credits_cp_intervention = [@colonnes_credits[12],nil] + @chiffres_export.pluck(:credits_cp_intervention)
+      sheet.add_row(@credits_cp_intervention)
+      @poids_cp_intervention = [@colonnes_credits[13],nil] + @credits_cp_intervention[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      sheet.add_row(@poids_cp_intervention)
+      @credits_cp_investissement = [@colonnes_credits[14],nil] + @chiffres_export.pluck(:credits_cp_investissement)
+      sheet.add_row(@credits_cp_investissement)
+      @poids_cp_investissement = [@colonnes_credits[15],nil] + @credits_cp_investissement[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      sheet.add_row(@poids_cp_investissement)
+      @credits_cp_recettes_flechees = [@colonnes_credits[16],nil] + @chiffres_export.pluck(:credits_cp_recettes_flechees)
+      sheet.add_row(@credits_cp_recettes_flechees)
+      @credits_cp_operations = [@colonnes_credits[17],nil] + @chiffres_export.pluck(:credits_cp_operations)
+      sheet.add_row(@credits_cp_operations)
+      @poids_cp_op = [@colonnes_credits[18],nil] + @credits_cp_operations[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      sheet.add_row(@poids_cp_op)
+
+      sheet.add_row [@colonnes_credits[19]], style: titre_header
+
+      @credits_subvention_sp = [@colonnes_credits[22],nil] + @chiffres_export.pluck(:credits_subvention_sp)
+      @credits_subvention_investissement_globalisee = [@colonnes_credits[23],nil] + @chiffres_export.pluck(:credits_subvention_investissement_globalisee)
+      @credits_financements_etat_autres = [@colonnes_credits[24],nil] + @chiffres_export.pluck(:credits_financements_etat_autres)
+      @credits_fiscalite_affectee = [@colonnes_credits[25],nil] + @chiffres_export.pluck(:credits_fiscalite_affectee)
+      @credits_financements_publics_autres = [@colonnes_credits[26],nil] + @chiffres_export.pluck(:credits_financements_publics_autres)
+      @credits_recettes_propres_globalisees = [@colonnes_credits[27],nil] + @chiffres_export.pluck(:credits_recettes_propres_globalisees)
+      @credits_subvention_investissement_flechee = [@colonnes_credits[30],nil] + @chiffres_export.pluck(:credits_subvention_investissement_flechee)
+      @credits_financements_etat_fleches = [@colonnes_credits[31],nil] + @chiffres_export.pluck(:credits_financements_etat_fleches)
+      @credits_financements_publics_fleches = [@colonnes_credits[32],nil] + @chiffres_export.pluck(:credits_financements_publics_fleches)
+      @credits_recettes_propres_flechees = [@colonnes_credits[33],nil] + @chiffres_export.pluck(:credits_recettes_propres_flechees)
+
+      @credits_recettes_flechees = [@colonnes_credits[28],nil] + @credits_recettes_propres_flechees[2..-1].zip(@credits_financements_publics_fleches[2..-1],@credits_financements_etat_fleches[2..-1], @credits_subvention_investissement_flechee[2..-1]).map { |el| el.compact.reduce(0, :+) }
+      @credits_recettes_non_flechees = [@colonnes_credits[21],nil] + @credits_recettes_propres_globalisees[2..-1].zip(@credits_financements_publics_autres[2..-1],@credits_fiscalite_affectee[2..-1], @credits_financements_etat_autres[2..-1], @credits_subvention_investissement_globalisee[2..-1], @credits_subvention_sp[2..-1]).map { |el| el.compact.reduce(0, :+) }
+      @credits_recettes = [@colonnes_credits[20],nil] + @credits_recettes_flechees[2..-1].zip(@credits_recettes_non_flechees[2..-1]).map { |el| el.compact.reduce(0, :+) }
+      @poids_recettes_non_flechees = [@colonnes_credits[29],nil] + @credits_recettes_non_flechees[2..-1].zip(@credits_recettes[2..-1]).map { |x, y| ratio(x,y,1) }
+      @subv_etat = [@colonnes_credits[34],nil] + @credits_financements_etat_fleches[2..-1].zip(@credits_financements_etat_autres[2..-1], @credits_subvention_sp[2..-1], @credits_subvention_investissement_globalisee[2..-1], @credits_subvention_investissement_flechee[2..-1]).map { |el| el.compact.reduce(0, :+) }
+      @poids_subv_etat = [@colonnes_credits[35],nil] + @subv_etat[2..-1].zip(@credits_recettes[2..-1]).map { |x, y| ratio(x,y,1) }
+      @taux_scsp = [@colonnes_credits[36],nil] + @chiffres_export.pluck(:credits_subvention_sp, :emplois_depenses_personnel, :credits_cp_fonctionnement).map { |x, y, z| y.nil? ? nil : ratio(x,y+z,1) }
+      @recettes_propres = [@colonnes_credits[37],nil] + @credits_recettes_propres_flechees[2..-1].zip(@credits_recettes_propres_globalisees[2..-1]).map { |el| el.compact.reduce(0, :+) }
+      @taux_recettes_propres = [@colonnes_credits[38],nil] + @recettes_propres[2..-1].zip(@credits_recettes[2..-1]).map { |x, y| ratio(x,y,1) }
+      @poids_scsp = [@colonnes_credits[39],nil] + @credits_subvention_sp[2..-1].zip(@credits_recettes[2..-1]).map { |x, y| ratio(x,y,1) }
+      @solde = [@colonnes_credits[40],nil] + @credits_recettes[2..-1].zip(@credits_cp_total[2..-1]).map { |a,b| a.nil? ? nil : (a || 0) - (b || 0)  }
+      @solde_fleche = [@colonnes_credits[41],nil] + @credits_recettes_flechees[2..-1].zip(@credits_cp_recettes_flechees[2..-1]).map { |a,b| a.nil? ? nil : (a || 0) - (b || 0)  }
+
+      sheet.add_row(@credits_recettes)
+      sheet.add_row(@credits_recettes_non_flechees)
+      sheet.add_row(@credits_subvention_sp)
+      sheet.add_row(@credits_subvention_investissement_globalisee)
+      sheet.add_row(@credits_financements_etat_autres)
+      sheet.add_row(@credits_fiscalite_affectee)
+      sheet.add_row(@credits_financements_publics_autres)
+      sheet.add_row(@credits_recettes_propres_globalisees)
+      sheet.add_row(@credits_recettes_flechees)
+      sheet.add_row(@poids_recettes_non_flechees)
+      sheet.add_row(@credits_subvention_investissement_flechee)
+      sheet.add_row(@credits_financements_etat_fleches)
+      sheet.add_row(@credits_financements_publics_fleches)
+      sheet.add_row(@credits_recettes_propres_flechees)
+      sheet.add_row
+      sheet.add_row(@subv_etat)
+      sheet.add_row(@poids_subv_etat)
+      sheet.add_row(@taux_scsp)
+      sheet.add_row(@recettes_propres)
+      sheet.add_row(@taux_recettes_propres)
+      sheet.add_row(@poids_scsp)
+      sheet.add_row
+      sheet.add_row(@solde)
+      sheet.add_row(@solde_fleche)
+      sheet.add_row
+
+      @credits_restes_a_payer = [@colonnes_credits[42],nil] + @chiffres_export.pluck(:credits_restes_a_payer)
+      sheet.add_row(@credits_restes_a_payer)
+      @var_restes_a_payer = [@colonnes_credits[43],nil] + @credits_ae_total[2..-1].zip(@credits_cp_total[2..-1]).map { |a,b| a.nil? ? nil : (a || 0) - (b || 0)  }
+      sheet.add_row(@var_restes_a_payer)
+      @poids_restes_a_payer = [@colonnes_credits[44],nil] + @chiffres_export.pluck(:credits_restes_a_payer, :credits_cp_total, :emplois_depenses_personnel).map { |x, y, z| y.nil? ? nil : ratio(x,y-z,1) }
+      sheet.add_row(@poids_restes_a_payer)
+
+      sheet.add_row
+      @colonnes_compta = ["COMPTABILITE GENERALE","Total des charges","Dont charges de personnel","poids relatif des charges de Personnel","Dont Charges de fonctionnement (autre que les charges de personnel)","poids relatif des charges de fonctionnement","Dont Charges d'intervention","poids relatif des charges d'intervention","Total des produits","Dont subventions de l'Etat","Dont fiscalité affectée","Dont Autres subventions","Dont Autres produits","Résultat","Décaissables/non décaissables","Charges non décaissables","Charges décaissables","Produits non encaissables","Capacité d'autofinancement","Total des emplois","Dont Investissements","Total des ressources","Dont financement de l'actif par l'Etat","Dont autres ressources","Opérations non budgétaires","Décaissements non budgétaires","dont Opérations au nom et pour le compte de tiers (besoins) pour OCB ou dont Opérations au nom et pour le compte de tiers (débits) pour OHCB","dont Emprunts, Prêts, Dépôts et cautionnements (besoins)","dont Autres décaissements non budgétaires","Encaissements non budgétaires","dont Opérations au nom et pour le compte de tiers (financements)pour OCB ou dont Opérations au nom et pour le compte de tiers (crédits) pour OHCB","Emprunts, Prêts, Dépôts et cautionnements (financements)","Autres encaissements non budgétaires"]
+      sheet.add_row [@colonnes_compta[0]], style: titre_header
+
+      @charges_personnel = [@colonnes_compta[2],nil] + @emplois_charges_personnel
+      @charges_fonctionnement = [@colonnes_compta[4],nil] + @chiffres_export.pluck(:charges_fonctionnement)
+      @charges_intervention = [@colonnes_compta[6],nil] + @chiffres_export.pluck(:charges_intervention)
+      @charges_total = [@colonnes_compta[1],nil] + @chiffres_export.pluck(:emplois_charges_personnel, :charges_fonctionnement, :charges_intervention).map{ |a,b,c| a + b + c}
+      @poids_charges_personnel = [@colonnes_compta[3],nil] + @charges_personnel[2..-1].zip(@charges_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      @poids_charges_fonctionnement = [@colonnes_compta[5],nil] + @charges_fonctionnement[2..-1].zip(@charges_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      @poids_charges_intervention = [@colonnes_compta[7],nil] + @charges_intervention[2..-1].zip(@charges_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      sheet.add_row(@charges_total)
+      sheet.add_row(@charges_personnel)
+      sheet.add_row(@poids_charges_personnel)
+      sheet.add_row(@charges_fonctionnement)
+      sheet.add_row(@poids_charges_fonctionnement)
+      sheet.add_row(@charges_intervention)
+      sheet.add_row(@poids_charges_intervention)
+
+      @produits_subventions_etat = [@colonnes_compta[9],nil] + @chiffres_export.pluck(:produits_subventions_etat)
+      @produits_fiscalite_affectee = [@colonnes_compta[10],nil] + @chiffres_export.pluck(:produits_fiscalite_affectee)
+      @produits_subventions_autres = [@colonnes_compta[11],nil] + @chiffres_export.pluck(:produits_subventions_autres)
+      @produits_autres = [@colonnes_compta[12],nil] + @chiffres_export.pluck(:produits_autres)
+      @produits_total = [@colonnes_compta[8],nil] + @chiffres_export.pluck(:produits_subventions_etat, :produits_fiscalite_affectee, :produits_subventions_autres, :produits_autres).map{ |a,b,c,d| a + b + c + d}
+
+      @resultat = [@colonnes_compta[13],nil] + @produits_total[2..-1].zip(@charges_total[2..-1]).map { |a,b| (a || 0) - (b || 0)  }
+      sheet.add_row(@produits_total)
+      sheet.add_row(@produits_subventions_etat)
+      sheet.add_row(@produits_fiscalite_affectee)
+      sheet.add_row(@produits_subventions_autres)
+      sheet.add_row(@produits_autres)
+      sheet.add_row(@resultat)
+
+      sheet.add_row [@colonnes_compta[14]], style: titre_header
+
+      @charges_non_decaissables = [@colonnes_compta[15],nil] + @chiffres_export.pluck(:charges_non_decaissables)
+      @charges_decaissables = [@colonnes_compta[16],nil] + @charges_total[2..-1].zip(@charges_non_decaissables[2..-1]).map { |a,b| (a || 0) - (b || 0)  }
+      @produits_non_encaissables = [@colonnes_compta[17],nil] + @chiffres_export.pluck(:produits_non_encaissables)
+      sheet.add_row(@charges_non_decaissables)
+      sheet.add_row(@charges_decaissables)
+      sheet.add_row(@produits_non_encaissables)
+
+      sheet.add_row
+      @capacite_autofinancement = [@colonnes_compta[18],nil] + @chiffres_export.pluck(:capacite_autofinancement)
+      sheet.add_row(@capacite_autofinancement)
+      sheet.add_row
+
+      @emplois_cout_total = [@colonnes_compta[19],nil] + @chiffres_export.pluck(:emplois_cout_total)
+      sheet.add_row(@emplois_cout_total)
+      @emplois_cout_investissements = [@colonnes_compta[20],nil] + @chiffres_export.pluck(:emplois_cout_investissements)
+      sheet.add_row(@emplois_cout_investissements)
+
+      @ressources_total = [@colonnes_compta[21],nil] + @chiffres_export.pluck(:ressources_total)
+      sheet.add_row(@ressources_total)
+      @ressources_financement_etat = [@colonnes_compta[22],nil] + @chiffres_export.pluck(:ressources_financement_etat)
+      sheet.add_row(@ressources_financement_etat)
+      @ressources_autres = [@colonnes_compta[23],nil] + @chiffres_export.pluck(:ressources_autres)
+      sheet.add_row(@ressources_autres)
+
+      sheet.add_row [@colonnes_compta[24]], style: titre_header
+
+      @decaissements_operations = [@colonnes_compta[25],nil] + @chiffres_export.pluck(:decaissements_operations)
+      @decaissements_emprunts = [@colonnes_compta[26],nil] + @chiffres_export.pluck(:decaissements_emprunts)
+      @decaissements_autres = [@colonnes_compta[27],nil] + @chiffres_export.pluck(:decaissements_autres)
+      @decaissements = [@colonnes_compta[24],nil] + @chiffres_export.pluck(:decaissements_operations, :decaissements_emprunts, :decaissements_autres).map {|a,b,c| (a || 0) + (b || 0) + (c || 0) }
+      sheet.add_row(@decaissements)
+      sheet.add_row(@decaissements_operations)
+      sheet.add_row(@decaissements_emprunts)
+      sheet.add_row(@decaissements_autres)
+
+      @encaissements_operations = [@colonnes_compta[29],nil] + @chiffres_export.pluck(:encaissements_operations)
+      @encaissements_emprunts = [@colonnes_compta[30],nil] + @chiffres_export.pluck(:encaissements_emprunts)
+      @encaissements_autres = [@colonnes_compta[31],nil] + @chiffres_export.pluck(:encaissements_autres)
+      @encaissements = [@colonnes_compta[28],nil] + @chiffres_export.pluck(:encaissements_operations, :encaissements_emprunts, :encaissements_autres).map {|a,b,c| (a || 0) + (b || 0) + (c || 0) }
+      sheet.add_row(@encaissements)
+      sheet.add_row(@encaissements_operations)
+      sheet.add_row(@encaissements_emprunts)
+      sheet.add_row(@encaissements_autres)
+      sheet.add_row
+
+      @colonnes_treso = ["TRESORERIE","Niveau initial de la trésorerie","Niveau final de la trésorerie","Trésorerie en jours de fonctionnement","Taux de couverture des restes à payer par la trésorerie","Dont trésorerie fléchée","poids de la trésorerie non fléchée","Dont trésorerie non fléchée","Trésorerie non fléchée en jours de fonctionnement","Variation de trésorerie","Variation de trésorerie fléchée","Variation de trésorerie non fléchée","Point haut / Point bas","Point le plus bas dans le plan de trésorerie","Mois","Niveau le plus de trésorerie en jours de fonctionnement","Point le plus haut dans le plan de trésorerie","Mois","Niveau le plus bas de trésorerie en jours de fonctionnement"]
+      sheet.add_row [@colonnes_treso[0]], style: titre_header
+
+      @tresorerie_finale = [@colonnes_treso[2],nil] + @chiffres_export.pluck(:tresorerie_finale)
+      @tresorerie_finale_flechee = [@colonnes_treso[5],nil] + @chiffres_export.pluck(:tresorerie_finale_flechee)
+      @tresorerie_finale_non_flechee = [@colonnes_treso[7],nil] + @chiffres_export.pluck(:tresorerie_finale_non_flechee)
+      @tresorerie_variation = [@colonnes_treso[9],nil] + @chiffres_export.pluck(:tresorerie_variation)
+      @tresorerie_variation_flechee = [@colonnes_treso[10],nil] + @chiffres_export.pluck(:tresorerie_variation_flechee)
+      @tresorerie_variation_non_flechee = [@colonnes_treso[11],nil] + @chiffres_export.pluck(:tresorerie_variation_non_flechee)
+      @tresorerie_initial = [@colonnes_treso[1],nil] + @chiffres_export.pluck(:tresorerie_finale, :tresorerie_variation).map{|a,b| a-b}
+      @taux_rap = [@colonnes_treso[4],nil] + @chiffres_export.pluck(:tresorerie_finale_non_flechee, :credits_restes_a_payer).map { |x, y| ratio(x,y,1) }
+      @poids_nf = [@colonnes_treso[6],nil] + @chiffres_export.pluck(:tresorerie_finale_non_flechee, :tresorerie_finale).map { |x, y| ratio(x,y,1) }
+
+      @tresorerie_min = [@colonnes_treso[13],nil] + @chiffres_export.pluck(:tresorerie_min)
+      @tresorerie_min_date = [@colonnes_treso[14],nil] + @chiffres_export.pluck(:tresorerie_min_date).map{ |date| !date.nil? ? I18n.localize(date, format: '%B') : "" }
+      @tresorerie_max = [@colonnes_treso[16],nil] + @chiffres_export.pluck(:tresorerie_max)
+      @tresorerie_max_date = [@colonnes_treso[17],nil] + @chiffres_export.pluck(:tresorerie_max_date).map{ |date| !date.nil? ? I18n.localize(date, format: '%B') : "" }
+
+      @den = []
+      row = sheet.rows[2]
+      row.cells.each_with_index do |cell,i|
+        if cell.value == "OCB"
+          @den << ratio(@credits_cp_total[i]-@credits_cp_investissement[i],360,1)
+        elsif cell.value == "OHCB"
+          @den << ratio(@charges_decaissables[i],360,1)
+        end
+      end
+      @treso_jours = [@colonnes_treso[3],nil] + @tresorerie_finale[2..-1].zip(@den).map{ |x,y| format_nombre_entier(ratio(x,y,1))}
+      @treso_nf_jours = [@colonnes_treso[8],nil] + @tresorerie_finale_non_flechee[2..-1].zip(@den).map{ |x,y| format_nombre_entier(ratio(x,y,1))}
+      @tresorerie_min_jours = [@colonnes_treso[15],nil] + @tresorerie_min[2..-1].zip(@den).map{ |x,y| format_nombre_entier(ratio(x,y,1))}
+      @tresorerie_max_jours = [@colonnes_treso[18],nil] + @tresorerie_max[2..-1].zip(@den).map{ |x,y| format_nombre_entier(ratio(x,y,1))}
+
+      sheet.add_row(@tresorerie_initial)
+      sheet.add_row(@tresorerie_finale)
+      sheet.add_row(@treso_jours)
+      sheet.add_row(@taux_rap)
+      sheet.add_row(@tresorerie_finale_flechee)
+      sheet.add_row(@tresorerie_finale_non_flechee)
+      sheet.add_row(@poids_nf)
+      sheet.add_row(@treso_nf_jours)
+      sheet.add_row(@tresorerie_variation)
+      sheet.add_row(@tresorerie_variation_flechee)
+      sheet.add_row(@tresorerie_variation_non_flechee)
+
+      sheet.add_row [@colonnes_treso[12]], style: titre_header
+
+      sheet.add_row(@tresorerie_min)
+      sheet.add_row(@tresorerie_min_date)
+      sheet.add_row(@tresorerie_min_jours)
+      sheet.add_row(@tresorerie_max)
+      sheet.add_row(@tresorerie_max_date)
+      sheet.add_row(@tresorerie_max_jours)
+
+      sheet.add_row
+      @colonnes_analyse = ["ANALYSE FINANCIERE","Fonds de roulement","Niveau initial du fonds de roulement","Variation du fonds de roulement","Niveau final du fonds de roulement","Besoin en fonds de roulement","Niveau initial du besoin en fonds de roulement","Variation du besoin en fonds de roulement","Niveau final du besoin en fonds de roulement","Degré de risque d'insolvabilité"]
+      sheet.add_row [@colonnes_analyse[0]], style: titre_header
+      sheet.add_row [@colonnes_analyse[1]], style: titre_header
+
+      @fonds_roulement_final = [@colonnes_analyse[4],nil] + @chiffres_export.pluck(:fonds_roulement_final)
+      @fonds_roulement_variation = [@colonnes_analyse[3],nil] + @chiffres_export.pluck(:fonds_roulement_variation)
+      @fonds_roulement_initial = [@colonnes_analyse[2],nil] +  @chiffres_export.pluck(:fonds_roulement_final, :fonds_roulement_variation).map{|a,b| a-b}
+      sheet.add_row(@fonds_roulement_initial)
+      sheet.add_row(@fonds_roulement_variation)
+      sheet.add_row(@fonds_roulement_final)
+
+      sheet.add_row [@colonnes_analyse[5]], style: titre_header
+      @fonds_roulement_besoin_final = [@colonnes_analyse[8],nil] + @chiffres_export.pluck(:fonds_roulement_besoin_final)
+      @fonds_roulement_besoin_variation = [@colonnes_analyse[7],nil] + @chiffres_export.pluck(:fonds_roulement_variation, :tresorerie_variation).map{|a,b| a-b}
+      @fonds_roulement_besoin_initial = [@colonnes_analyse[6],nil] + @fonds_roulement_besoin_final[2..-1].zip(@fonds_roulement_besoin_variation[2..-1]).map{|a,b| (a || 0) - (b || 0)}
+      sheet.add_row(@fonds_roulement_besoin_initial)
+      sheet.add_row(@fonds_roulement_besoin_variation)
+      sheet.add_row(@fonds_roulement_besoin_final)
+      sheet.add_row
+      sheet.add_row(@solde)
+      sheet.add_row
+      sheet.add_row(@tresorerie_variation)
+
+      @risque_insolvabilite = [@colonnes_analyse[9],nil] + @chiffres_export.pluck(:risque_insolvabilite)
+      sheet.add_row
+      sheet.add_row(@risque_insolvabilite, style: titre_header)
+
+      row_d = sheet.rows[151]
+      row_d.cells.each_with_index do |cell,i|
+        if cell.value == "Situation saine"
+          cell.add_style bg_color: "E5FBFD"
+        elsif cell.value == "Situation saine a priori mais à surveiller"
+          cell.add_style bg_color: "FEF7DA"
+        elsif cell.value == "Risque d’insoutenabilité à moyen terme"
+          cell.add_style bg_color: "FEF4F2"
+        elsif cell.value == "Risque d’insoutenabilité élevé"
+          cell.add_style bg_color: "FFE9E9"
+        end
+      end
+
+      sheet.add_row
+
+      @colonnes_com = ["Commentaires sur l'analyse du budget","Commentaires sur le budget","Autres points de vigilance"]
+      sheet.add_row [@colonnes_com[0]], style: titre_header
+      @commentaire = [@colonnes_com[1],nil] + @chiffres_export.pluck(:commentaire)
+      @commentaire_annexe = [@colonnes_com[2],nil] + @chiffres_export.pluck(:commentaire_annexe)
+      sheet.add_row(@commentaire)
+      sheet.add_row(@commentaire_annexe)
+
+      @array_border_blue = [10,16,23,27,29,31,42,44,46,48,51,62,69,70,72,73,76,80,85,87,89,121,122,125,126,133,136]
+      @array_border_grey = [7,18,35,40,53,54,61,68,71,75,78,83,90,95,101,103,105,109,113, 119,120,127,141,145,148,150]
+      sheet.rows.each do |row|
         row.cells.each_with_index do |cell,i|
-          if i > 1
+          if i > 1 && cell.value != ""
             cell.style = tbl_cell
           end
         end
@@ -109,16 +401,28 @@
           end
         end
       end
-      @array_euro = [13,14,30,31,32,33]
+      @array_border_grey.each do |row_index|
+          row = sheet.rows[row_index - 1]
+          row.cells.each_with_index do |cell,i|
+             if i == 0
+               cell.add_style bg_color: 'FFDFDEDF'
+             elsif i > 1
+               cell.add_style bg_color: 'FFDFDEDF'
+             end
+          end
+      end
+      @array_euro = [15,16,28,29,30,31,35,36,37,38,39,40,41,43,45,47,49,50,53,54,55,56,57,58,59,60,61,63,64,65,66,68,71,
+      75,76,78,79,83,84,86,88,90,91,92,93,94,95,97,98,99,101,103,104,105,106,107,109,110,111,112,113,114,115,116,119,
+      120,123,124,127,128,129,131,134,140,141,142,144,145,146,148,150]
       @array_euro.each do |row_index|
         row = sheet.rows[row_index - 1]
         row.cells.each_with_index do |cell,i|
           if i > 1
-            cell.add_style num_fmt: 7
+            cell.add_style num_fmt: 3
           end
         end
       end
-      @array_percent = [8,24,29]
+      @array_percent = [10,23,27,42,44,46,48,51,62,69,70,72,73,80,85,87,89,122,125]
       @array_percent.each do |row_index|
         row = sheet.rows[row_index - 1]
         row.cells.each_with_index do |cell,i|
@@ -126,6 +430,16 @@
             cell.add_style num_fmt: 9
           end
         end
+      end
+
+      @array_dec = [7,8,9,12,13,18,19,21,22,25,26]
+      @array_dec.each do |row_index|
+         row = sheet.rows[row_index - 1]
+         row.cells.each_with_index do |cell,i|
+           if i > 1
+             cell.add_style num_fmt: 4
+           end
+         end
       end
 
       sheet.rows.each do |row|
@@ -136,7 +450,7 @@
 
       
       @length = @tableau.length
-      @sheet_col = @sheet_col = [50, 4] + Array.new(@length-2, 20)
+      @sheet_col = @sheet_col = [60, 4] + Array.new(@length-2, 20)
       sheet.column_widths(*@sheet_col)
     	
       
