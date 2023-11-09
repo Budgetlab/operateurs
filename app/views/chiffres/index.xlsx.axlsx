@@ -119,7 +119,8 @@
       sheet.add_row(@credits_cp_total)
       @credits_cp_personnel = [@colonnes_credits[8],nil] + @emplois_depenses_personnel
       sheet.add_row(@credits_cp_personnel)
-      @poids_cp_personnel = [@colonnes_credits[9],nil] + @credits_cp_personnel[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      @credits_cp_investissement = [@colonnes_credits[14],nil] + @chiffres_export.pluck(:credits_cp_investissement)
+      @poids_cp_personnel = [@colonnes_credits[9],nil] + @credits_cp_personnel[2..-1].zip(@credits_cp_total[2..-1], @credits_cp_investissement[2..-1]).map { |x, y| ratio(x,y-z,1) }
       sheet.add_row(@poids_cp_personnel)
       @credits_cp_fonctionnement = [@colonnes_credits[10],nil] + @chiffres_export.pluck(:credits_cp_fonctionnement)
       sheet.add_row(@credits_cp_fonctionnement)
@@ -129,7 +130,7 @@
       sheet.add_row(@credits_cp_intervention)
       @poids_cp_intervention = [@colonnes_credits[13],nil] + @credits_cp_intervention[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio(x,y,1) }
       sheet.add_row(@poids_cp_intervention)
-      @credits_cp_investissement = [@colonnes_credits[14],nil] + @chiffres_export.pluck(:credits_cp_investissement)
+
       sheet.add_row(@credits_cp_investissement)
       @poids_cp_investissement = [@colonnes_credits[15],nil] + @credits_cp_investissement[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio(x,y,1) }
       sheet.add_row(@poids_cp_investissement)
@@ -289,7 +290,7 @@
       @tresorerie_variation_flechee = [@colonnes_treso[10],nil] + @chiffres_export.pluck(:tresorerie_variation_flechee)
       @tresorerie_variation_non_flechee = [@colonnes_treso[11],nil] + @chiffres_export.pluck(:tresorerie_variation_non_flechee)
       @tresorerie_initial = [@colonnes_treso[1],nil] + @chiffres_export.pluck(:tresorerie_finale, :tresorerie_variation).map{|a,b| a-b}
-      @taux_rap = [@colonnes_treso[4],nil] + @chiffres_export.pluck(:tresorerie_finale_non_flechee, :credits_restes_a_payer).map { |x, y| ratio(x,y,1) }
+      @taux_rap = [@colonnes_treso[4],nil] + @chiffres_export.pluck(:tresorerie_finale, :credits_restes_a_payer).map { |x, y| ratio(x,y,1) }
       @poids_nf = [@colonnes_treso[6],nil] + @chiffres_export.pluck(:tresorerie_finale_non_flechee, :tresorerie_finale).map { |x, y| ratio(x,y,1) }
 
       @tresorerie_min = [@colonnes_treso[13],nil] + @chiffres_export.pluck(:tresorerie_min)
