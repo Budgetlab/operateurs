@@ -5,7 +5,7 @@ class ChiffresController < ApplicationController
   before_action :authenticate_user!
   before_action :find_organisme, only: %i[index show_dates]
   before_action :set_famille, only: %i[index show_dates]
-  before_action :find_chiffre_and_organisme, only: %i[edit update update_phase]
+  before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy]
   def index
     @est_editeur = current_user == @organisme.controleur
     est_bureau_ou_famille = current_user == @organisme.bureau || @familles&.include?(@organisme.famille)
@@ -175,33 +175,35 @@ class ChiffresController < ApplicationController
   def suivi
     liste_organisme
     @liste_organismes = @organismes.pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
-    @liste_chiffres_organismes = @organismes.joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite")
+    liste_chiffres_organismes = @organismes.joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite", "chiffres.created_at AS chiffre_date")
+    @liste_chiffres_organismes = liste_chiffres(liste_chiffres_organismes)
   end
 
   def filtre_suivi
     liste_organisme
     @liste_organismes = @organismes.pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
-    @liste_chiffres_organismes = @organismes.joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite")
-    @liste_organismes_filter_id = []
+    liste_chiffres_organismes = @organismes.joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite")
+    @liste_chiffres_organismes = liste_chiffres(liste_chiffres_organismes)
+    liste_organismes_filter_id = []
     [[params[:budget_bis], 'Budget initial'], [params[:budget_brs], 'Budget rectificatif'], [params[:budget_cfs], 'Compte financier']].each do |param|
       if param[0]&.include?('Brouillon')
         @liste_chiffres_brouillon_id = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i && el[3] != 'valide' }.map { |el| el[0] }.uniq
-        @liste_organismes_filter_id += @liste_chiffres_brouillon_id
+        liste_organismes_filter_id += @liste_chiffres_brouillon_id
       end
       if param[0]&.include?('Non renseigné') || param[0]&.include?('Aucun')
         id_orga_chiffres = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i}.map { |el| el[0] }.uniq
         @liste_organismes_nr_id = @liste_organismes.reject { |el| id_orga_chiffres.include?(el[0]) }.map { |el| el[0] }.uniq
-        @liste_organismes_filter_id += @liste_organismes_nr_id
+        liste_organismes_filter_id += @liste_organismes_nr_id
       end
       if param[0] && param[0].length != 6
         @liste_chiffres_risque_id = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i && param[0].include?(el[4]) }.map { |el| el[0] }.uniq
-        @liste_organismes_filter_id += @liste_chiffres_risque_id
+        liste_organismes_filter_id += @liste_chiffres_risque_id
       end
     end
     if params[:budget_bis].length != 6 || params[:budget_brs].length != 6 || params[:budget_cfs].length != 6
-      @liste_organismes = @liste_organismes.select { |el| @liste_organismes_filter_id.include?(el[0]) }
+      @liste_organismes = @liste_organismes.select { |el| liste_organismes_filter_id.include?(el[0]) }
     end
-    puts @liste_organismes.length
+
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -210,6 +212,14 @@ class ChiffresController < ApplicationController
         ]
       end
     end
+  end
+
+  def destroy
+    redirect_unless_can_edit
+
+    @chiffre&.destroy
+    message = 'suppression'
+    redirect_to organisme_chiffres_path(@organisme), flash: { notice: message }
   end
 
   private
@@ -313,6 +323,7 @@ class ChiffresController < ApplicationController
     chiffre.risque_insolvabilite = calculateRisque(@solde, chiffre.tresorerie_variation, chiffre.fonds_roulement_variation,chiffre.fonds_roulement_variation-chiffre.tresorerie_variation ) if chiffre.statut == 'valide'
     chiffre.save
   end
+
   def calculateRisque(solde_budgetaire, tresorerie_variation,fonds_roulement_variation, variation_besoin_fr)
     if !solde_budgetaire.nil?
       if (solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0) || (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_besoin_fr >= 0)
@@ -333,6 +344,23 @@ class ChiffresController < ApplicationController
         "Risque d’insoutenabilité élevé"
       end
     end
+  end
+
+  def liste_chiffres(liste_chiffres_organismes)
+    # Utilisation d'un hash pour regrouper les sous-tableaux par les deux premiers éléments
+    grouped_hash = liste_chiffres_organismes.group_by { |subarray| [subarray[0], subarray[1], subarray[2]] }
+
+    # Initialisation d'un nouveau tableau résultant
+    resultat = []
+
+    # Itération sur les valeurs du hash
+    grouped_hash.values.each do |subarrays|
+      # Trier les sous-tableaux par la date en utilisant le dernier élément de chaque sous-tableau
+      sous_tableau_recent = subarrays.max_by { |subarray| subarray.last }
+      # Ajouter le sous-tableau avec la date la plus récente au résultat
+      resultat << sous_tableau_recent
+    end
+    resultat
   end
 
 end

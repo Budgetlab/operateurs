@@ -461,7 +461,10 @@ export default class extends Controller {
     }
     changeNumber(event){
         const inputElement = event.target;
-        const element = inputElement.value.replace(/[^0-9,-]/g, "");
+        const orginalLength = inputElement.value.length
+        const end = inputElement.selectionEnd;
+        let element = inputElement.value.replace(/[^0-9,-.]/g, "");
+        element = element.replace(/,,/g, ',')
         const lastLetter = inputElement.value[inputElement.value.length - 1];
         if (inputElement.value.length == 1 && inputElement.value == "-"){
             inputElement.value = "-";
@@ -471,11 +474,13 @@ export default class extends Controller {
                 // Formatage du nombre avec séparateur de milliers
                 const formattedValue = parsedValue.toLocaleString("fr-FR");
                 // Mettez à jour la valeur du champ de formulaire avec le format souhaité
-                if (lastLetter == ","){
-                    inputElement.value = formattedValue + lastLetter;
+                if (lastLetter == "," || lastLetter == "."){
+                    inputElement.value = formattedValue + ",";
                 }else {
                     inputElement.value = formattedValue;
                 }
+                const lengthDiff = inputElement.value.length - orginalLength ;
+                inputElement.setSelectionRange(end + lengthDiff, end + lengthDiff);
             } else {
                 inputElement.value = null;
             }
