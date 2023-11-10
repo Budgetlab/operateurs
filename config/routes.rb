@@ -20,6 +20,7 @@ Rails.application.routes.draw do
   post '/update_phase' => 'chiffres#update_phase'
   get '/budgets-suivi' => 'chiffres#suivi'
   post '/filtre_suivi' => 'chiffres#filtre_suivi'
+  post '/open_phase' => 'chiffres#open_phase'
   post '/import_organismes' => 'organismes#import'
   get '/organismes_ajout' => 'organismes#organismes_ajout'
   post '/recherche_organismes' => 'organismes#recherche_organismes'

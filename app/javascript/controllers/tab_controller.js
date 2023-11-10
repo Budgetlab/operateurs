@@ -8,8 +8,14 @@ export default class extends Controller {
         this.initialiserSection();
     }
     initialiserSection(){
-        if (document.getElementById("budget-initial-tab") != null ){
-            const activeTab = document.getElementById("budget-initial-tab");
+        // Récupérer tous les onglets
+        const tabs = document.querySelectorAll(".fr-tabs__tab");
+
+        // Trouver l'onglet sélectionné
+        const selectedTab = Array.from(tabs).find((tab) => tab.getAttribute("aria-selected") === "true");
+        const ariaControlsValue = selectedTab.getAttribute("aria-controls");
+        if (document.getElementById(ariaControlsValue) != null ){
+            const activeTab = document.getElementById(ariaControlsValue);
 
             const activeTabSections = activeTab.querySelectorAll("[data-tab-target]");
             // Afficher les sections correspondantes
@@ -54,6 +60,13 @@ export default class extends Controller {
         }else{
             nav_credits.classList.add('fr-hidden');
         }
+    }
+
+    openModal(event){
+        const chiffreId = event.target.getAttribute("data-tab-value");
+        const modalId = `modal-${chiffreId}`;
+        const bouton = document.querySelector(`[aria-controls="${modalId}"]`);
+        bouton.click()
     }
 
 }

@@ -1070,9 +1070,10 @@ export default class extends Controller {
             indicateur.innerHTML = valeur.toLocaleString("fr-FR");
         }
     }
-    changePhase(){
-        const phase =  document.getElementById("phase").value;
-        const error_message = document.getElementById("phase_error");
+    changePhase(event){
+        const phase =  event.target.value;
+        const error_phase_id = "error-" + event.target.id.toString();
+        const error_message = document.getElementById(error_phase_id);
         if (phase == "Budget non approuvé"){
             this.showField(error_message);
         }else{
@@ -1107,7 +1108,6 @@ export default class extends Controller {
             const parsedValue = this.numberFormat(field.value);
             if (!isNaN(parsedValue)) {
                 field.value = parsedValue;
-                console.log(field.value)
             }
         })
         this.formTarget.submit();

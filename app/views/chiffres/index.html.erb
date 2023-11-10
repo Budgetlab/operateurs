@@ -1,6 +1,6 @@
 <% content_for :title do %>Chiffres clés de l'organisme <%= @organisme.nom %> | OPERA <% end %>
-<main role="main" data-controller="toggle">
-  <div class="fr-container" >
+<main role="main" data-controller="toggle" >
+  <div class="fr-container">
     <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
       <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
       <div class="fr-collapse" id="breadcrumb-1">
@@ -40,22 +40,22 @@
                   <div class="fr-collapse" id="fr-sidemenu-item-0">
                     <ul class="fr-sidemenu__list">
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#emplois" target="_self">Emplois</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="emplois" data-action="click->toggle#changeMenuSection">Emplois</button>
                       </li>
                       <li class="fr-sidemenu__item" id="nav_credits">
-                        <a class="fr-sidemenu__link" href="#credits" target="_self">Crédits</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="credits" data-action="click->toggle#changeMenuSection">Crédits</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#comptabilite" target="_self">Comptabilité générale</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="comptabilite" data-action="click->toggle#changeMenuSection">Comptabilité générale</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#tresorerie" target="_self">Trésorerie</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="tresorerie" data-action="click->toggle#changeMenuSection">Trésorerie</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#analyse" target="_self">Analyse financière</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="analyse" data-action="click->toggle#changeMenuSection">Analyse financière</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#commentaires" target="_self">Commentaires</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="commentaires" data-action="click->toggle#changeMenuSection">Commentaires</button>
                       </li>
                     </ul>
                   </div>
@@ -65,7 +65,6 @@
             </div>
           </div>
         </nav>
-
       </div>
 
       <div class="fr-col-12 fr-col-lg-8" >
@@ -96,6 +95,7 @@
         <div id="tabs">
           <%= render 'chiffres/tabs' %>
         </div>
+
       </div>
     </div>
   </div>

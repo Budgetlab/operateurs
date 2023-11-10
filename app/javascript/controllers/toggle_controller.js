@@ -28,4 +28,30 @@ export default class extends Controller {
     });
     event.currentTarget.setAttribute("aria-current", "page");
   }
+  changeMenuSection(event){
+    const sectionId = event.target.getAttribute("data-toggle-id");
+    const section = document.getElementById(sectionId);
+    this.scrollTo(section);
+  }
+  scrollToSection(section) {
+    if (section) {
+      section.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+        inline: "start"
+      });
+    }
+  }
+  scrollTo(section){
+    if (section) {
+      // Récupérer la position de la section par rapport au document
+      //const offsetTop = section.offsetTop;
+      const offsetTop = section.getBoundingClientRect().top + window.scrollY;
+      // Faire défiler jusqu'à la position de la section
+      window.scrollTo({
+        top: offsetTop,
+        behavior: "smooth"
+      });
+    }
+  }
 }

@@ -5,7 +5,7 @@ class ChiffresController < ApplicationController
   before_action :authenticate_user!
   before_action :find_organisme, only: %i[index show_dates]
   before_action :set_famille, only: %i[index show_dates]
-  before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy]
+  before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy open_phase]
   def index
     @est_editeur = current_user == @organisme.controleur
     est_bureau_ou_famille = current_user == @organisme.bureau || @familles&.include?(@organisme.famille)
@@ -220,6 +220,17 @@ class ChiffresController < ApplicationController
     @chiffre&.destroy
     message = 'suppression'
     redirect_to organisme_chiffres_path(@organisme), flash: { notice: message }
+  end
+
+  def open_phase
+    modal_id = "modal-#{@chiffre.id.to_s}"
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.update(modal_id, partial: 'chiffres/form_phase', locals: { chiffre: @chiffre })
+        ]
+      end
+    end
   end
 
   private
