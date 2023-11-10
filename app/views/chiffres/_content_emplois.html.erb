@@ -3,13 +3,13 @@
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-12 fr-col-lg-6">
       <div><% if chiffre.comptabilite_budgetaire == true %>Autorisation d’emplois<%else %>Emplois<%end %> sous plafond LFI <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_plafond_t", chiffre: chiffre} %></div>
-      <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_plafond) %> ETPT</div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_plafond) %> ETPT</div>
     </div>
   </div>
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-12 fr-col-lg-6">
       <div><% if chiffre.comptabilite_budgetaire == true %>Autorisation d’emplois<%else %>Emplois<%end %> hors plafond LFI <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_hors_plafond_t", chiffre: chiffre} %></div>
-      <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_hors_plafond) %> ETPT</div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_hors_plafond) %> ETPT</div>
     </div>
     <div class="fr-col-12 fr-col-lg-6">
       <div>
@@ -28,7 +28,7 @@
         <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
             <p class="fr-mb-0 fr-text--center">Total des <% if chiffre.comptabilite_budgetaire == true %>autorisations d'emplois<%else %>emplois<%end %> rémunérés par l'organisme <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_total_t", chiffre: chiffre} %></p>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.emplois_total) %> ETPT</p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_decimal(chiffre.emplois_total) %> ETPT</p>
           </div>
         </div>
       </div>
@@ -38,7 +38,7 @@
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-12 fr-col-lg-6">
       <div>Total des <% if chiffre.comptabilite_budgetaire == true %>autorisations d'emplois<%else %>emplois<%end %> rémunérés par l'organisme <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_total2_t", chiffre: chiffre} %></div>
-      <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_total) %> ETPT</div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_total) %> ETPT</div>
     </div>
   </div>
 <% end %>
@@ -72,13 +72,13 @@
   <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
     <div class="fr-col-12 fr-col-lg-12">
       <div>Rappel du plafond d'emplois inscrit en PLF / LFI <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_plafond_rappel_t", chiffre: chiffre} %></div>
-      <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_plafond_rappel) %> ETPT</div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_plafond_rappel) %> ETPT</div>
     </div>
   </div>
   <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
     <div class="fr-col-12 fr-col-lg-12">
       <div>Plafond d'emplois pré-notifié à l'organisme par le RPROG <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_plafond_prenotifie_t", chiffre: chiffre} %></div>
-      <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_plafond_prenotifie) %> ETPT</div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_plafond_prenotifie) %> ETPT</div>
     </div>
   </div>
   <h3 class="fr-h4 fr-mt-4w">Schéma d’emplois</h3>
@@ -99,7 +99,7 @@
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
     <div>Total des emplois titulaires <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_titulaires_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_titulaires) %> ETPT</div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_titulaires) %> ETPT</div>
   </div>
 </div>
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
@@ -121,7 +121,7 @@
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
     <div>Total des emplois contractuels <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_contractuels_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_contractuels) %> ETPT</div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_contractuels) %> ETPT</div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
     <div>
@@ -154,13 +154,13 @@
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
     <div>Emplois en fonction dans l'organisme, non rémunérés par lui - emplois T2, MAD entrantes remboursées ou non <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_non_remuneres_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_non_remuneres) %> ETPT</div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_non_remuneres) %> ETPT</div>
   </div>
 </div>
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
     <div>Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisation d'emplois - MAD sortantes <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_autre_entite_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.emplois_autre_entite) %> ETPT</div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_autre_entite) %> ETPT</div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
     <div>

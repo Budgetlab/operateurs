@@ -30,6 +30,14 @@ module ApplicationHelper
       number_with_delimiter('%.11g' % ('%.1f' % nombre), locale: :fr)
     end
   end
+  def format_nombre_decimal(nombre)
+    case nombre
+    when nil, ''
+      '-'
+    else
+      number_with_delimiter('%.11g' % ('%.2f' % nombre), locale: :fr)
+    end
+  end
   def format_nombre_entier(nombre)
     case nombre
     when nil, ''

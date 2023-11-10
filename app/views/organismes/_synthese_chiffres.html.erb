@@ -26,7 +26,7 @@
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
                     <p class="fr-mb-0 fr-text--center">Total des <% if chiffre.comptabilite_budgetaire == true %>autorisations d'<%end %>emplois rémunérés par l'organisme</p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.emplois_total) %> ETPT</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_decimal(chiffre.emplois_total) %> ETPT</p>
                   </div>
                 </div>
               </div>

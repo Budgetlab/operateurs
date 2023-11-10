@@ -120,7 +120,7 @@
       @credits_cp_personnel = [@colonnes_credits[8],nil] + @emplois_depenses_personnel
       sheet.add_row(@credits_cp_personnel)
       @credits_cp_investissement = [@colonnes_credits[14],nil] + @chiffres_export.pluck(:credits_cp_investissement)
-      @poids_cp_personnel = [@colonnes_credits[9],nil] + @credits_cp_personnel[2..-1].zip(@credits_cp_total[2..-1], @credits_cp_investissement[2..-1]).map { |x, y| ratio(x,y-z,1) }
+      @poids_cp_personnel = [@colonnes_credits[9],nil] + @credits_cp_personnel[2..-1].zip(@credits_cp_total[2..-1], @credits_cp_investissement[2..-1]).map { |x, y, z| ratio(x,y-z,1) }
       sheet.add_row(@poids_cp_personnel)
       @credits_cp_fonctionnement = [@colonnes_credits[10],nil] + @chiffres_export.pluck(:credits_cp_fonctionnement)
       sheet.add_row(@credits_cp_fonctionnement)
