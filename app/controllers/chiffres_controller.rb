@@ -6,6 +6,8 @@ class ChiffresController < ApplicationController
   before_action :find_organisme, only: %i[index show_dates]
   before_action :set_famille, only: %i[index show_dates]
   before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy open_phase]
+
+  # page des chiffres clés de l'organisme
   def index
     @est_editeur = current_user == @organisme.controleur
     est_bureau_ou_famille = current_user == @organisme.bureau || @familles&.include?(@organisme.famille)
@@ -28,7 +30,7 @@ class ChiffresController < ApplicationController
       WHEN type_budget = 'Budget rectificatif' THEN 2
       ELSE 3
     END, created_at DESC"))
-    filename = "chiffres clés #{@organisme.nom}.xlsx"
+    filename = "chiffres_#{@organisme.nom}.xlsx"
     respond_to do |format|
       format.html
       format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
@@ -86,14 +88,14 @@ class ChiffresController < ApplicationController
     @organisme = Organisme.find(params[:chiffre][:organisme_id])
     redirect_unless_can_edit
 
-    @chiffre_exist = !Chiffre.where(organisme_id: @organisme.id,
-                                    exercice_budgetaire: params[:chiffre][:exercice_budgetaire],
-                                    type_budget: params[:chiffre][:type_budget]).empty?
-    if @chiffre_exist && params[:chiffre][:type_budget] != 'Budget rectificatif'
+    @chiffre_existant = Chiffre.where(organisme_id: @organisme.id,
+                                      exercice_budgetaire: params[:chiffre][:exercice_budgetaire],
+                                      type_budget: params[:chiffre][:type_budget])
+    if !@chiffre_existant.empty? && params[:chiffre][:type_budget] != 'Budget rectificatif'
       respond_to do |format|
         format.turbo_stream do
           render turbo_stream: [
-            turbo_stream.update('new_content', partial: 'chiffres/form_error', locals: { organisme: @organisme })
+            turbo_stream.update('new_content', partial: 'chiffres/form_error', locals: { organisme: @organisme, chiffre: @chiffre_existant.first })
           ]
         end
       end

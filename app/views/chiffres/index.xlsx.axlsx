@@ -120,7 +120,7 @@
       @credits_cp_personnel = [@colonnes_credits[8],nil] + @emplois_depenses_personnel
       sheet.add_row(@credits_cp_personnel)
       @credits_cp_investissement = [@colonnes_credits[14],nil] + @chiffres_export.pluck(:credits_cp_investissement)
-      @poids_cp_personnel = [@colonnes_credits[9],nil] + @credits_cp_personnel[2..-1].zip(@credits_cp_total[2..-1], @credits_cp_investissement[2..-1]).map { |x, y, z| ratio(x,y-z,1) }
+      @poids_cp_personnel = [@colonnes_credits[9],nil] + @credits_cp_personnel[2..-1].zip(@credits_cp_total[2..-1], @credits_cp_investissement[2..-1]).map { |x, y, z| !y.nil? && !z.nil? ? ratio(x,y-z,1) : '' }
       sheet.add_row(@poids_cp_personnel)
       @credits_cp_fonctionnement = [@colonnes_credits[10],nil] + @chiffres_export.pluck(:credits_cp_fonctionnement)
       sheet.add_row(@credits_cp_fonctionnement)
@@ -289,7 +289,7 @@
       @tresorerie_variation = [@colonnes_treso[9],nil] + @chiffres_export.pluck(:tresorerie_variation)
       @tresorerie_variation_flechee = [@colonnes_treso[10],nil] + @chiffres_export.pluck(:tresorerie_variation_flechee)
       @tresorerie_variation_non_flechee = [@colonnes_treso[11],nil] + @chiffres_export.pluck(:tresorerie_variation_non_flechee)
-      @tresorerie_initial = [@colonnes_treso[1],nil] + @chiffres_export.pluck(:tresorerie_finale, :tresorerie_variation).map{|a,b| a-b}
+      @tresorerie_initial = [@colonnes_treso[1],nil] + @chiffres_export.pluck(:tresorerie_finale, :tresorerie_variation).map{|a,b| (a || 0) - (b ||0)}
       @taux_rap = [@colonnes_treso[4],nil] + @chiffres_export.pluck(:tresorerie_finale, :credits_restes_a_payer).map { |x, y| ratio(x,y,1) }
       @poids_nf = [@colonnes_treso[6],nil] + @chiffres_export.pluck(:tresorerie_finale_non_flechee, :tresorerie_finale).map { |x, y| ratio(x,y,1) }
 
@@ -340,14 +340,14 @@
 
       @fonds_roulement_final = [@colonnes_analyse[4],nil] + @chiffres_export.pluck(:fonds_roulement_final)
       @fonds_roulement_variation = [@colonnes_analyse[3],nil] + @chiffres_export.pluck(:fonds_roulement_variation)
-      @fonds_roulement_initial = [@colonnes_analyse[2],nil] +  @chiffres_export.pluck(:fonds_roulement_final, :fonds_roulement_variation).map{|a,b| a-b}
+      @fonds_roulement_initial = [@colonnes_analyse[2],nil] +  @chiffres_export.pluck(:fonds_roulement_final, :fonds_roulement_variation).map{|a,b| (a || 0) - (b || 0)}
       sheet.add_row(@fonds_roulement_initial)
       sheet.add_row(@fonds_roulement_variation)
       sheet.add_row(@fonds_roulement_final)
 
       sheet.add_row [@colonnes_analyse[5]], style: titre_header
       @fonds_roulement_besoin_final = [@colonnes_analyse[8],nil] + @chiffres_export.pluck(:fonds_roulement_besoin_final)
-      @fonds_roulement_besoin_variation = [@colonnes_analyse[7],nil] + @chiffres_export.pluck(:fonds_roulement_variation, :tresorerie_variation).map{|a,b| a-b}
+      @fonds_roulement_besoin_variation = [@colonnes_analyse[7],nil] + @chiffres_export.pluck(:fonds_roulement_variation, :tresorerie_variation).map{|a,b| (a || 0) - (b || 0)}
       @fonds_roulement_besoin_initial = [@colonnes_analyse[6],nil] + @fonds_roulement_besoin_final[2..-1].zip(@fonds_roulement_besoin_variation[2..-1]).map{|a,b| (a || 0) - (b || 0)}
       sheet.add_row(@fonds_roulement_besoin_initial)
       sheet.add_row(@fonds_roulement_besoin_variation)
