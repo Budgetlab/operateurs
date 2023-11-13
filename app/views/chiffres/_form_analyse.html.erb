@@ -131,7 +131,7 @@
             <ul class="fr-btns-group fr-btns-group--icon-left fr-btns-group--inline fr-btns-group--right">
               <li>
                 <% if @chiffre.statut == 'valide' %>
-                  <%=link_to organisme_chiffres_path(@chiffre.organisme), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %>
+                  <%=link_to organisme_chiffres_path(@chiffre.organisme, paramId: @chiffre.id), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %>
                 <%else %>
                   <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line"  data-fr-opened="false" aria-controls="fr-modal-1" data-action="form#Dropdown">
                     Étape précédente

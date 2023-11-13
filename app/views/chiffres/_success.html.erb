@@ -3,14 +3,17 @@
     <% if msg == "maj chiffres" %>
       <div class="fr-alert fr-alert--success fr-mb-2w">
         <h3 class="fr-alert__title">Le budget a été mis à jour avec succès.</h3>
+        <button class="fr-btn--close fr-btn" title="Masquer le message" onclick="const alert = this.parentNode; alert.parentNode.removeChild(alert)">Masquer le message</button>
       </div>
       <%elsif msg == "creation chiffres" %>
       <div class="fr-alert fr-alert--success fr-mb-2w">
         <h3 class="fr-alert__title">Le budget a été créé avec succès.</h3>
+        <button class="fr-btn--close fr-btn" title="Masquer le message" onclick="const alert = this.parentNode; alert.parentNode.removeChild(alert)">Masquer le message</button>
       </div>
       <%elsif msg == "suppression" %>
       <div class="fr-alert fr-alert--success fr-mb-2w">
         <h3 class="fr-alert__title">Le budget a été supprimé.</h3>
+        <button class="fr-btn--close fr-btn" title="Masquer le message" onclick="const alert = this.parentNode; alert.parentNode.removeChild(alert)">Masquer le message</button>
       </div>
       <% end %>
     <% end %>

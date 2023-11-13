@@ -75,18 +75,18 @@
           <nav role="navigation" class="fr-pagination" aria-label="Pagination">
             <ul class="fr-pagination__list">
               <li>
-                <%= link_to show_dates_path(exercice_budgetaire: Date.today.year - 1, organisme_id: @organisme.id), data: {'toggle-target': 'nav', action: "click->toggle#changeNav","turbo-method": :post}, class: "fr-pagination__link" do %>
-                  <%= Date.today.year - 1 %>
+                <%= link_to show_dates_path(exercice_budgetaire: 2022, organisme_id: @organisme.id), data: {'toggle-target': 'nav', action: "click->toggle#changeNav","turbo-method": :post}, class: "fr-pagination__link", aria: (@date == 2022 ? { current: 'page' } : {}) do %>
+                  2022
                 <%end %>
               </li>
               <li>
-                <%= link_to show_dates_path(exercice_budgetaire: Date.today.year, organisme_id: @organisme.id), data: {'toggle-target': 'nav', action: "click->toggle#changeNav","turbo-method": :post}, class: "fr-pagination__link", aria: { current: 'page' } do %>
-                  <%= Date.today.year %>
+                <%= link_to show_dates_path(exercice_budgetaire: 2023, organisme_id: @organisme.id), data: {'toggle-target': 'nav', action: "click->toggle#changeNav","turbo-method": :post}, class: "fr-pagination__link", aria: (@date == 2023 ? { current: 'page' } : {}) do %>
+                  2023
                 <%end %>
               </li>
               <li>
-                <%= link_to show_dates_path(exercice_budgetaire: Date.today.year + 1, organisme_id: @organisme.id), data: {'toggle-target': 'nav', action: "click->toggle#changeNav","turbo-method": :post}, class: "fr-pagination__link" do %>
-                  <%= Date.today.year + 1 %>
+                <%= link_to show_dates_path(exercice_budgetaire: 2024, organisme_id: @organisme.id), data: {'toggle-target': 'nav', action: "click->toggle#changeNav","turbo-method": :post}, class: "fr-pagination__link",aria: (@date == 2024 ? { current: 'page' } : {}) do %>
+                  2024
                 <%end %>
               </li>
             </ul>

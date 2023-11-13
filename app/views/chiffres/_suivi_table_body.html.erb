@@ -7,6 +7,6 @@
     <td><% if chiffre_bi[0].nil? %><%= render partial: "chiffres/badge_examen", locals: {examen: "Non renseigné"} %><% elsif chiffre_bi[0][3] == "valide" %><%= render partial: "chiffres/badge_examen", locals: {examen: chiffre_bi[0][4]} %><% else %><%= render partial: "chiffres/badge_examen", locals: {examen: "Brouillon"} %><% end %></td>
     <td><% if chiffre_br[0].nil? %><%= render partial: "chiffres/badge_examen", locals: {examen: "Aucun"} %><% elsif chiffre_br[0][3] == "valide" %><%= render partial: "chiffres/badge_examen", locals: {examen: chiffre_br[0][4]} %><% else %><%= render partial: "chiffres/badge_examen", locals: {examen: "Brouillon"} %><% end %></td>
     <td><% if chiffre_cf[0].nil? %><%= render partial: "chiffres/badge_examen", locals: {examen: "Non renseigné"} %><% elsif chiffre_cf[0][3] == "valide" %><%= render partial: "chiffres/badge_examen", locals: {examen: chiffre_cf[0][4]} %><% else %><%= render partial: "chiffres/badge_examen", locals: {examen: "Brouillon"} %><% end %></td>
-    <td><%= link_to organisme_chiffres_path(organisme[0]), class:"fr-btn fr-btn--sm" do%>Consulter<%end %></td>
+    <td><%= link_to organisme_chiffres_path(organisme[0], exercice_budgetaire: exercice), class:"fr-btn fr-btn--sm" do%>Consulter<%end %></td>
   </tr>
 <% end %>

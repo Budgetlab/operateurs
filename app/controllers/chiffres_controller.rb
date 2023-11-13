@@ -12,13 +12,22 @@ class ChiffresController < ApplicationController
     redirect_to root_path and return unless @statut_user == '2B2O' || @est_editeur || est_bureau_ou_famille
 
     @chiffres = @organisme.chiffres
+    if params[:paramId]
+      @chiffre_param = Chiffre.where(id: params[:paramId].to_i).first
+      redirect_to organisme_chiffres_path(@organisme) and return unless @chiffre_param && @chiffre_param.organisme_id == @organisme.id
+
+      @date = @chiffre_param.exercice_budgetaire
+    else
+      @date = params[:exercice_budgetaire] && [2022, 2023, 2024].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
+    end
+    liste_budgets(@date, @chiffres)
+    @bi_selected = [@compte_financier, @budgets_rectificatifs].flatten.empty? || (params[:paramId] && params[:paramId].to_i == @budget_initial.first&.id)
+    @cf_selected = !@compte_financier.empty? && params[:paramId].nil? || params[:paramId].to_i == @compte_financier.first&.id
     @chiffres_export = @chiffres.where(statut: 'valide').order(Arel.sql(" exercice_budgetaire DESC, CASE
       WHEN type_budget = 'Compte financier' THEN 1
       WHEN type_budget = 'Budget rectificatif' THEN 2
       ELSE 3
     END, created_at DESC"))
-    @date = Date.today.year
-    liste_budgets(@date, @chiffres)
     filename = "chiffres clés #{@organisme.nom}.xlsx"
     respond_to do |format|
       format.html
@@ -29,8 +38,10 @@ class ChiffresController < ApplicationController
   def show_dates
     @est_editeur = current_user == @organisme.controleur
     @chiffres = @organisme.chiffres
-    @date = params[:exercice_budgetaire].to_i
+    @date = params[:exercice_budgetaire] && [2022, 2023, 2024].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
     liste_budgets(@date, @chiffres)
+    @bi_selected = [@compte_financier, @budgets_rectificatifs].flatten.empty?
+    @cf_selected = !@compte_financier.empty?
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -117,7 +128,7 @@ class ChiffresController < ApplicationController
     updateRisque(@chiffre)
 
     @message = ' ' if @chiffre.statut != 'valide'
-    redirect_path = @chiffre.statut == 'valide' ? organisme_chiffres_path(@organisme) : edit_chiffre_path(@chiffre, step: @step)
+    redirect_path = @chiffre.statut == 'valide' ? organisme_chiffres_path(@organisme, paramId: @chiffre.id) : edit_chiffre_path(@chiffre, step: @step)
     redirect_to redirect_path, flash: { notice: @message }
 
   end
@@ -128,8 +139,9 @@ class ChiffresController < ApplicationController
 
     @est_editeur = current_user == @organisme.controleur
     if params[:phase] == 'Budget non approuvé'
+      exercice = @chiffre.exercice_budgetaire
       @chiffre.destroy
-      redirect_to organisme_chiffres_path(@organisme)
+      redirect_to organisme_chiffres_path(@organisme, exercice_budgetaire: exercice)
     else
       @chiffre.update(phase: params[:phase])
       respond_to do |format|
@@ -157,7 +169,7 @@ class ChiffresController < ApplicationController
     @chiffres = @chiffres.select { |el| params[:budgets].include?(el.type_budget) } if params[:budgets] && params[:budgets].length != 3
     @chiffres = @chiffres.select { |el| params[:phases].include?(el.phase) } if params[:phases] && params[:phases].length != 4
     @chiffres = @chiffres.select { |el| params[:exercices].include?(el.exercice_budgetaire.to_s) } if params[:exercices] && params[:exercices].length != @exercices.length
-    if params[:risque_insolvabilites]&.include?("Brouillon")
+    if params[:risque_insolvabilites]&.include?('Brouillon')
       @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) || el.statut != 'valide'}
     else
       @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) } if params[:risque_insolvabilites] && params[:risque_insolvabilites].length != 5
@@ -217,9 +229,10 @@ class ChiffresController < ApplicationController
   def destroy
     redirect_unless_can_edit
 
+    exercice = @chiffre.exercice_budgetaire
     @chiffre&.destroy
     message = 'suppression'
-    redirect_to organisme_chiffres_path(@organisme), flash: { notice: message }
+    redirect_to organisme_chiffres_path(@organisme, exercice_budgetaire: exercice), flash: { notice: message }
   end
 
   def open_phase

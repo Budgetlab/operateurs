@@ -1,16 +1,16 @@
 <div class="fr-tabs fr-mb-4w" data-controller="tab">
   <ul class="fr-tabs__list" role="tablist" aria-label="Budget">
     <li role="presentation">
-      <button id="budget-initial" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= [@compte_financier, @budgets_rectificatifs].flatten.empty? %>" aria-controls="budget-initial-tab" data-action="click->tab#showSection">Budget initial <%= @date %></button>
+      <button id="budget-initial" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= @bi_selected %>" aria-controls="budget-initial-tab" data-action="click->tab#showSection">Budget initial <%= @date %></button>
     </li>
     <% @budgets_rectificatifs.each_with_index do |budget, i| %>
       <li role="presentation">
-        <button id="budget-rectificatif-<%= i %>" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= @compte_financier.empty? && i == @budgets_rectificatifs.length - 1 %>" aria-controls="budget-rectificatif-tab-<%= i %>" data-action="click->tab#showSection">BR <%= i+1 %></button>
+        <button id="budget-rectificatif-<%= i %>" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= (@compte_financier.empty? && i == @budgets_rectificatifs.length - 1 && params[:paramId].nil?) || ( budget.id == params[:paramId].to_i) %>" aria-controls="budget-rectificatif-tab-<%= i %>" data-action="click->tab#showSection">BR <%= i+1 %></button>
       </li>
     <% end %>
     <% if !@compte_financier.empty? %>
       <li role="presentation">
-        <button id="compte-financier" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="true" aria-controls="compte-financier-tab" data-action="click->tab#showSection">Compte financier <%= @date %></button>
+        <button id="compte-financier" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= @cf_selected %>" aria-controls="compte-financier-tab" data-action="click->tab#showSection">Compte financier <%= @date %></button>
       </li>
     <% end  %>
   </ul>
