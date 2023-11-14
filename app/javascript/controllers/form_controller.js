@@ -769,9 +769,9 @@ export default class extends Controller {
         const charges_total = charge_personnel + charges_fonctionnement + charges_intervention;
         const charges_dec = charges_total - charges_non_decaissables;
         if (document.getElementById("indicateur_charges_personnel") != null){
-            this.indicateurRatio(charge_personnel_field,indicateur_charges_personnel,charge_personnel,charges_total,100);
-            this.indicateurRatio(charges_fonctionnement_field,indicateur_charges_fonctionnement,charges_fonctionnement,charges_total,100);
-            this.indicateurRatio(charges_intervention_field,indicateur_charges_intervention,charges_intervention,charges_total,100);
+            this.indicateurRatio(charge_personnel_field,indicateur_charges_personnel,charge_personnel,charges_dec,100);
+            this.indicateurRatio(charges_fonctionnement_field,indicateur_charges_fonctionnement,charges_fonctionnement,charges_dec,100);
+            this.indicateurRatio(charges_intervention_field,indicateur_charges_intervention,charges_intervention,charges_dec,100);
         }
         const condition_vide =charge_personnel_field.value == "" && charges_fonctionnement_field.value == "" && charges_intervention_field.value == ""
         this.updateValueIndicateur(condition_vide,indicateur_charges, charges_total);

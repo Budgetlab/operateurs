@@ -435,6 +435,10 @@
   <% elsif num_id == "indicateur_charges_personnel_t" %>
     <span class="fr-text--bold">Formule de calcul : Total des charges de personnel / Total des charges décaissables</span><br><br>
     Cet indicateur permet de mesurer le degré de rigidité du budget lié à la part des dépenses destinées à la rémunération des personnel.
+  <% elsif num_id == "indicateur_charges_fonctionnement_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des charges de fonctionnement / Total des charges décaissables</span>
+  <% elsif num_id == "indicateur_charges_intervention_t" %>
+    <span class="fr-text--bold">Formule de calcul : Total des charges d'intervention / Total des charges décaissables</span>
   <% elsif num_id == "indicateur_ressources_t" %>
     <span class="fr-text--bold">Formule de calcul : (Autres produits - Produits non encaissables + Autres ressources) / (Total des produits - Produits non encaissables + Total des ressources - CAF) </span><br><br>
     NB : Dans le dénominateur seule la CAF (c'est-à-dire si le montant dans le champ "CAF" est positif) est à retirer du total des ressources. L'IAF (c'est-à-dire si le montant dans le champ "CAF" est négatif) n'a pas à être retirée / ajoutée : n'a pas d'impact sur le total des ressources.<br>
@@ -492,6 +496,13 @@
     Source : <span class="fr-text--underline">Tableau 2 de la liasse - "Compte de résultat et état de l'évolution de la situation patrimoniale en droits constatés"</span><br>
     > Tableau "Variation et niveau du fonds de roulement, du besoin en fonds de roulement et de la trésorerie" <br>
     > Cellule "Niveau final de la TRESORERIE"
+  <% elsif num_id == "tresorerie_finale_text_t" %>
+    Source : <span class="fr-text--underline">Tableau 10 de la liasse budgétaire -"Synthèse budgétaire et comptable"</span><br>
+    > Cellule "Niveau final de la TRESORERIE"<br>
+    ou <br>
+        Source : <span class="fr-text--underline">Tableau 6 de la liasse budgétaire - "Situation patrimoniale"</span> <br>
+    > Tableau  "Variation et niveau du fonds de roulement, du besoin en fonds de roulement et de la trésorerie"<br>
+    >  Cellule "Niveau final de la TRESORERIE : ABONDEMENT ou PRELEVEMENT"
     <!-- ANALYSE -->
   <% elsif num_id == "fonds_roulement_variation_t" %>
     <% if chiffre.comptabilite_budgetaire == true %>

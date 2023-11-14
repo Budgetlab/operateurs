@@ -237,14 +237,11 @@
                 <h3 class="fr-card__title">
                   Parties GBCP
                 </h3>
-                <p class="fr-card__desc">Partie I GBCP : <b><%= format_boolean(@organisme.gbcp_1) %></b></p>
+                <p class="fr-card__desc">Partie I GBCP <%= render partial: "organismes/tooltip", locals: {num_id: "gbcp_1"} %> : <b><%= format_boolean(@organisme.gbcp_1) %></b></p>
                 <p class="fr-card__desc">Présence d’un agent comptable : <b><%= format_boolean(@organisme.agent_comptable_present) %></b></p>
-                <p class="fr-card__desc">Champ d'application du décret GBCP <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
-                  Information contextuelle
-                </button>
-                  <span class="fr-tooltip fr-placement" id="tooltip-2994" role="tooltip" aria-hidden="true">Appartenance aux bulles de l’article 1er du GBCP à retrouver sur https://www.legifrance.gouv.fr/loda/id/JORFTEXT000026597003</span>: <b><%= format_boolean(@organisme.degre_gbcp) %></b></p>
+                <p class="fr-card__desc">Champ d'application du décret GBCP <%= render partial: "organismes/tooltip", locals: {num_id: "degre_gbcp"} %> : <b><%= format_boolean(@organisme.degre_gbcp) %></b></p>
                 <p class="fr-card__desc">Partie III GBCP : <b><%= format_boolean(@organisme.gbcp_3) %></b></p>
-                <p class="fr-card__desc">Comptabilité budgétaire : <b><%= format_boolean(@organisme.comptabilite_budgetaire) %></b></p>
+                <p class="fr-card__desc">Comptabilité budgétaire <%= render partial: "organismes/tooltip", locals: {num_id: "comptabilite_budgetaire"} %> : <b><%= format_boolean(@organisme.comptabilite_budgetaire) %></b></p>
               </div>
             </div>
           </div>
@@ -262,7 +259,7 @@
                 <h3 class="fr-card__title">
                   Présence contrôle : <%= format_boolean(@organisme.presence_controle) %>
                 </h3>
-                <p class="fr-card__desc">Contrôleur référent : <b><%= @organisme.controleur.nom %></b></p>
+                <p class="fr-card__desc">Contrôleur référent <%= render partial: "organismes/tooltip", locals: {num_id: "controleur"} %> : <b><%= @organisme.controleur.nom %></b></p>
                 <%  if @organisme.presence_controle %>
                   <p class="fr-card__desc">Nature contrôle : <b><%= format_boolean(@organisme.nature_controle) %></b></p>
                   <p class="fr-card__desc">Référence du texte de soumission au contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_soumission_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
@@ -292,13 +289,10 @@
             <div class="fr-card__body">
               <div class="fr-card__content">
                 <h3 class="fr-card__title">
-                  Tutelle financière MCP <button class="fr-btn--tooltip fr-btn" id="button-2" aria-describedby="tooltip-2" data-action="form#Dropdown">
-                  Information contextuelle
-                </button>
-                  <span class="fr-tooltip fr-placement" id="tooltip-2" role="tooltip" aria-hidden="true">La tutelle financière MCP découle de l'article 174 du décret GBCP. Les GIP n'ont pas de tutelle.</span>: <%= format_boolean(@organisme.tutelle_financiere) %>
+                  Tutelle financière MCP <%= render partial: "organismes/tooltip", locals: {num_id: "tutelle_financiere"} %> : <%= format_boolean(@organisme.tutelle_financiere) %>
                 </h3>
                 <% if @organisme.tutelle_financiere %>
-                  <p class="fr-card__desc">Délégation de l'approbation des BI / BR / comptes financiers : <b><%= format_boolean(@organisme.delegation_approbation) %></b></p>
+                  <p class="fr-card__desc">Délégation de l'approbation des BI / BR / comptes financiers <%= render partial: "organismes/tooltip", locals: {num_id: "delegation_approbation"} %> : <b><%= format_boolean(@organisme.delegation_approbation) %></b></p>
                 <%end %>
                 <p class="fr-card__desc">Autorité chargée de l’approbation : <b><%= format_boolean(@organisme.autorite_approbation) %></b></p>
                 <p class="fr-card__desc">Ministère de tutelle principale : <b><% if @organisme.ministere %><%= @organisme.ministere.nom %><%else %>Aucun<%end %></b></p>
@@ -318,28 +312,14 @@
             <div class="fr-card__body">
               <div class="fr-card__content">
                 <h3 class="fr-card__title">
-                  Administrateur DB au sein de l'organe de gouvernance <button class="fr-btn--tooltip fr-btn" id="button-3" aria-describedby="tooltip-3" data-action="form#Dropdown">
-                  Information contextuelle
-                </button>
-                  <span class="fr-tooltip fr-placement" id="tooltip-3" role="tooltip" aria-hidden="true">La composition de l'instance de gouvernance est fixée par le texte statutaire de l'organisme. La représentation de la DB peut-être assurée par un contrôleur.</span>
-                  : <%= format_boolean(@organisme.admin_db_present) %>
+                  Administrateur DB au sein de l'organe de gouvernance <%= render partial: "organismes/tooltip", locals: {num_id: "admin_db_present"} %> : <%= format_boolean(@organisme.admin_db_present) %>
                 </h3>
                 <% if @organisme.admin_db_present %>
                   <p class="fr-card__desc">Fonction administrateur DB : <b><%= format_boolean(@organisme.admin_db_fonction) %></b></p>
                 <% end %>
-                <p class="fr-card__desc">Présence DB au pré-CA <button class="fr-btn--tooltip fr-btn" id="button-4" aria-describedby="tooltip-4" data-action="form#Dropdown">
-                  Information contextuelle
-                </button>
-                  <span class="fr-tooltip fr-placement" id="tooltip-4" role="tooltip" aria-hidden="true">Au pré-CA ou à tout autre organe délibérant (Assemblée Générale)</span>
-                  : <b><%= format_boolean(@organisme.admin_preca) %></b></p>
-                <p class="fr-card__desc">Présence contrôleur au pré-CA <button class="fr-btn--tooltip fr-btn" id="button-5" aria-describedby="tooltip-5" data-action="form#Dropdown">
-                  Information contextuelle
-                </button>
-                  <span class="fr-tooltip fr-placement" id="tooltip-5" role="tooltip" aria-hidden="true">Au pré-CA ou à tout autre organe délibérant (Assemblée Générale)</span> : <b><%= format_boolean(@organisme.controleur_preca) %></b></p>
-                <p class="fr-card__desc">Présence contrôleur au CA <button class="fr-btn--tooltip fr-btn" id="button-6" aria-describedby="tooltip-6" data-action="form#Dropdown">
-                  Information contextuelle
-                </button>
-                  <span class="fr-tooltip fr-placement" id="tooltip-6" role="tooltip" aria-hidden="true">Au CA ou à tout autre organe délibérant (Assemblée Générale)</span>: <b><%= format_boolean(@organisme.controleur_ca) %></b></p>
+                <p class="fr-card__desc">Présence DB au pré-CA <%= render partial: "organismes/tooltip", locals: {num_id: "admin_preca"} %> : <b><%= format_boolean(@organisme.admin_preca) %></b></p>
+                <p class="fr-card__desc">Présence contrôleur au pré-CA <%= render partial: "organismes/tooltip", locals: {num_id: "controleur_preca"} %> : <b><%= format_boolean(@organisme.controleur_preca) %></b></p>
+                <p class="fr-card__desc">Présence contrôleur au CA <%= render partial: "organismes/tooltip", locals: {num_id: "controleur_ca"} %> : <b><%= format_boolean(@organisme.controleur_ca) %></b></p>
                 <p class="fr-card__desc">Comité d’audit et des risques : <b><%= format_boolean(@organisme.comite_audit) %></b></p>
               </div>
             </div>

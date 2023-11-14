@@ -70,7 +70,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Part relatif des dépenses de fonctionnement (CP) dans le total des dépenses (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_fonctionnement_t", chiffre: chiffre} %></p>
+          <p class="fr-mb-0 fr-text--center">Part relative des dépenses de fonctionnement (CP) dans le total des dépenses (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_fonctionnement_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_cp_fonctionnement,chiffre.credits_cp_total,100)) %> %</p>
         </div>
       </div>
@@ -94,7 +94,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Part relatif des dépenses d'intervention (CP) dans le total des dépenses (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_intervention_t", chiffre: chiffre} %></p>
+          <p class="fr-mb-0 fr-text--center">Part relative des dépenses d'intervention (CP) dans le total des dépenses (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_intervention_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_cp_intervention,chiffre.credits_cp_total,100)) %> %</p>
         </div>
       </div>
@@ -118,7 +118,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Part relatif des dépenses d'investissement (CP) dans le total des dépenses (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_investissement_t", chiffre: chiffre} %></p>
+          <p class="fr-mb-0 fr-text--center">Part relative des dépenses d'investissement (CP) dans le total des dépenses (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_investissement_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_cp_investissement,chiffre.credits_cp_total,100)) %> %</p>
         </div>
       </div>

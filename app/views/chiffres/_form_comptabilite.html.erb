@@ -95,7 +95,7 @@
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Poids des charges de fonctionnement</p>
+                    <p class="fr-mb-0 fr-text--center">Poids des charges de fonctionnement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_fonctionnement_t", chiffre: @chiffre} %></p>
                     <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_charges_fonctionnement">-</span> %</p>
                   </div>
                 </div>
@@ -103,7 +103,7 @@
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Poids des charges d'intervention</p>
+                    <p class="fr-mb-0 fr-text--center">Poids des charges d'intervention <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_intervention_t", chiffre: @chiffre} %></p>
                     <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_charges_intervention">-</span> %</p>
                   </div>
                 </div>

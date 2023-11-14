@@ -126,10 +126,7 @@
             <div class="fr-col-12 fr-col-lg-8">
               <fieldset class="fr-fieldset">
                 <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
-                  Arrêté interdiction ODAC emprunt ≥ 12 mois <button class="fr-btn--tooltip fr-btn" id="button-2" aria-describedby="tooltip-2" data-action="form#Dropdown">
-                  Information contextuelle
-                </button>
-                  <span class="fr-tooltip fr-placement" id="tooltip-2" role="tooltip" aria-hidden="true">Vérifier la date du dernier arrêté d’interdiction pour remplir ce champ.</span>
+                  Arrêté interdiction ODAC emprunt ≥ 12 mois <%= render partial: "organismes/tooltip", locals: {num_id: "arrete_interdiction_odac"} %>
                 </legend>
 
                 <div class="fr-fieldset__element fr-fieldset__element--inline">

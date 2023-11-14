@@ -13,6 +13,9 @@
 <% else  %>
   <% @den = (chiffre.emplois_charges_personnel + chiffre.charges_fonctionnement + chiffre.charges_intervention - (chiffre.charges_non_decaissables || 0))/360 %>
 <% end  %>
+<% @total_charges = chiffre.emplois_charges_personnel + chiffre.charges_fonctionnement + chiffre.charges_intervention %>
+<% @total_produits = chiffre.produits_subventions_etat + chiffre.produits_fiscalite_affectee + chiffre.produits_subventions_autres + chiffre.produits_autres %>
+
   <div class="fr-card">
     <div class="fr-card__body">
       <div class="fr-card__content">
@@ -21,7 +24,7 @@
         </h3>
         <div class="fr-card__desc">
           <div class="fr-grid-row fr-grid-row--gutters fr-mt-3v">
-            <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-col-12">
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
@@ -31,11 +34,13 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-6">
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Coût moyen par ETPT</p>
+                    <p class="fr-mb-0 fr-text--center">Coût moyen par ETPT <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_cout_t", chiffre: chiffre} %></p>
                     <% if chiffre.comptabilite_budgetaire == true %>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_depenses_personnel,chiffre.emplois_total,1)) %> €</p>
                     <%else %>
@@ -45,17 +50,15 @@
                 </div>
               </div>
             </div>
-          </div>
-          <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-6 fr-col-offset-lg-6">
+            <div class="fr-col-12 fr-col-lg-6">
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
                     <% if chiffre.comptabilite_budgetaire == true %>
-                      <p class="fr-mb-0 fr-text--center">Poids relatif des dépenses de personnel</p>
+                      <p class="fr-mb-0 fr-text--center">Poids relatif des dépenses de personnel <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_poids_personnel_t", chiffre: chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_depenses_personnel,chiffre.credits_cp_total-chiffre.credits_cp_investissement,100)) %> %</p>
                     <% else %>
-                      <p class="fr-mb-0 fr-text--center">Poids relatif des charges de personnel</p>
+                      <p class="fr-mb-0 fr-text--center">Poids relatif des charges de personnel <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_personnel_t", chiffre: chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_charges_personnel,chiffre.emplois_charges_personnel + chiffre.charges_fonctionnement + chiffre.charges_intervention,100)) %> %</p>
                     <% end %>
                   </div>
@@ -69,11 +72,11 @@
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
                     <% if chiffre.comptabilite_budgetaire == true %>
-                    <p class="fr-mb-0 fr-text--center">Total des recettes</p>
+                    <p class="fr-mb-0 fr-text--center">Total des recettes </p>
                     <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_recettes) %> €</p>
                     <% else %>
-                      <p class="fr-mb-0 fr-text--center">Total des ressources</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.ressources_total)%> €</p>
+                      <p class="fr-mb-0 fr-text--center">Total des produits</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_produits) %> €</p>
                     <% end %>
                   </div>
                 </div>
@@ -87,8 +90,8 @@
                       <p class="fr-mb-0 fr-text--center">Total des crédits de paiement (CP) </p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.credits_cp_total) %> €</p>
                     <% else %>
-                      <p class="fr-mb-0 fr-text--center">Total des produits</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.produits_subventions_etat + chiffre.produits_fiscalite_affectee + chiffre.produits_subventions_autres + chiffre.produits_autres) %> €</p>
+                      <p class="fr-mb-0 fr-text--center">Total des charges</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_charges) %> €</p>
                     <% end %>
                   </div>
                 </div>
@@ -101,7 +104,7 @@
                 <div class="fr-mb-2w">
                   <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
+                      <p class="fr-mb-0 fr-text--center">Solde budgétaire <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_solde_budgetaire_t", chiffre: chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@solde)%> €</p>
                     </div>
                   </div>
@@ -113,7 +116,7 @@
                 <div class="fr-mb-2w">
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Taux de recettes propres</p>
+                      <p class="fr-mb-0 fr-text--center">Taux de recettes propres <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_taux_recettes_propres_t", chiffre: chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_recettes_propres_globalisees+chiffre.credits_recettes_propres_flechees,@total_recettes,100)) %> %</p>
                     </div>
                   </div>
@@ -123,7 +126,7 @@
                 <div class="fr-mb-2w">
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Poids des financements de l’Etat</p>
+                      <p class="fr-mb-0 fr-text--center">Poids des financements de l’Etat <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_financements_etat_t", chiffre: chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(@total_subv_etat,@total_recettes,100)) %> %</p>
                     </div>
                   </div>
@@ -135,7 +138,7 @@
                 <div class="fr-mb-2w">
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Poids des restes à payer</p>
+                      <p class="fr-mb-0 fr-text--center">Poids des restes à payer <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_rap_t", chiffre: chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_restes_a_payer,chiffre.credits_cp_total-chiffre.emplois_depenses_personnel,100)) %> %</p>
                     </div>
                   </div>
@@ -145,7 +148,7 @@
                 <div class="fr-mb-2w">
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Taux de couverture des RAP par la trésorerie</p>
+                      <p class="fr-mb-0 fr-text--center">Taux de couverture des RAP par la trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_rap_t", chiffre: chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.tresorerie_finale,chiffre.credits_restes_a_payer,100)) %> %</p>
                     </div>
                   </div>
@@ -154,11 +157,32 @@
             </div>
           <% else  %>
             <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-12">
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Résultat</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_produits - @total_charges)%> €</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Total des ressources</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.ressources_total)%> €</p></div>
+                  </div>
+                </div>
+              </div>
               <div class="fr-col-12 fr-col-lg-6">
                 <div class="fr-mb-2w">
                   <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Taux de ressources propres</p>
+                      <p class="fr-mb-0 fr-text--center">Taux de ressources propres <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_ressources_t", chiffre: chiffre} %></p>
                       <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.produits_autres - (chiffre.produits_non_encaissables || 0) + chiffre.ressources_autres,chiffre.produits_subventions_etat + chiffre.produits_fiscalite_affectee + chiffre.produits_subventions_autres + chiffre.produits_autres - (chiffre.produits_non_encaissables || 0) + chiffre.ressources_total - chiffre.capacite_autofinancement,100)) %> %</p>
                     </div>
                   </div>
@@ -171,7 +195,7 @@
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement</p>
+                    <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_jours_t", chiffre: chiffre} %></p>
                     <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.tresorerie_finale,@den,1)) %> Jours</p>
                   </div>
                 </div>

@@ -49,10 +49,7 @@
               <%else %>
               <fieldset class="fr-fieldset">
                 <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
-                  Tutelle financière MCP* <button class="fr-btn--tooltip fr-btn" id="button-2995" aria-describedby="tooltip-2994" data-action="form#Dropdown">
-                  Information contextuelle
-                </button>
-                  <span class="fr-tooltip fr-placement" id="tooltip-2994" role="tooltip" aria-hidden="true">La tutelle financière MCP découle de l'article 174 du décret GBCP. Les GIP n'ont pas de tutelle.</span>
+                  Tutelle financière MCP* <%= render partial: "organismes/tooltip", locals: {num_id: "tutelle_financiere"} %>
                 </legend>
                 <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
@@ -78,10 +75,7 @@
             <%else %>
             <fieldset class="fr-fieldset">
               <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
-                Délégation de l'approbation des BI / BR / comptes financiers <button class="fr-btn--tooltip fr-btn" id="button-2996" aria-describedby="tooltip-2995" data-action="form#Dropdown">
-                Information contextuelle
-              </button>
-                <span class="fr-tooltip fr-placement" id="tooltip-2995" role="tooltip" aria-hidden="true">Référence des derniers arrêtés de délégation.</span>
+                Délégation de l'approbation des BI / BR / comptes financiers <%= render partial: "organismes/tooltip", locals: {num_id: "delegation_approbation"} %>
               </legend>
               <div class="fr-fieldset__element fr-fieldset__element--inline">
                 <div class="fr-radio-group">

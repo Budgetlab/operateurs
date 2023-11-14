@@ -30,7 +30,7 @@
     <div class="fr-mb-2w options fr-hidden">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids des charges de fonctionnement </p>
+          <p class="fr-mb-0 fr-text--center">Poids des charges de fonctionnement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_fonctionnement_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.charges_fonctionnement,@total_charges,100)) %> %</p>
         </div>
       </div>
@@ -42,7 +42,7 @@
     <div class="fr-mb-2w options fr-hidden">
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids des charges d'intervention </p>
+          <p class="fr-mb-0 fr-text--center">Poids des charges d'intervention <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_intervention_t", chiffre: chiffre} %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.charges_intervention,@total_charges,100)) %> %</p>
         </div>
       </div>

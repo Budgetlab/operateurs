@@ -1,0 +1,36 @@
+<a class="fr-link" aria-describedby="<%= num_id %>" id="link-<%= num_id %>" href="#" data-controller="filter" data-action="filter#Dropdown">
+  <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true"></span>
+</a>
+<span class="fr-tooltip fr-placement" id="<%= num_id %>" role="tooltip" aria-hidden="true">
+  <% if num_id == "degre_gbcp" %>
+  Appartenance aux bulles de l’article 1er du GBCP à retrouver sur <a href="https://www.legifrance.gouv.fr/loda/id/JORFTEXT000026597003" target="_blank">https://www.legifrance.gouv.fr/loda/id/JORFTEXT000026597003</a>
+  <% elsif num_id == "gbcp_1" %>
+  Si "Non", pas de soumission à la GBCP
+  <% elsif num_id == "comptabilite_budgetaire" %>
+  Les organismes publics nationaux soumis à la comptabilité budgétaire appliquent le titre I et l'intégralité du titre III du décret n° 2012-1246 du 7 novembre 2012 relatif à la GBCP ;<br>
+  Hors comptabilité budgétaire : Les organismes publics nationaux non soumis à la comptabilité budgétaire appliquent les titres I et III du décret GBCP à l’exclusion des articles 175, 1° et 2°, 178 à 183, 204 à 208 ;<br>
+  Comptabilité budgétaire adaptée : Concerne les organismes publics nationaux dont les dispositions financières de leur texte institutif prévoient l’exclusion de certaines dispositions relatives à la comptabilité budgétaire comme par exemple pour les EPSCP (Article R719-51 du code de l’éducation).
+  <% elsif num_id == "tutelle_financiere" %>
+  La tutelle financière MCP découle de l'article 174 du décret GBCP. Les GIP n'ont pas de tutelle.
+  <% elsif num_id == "delegation_approbation" %>
+  Référence des derniers arrêtés de délégation
+  <% elsif num_id == "admin_db_present" %>
+  La composition de l'instance de gouvernance est fixée par le texte statutaire de l'organisme. La représentation de la DB peut-être assurée par un contrôleur.
+  <% elsif num_id == "admin_preca" || num_id == "controleur_preca" %>
+  Au pré-CA ou à tout autre organe délibérant (Assemblée Générale)
+  <% elsif num_id == "controleur_ca" %>
+  Au CA ou à tout autre organe délibérant (Assemblée Générale)
+  <% elsif num_id == "admin_db_fonction" %>
+  Ne pas donner l’identité mais uniquement la fonction de l’administrateur
+  <% elsif num_id == "arrete_interdiction_odac" %>
+  Vérifier la date du dernier arrêté d’interdiction pour remplir ce champ.
+  <% elsif num_id == "controleur" %>
+  Entité détenant les droits d’écriture sur la fiche d’identité de l’organisme et les données chiffrées
+  <% elsif num_id == "date_creation" %>
+  Quand la donnée est connue, elle doit nécessairement être renseignée
+  <% elsif num_id == "nom" %>
+  Nom complet figurant dans le texte institutif de l'organisme
+  <% elsif num_id == "date_previsionnelle_dissolution" %>
+  Pensez à renseigner cette date pour les groupements à durée de vie limitée
+  <% end %>
+</span>
