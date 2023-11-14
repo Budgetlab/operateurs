@@ -27,6 +27,8 @@
         </div>
       </th>
       <th scope="col">Budget rectificatif
+        <a class="fr-link" aria-describedby="info-<%=exercice %>" id="link-info-<%=exercice %>" href="#" data-action="filter#Dropdown"><span class="fr-icon-question-line fr-icon--sm" aria-hidden="true"></span></a>
+        <span class="fr-tooltip fr-placement" id="info-<%=exercice %>" role="tooltip" aria-hidden="true">Dernier BR renseigné</span>
         <div class="fr-translate fr-nav fr-nav-filter">
         <button class="filter-table--btn" aria-controls="br<%=exercice %>" aria-expanded="false" title="Filtrer par budget rectificatif" data-action="click->filter#Dropdown">
         </button>

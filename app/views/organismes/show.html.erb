@@ -68,7 +68,7 @@
     <%end %>
 
     <div class="fr-grid-row fr-grid-row--gutters">
-      <div class="fr-col-12 fr-col-lg-4">
+      <div class="fr-col-12 fr-col-lg-4" data-controller="toggle">
         <nav class="fr-sidemenu fr-sidemenu--sticky-full-height" aria-labelledby="fr-sidemenu-title">
           <div class="fr-sidemenu__inner">
             <button class="fr-sidemenu__btn" hidden aria-controls="fr-sidemenu-wrapper" aria-expanded="false">
@@ -84,31 +84,31 @@
                   <div class="fr-collapse" id="fr-sidemenu-item-0">
                     <ul class="fr-sidemenu__list">
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#fiche_identite" target="_self">Informations générales</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="fiche_identite" data-action="click->toggle#changeMenuSection">Informations générales</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#synthese" target="_self">Indicateurs budgétaires et financiers</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="synthese" data-action="click->toggle#changeMenuSection">Indicateurs budgétaires et financiers</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#operateur" target="_self">Opérateur</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="operateur" data-action="click->toggle#changeMenuSection">Opérateur</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#regime_budgetaire" target="_self">Régime budgétaire et comptable</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="regime_budgetaire" data-action="click->toggle#changeMenuSection">Régime budgétaire et comptable</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#controle" target="_self">Contrôle</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="controle" data-action="click->toggle#changeMenuSection">Contrôle</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#tutelles" target="_self">Tutelles financière et technique</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="tutelles" data-action="click->toggle#changeMenuSection">Tutelles financière et technique</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#gouvernance" target="_self">Gouvernance DB</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="gouvernance" data-action="click->toggle#changeMenuSection">Gouvernance DB</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <a class="fr-sidemenu__link" href="#categories" target="_self">Catégories</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="categories" data-action="click->toggle#changeMenuSection">Catégories</button>
                       </li>
                       <li class="fr-sidemenu__item fr-sidemenu__item--active">
-                        <a class="fr-sidemenu__link" href="#modifications" target="_self">Historique des modifications</a>
+                        <button class="fr-sidemenu__link" data-toggle-id="modifications" data-action="click->toggle#changeMenuSection">Historique des modifications</button>
                       </li>
                     </ul>
                   </div>
