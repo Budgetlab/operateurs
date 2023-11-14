@@ -13,15 +13,17 @@ class ChiffresController < ApplicationController
     est_bureau_ou_famille = current_user == @organisme.bureau || @familles&.include?(@organisme.famille)
     redirect_to root_path and return unless @statut_user == '2B2O' || @est_editeur || est_bureau_ou_famille
 
-    @chiffres = @organisme.chiffres
+    @chiffres = @organisme.chiffres.order(exercice_budgetaire: :desc)
     if params[:paramId]
       @chiffre_param = Chiffre.where(id: params[:paramId].to_i).first
       redirect_to organisme_chiffres_path(@organisme) and return unless @chiffre_param && @chiffre_param.organisme_id == @organisme.id
 
       @date = @chiffre_param.exercice_budgetaire
     else
-      @date = params[:exercice_budgetaire] && [2022, 2023, 2024].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
+      @date_dernier_chiffre = @chiffres.first&.exercice_budgetaire || Date.today.year
+      @date = params[:exercice_budgetaire] && [2022, 2023, 2024].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : @date_dernier_chiffre
     end
+
     liste_budgets(@date, @chiffres)
     @bi_selected = [@compte_financier, @budgets_rectificatifs].flatten.empty? || (params[:paramId] && params[:paramId].to_i == @budget_initial.first&.id)
     @cf_selected = !@compte_financier.empty? && params[:paramId].nil? || params[:paramId].to_i == @compte_financier.first&.id
