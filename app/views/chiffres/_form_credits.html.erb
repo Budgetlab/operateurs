@@ -45,7 +45,7 @@
               <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
                   <p class="fr-mb-0 fr-text--center">Dont total des dépenses de personnel (AE) </p>
-                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@chiffre.emplois_depenses_personnel) %>€</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.emplois_depenses_personnel) %>€</p>
                 </div>
               </div>
             </div>
@@ -54,7 +54,7 @@
               <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
                   <p class="fr-mb-0 fr-text--center">Dont total des dépenses de personnel (CP) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_cp_personnel_t", chiffre: @chiffre} %></p>
-                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@chiffre.emplois_depenses_personnel) %>€</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.emplois_depenses_personnel) %>€</p>
                 </div>
               </div>
             </div>

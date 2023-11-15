@@ -208,9 +208,11 @@
       @charges_fonctionnement = [@colonnes_compta[4],nil] + @chiffres_export.pluck(:charges_fonctionnement)
       @charges_intervention = [@colonnes_compta[6],nil] + @chiffres_export.pluck(:charges_intervention)
       @charges_total = [@colonnes_compta[1],nil] + @chiffres_export.pluck(:emplois_charges_personnel, :charges_fonctionnement, :charges_intervention).map{ |a,b,c| a + b + c}
-      @poids_charges_personnel = [@colonnes_compta[3],nil] + @charges_personnel[2..-1].zip(@charges_total[2..-1]).map { |x, y| ratio(x,y,1) }
-      @poids_charges_fonctionnement = [@colonnes_compta[5],nil] + @charges_fonctionnement[2..-1].zip(@charges_total[2..-1]).map { |x, y| ratio(x,y,1) }
-      @poids_charges_intervention = [@colonnes_compta[7],nil] + @charges_intervention[2..-1].zip(@charges_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      @charges_non_decaissables = [@colonnes_compta[15],nil] + @chiffres_export.pluck(:charges_non_decaissables)
+      @charges_decaissables = [@colonnes_compta[16],nil] + @charges_total[2..-1].zip(@charges_non_decaissables[2..-1]).map { |a,b| (a || 0) - (b || 0)  }
+      @poids_charges_personnel = [@colonnes_compta[3],nil] + @charges_personnel[2..-1].zip(@charges_decaissables[2..-1]).map { |x, y| ratio(x,y,1) }
+      @poids_charges_fonctionnement = [@colonnes_compta[5],nil] + @charges_fonctionnement[2..-1].zip(@charges_decaissables[2..-1]).map { |x, y| ratio(x,y,1) }
+      @poids_charges_intervention = [@colonnes_compta[7],nil] + @charges_intervention[2..-1].zip(@charges_decaissables[2..-1]).map { |x, y| ratio(x,y,1) }
       sheet.add_row(@charges_total)
       sheet.add_row(@charges_personnel)
       sheet.add_row(@poids_charges_personnel)
@@ -235,8 +237,7 @@
 
       sheet.add_row [@colonnes_compta[14]], style: titre_header
 
-      @charges_non_decaissables = [@colonnes_compta[15],nil] + @chiffres_export.pluck(:charges_non_decaissables)
-      @charges_decaissables = [@colonnes_compta[16],nil] + @charges_total[2..-1].zip(@charges_non_decaissables[2..-1]).map { |a,b| (a || 0) - (b || 0)  }
+
       @produits_non_encaissables = [@colonnes_compta[17],nil] + @chiffres_export.pluck(:produits_non_encaissables)
       sheet.add_row(@charges_non_decaissables)
       sheet.add_row(@charges_decaissables)

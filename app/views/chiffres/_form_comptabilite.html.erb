@@ -36,7 +36,7 @@
                   <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
                       <p class="fr-mb-0 fr-text--center">Charges de personnel <%= render partial: "chiffres/tooltip", locals: {num_id: "charges_personnel_t", chiffre: @chiffre} %></p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@chiffre.emplois_charges_personnel) %> €</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.emplois_charges_personnel) %> €</p>
                       <%= f.hidden_field :emplois_charges_personnel,id: "charges_personnel", value: @chiffre.emplois_charges_personnel %>
                     </div>
                   </div>

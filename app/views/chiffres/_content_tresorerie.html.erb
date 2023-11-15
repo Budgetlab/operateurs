@@ -11,13 +11,13 @@
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Niveau final de trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_finale_text_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.tresorerie_finale) %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.tresorerie_finale) %> €</p>
         </div>
       </div>
     </div>
     <%else %>
       <div>Niveau final de trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_finale_t", chiffre: chiffre} %></div>
-      <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.tresorerie_finale) %> €</div>
+      <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.tresorerie_finale) %> €</div>
     <%end %>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
@@ -46,7 +46,7 @@
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-12 fr-col-lg-6">
       <div>Niveau final de la trésorerie non fléchée <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_finale_non_flechee_t", chiffre: chiffre} %></div>
-      <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.tresorerie_finale_non_flechee) %> €</div>
+      <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.tresorerie_finale_non_flechee) %> €</div>
     </div>
     <div class="fr-col-12 fr-col-lg-6">
       <div class="fr-mb-2w">
@@ -62,7 +62,7 @@
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-12 fr-col-lg-6">
       <div>Niveau final de la trésorerie fléchée <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_finale_flechee_t", chiffre: chiffre} %></div>
-      <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_finale_flechee) %> €</div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.tresorerie_finale_flechee) %> €</div>
     </div>
     <div class="fr-col-12 fr-col-lg-6">
       <div class="fr-mb-2w">
@@ -82,7 +82,7 @@
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Niveau initial de trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_indicateur_initial_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.tresorerie_finale-chiffre.tresorerie_variation) %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.tresorerie_finale-chiffre.tresorerie_variation) %> €</p>
         </div>
       </div>
     </div>
@@ -93,13 +93,13 @@
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
     <div>Variation de la trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_variation_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.tresorerie_variation) %> €</div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.tresorerie_variation) %> €</div>
     <% if chiffre.comptabilite_budgetaire == true  %>
       <div class="options fr-hidden">
         <div>Variation de la trésorerie fléchée <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_variation_flechee_t", chiffre: chiffre} %></div>
-        <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.tresorerie_variation_flechee) %> €</div>
+        <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.tresorerie_variation_flechee) %> €</div>
         <div>Variation de la trésorerie non fléchée <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_variation_non_flechee_t", chiffre: chiffre} %></div>
-        <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre(chiffre.tresorerie_variation_non_flechee) %> €</div>
+        <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.tresorerie_variation_non_flechee) %> €</div>
       </div>
     <% end  %>
   </div>
@@ -109,7 +109,7 @@
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
     <div>Point le plus haut dans le plan de trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_max_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_max) %> € au mois de <% if chiffre.tresorerie_max_date %><%= I18n.localize(chiffre.tresorerie_max_date, format: '%B')  %><%else %>-<%end %></div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.tresorerie_max) %> € au mois de <% if chiffre.tresorerie_max_date %><%= I18n.localize(chiffre.tresorerie_max_date, format: '%B')  %><%else %>-<%end %></div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
     <div class="fr-mb-2w">
@@ -125,7 +125,7 @@
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
     <div>Point le plus bas dans le plan de trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_min_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w"><%= format_nombre(chiffre.tresorerie_min) %> € au mois de <% if chiffre.tresorerie_min_date %><%= I18n.localize(chiffre.tresorerie_min_date, format: '%B') %><%else %>-<%end %></div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.tresorerie_min) %> € au mois de <% if chiffre.tresorerie_min_date %><%= I18n.localize(chiffre.tresorerie_min_date, format: '%B') %><%else %>-<%end %></div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
     <div class="fr-mb-2w">
