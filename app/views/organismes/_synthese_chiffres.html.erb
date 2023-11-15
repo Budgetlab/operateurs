@@ -73,10 +73,10 @@
                   <div class="fr-cart__body">
                     <% if chiffre.comptabilite_budgetaire == true %>
                     <p class="fr-mb-0 fr-text--center">Total des recettes </p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_recettes) %> €</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@total_recettes) %> €</p>
                     <% else %>
                       <p class="fr-mb-0 fr-text--center">Total des produits</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_produits) %> €</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@total_produits) %> €</p>
                     <% end %>
                   </div>
                 </div>
@@ -88,10 +88,10 @@
                   <div class="fr-cart__body">
                     <% if chiffre.comptabilite_budgetaire == true %>
                       <p class="fr-mb-0 fr-text--center">Total des crédits de paiement (CP) </p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.credits_cp_total) %> €</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.credits_cp_total) %> €</p>
                     <% else %>
                       <p class="fr-mb-0 fr-text--center">Total des charges</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_charges) %> €</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@total_charges) %> €</p>
                     <% end %>
                   </div>
                 </div>
@@ -105,7 +105,7 @@
                   <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
                       <p class="fr-mb-0 fr-text--center">Solde budgétaire <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_solde_budgetaire_t", chiffre: chiffre} %></p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@solde)%> €</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@solde)%> €</p>
                     </div>
                   </div>
                 </div>
@@ -162,7 +162,7 @@
                   <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
                       <p class="fr-mb-0 fr-text--center">Résultat</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(@total_produits - @total_charges)%> €</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@total_produits - @total_charges)%> €</p>
                     </div>
                   </div>
                 </div>
@@ -174,7 +174,7 @@
                   <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                     <div class="fr-cart__body">
                       <p class="fr-mb-0 fr-text--center">Total des ressources</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.ressources_total)%> €</p></div>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.ressources_total)%> €</p></div>
                   </div>
                 </div>
               </div>
@@ -206,7 +206,7 @@
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
                       <p class="fr-mb-0 fr-text--center">Niveau final de trésorerie</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre(chiffre.tresorerie_finale) %> €</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.tresorerie_finale) %> €</p>
                   </div>
                 </div>
               </div>

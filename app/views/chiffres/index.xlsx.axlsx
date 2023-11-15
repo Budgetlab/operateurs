@@ -74,7 +74,7 @@
       @emplois_autre_entite = [@colonnes[16],nil] + @chiffres_export.pluck(:emplois_autre_entite)
       sheet.add_row(@emplois_autre_entite)
 
-      @part_emplois = [@colonnes[17],nil] + @chiffres_export.pluck(:emplois_non_remuneres, :emplois_autre_entite, :emplois_total).map { |x, y, z| ratio(y+z-x,z,1) if y }
+      @part_emplois = [@colonnes[17],nil] + @chiffres_export.pluck(:emplois_non_remuneres, :emplois_autre_entite, :emplois_total).map { |x, y, z| ratio(z+x-y,z,1) if y }
       sheet.add_row(@part_emplois)
 
       sheet.add_row [@colonnes[18]], style: titre_header
