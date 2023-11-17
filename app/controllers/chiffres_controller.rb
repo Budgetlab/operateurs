@@ -160,7 +160,7 @@ class ChiffresController < ApplicationController
 
   def historique
     select_chiffres
-    @exercices = @chiffres.pluck(:exercice_budgetaire).uniq
+    @exercices = @chiffres.pluck(:exercice_budgetaire).uniq.sort
     respond_to do |format|
       format.html
       format.xlsx
@@ -169,7 +169,7 @@ class ChiffresController < ApplicationController
 
   def filtre_chiffres
     select_chiffres
-    @exercices = @chiffres.pluck(:exercice_budgetaire).uniq
+    @exercices = @chiffres.pluck(:exercice_budgetaire).uniq.sort
     @chiffres = @chiffres.select { |el| params[:budgets].include?(el.type_budget) } if params[:budgets] && params[:budgets].length != 3
     @chiffres = @chiffres.select { |el| params[:phases].include?(el.phase) } if params[:phases] && params[:phases].length != 4
     @chiffres = @chiffres.select { |el| params[:exercices].include?(el.exercice_budgetaire.to_s) } if params[:exercices] && params[:exercices].length != @exercices.length
