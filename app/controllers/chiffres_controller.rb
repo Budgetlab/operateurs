@@ -176,7 +176,7 @@ class ChiffresController < ApplicationController
     if params[:risque_insolvabilites]&.include?('Brouillon')
       @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) || el.statut != 'valide'}
     else
-      @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) } if params[:risque_insolvabilites] && params[:risque_insolvabilites].length != 5
+      @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) && el.statut == 'valide'} if params[:risque_insolvabilites] && params[:risque_insolvabilites].length != 5
     end
     respond_to do |format|
       format.turbo_stream do
@@ -212,7 +212,7 @@ class ChiffresController < ApplicationController
         liste_organismes_filter_id += @liste_organismes_nr_id
       end
       if param[0] && param[0].length != 6
-        @liste_chiffres_risque_id = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i && param[0].include?(el[4]) }.map { |el| el[0] }.uniq
+        @liste_chiffres_risque_id = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i && param[0].include?(el[4]) && el[3] == 'valide' }.map { |el| el[0] }.uniq
         liste_organismes_filter_id += @liste_chiffres_risque_id
       end
     end
