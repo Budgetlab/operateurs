@@ -198,7 +198,7 @@ class ChiffresController < ApplicationController
   def filtre_suivi
     liste_organisme
     @liste_organismes = @organismes.pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
-    liste_chiffres_organismes = @organismes.joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite")
+    liste_chiffres_organismes = @organismes.joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite", "chiffres.created_at AS chiffre_date")
     @liste_chiffres_organismes = liste_chiffres(liste_chiffres_organismes)
     liste_organismes_filter_id = []
     [[params[:budget_bis], 'Budget initial'], [params[:budget_brs], 'Budget rectificatif'], [params[:budget_cfs], 'Compte financier']].each do |param|
