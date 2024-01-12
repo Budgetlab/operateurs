@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   get '/budgets-suivi' => 'chiffres#suivi'
   post '/filtre_suivi' => 'chiffres#filtre_suivi'
   post '/open_phase' => 'chiffres#open_phase'
+  get '/suivi-remplissage' => 'chiffres#suivi_remplissage'
   post '/import_organismes' => 'organismes#import'
   get '/organismes_ajout' => 'organismes#organismes_ajout'
   post '/recherche_organismes' => 'organismes#recherche_organismes'

@@ -1,0 +1,37 @@
+<% content_for :title do %>Suivi du remplissage des budgets | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h1 class="fr-my-4w">Suivi du remplissage des budgets par contrôleur</h1>
+      </div>
+    </div>
+    <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll fr-table--min-height">
+      <table>
+        <caption></caption>
+        <thead>
+          <tr>
+            <th scope="col">Contrôleur</th>
+            <th scope="col">Nombre d'organismes actifs</th>
+            <th scope="col">Somme de budgets renseignés</th>
+            <th scope="col">Taux de budgets renseignés (%)</th>
+            <th scope="col">BI 2024 renseignés</th>
+            <th scope="col">Taux BI 2024 renseignés (%)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <%@array_remplissage_user.each do |array| %>
+          <tr>
+            <td><%= array[0] %></td>
+            <td><%= array[1] %></td>
+            <td><%= array[2] %></td>
+            <td><%= array[4] %>%</td>
+            <td><%= array[3] %></td>
+            <td><%= array[5] %>%</td>
+          </tr>
+          <% end  %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</main>
