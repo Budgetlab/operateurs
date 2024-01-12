@@ -6,6 +6,11 @@
         <h1 class="fr-my-4w">Suivi du remplissage des budgets par contrôleur</h1>
       </div>
     </div>
+    <div class="fr-download">
+      <p><%= link_to suivi_remplissage_path(format: :xlsx), class: "fr-download__link" do %> Télécharger le suivi du remplissage
+          <span class="fr-download__detail">Format .xlsx</span>
+        <%end %></p>
+    </div>
     <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll fr-table--min-height">
       <table>
         <caption></caption>
@@ -24,9 +29,9 @@
           <td>Total</td>
           <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] %></td>
           <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[2] %></td>
-          <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] == 0 ? 100 : (@array_remplissage_user.transpose.map{|e| e.inject(:+)}[2]/@array_remplissage_user.transpose.map{|e| e.inject(:+)}[1]*100).round %>%</td>
+          <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] == 0 ? 100 : (@array_remplissage_user.transpose.map{|e| e.inject(:+)}[2] * 100 / @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1]) %>%</td>
           <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[3] %></td>
-          <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] == 0 ? 100 : (@array_remplissage_user.transpose.map{|e| e.inject(:+)}[3]/@array_remplissage_user.transpose.map{|e| e.inject(:+)}[1]*100).round %>%</td>
+          <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] == 0 ? 100 : (@array_remplissage_user.transpose.map{|e| e.inject(:+)}[3] * 100 / @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1]).round %>%</td>
         </tr>
           <%@array_remplissage_user.each do |array| %>
           <tr>

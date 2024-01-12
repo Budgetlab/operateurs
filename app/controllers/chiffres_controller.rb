@@ -269,6 +269,11 @@ class ChiffresController < ApplicationController
     end
 
     @array_remplissage_user = @array_remplissage_user.sort_by { |e| -e[4] }
+
+    respond_to do |format|
+      format.html
+      format.xlsx
+    end
   end
 
   private

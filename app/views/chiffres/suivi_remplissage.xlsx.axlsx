@@ -1,0 +1,19 @@
+wb = xlsx_package.workbook
+s = wb.styles
+col_header_blue = s.add_style bg_color: 'bdd7ee'
+percent = s.add_style num_fmt: 9
+  	wb.add_worksheet(name: "Suivi") do |sheet|
+        sheet.add_row %W{ Controleur Organismes\ Actifs Somme\ budgets\ renseignés Taux\ budgets\ renseignés BI\ 2024\ renseignés Taux\ BI\ 2024\ renseignés }, style: col_header_blue
+        sheet.add_row ['Total', @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1], @array_remplissage_user.transpose.map{|e| e.inject(:+)}[2],
+        @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] == 0 ? 1 : @array_remplissage_user.transpose.map{|e| e.inject(:+)}[2] / @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1],
+        @array_remplissage_user.transpose.map{|e| e.inject(:+)}[3], @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] == 0 ? 1 : @array_remplissage_user.transpose.map{|e| e.inject(:+)}[3] / @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] ], style: [nil, nil, nil, percent, nil, percent]
+        @array_remplissage_user.each do |array|
+            sheet.add_row [array[0], array[1], array[2], array[4]/100.0, array[3], array[5]/100.0 ], style: [nil, nil, nil, percent, nil, percent]
+        end
+
+        sheet.rows.each do |row|
+            row.cells.each do |cell|
+                cell.add_style font_name: 'Calibri', sz: 13, alignment:{ :vertical => :center ,:wrap_text => true}
+            end
+        end
+  	end
