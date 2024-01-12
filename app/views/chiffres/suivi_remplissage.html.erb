@@ -20,6 +20,14 @@
           </tr>
         </thead>
         <tbody>
+        <tr class="total">
+          <td>Total</td>
+          <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] %></td>
+          <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[2] %></td>
+          <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] == 0 ? 100 : (@array_remplissage_user.transpose.map{|e| e.inject(:+)}[2]/@array_remplissage_user.transpose.map{|e| e.inject(:+)}[1]*100).round %>%</td>
+          <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[3] %></td>
+          <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] == 0 ? 100 : (@array_remplissage_user.transpose.map{|e| e.inject(:+)}[3]/@array_remplissage_user.transpose.map{|e| e.inject(:+)}[1]*100).round %>%</td>
+        </tr>
           <%@array_remplissage_user.each do |array| %>
           <tr>
             <td><%= array[0] %></td>

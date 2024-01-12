@@ -233,3 +233,7 @@ select:disabled {
 .fr-card--shadow{
   z-index: calc(var(--ground) + 400) !important;
 }
+
+.total{
+  background-color:var(--blue-france-950-100) !important;
+}
