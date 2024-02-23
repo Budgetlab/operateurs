@@ -24,9 +24,12 @@ Rails.application.routes.draw do
   get '/suivi-remplissage' => 'chiffres#suivi_remplissage'
   post '/import_organismes' => 'organismes#import'
   get '/organismes_ajout' => 'organismes#organismes_ajout'
-  post '/recherche_organismes' => 'organismes#recherche_organismes'
   post '/import_operateurs' => 'operateurs#import'
-  get '/ministeres' => 'ministeres#index'
+  get '/documents_controle' => 'organismes#documents_controle'
+  get '/download_document' => 'organismes#download_document'
+  post '/create_document_controle' => 'organismes#create_document_controle'
+  delete '/destroy_document_controle' => 'organismes#destroy_document_controle'
+  resources :ministeres
   post '/import_ministeres' => 'ministeres#import'
   get '/missions' => 'missions#index'
   post '/import_missions' => 'missions#import_missions'
@@ -34,7 +37,7 @@ Rails.application.routes.draw do
   resources :operateurs
   resources :modifications
   post 'open_modal' => 'modifications#open_modal'
-  post 'reset_all' => 'pages#reset_all'
+  post 'filter_modifications' => 'modifications#filter_modifications'
   # routes statiques
   get '/mentions-legales', to: 'pages#mentions_legales'
   get '/donnees-personnelles', to: 'pages#donnees_personnelles'

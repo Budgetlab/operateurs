@@ -209,9 +209,16 @@
             <div class="fr-card__body">
               <div class="fr-card__content">
                 <h3 class="fr-card__title">
-                  Opérateur année <%= Date.today.year+1 %> : <% if @operateur %><%= format_boolean(@operateur.operateur_nf) %><%else %>Non<%end %>
+                  Opérateur année
+                  <% if Date.today < Date.new(Date.today.year, 9, 30) %>
+                    <%= Date.today.year %> : <% if @operateur %><%= format_boolean(@operateur.operateur_n) %><%else %>Non<%end %>
+                  <% else %>
+                    <%= Date.today.year+1 %> : <% if @operateur %><%= format_boolean(@operateur.operateur_nf) %><%else %>Non<%end %>
+                  <% end  %>
                 </h3>
+                <% if Date.today >= Date.new(Date.today.year, 9, 30) %>
                 <p class="fr-card__desc">Opérateur année <%= Date.today.year %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n) %><%else %>Non<%end %></b></p>
+                <% end  %>
                 <p class="fr-card__desc">Opérateur année <%= Date.today.year-1 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n1) %><%else %>Non<%end %></b></p>
                 <p class="fr-card__desc">Opérateur année <%= Date.today.year-2 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n2) %><%else %>Non<%end %></b></p>
                 <% if @operateur %>
@@ -266,24 +273,41 @@
                   <p class="fr-card__desc">Autorité de contrôle : <b><%= format_boolean(@organisme.autorite_controle) %></b></p>
                   <p class="fr-card__desc">Texte réglementaire de désignation de l'autorité de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_reglementaire_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
                   <p class="fr-card__desc">Référence de l’arrêté de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-                  <p class="fr-card__desc">Document de contrôle : <b><%= format_boolean(@organisme.document_controle_present) %></b></p>
+                  <p class="fr-card__desc"><% if @organisme.nature_controle == "Contrôle Economique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) %>Protocole de Contrôle Economique et Financier<%else %>Document de contrôle budgétaire<%end %> : <b><%= format_boolean(@organisme.document_controle_present) %></b></p>
                   <%  if @organisme.document_controle_present %>
                     <p class="fr-card__desc">Date de signature du document : <b><%= format_boolean(format_date(@organisme.document_controle_date)) %></b></p>
-                    <p class="fr-card__desc">Lien du document de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.document_controle_lien),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
+                    <p class="fr-card__desc"><% if @organisme.nature_controle == "Contrôle Economique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) %>Protocole de Contrôle Economique et Financier<%else %>Document de contrôle budgétaire<%end %> :
+                      <%  if @organisme.document_controle_lien %>
+                        <b><% if @organisme.document_controle_lien&.start_with?("https://storage.googleapis.com")%><%= link_to download_document_path(id: @organisme.id), target: "_blank"  do %><%=@organisme.document_controle_lien.gsub("https://storage.googleapis.com/budgetlab-bucket/OPERA/Controle/#{@organisme.id}_", '') %><%end %><%else %><%= auto_link(simple_format(format_boolean(@organisme.document_controle_lien),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %><% end %></b>
+                        <button class="fr-btn fr-btn--secondary fr-btn--sm"  data-fr-opened="false" aria-controls="modal-suppression-dc">Supprimer</button>
+
+                      <% else %>
+                        <button class="fr-btn fr-btn--secondary fr-btn--sm"  data-fr-opened="false" aria-controls="modal-ajout-dc">Ajouter</button>
+
+                      <% end  %>
+                    </p>
                   <%end %>
                 <%end %>
                 <p class="fr-card__desc">Référence de l’arrêté de nomination du commissaire du gouvernement : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_nomination),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-
               </div>
             </div>
           </div>
+            <%  if @organisme.document_controle_lien %>
+              <dialog id="modal-suppression-dc" class="fr-modal" aria-labelledby="modal-suppression-dc-title">
+                <%= render partial: 'organismes/modal_suppression_dc',locals: {organisme: @organisme} %>
+              </dialog>
+            <% else %>
+              <dialog id="modal-ajout-dc" class="fr-modal" aria-labelledby="modal-ajout-dc-title">
+                <%= render partial: 'organismes/modal_ajout_dc',locals: {organisme: @organisme} %>
+              </dialog>
+            <% end %>
           <%else  %>
             <p class="fr-badge fr-badge--warning">Non complété</p>
           <% end %>
         </div>
 
         <div id="tutelles" class="fr-mb-4w">
-          <h2 class="title-btn">Tutelles financière et technique <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 4), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <h2 class="title-btn">Tutelles financière et technique <% if @est_valide && @admin && @organisme.nature != 'GIP'%><%= link_to edit_organisme_path(@organisme, step: 4), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
           <% if @organisme.statut.to_i > 3 || @est_valide%>
           <div class="fr-card">
             <div class="fr-card__body">
@@ -297,6 +321,7 @@
                 <p class="fr-card__desc">Autorité chargée de l’approbation : <b><%= format_boolean(@organisme.autorite_approbation) %></b></p>
                 <p class="fr-card__desc">Ministère de tutelle principale : <b><% if @organisme.ministere %><%= @organisme.ministere.nom %><%else %>Aucun<%end %></b></p>
                 <p class="fr-card__desc">Ministère•s de co-tutelle : <b><% if @organisme_ministeres && !@organisme_ministeres.empty? %><% @organisme_ministeres.each do |orga|%><%= orga.ministere.nom %> - <%end %><%else %>Aucun<%end %></b></p>
+
                </div>
             </div>
           </div>

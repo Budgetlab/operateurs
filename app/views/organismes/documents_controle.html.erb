@@ -1,0 +1,50 @@
+<% content_for :title do %>Liste des documents de contrôle | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container ">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h1 class="fr-my-4w">Liste des documents de contrôle </h1>
+      </div>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+      <div class="fr-col-12 fr-col-lg-12">
+        <% @array_user_liens.each_with_index do |array, i| %>
+          <div class="fr-accordions-group">
+            <section class="fr-accordion">
+              <h3 class="fr-accordion__title">
+                <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-<%=i %>"><%= array.nom %> [<%= array.nombre_liens %>]</button>
+              </h3>
+              <div class="fr-collapse" id="accordion-<%=i %>">
+                <% array.organismes_ids.each_with_index do |id, idx| %>
+                  <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+                    <div class="fr-col-12 fr-col-lg-4">
+                     <div class="fr-tile fr-tile--download fr-enlarge-link" >
+                        <div class="fr-tile__body">
+                          <div class="fr-tile__content">
+                            <h3 class="fr-tile__title">
+                              <% if array.liens[idx].start_with?("https://storage.googleapis.com")%>
+                                <%= link_to download_document_path(id: id), target: "_blank"  do %><%=array.liens[idx].gsub("https://storage.googleapis.com/budgetlab-bucket/OPERA/Controle/#{id}_", '') %><%end %>
+                              <%else %>
+                                <%= auto_link(simple_format(format_boolean(array.liens[idx]),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %>
+                              <% end %>
+                            </h3>
+                            <p class="fr-tile__detail"><%=array.organismes_noms[idx] %></p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="fr-my-2w"><%= link_to organisme_path(id), class:"fr-link fr-icon-arrow-right-line fr-link--icon-right" do%><%=array.organismes_noms[idx] %><% end %></div>
+
+                    </div>
+                  </div>
+                <% end  %>
+              </div>
+            </section>
+          </div>
+
+
+        <% end %>
+      </div>
+    </div>
+
+  </div>
+</main>

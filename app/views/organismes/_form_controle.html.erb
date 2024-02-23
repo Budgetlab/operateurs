@@ -82,13 +82,8 @@
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group">
-                <label for="nature" class="fr-label">Nature du contrôle*</label>
+                <label for="nature" class="fr-label">Nature du contrôle* <%= render partial: "organismes/tooltip", locals: {num_id: "nature_controle"} %></label>
                 <%= f.select :nature_controle,[["- sélectionner -",""],['Contrôle Economique et Financier','Contrôle Economique et Financier'], ['Contrôle Budgétaire','Contrôle Budgétaire'], ['Contrôle Budgétaire EPSCP','Contrôle Budgétaire EPSCP'], ['Autre','Autre']],{selected: @organisme.nature_controle}, {data: {'form-target': 'fieldRequire'}, id:"nature",class:"fr-select"}%>
-                <button class="fr-btn--tooltip fr-btn" id="button-2992" aria-describedby="tooltip-2992" data-action="form#Dropdown">
-                  Information contextuelle</button>
-                <span class="fr-tooltip fr-placement" id="tooltip-2992" role="tooltip" aria-hidden="true">Contrôle économique et financier :  application du décret n°55-733 du 26 mai 1955 relatif au contrôle économique et financier de l'Etat ;<br>
-Contrôle budgétaire : application des articles 220 à 229 du décret n° 2012-1246 du 7 novembre 2012 relatif à la gestion budgétaire et comptable publique ;<br>
-Contrôle budgétaire EPSCP : application de certaines dispositions du code de l’éducation (Article L719-9 et Articles R719-51 à R719-112) par dérogation au décret GBCP (exclusion des articles 224 à 226). </span>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-6">
@@ -101,11 +96,8 @@ Contrôle budgétaire EPSCP : application de certaines dispositions du code de l
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group">
-                <label for="autorite_controle" class="fr-label">Autorité de contrôle*</label>
+                <label for="autorite_controle" class="fr-label">Autorité de contrôle* <%= render partial: "organismes/tooltip", locals: {num_id: "autorite_controle"} %></label>
                 <%= f.select :autorite_controle,options_for_select([["- sélectionner -", ""]] + @liste_autorite_controle.map { |nom| [nom, nom] }, selected: @organisme.autorite_controle),{}, {data: {'form-target': 'fieldRequire'}, id:"autorite_controle",class:"fr-select"}%>
-                <button class="fr-btn--tooltip fr-btn" id="button-2991" aria-describedby="tooltip-2991" data-action="form#Dropdown">
-                  Information contextuelle</button>
-                <span class="fr-tooltip fr-placement" id="tooltip-2991" role="tooltip" aria-hidden="true">Autorité de contrôle désignée dans les textes législatifs et/ou réglementaires</span>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-6">
@@ -127,7 +119,7 @@ Contrôle budgétaire EPSCP : application de certaines dispositions du code de l
             <div class="fr-col-12 fr-col-lg-4">
               <fieldset class="fr-fieldset fr-mb-0">
                 <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id='radio-inline-legend'>
-                  Document de contrôle
+                  Document de contrôle ou protocole <%= render partial: "organismes/tooltip", locals: {num_id: "document_controle_present"} %>
                 </legend>
 
                 <div class="fr-fieldset__element fr-fieldset__element--inline">
@@ -150,16 +142,10 @@ Contrôle budgétaire EPSCP : application de certaines dispositions du code de l
                 </div>
               </fieldset>
             </div>
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-12 fr-col-lg-6">
               <div class="fr-input-group">
                 <label for="date_signature" class="fr-label">Date de signature du document</label>
                 <%= f.text_field :document_controle_date, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y", flatpickr_default_date: format_date(@organisme.document_controle_date)}, value: @organisme.document_controle_date, id: "date_signature", placeholder: "- sélectionner -"%>
-              </div>
-            </div>
-            <div class="fr-col-12 fr-col-lg-4">
-              <div class="fr-input-group">
-                <label for="document_controle_lien" class="fr-label">Lien du document de contrôle</label>
-                <%= f.text_field :document_controle_lien, value: @organisme.document_controle_lien, id:"document_controle_lien", class:"fr-input"%>
               </div>
             </div>
           </div>

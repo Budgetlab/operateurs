@@ -3,114 +3,105 @@
   <div class="fr-container ">
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-12">
-        <h1 class="fr-my-4w"><% if current_user.statut == "2B2O" %>Modifications des contrôleurs<%else %>Mes modifications<%end %></h1>
+        <h1 class="fr-my-4w"><% if @statut_user == "2B2O" %>Gestion des modifications<%else %>Mes modifications<%end %></h1>
         <%= render 'modifications/success'%>
+      </div>
+    </div>
+    <div class="fr-mb-2w" data-controller="search">
+      <%= form_with(url: filter_modifications_path, method: :post, data: {'search-target': "form"}) do |f|%>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div id="formSearch">
+              <div class="fr-search-bar" id="header-search" role="search">
+                <label class="fr-label" for="search-organismes-input">Filtrer les résultats sur un organisme</label>
+                <%= f.text_field :search, class:"fr-input", id: "search-organismes-input", placeholder: "Rechercher les modifications sur un organisme", data: {'search-target': "input", action: "keyup->search#updateSearch"}%>
+                <button class="fr-btn" title="Rechercher" aria-controls="modal-autocomplete" aria-expanded="false" data-search-target="button" data-action="search#Dropdown">
+                  Rechercher les modifications sur un organisme
+                </button>
+              </div>
+              <div id="modal-autocomplete" class="fr-collapse shadow">
+                <div class="fr-container fr-p-0">
+                  <div class="fr-grid-row">
+                    <div class="fr-col-12">
+                      <div class="fr-modal__body fr-mb-4w">
+                        <ul class="fr-sidemenu__list fr-p-0">
+                          <p id="resultats" class="fr-p-2w fr-hidden" >Aucun résultat</p>
+                          <%= f.hidden_field :organisme, id: 'organisme_field'%>
+                          <% @organismes.each do |organisme| %>
+                            <li class="fr-sidemenu__item" data-search-target="listeDeroulante">
+                              <button class="fr-sidemenu__link element fr-text--regular" data-search-value="<%= organisme[0] %>" data-action="click->search#submitSearch"><%= organisme[1] %><% if organisme[2] && !organisme[2].blank? %> - <%= organisme[2]%><% end %></button>
+                            </li>
+                          <% end  %>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="labelResultat" class="fr-hidden" data-action="click->search#showForm"></div>
+      <% end %>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
         <div class="fr-tabs fr-mb-4w">
           <ul class="fr-tabs__list" role="tablist" aria-label="Onglets Organismes actifs">
-            <li role="presentation">
-              <button id="tabpanel-1177" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-1177-panel">Modifications en attente (<%= @modifications_attente.length %>)</button>
-            </li>
-            <li role="presentation">
-              <button id="tabpanel-1178" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-1178-panel">Modifications validées (<%= @total_valides %>)</button>
-            </li>
-            <li role="presentation">
-              <button id="tabpanel-1179" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-1179-panel">Modifications rejetées (<%= @total_refus %>)</button>
-            </li>
+            <% ["en attente","validées","rejetées"].each_with_index do |texte, i| %>
+              <li role="presentation">
+                <button id="tabpanel-<%= i %>" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= i == 0 ? 'true' : 'false' %>" aria-controls="tabpanel-<%= i %>-panel">Modifications en <%= texte %> (<span id="total_modifications_<%=i %>"><%= @totaux[i] %></span>)</button>
+              </li>
+            <%end %>
+            <% if @statut_user == "2B2O" %>
+              <li role="presentation">
+                <button id="tabpanel-2B2O" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-2B2O-panel">Modifications 2B2O (<span id="total_modifications_admin"><%= @modifications_admin.length %></span>)</button>
+              </li>
+            <% end  %>
           </ul>
-          <div id="tabpanel-1177-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-1177" tabindex="0">
-            <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll">
-              <table>
-                <caption>Tableau des modifications en attente</caption>
-                <thead>
-                <tr>
-                  <th scope="col">Date de saisie</th>
-                  <% if @statut_user == "2B2O" %>
-                    <th scope="col">Contrôleur</th>
-                  <%end %>
-                  <th scope="col">Organisme</th>
-                  <th scope="col">Nombre de demandes en attente</th>
-                  <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <% @modification_counts_attente.each do |modification| %>
-                  <tr>
-                    <td><%= format_date(modification.modification_date) %></td>
-                    <% if @statut_user == "2B2O" %>
-                    <td><%= User.find(modification.user_id).nom %></td>
-                      <%end %>
-                    <td><%= link_to organisme_path(modification.organisme_id) do %><%= Organisme.find(modification.organisme_id).nom %><%end %></td>
-                    <td><p class="fr-badge fr-badge--warning fr-badge--no-icon"><%= modification.modification_count %></p></td>
-                    <td><%= link_to organisme_path(modification.organisme_id, anchor: 'modifications_attente'), class:'fr-btn' do %>Consulter<%end %></td>
-                  </tr>
-                <%end %>
-                </tbody>
-              </table>
 
-            </div>
-          </div>
-          <div id="tabpanel-1178-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1178" tabindex="0">
-            <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll">
-              <table>
-                <caption>Tableau des modifications validées</caption>
-                <thead>
-                <tr>
-                  <th scope="col">Date de saisie</th>
-                  <% if @statut_user == "2B2O" %>
-                    <th scope="col">Contrôleur</th>
-                  <%end %>
-                  <th scope="col">Organisme</th>
-                  <th scope="col">Nombre de demandes validées</th>
-                  <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <% @modification_counts_valides.each do |modification| %>
+          <% ["en attente","validées","rejetées"].each_with_index do |texte, i| %>
+            <div id="tabpanel-<%= i %>-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-<%= i %>" tabindex="0">
+              <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll">
+                <table>
+                  <caption>Tableau des modifications <%= texte %></caption>
+                  <thead>
                   <tr>
-                    <td><%= format_date(modification.modification_date) %></td>
-                    <% if @statut_user == "2B2O" %>
-                      <td><%= User.find(modification.user_id).nom %></td>
-                    <%end %>
-                    <td><%= link_to organisme_path(modification.organisme_id) do %><%= Organisme.find(modification.organisme_id).nom %><%end %></td>
-                    <td><p class="fr-badge fr-badge--success fr-badge--no-icon"><%= modification.modification_count %></p></td>
-                    <td><%= link_to organisme_path(modification.organisme_id, anchor: 'modifications'), class:'fr-btn' do %>Consulter<%end %></td>
+                    <th scope="col">Date de saisie</th>
+                    <% if @statut_user == "2B2O" %><th scope="col">Contrôleur</th><%end %>
+                    <th scope="col">Organisme</th>
+                    <th scope="col">Nombre de demandes <%= texte %></th>
+                    <th></th>
                   </tr>
-                <%end %>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody id="table_modifications_<%=i %>">
+                    <%= render partial: 'modifications/table_modifications_group', locals: {modifications: @modifications[i], i: i, user_names: @user_names, organismes: @organismes} %>
+                  </tbody>
+                </table>
+
+              </div>
             </div>
-          </div>
-          <div id="tabpanel-1179-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1179" tabindex="0">
-            <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll">
-              <table>
-                <caption>Tableau des modifications rejetées</caption>
-                <thead>
-                <tr>
-                  <th scope="col">Date de saisie</th>
-                  <% if @statut_user == "2B2O" %>
-                    <th scope="col">Contrôleur</th>
-                  <%end %>
-                  <th scope="col">Organisme</th>
-                  <th scope="col">Nombre de demandes rejetées</th>
-                  <th></th>
-                </tr>
-                </thead>
-                <tbody>
-                <% @modification_counts_refus.each do |modification| %>
+              <% end %>
+          <% if @statut_user == "2B2O" %>
+            <div id="tabpanel-2B2O-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-2B2O" tabindex="0">
+              <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll">
+                <table>
+                  <caption>Liste des résultats </caption>
+                  <thead>
                   <tr>
-                    <td><%= format_date(modification.modification_date) %></td>
-                    <% if @statut_user == "2B2O" %>
-                      <td><%= User.find(modification.user_id).nom %></td>
-                    <%end %>
-                    <td><%= link_to organisme_path(modification.organisme_id) do %><%= Organisme.find(modification.organisme_id).nom %><%end %></td>
-                    <td><p class="fr-badge fr-badge--error fr-badge--no-icon"><%= modification.modification_count %></p></td>
-                    <td><%= link_to organisme_path(modification.organisme_id, anchor: 'modifications'), class:'fr-btn' do %>Consulter<%end %></td>
+                    <th scope="col">Date de saisie </th>
+                    <th scope="col">Organisme </th>
+                    <th scope="col">Champ</th>
+                    <th scope="col">Valeur</th>
                   </tr>
-                <%end %>
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody id="table_modifications">
+                    <%= render partial: 'modifications/table_modifications_admin', locals: {modifications: @modifications_admin} %>
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
+          <% end %>
         </div>
       </div>
     </div>

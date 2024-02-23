@@ -1,0 +1,8 @@
+<% modifications.each do |modification| %>
+  <tr>
+    <td><%= format_date(modification.created_at) %></td>
+    <td><%= link_to organisme_path(modification.organisme_id) do %><%= modification.organisme.nom %><%end %></td>
+    <td><%= modification.nom %></td>
+    <td class="fr-td--overflow"><%= render partial: 'modifications/table_nom', locals: {modification: modification}  %></td>
+  </tr>
+<%end %>

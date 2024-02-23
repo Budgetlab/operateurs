@@ -223,7 +223,6 @@ export default class extends Controller {
             agent_comptable_no.disabled = true;
             agent_comptable_oui.checked = true;
             gbcp_3_oui.disabled = false;
-            console.log(degre.value)
             if (degre.value == "Exclusion"){
                 this.resetChamp(degre);
                 ['3° Etablissements publics de santé / GCS','4° Autres personnes morales de droit public (cf. arrêté)','5° Personnes morales de droit privé','6° Personnes morales de droit public hors APU'].forEach((deg)=>{
@@ -280,7 +279,7 @@ export default class extends Controller {
                 if (field.nodeName === 'INPUT') {
                     if (field.name == "organisme[document_controle_present]"){
                         field.closest('fieldset').disabled = false;
-                    }else if (field.id != "date_signature" && field.id != "document_controle_lien"){
+                    }else if (field.id != "date_signature"){
                         this.enableInput(field);
                     }
                 }else if (field.nodeName === 'SELECT') {
@@ -293,9 +292,7 @@ export default class extends Controller {
     ChangePresenceDocument(){
         const doc = this.element.querySelector('#radio-document-1').checked;
         const date = document.getElementById("date_signature");
-        const lien = document.getElementById("document_controle_lien");
         this.changeField(doc,date);
-        this.changeField(doc,lien);
     }
 
     ChangeTutelle(){

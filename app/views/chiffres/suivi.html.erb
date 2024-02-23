@@ -12,19 +12,19 @@
           <button id="tabpanel-2022" class="fr-tabs__tab" tabindex="1" role="tab" aria-selected="false" aria-controls="tabpanel-2022-panel">2022</button>
         </li>
         <li role="presentation">
-          <button id="tabpanel-2023" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-2023-panel">2023</button>
+          <button id="tabpanel-2023" class="fr-tabs__tab" tabindex="1" role="tab" aria-selected="false" aria-controls="tabpanel-2023-panel">2023</button>
         </li>
         <li role="presentation">
-          <button id="tabpanel-2024" class="fr-tabs__tab" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-2024-panel">2024</button>
+          <button id="tabpanel-2024" class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-2024-panel">2024</button>
         </li>
       </ul>
       <div id="tabpanel-2022-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-2022" tabindex="0">
         <%= render partial: "chiffres/suivi_table", locals: {exercice: 2022} %>
       </div>
-      <div id="tabpanel-2023-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-2023" tabindex="0">
+      <div id="tabpanel-2023-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-2023" tabindex="0">
         <%= render partial: "chiffres/suivi_table", locals: {exercice: 2023} %>
       </div>
-      <div id="tabpanel-2024-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-2024" tabindex="0">
+      <div id="tabpanel-2024-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-2024" tabindex="0">
         <%= render partial: "chiffres/suivi_table", locals: {exercice: 2024} %>
       </div>
     </div>

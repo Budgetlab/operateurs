@@ -1,26 +1,38 @@
 <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w"  data-controller="search">
   <div class="fr-col-12 fr-col-lg-12">
 
-    <%= form_with(url: recherche_organismes_path, method: :post, data: {'search-target': "form"}) do |f|%>
+
       <div class="fr-search-bar" id="header-search" role="search" >
         <label class="fr-label" for="search-784-input">
           Rechercher un organisme par son nom ou son acronyme
         </label>
-        <%= f.text_field :search, class:"fr-input", id: "search-784-input", placeholder: "Rechercher un organisme par son nom ou son acronyme", data: {'search-target': "input", action: "keyup->search#autocomplete"}%>
+        <input class="fr-input" placeholder="Rechercher un organisme par son nom ou son acronyme" type="search" id="search-784-input" name="search-784-input" data-search-target="input" data-action="keyup->search#updateSearch">
         <button class="fr-btn" title="Rechercher" aria-controls="modal-autocomplete" aria-expanded="false" data-search-target="button" data-action="search#Dropdown">
           Rechercher un organisme par son nom ou son acronyme
         </button>
       </div>
-    <%end %>
+
     <div id="modal-autocomplete" class="fr-collapse shadow">
       <div class="fr-container fr-p-0">
         <div class="fr-grid-row">
           <div class="fr-col-12">
             <div class="fr-modal__body">
               <div class="fr-modal__content fr-mb-4w">
-                <div id="resultats">
-                  <%= render 'organismes/recherche_organismes' %>
-                </div>
+                <div class="fr-text--xs fr-my-2w">Résultats de recherche [<span id="nombreResultat"><%= @search_organismes.count %></span>]</div>
+
+                <p id="resultats" class="fr-hidden" >Aucun résultat</p>
+
+                <% @search_organismes.each do |array| %>
+                  <div data-search-target="listeDeroulante">
+                    <ul>
+                      <li>
+                        <%= link_to organisme_path(array[0]), class:'element' do %>
+                          <%= array[1] %><% if array[2] && !array[2].blank? %> - <%= array[2] %><%end %>
+                        <%end %>
+                      </li>
+                    </ul>
+                  </div>
+                <%end %>
               </div>
             </div>
           </div>

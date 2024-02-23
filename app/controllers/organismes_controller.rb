@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
 # Controller Pages organismes
+require 'google/cloud/storage'
+
 class OrganismesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_famille, only: [:show, :recherche_organismes]
+  before_action :set_famille, only: [:show]
   def index
     organismes = liste_organisme
     @organismes = organismes.sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:id, :nom, :statut, :etat, :acronyme)
@@ -11,42 +13,13 @@ class OrganismesController < ApplicationController
     @organismes_inactifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Inactif' }
     @organismes_creation = @organismes.select { |el| el[2] == 'valide' && el[3] == 'En cours de création' }
     @organismes_brouillon = @organismes.reject { |el| el[2] == 'valide' }
-    @search_organismes = []
+    @search_organismes = organismes&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
+    # export excel
     @liste_organismes = organismes.where(statut: 'valide').includes(:bureau, :controleur, :ministere, :organisme_rattachements, organisme_ministeres: [:ministere], operateur: [:mission, :programme, operateur_programmes: [:programme]]).sort_by { |organisme| normalize_name(organisme.nom) } || []
     filename = 'liste_organismes.xlsx'
     respond_to do |format|
       format.html
       format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
-    end
-  end
-
-  def recherche_organismes
-    search = params[:search]
-    @search_organismes =
-      if search.blank?
-        []
-      elsif @statut_user == '2B2O'
-        Organisme.where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%")
-      else
-        user_relation = case @statut_user
-                        when 'Controleur'
-                          current_user.controleur_organismes.where(statut: 'valide').where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%")
-                        when 'Bureau Sectoriel'
-                          current_user.bureau_organismes.where(statut: 'valide').where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%")
-                        else
-                          []
-                        end
-
-        famille_relation = Organisme.where(famille: @familles, statut: 'valide').where('unaccent(nom) ILIKE unaccent(:search) OR unaccent(acronyme) ILIKE unaccent(:search)', search: "%#{search}%")
-
-        user_relation.or(famille_relation)
-      end
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.update('resultats', partial: 'organismes/recherche_organismes')
-        ]
-      end
     end
   end
 
@@ -153,6 +126,7 @@ class OrganismesController < ApplicationController
       update_organisme_rattachements(organismes_to_link)
       update_organisme_ministeres(ministeres_to_link)
       update_modifications_attente(@organisme)
+      update_gip(@organisme) if @organisme.nature == 'GIP'
     end
     redirect_path = @organisme.statut == 'valide' ? @organisme : edit_organisme_path(@organisme, step: step)
     redirect_to redirect_path, flash: { notice: message }
@@ -175,6 +149,58 @@ class OrganismesController < ApplicationController
     respond_to do |format|
       format.turbo_stream { redirect_to organismes_path }
     end
+  end
+
+  def documents_controle
+    redirect_to root_path and return unless @statut_user == '2B2O'
+
+    @array_user_liens = User.joins(:controleur_organismes).where.not(organismes: { document_controle_lien: nil }).group('users.id').select('users.nom, COUNT(organismes.document_controle_lien) AS nombre_liens, ARRAY_AGG(organismes.id) AS organismes_ids, ARRAY_AGG(organismes.nom) AS organismes_noms, ARRAY_AGG(organismes.document_controle_lien) AS liens')
+  end
+
+  def create_document_controle
+    @organisme = Organisme.find(params[:id])
+    file = params[:file]
+    redirect_to @organisme and return if file.nil?
+
+    # Téléchargement du fichier sur GCS
+    bucket_name = 'budgetlab-bucket'
+    storage = Google::Cloud::Storage.new(project_id: 'apps-354210')
+    bucket = storage.bucket(bucket_name)
+    nom_fichier = "OPERA/Controle/#{@organisme.id.to_s}_#{file.original_filename}"
+    file = bucket.create_file(file.tempfile, nom_fichier)
+
+    # Enregistrement du lien du fichier dans la base de données
+    @organisme.update(document_controle_lien: file.public_url)
+    redirect_to @organisme, flash: { notice: 'ajout_dc' }
+  end
+
+  def destroy_document_controle
+    @organisme = Organisme.find(params[:id])
+    # Suppression du fichier dans GCS
+    bucket_name = 'budgetlab-bucket'
+    storage = Google::Cloud::Storage.new(project_id: 'apps-354210')
+    bucket = storage.bucket(bucket_name)
+    filename = @organisme.document_controle_lien&.gsub('https://storage.googleapis.com/budgetlab-bucket/', '')
+    # Supprimez le fichier dans GCS en utilisant son chemin ou son nom
+    bucket.file(filename)&.delete
+
+    # Supprimez le document de la base de données
+    @organisme.update(document_controle_lien: nil)
+    redirect_to @organisme, flash: { notice: 'suppression_dc' }
+  end
+
+  def download_document
+    @organisme = Organisme.find(params[:id])
+    bucket_name = 'budgetlab-bucket'
+    storage = Google::Cloud::Storage.new(project_id: 'apps-354210')
+    bucket = storage.bucket(bucket_name)
+    @lien = @organisme.document_controle_lien
+    # filename = File.basename(URI.parse(@lien).path)
+    filename = @organisme.document_controle_lien&.gsub('https://storage.googleapis.com/budgetlab-bucket/', '')
+    file = bucket.file(filename)
+    # Téléchargez le contenu du fichier PDF
+    file_content = file.download.read
+    send_data file_content, :filename => filename, :disposition => "inline"
   end
 
   private
@@ -207,6 +233,7 @@ class OrganismesController < ApplicationController
       @familles = current_user.bureau_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
     end
   end
+
   def liste_organisme
     case @statut_user
     when '2B2O'
@@ -250,11 +277,11 @@ class OrganismesController < ApplicationController
 
   def generate_modifications(ministeres_to_link)
     modifications = []
-    champs_a_surveiller = [:nom, :etat, :acronyme, :siren, :nature, :texte_institutif, :gbcp_1, :gbcp_3,
+    champs_a_surveiller = [:nom, :etat, :acronyme, :siren, :nature, :texte_institutif, :commentaire, :gbcp_1, :gbcp_3,
                            :comptabilite_budgetaire, :nature_controle, :texte_soumission_controle, :autorite_controle,
                            :texte_reglementaire_controle, :arrete_controle, :document_controle_date, :comite_audit,
                            :arrete_nomination, :ciassp_n, :ciassp_n1, :odal_n, :odal_n1, :odac_n, :odac_n1]
-    champs_texte = ['Nom', 'État', 'Acronyme', 'Siren', 'Nature juridique', 'Texte institutif', 'Partie I GBCP',
+    champs_texte = ['Nom', 'État', 'Acronyme', 'Siren', 'Nature juridique', 'Texte institutif', 'Commentaire', 'Partie I GBCP',
                     'Partie III GBCP', 'Comptabilité budgétaire', 'Nature contrôle', 'Texte soumission au contrôle',
                     'Autorité de contrôle', "Texte réglementaire de désignation de l'autorité de contrôle",
                     'Arrêté de contrôle', 'Date signature document contrôle ', 'Comité audit et risques',
@@ -307,5 +334,10 @@ class OrganismesController < ApplicationController
   def normalize_name(name)
     # Supprime les accents et met le texte en minuscules
     I18n.transliterate(name).downcase
+  end
+
+  def update_gip(organisme)
+    organisme.update(tutelle_financiere: false, delegation_approbation: false, autorite_approbation: nil, ministere_id: nil)
+    organisme.organisme_ministeres&.destroy_all
   end
 end

@@ -21,7 +21,7 @@
                   </div>
                   <div class="fr-select-group">
                     <label for="exercice" class="fr-label">Exercice budgétaire*</label>
-                    <%= f.select :exercice_budgetaire,[["- sélectionner -", ""], [Date.today.year+1, Date.today.year+1], [Date.today.year, Date.today.year], [Date.today.year-1, Date.today.year-1]],{}, {data: {action: 'change->form#changeExerciceChiffres','form-target': 'fieldRequire'}, id:"exercice",class:"fr-select"}%>
+                    <%= f.select :exercice_budgetaire,[["- sélectionner -", ""], [2024, 2024], [2023, 2023], [2022, 2022]],{}, {data: {action: 'change->form#changeExerciceChiffres','form-target': 'fieldRequire'}, id:"exercice",class:"fr-select"}%>
                   </div>
                   <div class="fr-select-group">
                     <label for="budget" class="fr-label">Type de budget*</label>

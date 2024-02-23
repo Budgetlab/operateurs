@@ -196,15 +196,10 @@
         </div>
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12">
-            <% if @est_controleur %>
-              <p class="fr-mb-1w">Commentaires</p>
-              <p><b><%= format_boolean(@organisme.commentaire) %></b></p>
-            <%else %>
             <div class="fr-input-group">
               <label for="commentaire" class="fr-label">Commentaires</label>
               <%= f.text_area :commentaire,rows: 4, value: @organisme.commentaire, id:"commentaire", class:"fr-input"%>
             </div>
-            <%end %>
           </div>
         </div>
         <div class="fr-my-4w">

@@ -4,12 +4,49 @@
 class ModificationsController < ApplicationController
   before_action :statut
   def index
-    @modification_counts = @modifications.modifications_count_by_controller
-    @modification_counts_valides = @modification_counts.select { |modification| modification.statut == 'validée' }
-    @modification_counts_refus = @modification_counts.select { |modification| modification.statut == 'refusée' }
-    @modification_counts_attente = @modification_counts.select { |modification| modification.statut == 'En attente' }
-    @total_valides = @modification_counts_valides.sum { |modification| modification.modification_count }
-    @total_refus = @modification_counts_refus.sum { |modification| modification.modification_count }
+    @user_names = User.pluck(:id, :nom).to_h
+    @organismes = Organisme.all.pluck(:id, :nom, :acronyme)
+    organismes_ids = @organismes.map(&:first)
+    modification_counts = @modifications.modifications_count_by_controller(organismes_ids)
+    @modifications = []
+    @totaux = []
+    statuts = ['En attente', 'validée', 'refusée']
+    statuts.each do |statut|
+      modification_statut = filter_modification_counts(modification_counts, statut)
+      @modifications << modification_statut
+      @totaux << modification_statut.sum(&:modification_count)
+    end
+    @modifications_admin = Modification.where(user_id: current_user.id).includes(:organisme).order(created_at: :desc) if @statut_user == '2B2O'
+
+  end
+
+  def filter_modifications
+    @user_names = User.pluck(:id, :nom).to_h
+    @organismes = Organisme.all.pluck(:id, :nom, :acronyme)
+    condition_filtre = params[:organisme] && !params[:organisme].blank?
+    organismes_ids = condition_filtre ? params[:organisme].to_i : @organismes.map(&:first)
+    modification_counts = @modifications.modifications_count_by_controller(organismes_ids)
+    @modifications = []
+    @totaux = []
+    statuts = ['En attente', 'validée', 'refusée']
+    statuts.each do |statut|
+      modification_statut = filter_modification_counts(modification_counts, statut)
+      @modifications << modification_statut
+      @totaux << modification_statut.sum(&:modification_count)
+    end
+    @modifications_admin = Modification.where(user_id: current_user.id, organisme_id: organismes_ids).includes(:organisme).order(created_at: :desc) if @statut_user == '2B2O'
+    respond_to do |format|
+      format.turbo_stream do
+        updates = []
+        [0, 1, 2].each do |i|
+          updates << turbo_stream.update("table_modifications_#{i}", partial: 'modifications/table_modifications_group', locals:  {modifications: @modifications[i], i: i, user_names: @user_names, organismes: @organismes} )
+          updates << turbo_stream.update("total_modifications_#{i}", @totaux[i].to_s)
+        end
+        updates << turbo_stream.update('table_modifications', partial: 'modifications/table_modifications_admin', locals: { modifications: @modifications_admin })
+        updates << turbo_stream.update('total_modifications_admin', @modifications_admin.length.to_s)
+        render turbo_stream: updates
+      end
+    end
   end
 
   def open_modal
@@ -79,6 +116,10 @@ class ModificationsController < ApplicationController
   def statut
     @statut = current_user.statut if current_user.statut == 'Controleur' || current_user.statut == '2B2O'
     redirect_to root_path if @statut.nil?
+  end
+
+  def filter_modification_counts(modification_counts, statut)
+    modification_counts.select { |modification| modification.statut == statut }
   end
 
 end

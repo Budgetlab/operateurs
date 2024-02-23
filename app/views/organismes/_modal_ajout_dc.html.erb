@@ -1,0 +1,42 @@
+<% unless organisme.nil?%>
+  <div class="fr-container fr-container--fluid fr-container-md">
+    <div class="fr-grid-row fr-grid-row--center">
+      <div class="fr-col-12 fr-col-md-10 fr-col-lg-9">
+        <div class="fr-modal__body">
+          <div class="fr-modal__header">
+            <button class="fr-btn--close fr-btn" aria-controls="modal-ajout-dc" title="Fermer">
+              Fermer
+            </button>
+          </div>
+          <div class="fr-modal__content" data-controller="form">
+            <h1 id="modal-ajout-dc-title" class="fr-modal__title">
+              <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true"></span>
+              Ajouter un document de contrôle
+            </h1>
+
+            <div class="fr-my-4w">
+              <%= form_with(url: create_document_controle_path(id: organisme.id),data: {'form-target': "form"}, multipart: true) do |f| %>
+
+                <div class="fr-input-group">
+                  <label class="fr-label" for="file">Importer un fichier<span class="fr-hint-text">Formats suggérés : pdf, docx</span></label>
+                  <%= f.file_field :file, id: 'file' %>
+                </div>
+
+                <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
+                  <li><%= f.submit "Valider", data: {'form-target': "submitBouton"},class: "fr-btn" %></li>
+                  <li>
+                    <button class="fr-btn fr-btn--secondary" aria-controls="modal-ajout-dc" title="Fermer" data-action="form#Dropdown">
+                      Annuler
+                    </button>
+                  </li>
+                </ul>
+              <% end %>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<% end %>
