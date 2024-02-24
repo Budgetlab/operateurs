@@ -19,6 +19,21 @@ class PagesController < ApplicationController
   def donnees_personnelles; end
   def plan; end
 
+  def documents
+    redirect_to root_path and return unless @statut_user == '2B2O'
+
+    @array_controleurs_liens = User.where(statut: 'Controleur').left_joins(:controleur_organismes).group('users.id').select('users.nom, COALESCE(COUNT(organismes.document_controle_lien), 0) AS nombre_liens').order('users.nom ASC')
+  end
+
+  def documents_controleur
+    redirect_to root_path and return unless @statut_user == '2B2O'
+
+    @user = User.find_by(nom: params[:user])
+    redirect_to documents_path and return unless @user
+
+    @documents_controle = @user.controleur_organismes.where.not(document_controle_lien: nil).pluck(:id, :nom, :acronyme, :document_controle_lien, :document_controle_date)
+  end
+
   private
 
   def set_famille

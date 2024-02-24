@@ -1,0 +1,26 @@
+<% content_for :title do %>Documents | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container">
+    <h1 class="fr-my-6w">Documents par contrôleur</h1>
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+      <% @array_controleurs_liens.each do |array|%>
+        <div class="fr-col-12 fr-col-lg-3">
+          <div class="fr-tile fr-tile--sm fr-tile--horizontal fr-enlarge-link" id="tile-6661">
+            <div class="fr-tile__body">
+              <div class="fr-tile__content">
+                <h3 class="fr-tile__title">
+                  <%= link_to documents_controleur_path(array.nom) do%><%= array.nom %><% end %>
+                </h3>
+
+                <div class="fr-tile__start">
+                  <p class="fr-badge fr-badge--sm fr-badge--purple-glycine"><%= pluralize(array.nombre_liens ,'document', plural: 'documents') %> </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end  %>
+
+    </div>
+  </div>
+</main>

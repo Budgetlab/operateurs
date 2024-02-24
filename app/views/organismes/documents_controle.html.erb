@@ -28,7 +28,7 @@
                                 <%= auto_link(simple_format(format_boolean(array.liens[idx]),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %>
                               <% end %>
                             </h3>
-                            <p class="fr-tile__detail"><%=array.organismes_noms[idx] %></p>
+                            <p class="fr-tile__detail">Signé le : <%= format_boolean(format_date(array.dates[idx])) %></p>
                           </div>
                         </div>
                       </div>

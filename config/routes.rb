@@ -43,6 +43,8 @@ Rails.application.routes.draw do
   get '/donnees-personnelles', to: 'pages#donnees_personnelles'
   get '/accessibilite', to: 'pages#accessibilite'
   get '/plan', to: 'pages#plan'
+  get '/documents', to: 'pages#documents'
+  get '/documents/:user', to: 'pages#documents_controleur', as: 'documents_controleur'
   # routes pages erreurs
   match '/500', via: :all, to: 'errors#error_500'
   match '/404', via: :all, to: 'errors#error_404'

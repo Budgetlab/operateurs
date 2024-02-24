@@ -1,0 +1,38 @@
+<% content_for :title do %>Documents du contrôleur <%= @user.nom %> | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container">
+    <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
+      <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+      <div class="fr-collapse" id="breadcrumb-1">
+        <ol class="fr-breadcrumb__list">
+          <li>
+            <%= link_to root_path, class:"fr-breadcrumb__link" do %>Accueil<%end %>
+          </li>
+          <li>
+            <%= link_to documents_path, class:"fr-breadcrumb__link" do %>Documents<%end %>
+          </li>
+          <li>
+            <a class="fr-breadcrumb__link" aria-current="page"><%= @user.nom %></a>
+          </li>
+        </ol>
+      </div>
+    </nav>
+    <h1 class="fr-mb-4w">Documents du contrôleur <%= @user.nom %></h1>
+
+    <h2 class="fr-my-3w">Documents de contrôle</h2>
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+      <div class="fr-col-12 fr-col-lg-12">
+      <% @documents_controle.each do |document|%>
+        <div>
+          <b><% if document[3].start_with?("https://storage.googleapis.com")%>
+            <%= link_to download_document_path(id: document[0]), target: "_blank"  do %><%=document[3].gsub("https://storage.googleapis.com/budgetlab-bucket/OPERA/Controle/#{document[0]}_", '') %><%end %>
+          <%else %>
+            <%= auto_link(simple_format(format_boolean(document[3]),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %>
+          <% end %> [<%= link_to organisme_path(document[0]) do%><%= document[1] %><% end %>]</b>  signé le : <%= format_boolean(format_date(document[4])) %>
+        </div>
+          <hr class="fr-hr fr-my-3w"/>
+      <% end  %>
+      </div>
+    </div>
+  </div>
+</main>
