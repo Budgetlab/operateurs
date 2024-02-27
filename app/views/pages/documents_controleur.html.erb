@@ -19,7 +19,7 @@
     </nav>
     <h1 class="fr-mb-4w">Documents du contrôleur <%= @user.nom %></h1>
 
-    <h2 class="fr-my-3w">Documents de contrôle</h2>
+    <h2 class="fr-my-3w">Documents de contrôle [<%= @documents_controle.length%>]</h2>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
       <div class="fr-col-12 fr-col-lg-12">
       <% @documents_controle.each do |document|%>

@@ -55,13 +55,13 @@
             <%end %>
             <% if @statut_user == "2B2O" %>
               <li role="presentation">
-                <button id="tabpanel-2B2O" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-2B2O-panel">Modifications 2B2O (<span id="total_modifications_admin"><%= @modifications_admin.length %></span>)</button>
+                <button id="tabpanel-2B2O" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="false" aria-controls="tabpanel-2B2O-panel">Modifications 2B2O (<span id="total_modifications_admin"><%= @modifications_admin.length %></span>)</button>
               </li>
             <% end  %>
           </ul>
 
           <% ["en attente","validées","rejetées"].each_with_index do |texte, i| %>
-            <div id="tabpanel-<%= i %>-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-<%= i %>" tabindex="0">
+            <div id="tabpanel-<%= i %>-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-<%= i %>" tabindex="0">
               <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll">
                 <table>
                   <caption>Tableau des modifications <%= texte %></caption>
