@@ -15,8 +15,8 @@
                 <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-<%=i %>"><%= array.nom %> [<%= array.nombre_liens %>]</button>
               </h3>
               <div class="fr-collapse" id="accordion-<%=i %>">
-                <% array.organismes_ids.each_with_index do |id, idx| %>
-                  <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+                <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+                  <% array.organismes_ids.each_with_index do |id, idx| %>
                     <div class="fr-col-12 fr-col-lg-4">
                      <div class="fr-tile fr-tile--download fr-enlarge-link" >
                         <div class="fr-tile__body">
@@ -35,8 +35,8 @@
                       <div class="fr-my-2w"><%= link_to organisme_path(id), class:"fr-link fr-icon-arrow-right-line fr-link--icon-right" do%><%=array.organismes_noms[idx] %><% end %></div>
 
                     </div>
-                  </div>
-                <% end  %>
+                  <% end  %>
+                </div>
               </div>
             </section>
           </div>

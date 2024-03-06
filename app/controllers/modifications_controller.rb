@@ -5,7 +5,8 @@ class ModificationsController < ApplicationController
   before_action :statut
   def index
     @user_names = User.pluck(:id, :nom).to_h
-    @organismes = Organisme.all.pluck(:id, :nom, :acronyme)
+    organismes = liste_organisme
+    @organismes = organismes.pluck(:id, :nom, :acronyme)
     organismes_ids = @organismes.map(&:first)
     modification_counts = @modifications.modifications_count_by_controller(organismes_ids)
     @modifications = []
@@ -22,7 +23,8 @@ class ModificationsController < ApplicationController
 
   def filter_modifications
     @user_names = User.pluck(:id, :nom).to_h
-    @organismes = Organisme.all.pluck(:id, :nom, :acronyme)
+    organismes = liste_organisme
+    @organismes = organismes.pluck(:id, :nom, :acronyme)
     condition_filtre = params[:organisme] && !params[:organisme].blank?
     organismes_ids = condition_filtre ? params[:organisme].to_i : @organismes.map(&:first)
     modification_counts = @modifications.modifications_count_by_controller(organismes_ids)
@@ -42,8 +44,8 @@ class ModificationsController < ApplicationController
           updates << turbo_stream.update("table_modifications_#{i}", partial: 'modifications/table_modifications_group', locals:  {modifications: @modifications[i], i: i, user_names: @user_names, organismes: @organismes} )
           updates << turbo_stream.update("total_modifications_#{i}", @totaux[i].to_s)
         end
-        updates << turbo_stream.update('table_modifications', partial: 'modifications/table_modifications_admin', locals: { modifications: @modifications_admin })
-        updates << turbo_stream.update('total_modifications_admin', @modifications_admin.length.to_s)
+        updates << turbo_stream.update('table_modifications', partial: 'modifications/table_modifications_admin', locals: { modifications: @modifications_admin }) if @statut_user == '2B2O'
+        updates << turbo_stream.update('total_modifications_admin', @modifications_admin.length.to_s) if @statut_user == '2B2O'
         render turbo_stream: updates
       end
     end
@@ -120,6 +122,17 @@ class ModificationsController < ApplicationController
 
   def filter_modification_counts(modification_counts, statut)
     modification_counts.select { |modification| modification.statut == statut }
+  end
+
+  def liste_organisme
+    case @statut_user
+    when '2B2O'
+      Organisme.all
+    when 'Controleur'
+      current_user.controleur_organismes.where(statut: 'valide')
+    when 'Bureau Sectoriel'
+      current_user.bureau_organismes.where(statut: 'valide')
+    end
   end
 
 end
