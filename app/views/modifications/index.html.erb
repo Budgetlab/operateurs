@@ -3,10 +3,11 @@
   <div class="fr-container ">
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-12">
-        <h1 class="fr-my-4w"><% if @statut_user == "2B2O" %>Gestion des modifications<%else %>Mes modifications<%end %></h1>
+        <h1 class="fr-my-4w">Gestion des modifications</h1>
         <%= render 'modifications/success'%>
       </div>
     </div>
+
     <div class="fr-mb-2w" data-controller="search">
       <%= form_with(url: filter_modifications_path, method: :post, data: {'search-target': "form"}) do |f|%>
         <div class="fr-grid-row fr-grid-row--gutters">
@@ -44,20 +45,21 @@
         <div id="labelResultat" class="fr-hidden" data-action="click->search#showForm"></div>
       <% end %>
     </div>
+
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-12">
         <div class="fr-tabs fr-mb-4w">
           <ul class="fr-tabs__list" role="tablist" aria-label="Onglets Organismes actifs">
             <% ["en attente","validées","rejetées"].each_with_index do |texte, i| %>
               <li role="presentation">
-                <button id="tabpanel-<%= i %>" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= i == 0 ? 'true' : 'false' %>" aria-controls="tabpanel-<%= i %>-panel">Modifications en <%= texte %> (<span id="total_modifications_<%=i %>"><%= @totaux[i] %></span>)</button>
+                <button id="tabpanel-<%= i %>" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= i == 0 ? 'true' : 'false' %>" aria-controls="tabpanel-<%= i %>-panel">Modifications <%= texte %> (<span id="total_modifications_<%=i %>"><%= @groupes_modifications[1][i] %></span>)</button>
               </li>
             <%end %>
-            <% if @statut_user == "2B2O" %>
+
               <li role="presentation">
                 <button id="tabpanel-2B2O" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="false" aria-controls="tabpanel-2B2O-panel">Modifications 2B2O (<span id="total_modifications_admin"><%= @modifications_admin.length %></span>)</button>
               </li>
-            <% end  %>
+
           </ul>
 
           <% ["en attente","validées","rejetées"].each_with_index do |texte, i| %>
@@ -75,14 +77,14 @@
                   </tr>
                   </thead>
                   <tbody id="table_modifications_<%=i %>">
-                    <%= render partial: 'modifications/table_modifications_group', locals: {modifications: @modifications[i], i: i, user_names: @user_names, organismes: @organismes} %>
+                    <%= render partial: 'modifications/table_modifications_group', locals: {modifications: @groupes_modifications[0][i], i: i, user_names: @user_names, organismes: @organismes} %>
                   </tbody>
                 </table>
 
               </div>
             </div>
-              <% end %>
-          <% if @statut_user == "2B2O" %>
+          <% end %>
+
             <div id="tabpanel-2B2O-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-2B2O" tabindex="0">
               <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll">
                 <table>
@@ -101,7 +103,7 @@
                 </table>
               </div>
             </div>
-          <% end %>
+
         </div>
       </div>
     </div>

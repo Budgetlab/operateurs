@@ -452,7 +452,7 @@
 
       
       @length = @tableau.length
-      @sheet_col = @sheet_col = [60, 4] + Array.new(@length-2, 20)
+      @sheet_col = [60, 4] + Array.new(@length-2, 20)
       sheet.column_widths(*@sheet_col)
     	
       

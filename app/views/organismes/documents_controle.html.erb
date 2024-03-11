@@ -8,35 +8,34 @@
     </div>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
       <div class="fr-col-12 fr-col-lg-12">
-        <% @array_user_liens.each_with_index do |array, i| %>
+
+        <div class="fr-alert fr-alert--info fr-mb-4w">
+          <h3 class="fr-alert__title">Document de contrôle</h3>
+          <p>L'import des documents de contrôle est désormais possible depuis la page d'identité des organismes. Vous retrouvez sur cette page l'ensemble des documents de contrôle de vos organismes ainsi que ceux des organismes dont les familles sont communes aux vôtres.</p>
+        </div>
+
+        <% @grouped_organismes.each do |key, values| %>
           <div class="fr-accordions-group">
             <section class="fr-accordion">
               <h3 class="fr-accordion__title">
-                <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-<%=i %>"><%= array.nom %> [<%= array.nombre_liens %>]</button>
+                <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-<%=key %>"><%= @users_hash[key] %> [<%= values.length %>]</button>
               </h3>
-              <div class="fr-collapse" id="accordion-<%=i %>">
-                <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
-                  <% array.organismes_ids.each_with_index do |id, idx| %>
-                    <div class="fr-col-12 fr-col-lg-4">
-                     <div class="fr-tile fr-tile--download fr-enlarge-link" >
-                        <div class="fr-tile__body">
-                          <div class="fr-tile__content">
-                            <h3 class="fr-tile__title">
-                              <% if array.liens[idx].start_with?("https://storage.googleapis.com")%>
-                                <%= link_to download_document_path(id: id), target: "_blank"  do %><%=array.liens[idx].gsub("https://storage.googleapis.com/budgetlab-bucket/OPERA/Controle/#{id}_", '') %><%end %>
-                              <%else %>
-                                <%= auto_link(simple_format(format_boolean(array.liens[idx]),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %>
-                              <% end %>
-                            </h3>
-                            <p class="fr-tile__detail">Signé le : <%= format_boolean(format_date(array.dates[idx])) %></p>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="fr-my-2w"><%= link_to organisme_path(id), class:"fr-link fr-icon-arrow-right-line fr-link--icon-right" do%><%=array.organismes_noms[idx] %><% end %></div>
-
+              <div class="fr-collapse" id="accordion-<%=key %>">
+                  <% values.each do |array| %>
+                    <div>
+                      <b><% if array[3].start_with?("https://storage.googleapis.com")%>
+                        <%= link_to download_document_path(id: array[1]), target: "_blank"  do %><%=array[3].gsub("https://storage.googleapis.com/budgetlab-bucket/OPERA/Controle/#{array[1]}_", '') %><%end %>
+                      <%else %>
+                        <%= auto_link(simple_format(format_boolean(array[3]),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %>
+                        <% end %>
+                      [<%= link_to organisme_path(array[1]) do%><%=array[2] %><% end %>]
+                      </b>
+                      Signé le : <%= format_boolean(format_date(array[4])) %>
+                      <p class="fr-badge fr-badge--no-icon fr-badge--success fr-badge--sm"><% if array[5] == "Contrôle Economique et Financier" && (array[6].nil? || array[6].blank?)%>Protocole CEF<%else %>Document Contrôle<%end %></p>
                     </div>
+                    <hr class="fr-hr fr-my-3w"/>
                   <% end  %>
-                </div>
+
               </div>
             </section>
           </div>

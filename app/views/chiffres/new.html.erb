@@ -36,7 +36,8 @@
                     <%= f.select :operateur,[["- sélectionner -", ""],["Oui", true], ["Non", false]],{}, {data: {'form-target': 'fieldRequire'}, id:"operateur",class:"fr-select"}%>
                   </div>
                   <div class="fr-select-group">
-                    <label for="phase" class="fr-label">Phase*</label>
+                    <label for="phase" class="fr-label">Phase*
+                      <span class="fr-hint-text">Renseignez la phase actuelle du budget concerné. Vous pouvez ultérieurement mettre à jour cette phase tout en conservant les données renseignées.</span></label>
                     <%= f.select :phase,[["- sélectionner -", ""], ["pré-CA", "pré-CA"], ["CA", "CA"], ["Budget voté", "Budget voté"]],{}, {data: {'form-target': 'fieldRequire'}, id:"phase",class:"fr-select"}%>
                   </div>
 

@@ -152,9 +152,10 @@ class OrganismesController < ApplicationController
   end
 
   def documents_controle
-    redirect_to root_path and return unless @statut_user == '2B2O'
-
-    @array_user_liens = User.joins(:controleur_organismes).where.not(organismes: { document_controle_lien: nil }).group('users.id').select('users.nom, COUNT(organismes.document_controle_lien) AS nombre_liens, ARRAY_AGG(organismes.id) AS organismes_ids, ARRAY_AGG(organismes.nom) AS organismes_noms, ARRAY_AGG(organismes.document_controle_lien) AS liens, ARRAY_AGG(organismes.document_controle_date) AS dates')
+    organismes = liste_organisme
+    array_organismes = organismes.where.not(document_controle_lien: nil).order(document_controle_date: :desc).pluck(:controleur_id, :id, :nom, :document_controle_lien, :document_controle_date, :nature_controle, :arrete_controle)
+    @grouped_organismes = array_organismes.group_by(&:first)
+    @users_hash = User.pluck(:id, :nom).to_h
   end
 
   def create_document_controle
