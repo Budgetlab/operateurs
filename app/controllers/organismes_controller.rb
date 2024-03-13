@@ -10,7 +10,7 @@ class OrganismesController < ApplicationController
     'Bureau Sectoriel' => ["opérateurs de l’Etat (actifs)", "controlés (actifs)","en comptabilité budgétaire (actifs)", "sous Tutelle financière MCP (actifs)"]
   }.freeze
   before_action :authenticate_user!
-  before_action :set_famille, only: [:index, :show]
+  before_action :set_famille, only: %i[index apply_filters_to_organisms show]
   def index
     # Fetch all organisms relevant to user's permissions, including those in extended families
     @extended_family_organisms = fetch_extended_family_organisms
@@ -23,6 +23,7 @@ class OrganismesController < ApplicationController
     @pagy, @organisms_page = pagy(@extended_family_organisms)
     # Prepare a sorted list of organisms for search
     @search_organismes = @extended_family_organisms&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
+    @controleur_name_id_pairs = User.where(statut: ['Controleur', '2B2O']).order(:nom).pluck(:nom, :id)
   end
 
   def export_to_excel
@@ -37,17 +38,33 @@ class OrganismesController < ApplicationController
     end
   end
 
-  def filter_organismes
-    familles = !params[:famille].blank? && JSON.parse(params[:famille]).to_a.length.positive? ? JSON.parse(params[:famille]) : @liste_familles
-    natures = !params[:nature].blank? && JSON.parse(params[:nature]).to_a.length.positive? ? JSON.parse(params[:nature]) : @liste_natures
-
-    organisms = fetch_extended_family_organisms.where(famille: familles, nature: natures)
-    pagy, organisms_page = pagy(organisms)
+  def apply_filters_to_organisms
+    # Initialize filters from params
+    filters = {
+      etat: parse_params(params[:etat], nil),
+      famille: parse_params(params[:famille], nil),
+      nature: parse_params(params[:nature], nil),
+      controleur_id: parse_params(params[:controleur_id], nil),
+      nature_controle: parse_params(params[:nature_controle], nil),
+    }
+    statut_brouillon = parse_params(params[:statut], nil)&.include?('Brouillon')
+    # Start with all organisms
+    filtered_organisms = fetch_extended_family_organisms
+    # Apply filters if selections are present
+    filters.each do |key, value|
+      filtered_organisms = filtered_organisms.where(key => value) if value.present?
+    end
+    # Filter only on statut brouillon if brouillon selected
+    filtered_organisms = filtered_organisms.where.not(statut: 'valide') if statut_brouillon
+    # Filters on operateur
+    operateur_filter = parse_params(params[:operateur], nil)
+    filtered_organisms = filter_operateur(filtered_organisms, operateur_filter) if operateur_filter&.length == 1
+    pagy, organisms_page = pagy(filtered_organisms)
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.update('liste_organismes', partial: 'organismes/index_liste',
-                                                  locals: { organisms_all: organisms, organisms_page: organisms_page, pagy: pagy })
+                                                  locals: { organisms_all: filtered_organisms, organisms_page: organisms_page, pagy: pagy })
         ]
       end
     end
@@ -137,8 +154,8 @@ class OrganismesController < ApplicationController
 
     organismes_to_link = params[:organisme].delete(:organismes)
     ministeres_to_link = params[:organisme].delete(:ministeres)
-    reset_values([:date_dissolution, :effet_dissolution]) if params[:organisme][:etat]
-    reset_values([:nature_controle, :texte_soumission_controle, :autorite_controle, :texte_reglementaire_controle, :arrete_controle, :document_controle_present, :document_controle_lien, :document_controle_date, :arrete_nomination]) if params[:organisme][:presence_controle]
+    reset_values(%i[date_dissolution effet_dissolution]) if params[:organisme][:etat]
+    reset_values(%i[nature_controle texte_soumission_controle autorite_controle texte_reglementaire_controle arrete_controle document_controle_present document_controle_lien document_controle_date arrete_nomination]) if params[:organisme][:presence_controle]
     reset_values([:admin_db_fonction]) if params[:organisme][:admin_db_present]
     reset_values([:delegation_approbation]) if params[:organisme][:tutelle_financiere]
     if @organisme.statut == 'valide'
@@ -266,7 +283,7 @@ class OrganismesController < ApplicationController
   end
 
   def fetch_extended_family_organisms
-    organisms = Organisme.all
+    organisms = Organisme.all.includes(:controleur)
     case @statut_user
     when 'Controleur'
       organisms = organisms.where(statut: 'valide').where("controleur_id = :user_id OR famille IN (:familles)", user_id: current_user.id, familles: @familles)
@@ -288,25 +305,57 @@ class OrganismesController < ApplicationController
   end
 
   def count_organisms_by_repartition_status(organismes)
+    active_organisms = organismes.where(etat: 'Actif')
     case @statut_user
     when '2B2O'
-      organismes_actifs = organismes.count { |el| el.etat == 'Actif' }
-      organismes_gbcp_3 = organismes.count { |el| el.etat == 'Actif' && el.gbcp_3 == true }
-      organismes_actifs_cb = organismes.count { |el| el.etat == 'Actif' && (el.comptabilite_budgetaire == 'Oui' ||  el.comptabilite_budgetaire == 'Oui mais adaptée') }
-      organismes_actifs_hcb = organismes.count { |el| el.etat == 'Actif' && el.comptabilite_budgetaire == 'Non' }
-      [organismes_actifs, organismes_gbcp_3, organismes_actifs_cb, organismes_actifs_hcb]
+      count_for_2b2o(active_organisms)
     when 'Controleur'
-      operateurs_actifs = organismes.joins(:operateur).where(etat: 'Actif').where.not(operateurs: { id: nil }).count
-      organismes_actifs_cb = organismes.count { |el| el.etat == 'Actif' && el.nature_controle == 'Contrôle Budgétaire'}
-      organismes_actifs_cef = organismes.count { |el| el.etat == 'Actif' && el.nature_controle == 'Contrôle Economique et Financier' }
-      organismes_actifs_epscp = organismes.count { |el| el.etat == 'Actif' && el.nature_controle == 'Contrôle Budgétaire EPSCP' }
-      [operateurs_actifs, organismes_actifs_cb, organismes_actifs_cef, organismes_actifs_epscp]
+      count_for_controleur(active_organisms)
     when 'Bureau Sectoriel'
-      operateurs_actifs = organismes.joins(:operateur).where(etat: 'Actif').where.not(operateurs: { id: nil }).count
-      organismes_actifs_controles = organismes.count { |el| el.etat == 'Actif' && !el.nature_controle.nil? }
-      organismes_actifs_cb = organismes.count { |el| el.etat == 'Actif' && (el.comptabilite_budgetaire == 'Oui' ||  el.comptabilite_budgetaire == 'Oui mais adaptée') }
-      organismes_actifs_tutelle = organismes.count { |el| el.etat == 'Actif' && el.tutelle_financiere == true }
-      [operateurs_actifs, organismes_actifs_controles, organismes_actifs_cb, organismes_actifs_tutelle]
+      count_for_bs(active_organisms)
+    end
+  end
+
+  def count_for_2b2o(active_organisms)
+    active_organisms_gbcp_3 = active_organisms.count { |el| el.gbcp_3 == true }
+    active_organisms_cb = active_organisms.count { |el| ['Oui', 'Oui mais adaptée'].include?(el.comptabilite_budgetaire) }
+    active_organisms_hcb = active_organisms.count { |el| el.comptabilite_budgetaire == 'Non' }
+    [active_organisms.count, active_organisms_gbcp_3, active_organisms_cb, active_organisms_hcb]
+  end
+
+  def count_for_controleur(active_organisms)
+    active_operators = active_organisms.joins(:operateur).where.not(operateurs: { id: nil }).where(operateurs: { operateur_n: true }).count
+    control_types = active_organisms.group(:nature_controle).count
+    organisms_active_cb = control_types['Contrôle Budgétaire'] || 0
+    organisms_active_cef = control_types['Contrôle Economique et Financier'] || 0
+    organisms_active_epscp = control_types['Contrôle Budgétaire EPSCP'] || 0
+    [active_operators, organisms_active_cb, organisms_active_cef, organisms_active_epscp]
+  end
+
+  def count_for_bs(active_organisms)
+    active_operators = active_organisms.joins(:operateur).where.not(operateurs: { id: nil }).where(operateurs: { operateur_n: true }).count
+    organisms_active_controlled = active_organisms.count { |el| !el.nature_controle.nil? }
+    organisms_active_cb = active_organisms.count { |el| ['Oui', 'Oui mais adaptée'].include?(el.comptabilite_budgetaire) }
+    organisms_active_tutelle = active_organisms.count { |el| el.tutelle_financiere == true }
+    [active_operators, organisms_active_controlled, organisms_active_cb, organisms_active_tutelle]
+  end
+
+  # This helper method is used to parse params and return the value if it exists,
+  # otherwise returns the provided default list
+  def parse_params(param, default_list)
+    if param.present? && JSON.parse(param).to_a.any?
+      return JSON.parse(param)
+    end
+    default_list
+  end
+
+  def filter_operateur(organisms, param)
+    if param == ['Oui']
+      organisms.joins(:operateur).where.not(operateurs: { id: nil }).where(operateurs: { operateur_n: true })
+    elsif param == ['Non']
+      organisms.left_outer_joins(:operateur).where('operateurs.id IS NULL OR operateurs.operateur_n = ?', false)
+    else
+      organisms
     end
   end
 
@@ -342,10 +391,10 @@ class OrganismesController < ApplicationController
 
   def generate_modifications(ministeres_to_link)
     modifications = []
-    champs_a_surveiller = [:nom, :etat, :acronyme, :siren, :nature, :texte_institutif, :commentaire, :gbcp_1, :gbcp_3,
-                           :comptabilite_budgetaire, :nature_controle, :texte_soumission_controle, :autorite_controle,
-                           :texte_reglementaire_controle, :arrete_controle, :document_controle_date, :comite_audit,
-                           :arrete_nomination, :ciassp_n, :ciassp_n1, :odal_n, :odal_n1, :odac_n, :odac_n1]
+    champs_a_surveiller = %i[nom etat acronyme siren nature texte_institutif commentaire gbcp_1 gbcp_3
+                           comptabilite_budgetaire nature_controle texte_soumission_controle autorite_controle
+                           texte_reglementaire_controle arrete_controle document_controle_date comite_audit
+                           arrete_nomination ciassp_n ciassp_n1 odal_n odal_n1 odac_n odac_n1]
     champs_texte = ['Nom', 'État', 'Acronyme', 'Siren', 'Nature juridique', 'Texte institutif', 'Commentaire', 'Partie I GBCP',
                     'Partie III GBCP', 'Comptabilité budgétaire', 'Nature contrôle', 'Texte soumission au contrôle',
                     'Autorité de contrôle', "Texte réglementaire de désignation de l'autorité de contrôle",
@@ -354,9 +403,9 @@ class OrganismesController < ApplicationController
                     "CIASSP #{(Date.today.year - 1).to_s}", "ODAL #{(Date.today.year - 2).to_s}",
                     "ODAL #{(Date.today.year - 3).to_s}", "ODAC #{(Date.today.year - 2).to_s}",
                     "ODAC #{(Date.today.year - 3).to_s}"]
-    champs_supp_controleur = [:date_creation, :date_previsionnelle_dissolution, :agent_comptable_present,
-                              :degre_gbcp, :document_controle_present, :document_controle_lien, :ministere_id,
-                              :admin_db_present, :admin_db_fonction, :admin_preca, :controleur_preca, :controleur_ca]
+    champs_supp_controleur = %i[date_creation date_previsionnelle_dissolution agent_comptable_present
+                              degre_gbcp document_controle_present document_controle_lien ministere_id
+                              admin_db_present admin_db_fonction admin_preca controleur_preca controleur_ca]
     champs_supp_texte = ['Date création', 'Date prévisionnelle dissolution', 'Présence agent comptable', 'Degré GBCP',
                          'Présence document contrôle', 'Lien document contrôle', 'Ministère', 'Présence Admin DB',
                          'Fonction Admin DB', 'Présence DB préCA', 'Présence contrôleur préCA', 'Présence contrôleur CA']
@@ -396,6 +445,7 @@ class OrganismesController < ApplicationController
       )
     end
   end
+
   def normalize_name(name)
     # Supprime les accents et met le texte en minuscules
     I18n.transliterate(name).downcase

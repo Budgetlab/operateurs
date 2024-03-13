@@ -9,7 +9,7 @@
 
     <h2 class="fr-h4 fr-my-0w">Mon périmètre [<%= @controlled_organisms&.length %>]</h2>
     <div class="fr-grid-row fr-grid-row--gutters">
-      <% class_card = ["fr-card--green-menthe", "fr-card--orange", "fr-card--grey", "fr-card--yellow-moutarde"] %>
+      <% class_card = %w[fr-card--green-menthe fr-card--orange fr-card--grey fr-card--yellow-moutarde] %>
       <% @box_titles.each_with_index do |title, i| %>
       <div class="fr-col-12 fr-col-lg-3">
         <div class="fr-card <%= class_card[i] %> fr-p-2w fr-card--no-border">
@@ -34,18 +34,25 @@
           <div class="fr-sidemenu__inner" data-controller="request">
             <div class="fr-sidemenu__title">Affiner la recherche</div>
 
-            <%= form_with(url: filter_organismes_path, method: :post, data: {'request-target': 'form'}) do |f|%>
+            <%= form_with(url: apply_filters_to_organisms_path, method: :post, data: {'request-target': 'form'}) do |f|%>
               <%= f.hidden_field :etat, id: 'etat_field'%>
+              <%= f.hidden_field :statut, id: 'statut_field'%>
               <%= f.hidden_field :famille, id: 'famille_field'%>
               <%= f.hidden_field :nature, id: 'nature_field'%>
+              <%= f.hidden_field :controleur_id, id: 'controleur_id_field'%>
               <%= f.hidden_field :nature_controle, id: 'nature_controle_field'%>
               <%= f.hidden_field :operateur, id: 'operateur_field'%>
               <div class="fr-label fr-text--bold">État</div>
               <ul class="fr-tags-group fr-mt-1w">
-                <% ["Actif", "Inactif", "En cours de création", "Brouillon"].each do |etat| %>
+                <% ["Actif", "Inactif", "En cours de création"].each do |etat| %>
                 <li>
-                  <button class="fr-tag" aria-pressed="false" data-action="click->request#addTagSelected" data-field="etat_field"><%= etat %></button>
+                  <button class="fr-tag" aria-pressed="false" data-action="click->request#addTagSelected" data-field="etat_field" data-value="<%= etat %>"><%= etat %></button>
                 </li>
+                <% end  %>
+                <% if @statut_user == '2B2O' %>
+                  <li>
+                    <button class="fr-tag" aria-pressed="false" data-action="click->request#addTagSelected" data-field="statut_field" data-value="Brouillon">Brouillon</button>
+                  </li>
                 <% end  %>
               </ul>
 
@@ -64,15 +71,24 @@
               <div class="fr-label fr-text--bold">Opérateur</div>
               <ul class="fr-tags-group fr-mt-1w">
                 <li>
-                  <button class="fr-tag" aria-pressed="false" data-action="click->request#addTagSelected" data-field="operateur_field">Oui</button>
+                  <button class="fr-tag" aria-pressed="false" data-action="click->request#addTagSelected" data-field="operateur_field" data-value="Oui">Oui</button>
+                </li>
+                <li>
+                  <button class="fr-tag" aria-pressed="false" data-action="click->request#addTagSelected" data-field="operateur_field" data-value="Non">Non</button>
                 </li>
               </ul>
+
+              <div class="fr-select-group">
+                <label for="controleur_id_list" class="fr-label fr-text--bold">Contrôleur</label>
+                <%= select_tag :controleurs, options_for_select([["- sélectionner -", ""]] + @controleur_name_id_pairs), {id:"controleur_id_list",class:"fr-select", data: {field: 'controleur_id_field',tag: 'controleur_id_tag', action: 'change->request#addTagSelected'}}%>
+              </div>
+              <ul class="fr-tags-group" id="controleur_id_tag"></ul>
 
               <div class="fr-label fr-text--bold">Nature contrôle</div>
               <ul class="fr-tags-group fr-mt-1w">
                 <% ["Contrôle Economique et Financier", "Contrôle Budgétaire", "Contrôle Budgétaire EPSCP", "Autre"].each do |controle| %>
                   <li>
-                    <button class="fr-tag" aria-pressed="false" data-action="click->request#addTagSelected" data-field="nature_controle_field"><%= controle %></button>
+                    <button class="fr-tag" aria-pressed="false" data-action="click->request#addTagSelected" data-field="nature_controle_field" data-value="<%= controle %>"><%= controle %></button>
                   </li>
                 <% end  %>
               </ul>
