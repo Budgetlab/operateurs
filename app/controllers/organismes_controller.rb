@@ -4,20 +4,36 @@
 require 'google/cloud/storage'
 
 class OrganismesController < ApplicationController
+  BOX_TITLE_STRINGS = {
+    '2B2O' => ["actifs", "soumis au décret GBCP Titre III (actifs)","en comptabilité budgétaire (actifs)", "en hors comptabilité budgétaire (actifs)"],
+    'Controleur' => ["opérateurs de l’Etat (actifs)", "en Contrôle Budgétaire  (actifs)","en Contrôle Economique et Financier (actifs)", " en Contrôle Budgétaire EPSCP (actifs)"],
+    'Bureau Sectoriel' => ["opérateurs de l’Etat (actifs)", "controlés (actifs)","en comptabilité budgétaire (actifs)", "sous Tutelle financière MCP (actifs)"]
+  }.freeze
   before_action :authenticate_user!
-  before_action :set_famille, only: [:show]
+  before_action :set_famille, only: [:index, :show]
   def index
-    @organismes = liste_organisme
-    @repartition_organismes = set_total_repatition(@organismes)
-    @array_title = set_box_title
-    @pagy, @orga = pagy(@organismes)
-    @search_organismes = @organismes&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
-    # export excel
-    @liste_organismes = @organismes.where(statut: 'valide').includes(:bureau, :controleur, :ministere, :organisme_rattachements, organisme_ministeres: [:ministere], operateur: [:mission, :programme, operateur_programmes: [:programme]]).sort_by { |organisme| normalize_name(organisme.nom) } || []
-    filename = 'liste_organismes.xlsx'
+    # Fetch all organisms relevant to user's permissions, including those in extended families
+    @extended_family_organisms = fetch_extended_family_organisms
+    # Fetch only the organisms directly under the user's control
+    @controlled_organisms = fetch_controlled_organisms(@extended_family_organisms)
+    # Calculate the total repartition counts for these organisms and appropriate box titles
+    @organisms_counts_by_repartition = count_organisms_by_repartition_status(@controlled_organisms)
+    @box_titles = BOX_TITLE_STRINGS[@statut_user] || []
+    # Paginate the list of organisms
+    @pagy, @organisms_page = pagy(@extended_family_organisms)
+    # Prepare a sorted list of organisms for search
+    @search_organismes = @extended_family_organisms&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
+  end
+
+  def export_to_excel
+    # Prepare a sorted list of validated organisms for Excel export, including associated data
+    @organisms_to_export = Organisme.where(id: params[:ids]).includes(:bureau, :controleur, :ministere, :organisme_rattachements, organisme_ministeres: [:ministere], operateur: [:mission, :programme, operateur_programmes: [:programme]]).sort_by { |organisme| normalize_name(organisme.nom) } || []
+    filename = 'Liste_fiches_identite_organismes.xlsx'
     respond_to do |format|
-      format.html
-      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
+      format.any {
+        headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""
+        render xlsx: 'export_to_excel', filename: filename, disposition: 'attachment'
+      }
     end
   end
 
@@ -25,13 +41,13 @@ class OrganismesController < ApplicationController
     familles = !params[:famille].blank? && JSON.parse(params[:famille]).to_a.length.positive? ? JSON.parse(params[:famille]) : @liste_familles
     natures = !params[:nature].blank? && JSON.parse(params[:nature]).to_a.length.positive? ? JSON.parse(params[:nature]) : @liste_natures
 
-    organismes = liste_organisme.where(famille: familles, nature: natures)
-    pagy, orga = pagy(organismes)
+    organisms = fetch_extended_family_organisms.where(famille: familles, nature: natures)
+    pagy, organisms_page = pagy(organisms)
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
           turbo_stream.update('liste_organismes', partial: 'organismes/index_liste',
-                                                  locals: { organismes_all: organismes, organismes: orga, pagy: pagy })
+                                                  locals: { organisms_all: organisms, organisms_page: organisms_page, pagy: pagy })
         ]
       end
     end
@@ -249,40 +265,48 @@ class OrganismesController < ApplicationController
     end
   end
 
-  def liste_organisme
+  def fetch_extended_family_organisms
+    organisms = Organisme.all
     case @statut_user
-    when '2B2O'
-      Organisme.all
     when 'Controleur'
-      current_user.controleur_organismes.where(statut: 'valide')
+      organisms = organisms.where(statut: 'valide').where("controleur_id = :user_id OR famille IN (:familles)", user_id: current_user.id, familles: @familles)
     when 'Bureau Sectoriel'
-      current_user.bureau_organismes.where(statut: 'valide')
+      organisms = organisms.where(statut: 'valide').where("bureau_id = :user_id OR famille IN (:familles)", user_id: current_user.id, familles: @familles)
+    end
+    organisms
+  end
+
+  def fetch_controlled_organisms(organisms)
+    case @statut_user
+    when 'Controleur'
+      organisms.where(controleur_id: current_user)
+    when 'Bureau Sectoriel'
+      organisms.where(bureau_id: current_user)
+    else
+      organisms
     end
   end
 
-  def set_total_repatition(organismes)
+  def count_organisms_by_repartition_status(organismes)
     case @statut_user
     when '2B2O'
-      []
+      organismes_actifs = organismes.count { |el| el.etat == 'Actif' }
+      organismes_gbcp_3 = organismes.count { |el| el.etat == 'Actif' && el.gbcp_3 == true }
+      organismes_actifs_cb = organismes.count { |el| el.etat == 'Actif' && (el.comptabilite_budgetaire == 'Oui' ||  el.comptabilite_budgetaire == 'Oui mais adaptée') }
+      organismes_actifs_hcb = organismes.count { |el| el.etat == 'Actif' && el.comptabilite_budgetaire == 'Non' }
+      [organismes_actifs, organismes_gbcp_3, organismes_actifs_cb, organismes_actifs_hcb]
     when 'Controleur'
-      operateurs_actifs = organismes.joins(:operateur).where(etat: "Actif").where.not(operateurs: { id: nil }).count
+      operateurs_actifs = organismes.joins(:operateur).where(etat: 'Actif').where.not(operateurs: { id: nil }).count
       organismes_actifs_cb = organismes.count { |el| el.etat == 'Actif' && el.nature_controle == 'Contrôle Budgétaire'}
       organismes_actifs_cef = organismes.count { |el| el.etat == 'Actif' && el.nature_controle == 'Contrôle Economique et Financier' }
       organismes_actifs_epscp = organismes.count { |el| el.etat == 'Actif' && el.nature_controle == 'Contrôle Budgétaire EPSCP' }
       [operateurs_actifs, organismes_actifs_cb, organismes_actifs_cef, organismes_actifs_epscp]
     when 'Bureau Sectoriel'
-      []
-    end
-  end
-
-  def set_box_title
-    case @statut_user
-    when '2B2O'
-      []
-    when 'Controleur'
-      ["opérateurs de l’Etat (actifs)", "en Contrôle Budgétaire  (actifs)","en Contrôle Economique et Financier (actifs)", " en Contrôle Budgétaire EPSCP (actifs)"]
-    when 'Bureau Sectoriel'
-      []
+      operateurs_actifs = organismes.joins(:operateur).where(etat: 'Actif').where.not(operateurs: { id: nil }).count
+      organismes_actifs_controles = organismes.count { |el| el.etat == 'Actif' && !el.nature_controle.nil? }
+      organismes_actifs_cb = organismes.count { |el| el.etat == 'Actif' && (el.comptabilite_budgetaire == 'Oui' ||  el.comptabilite_budgetaire == 'Oui mais adaptée') }
+      organismes_actifs_tutelle = organismes.count { |el| el.etat == 'Actif' && el.tutelle_financiere == true }
+      [operateurs_actifs, organismes_actifs_controles, organismes_actifs_cb, organismes_actifs_tutelle]
     end
   end
 

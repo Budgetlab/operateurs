@@ -1,10 +1,10 @@
-<h2 class="fr-h3"><%= organismes_all.length %> résultats
+<h2 class="fr-h3"><%= organisms_all&.length %> résultats
   <div class="fr-download">
-    <p><%= link_to "/opera/organismes.xlsx", format: :xslx, class: "fr-link fr-download__link" do %>Télécharger les fiches d'identité <span class="fr-download__detail">Format .xlsx - < 1Mo</span><%end %></p>
+    <p><%= link_to export_to_excel_path(ids: organisms_all.map(&:id), format: 'xlsx'), class: "fr-link fr-download__link" do %>Télécharger les fiches d'identité <span class="fr-download__detail">Format .xlsx - < 1Mo</span><%end %></p>
   </div>
 </h2>
 
-<% organismes.each do |organisme|%>
+<% organisms_page.each do |organisme|%>
   <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
     <div class="fr-col-6 fr-col-lg-12">
       <ul><li><%= link_to organisme_path(organisme.id) do%><%= organisme.nom %><% if organisme.acronyme && !organisme.acronyme.blank? %> - <%= organisme.acronyme %><%end %><%end %></li></ul>
@@ -33,7 +33,7 @@
       <% end  %>
     </div>
   </div>
-  <hr class="fr-hr fr-mt-2w"/>
+  <hr class="fr-hr fr-py-1w"/>
 <%end %>
 
 <%== pagy_nav(pagy) %>

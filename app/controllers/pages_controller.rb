@@ -7,7 +7,7 @@ class PagesController < ApplicationController
   def index
     organismes_all = Organisme.all
     # liste des organismes accessibles depuis la barre de recherche en fonction du profil
-    search_organismes = filtre_recherche_organismes_user(organismes_all)
+    search_organismes = fetch_organisms_famille_extended(organismes_all)
     @search_organismes = search_organismes&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
     # derniers organismes modifiés
     organismes_user = filtre_organismes_user(organismes_all)
@@ -47,7 +47,7 @@ class PagesController < ApplicationController
 
   # filtre édition + lecture :récuperer les organismes qui lui appartiennent + ceux de la même famille (excluant aucune)
   # (attention si on ne prend que ceux des familles en commune on oublie les siens avec famille aucune)
-  def filtre_recherche_organismes_user(organismes_all)
+  def fetch_organisms_famille_extended(organismes_all)
     case @statut_user
     when '2B2O'
       organismes_all

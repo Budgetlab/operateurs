@@ -6,18 +6,15 @@
         <h1 class="fr-my-4w">Liste des organismes </h1>
       </div>
     </div>
-    <div>
-      <%= render 'organismes/form_search' %>
-    </div>
 
-
+    <h2 class="fr-h4 fr-my-0w">Mon périmètre [<%= @controlled_organisms&.length %>]</h2>
     <div class="fr-grid-row fr-grid-row--gutters">
       <% class_card = ["fr-card--green-menthe", "fr-card--orange", "fr-card--grey", "fr-card--yellow-moutarde"] %>
-      <% @array_title.each_with_index do |title,i| %>
+      <% @box_titles.each_with_index do |title, i| %>
       <div class="fr-col-12 fr-col-lg-3">
         <div class="fr-card <%= class_card[i] %> fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
-            <p class="fr-text--lg fr-text--bold fr-mb-0 fr-text--center"><%= pluralize(@repartition_organismes[i] ,'Organisme', plural: 'Organismes') %></p>
+            <p class="fr-text--lg fr-text--bold fr-mb-0 fr-text--center"><%= pluralize(@organisms_counts_by_repartition[i] ,'Organisme', plural: 'Organismes') %></p>
             <p class="fr-text--sm fr-mb-0 fr-text--center"><%= title %></p>
           </div>
         </div>
@@ -25,7 +22,13 @@
       <% end %>
     </div>
 
-    <div class="fr-grid-row fr-grid-row--gutters fr-my-4w">
+    <h2 class="fr-h3 fr-my-4w">Liste des organismes périmètre étendu  [<%= @extended_family_organisms&.length %>]</h2>
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-2w">
+      <div class="fr-col-12 fr-col-lg-9">
+      <%= render 'organismes/form_search' %>
+      </div>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
       <div class="fr-col-12 fr-col-lg-4">
         <nav role="navigation" class="fr-sidemenu fr-sidemenu--sticky-full-height fr-mb-0-5v">
           <div class="fr-sidemenu__inner" data-controller="request">
@@ -79,7 +82,7 @@
       </div>
       <div class="fr-col-12 fr-col-lg-8">
         <div id="liste_organismes">
-        <%= render partial: 'organismes/index_liste', locals: {organismes_all: @organismes, organismes: @orga, pagy: @pagy} %>
+        <%= render partial: 'organismes/index_liste', locals: {organisms_all: @extended_family_organisms, organisms_page: @organisms_page, pagy: @pagy} %>
         </div>
       </div>
     </div>
