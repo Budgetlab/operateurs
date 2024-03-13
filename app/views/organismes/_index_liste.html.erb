@@ -1,0 +1,39 @@
+<h2 class="fr-h3"><%= organismes_all.length %> résultats
+  <div class="fr-download">
+    <p><%= link_to "/opera/organismes.xlsx", format: :xslx, class: "fr-link fr-download__link" do %>Télécharger les fiches d'identité <span class="fr-download__detail">Format .xlsx - < 1Mo</span><%end %></p>
+  </div>
+</h2>
+
+<% organismes.each do |organisme|%>
+  <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+    <div class="fr-col-6 fr-col-lg-12">
+      <ul><li><%= link_to organisme_path(organisme.id) do%><%= organisme.nom %><% if organisme.acronyme && !organisme.acronyme.blank? %> - <%= organisme.acronyme %><%end %><%end %></li></ul>
+      <% if organisme.statut == "valide" %>
+        <div><ul class="fr-tags-group">
+          <li>
+            <p class="fr-tag fr-tag--sm <% if organisme.etat == 'Actif'%>fr-tag--green-menthe<%elsif organisme.etat == 'En cours de création'%>fr-tag--warning<%end %>"><%= organisme.etat %></p>
+          </li>
+          <li>
+            <p class="fr-tag fr-tag--sm">Famille : <%= organisme.famille %></p>
+          </li>
+          <li>
+            <p class="fr-tag fr-tag--sm">Nature : <%= organisme.nature %></p>
+          </li>
+          <li>
+            <p class="fr-tag fr-tag--sm">Opérateur : <% if organisme.operateur %><%= format_boolean(organisme.operateur&.operateur_n) %><%else %>Non<%end %></p>
+          </li>
+        </ul></div>
+      <% else %>
+        <div><p class="fr-badge fr-badge--yellow-moutarde fr-mr-1w">Brouillon</p><p class="fr-badge fr-badge--yellow-moutarde fr-mr-1w">Etape <%= organisme.statut %>/6</p>
+          <ul class="fr-btns-group fr-btns-group--inline">
+            <li><%= link_to edit_organisme_path(organisme.id), class: "fr-btn fr-my-0 fr-btn--sm" do%>Reprendre le brouillon<%end %></li>
+            <li><%= link_to organisme_path(organisme.id),data: { "turbo-method": :delete}, class: "fr-btn fr-btn--secondary fr-btn--sm fr-my-0" do%>Supprimer<%end %></li>
+          </ul>
+        </div>
+      <% end  %>
+    </div>
+  </div>
+  <hr class="fr-hr fr-mt-2w"/>
+<%end %>
+
+<%== pagy_nav(pagy) %>

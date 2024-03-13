@@ -118,6 +118,20 @@ select:disabled {
   --hover: var(--background-contrast-green-archipel-hover);
   --active: var(--background-contrast-green-archipel-active);
 }
+.fr-card--green-menthe {
+  color: var(--text-label-green-menthe);
+  background-color: var(--background-contrast-green-menthe) !important;
+  --idle: transparent;
+  --hover: var(--background-contrast-green-menthe-hover);
+  --active: var(--background-contrast-green-menthe-active);
+}
+.fr-card--yellow-moutarde {
+  color: var(--text-label-yellow-moutarde);
+  background-color: var(--background-contrast-yellow-moutarde) !important;
+  --idle: transparent;
+  --hover: var(--background-contrast-yellow-moutarde-hover);
+  --active: var(--background-contrast-yellow-moutarde-active);
+}
 /**
   * TABLES
   */

@@ -7,19 +7,33 @@ class OrganismesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_famille, only: [:show]
   def index
-    organismes = liste_organisme
-    @organismes = organismes.sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:id, :nom, :statut, :etat, :acronyme)
-    @organismes_actifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Actif' }
-    @organismes_inactifs = @organismes.select { |el| el[2] == 'valide' && el[3] == 'Inactif' }
-    @organismes_creation = @organismes.select { |el| el[2] == 'valide' && el[3] == 'En cours de création' }
-    @organismes_brouillon = @organismes.reject { |el| el[2] == 'valide' }
-    @search_organismes = organismes&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
+    @organismes = liste_organisme
+    @repartition_organismes = set_total_repatition(@organismes)
+    @array_title = set_box_title
+    @pagy, @orga = pagy(@organismes)
+    @search_organismes = @organismes&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
     # export excel
-    @liste_organismes = organismes.where(statut: 'valide').includes(:bureau, :controleur, :ministere, :organisme_rattachements, organisme_ministeres: [:ministere], operateur: [:mission, :programme, operateur_programmes: [:programme]]).sort_by { |organisme| normalize_name(organisme.nom) } || []
+    @liste_organismes = @organismes.where(statut: 'valide').includes(:bureau, :controleur, :ministere, :organisme_rattachements, organisme_ministeres: [:ministere], operateur: [:mission, :programme, operateur_programmes: [:programme]]).sort_by { |organisme| normalize_name(organisme.nom) } || []
     filename = 'liste_organismes.xlsx'
     respond_to do |format|
       format.html
       format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
+    end
+  end
+
+  def filter_organismes
+    familles = !params[:famille].blank? && JSON.parse(params[:famille]).to_a.length.positive? ? JSON.parse(params[:famille]) : @liste_familles
+    natures = !params[:nature].blank? && JSON.parse(params[:nature]).to_a.length.positive? ? JSON.parse(params[:nature]) : @liste_natures
+
+    organismes = liste_organisme.where(famille: familles, nature: natures)
+    pagy, orga = pagy(organismes)
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.update('liste_organismes', partial: 'organismes/index_liste',
+                                                  locals: { organismes_all: organismes, organismes: orga, pagy: pagy })
+        ]
+      end
     end
   end
 
@@ -246,22 +260,48 @@ class OrganismesController < ApplicationController
     end
   end
 
+  def set_total_repatition(organismes)
+    case @statut_user
+    when '2B2O'
+      []
+    when 'Controleur'
+      operateurs_actifs = organismes.joins(:operateur).where(etat: "Actif").where.not(operateurs: { id: nil }).count
+      organismes_actifs_cb = organismes.count { |el| el.etat == 'Actif' && el.nature_controle == 'Contrôle Budgétaire'}
+      organismes_actifs_cef = organismes.count { |el| el.etat == 'Actif' && el.nature_controle == 'Contrôle Economique et Financier' }
+      organismes_actifs_epscp = organismes.count { |el| el.etat == 'Actif' && el.nature_controle == 'Contrôle Budgétaire EPSCP' }
+      [operateurs_actifs, organismes_actifs_cb, organismes_actifs_cef, organismes_actifs_epscp]
+    when 'Bureau Sectoriel'
+      []
+    end
+  end
+
+  def set_box_title
+    case @statut_user
+    when '2B2O'
+      []
+    when 'Controleur'
+      ["opérateurs de l’Etat (actifs)", "en Contrôle Budgétaire  (actifs)","en Contrôle Economique et Financier (actifs)", " en Contrôle Budgétaire EPSCP (actifs)"]
+    when 'Bureau Sectoriel'
+      []
+    end
+  end
+
   def update_organisme_rattachements(organismes_to_link)
     @organisme.organisme_rattachements.destroy_all if @organisme.etat != 'Inactif'
-    if organismes_to_link && organismes_to_link.map(&:to_i).reject { |element| element == 0 } != @organisme.organisme_rattachements.pluck(:organisme_destination_id)
+    if organismes_to_link && organismes_to_link.map(&:to_i).reject { |element| element.zero? } != @organisme.organisme_rattachements.pluck(:organisme_destination_id)
       @organisme.organisme_rattachements.destroy_all
       selected_organismes = organismes_to_link || [] # Récupérer les valeurs cochées
-      selected_organismes.map(&:to_i).reject { |element| element == 0 }.each do |organisme_id|
+      selected_organismes.map(&:to_i).reject { |element| element.zero? }.each do |organisme_id|
         @organisme.organisme_rattachements.create(organisme_destination_id: organisme_id)
       end
     end
   end
 
   def update_organisme_ministeres(ministeres_to_link)
-    if ministeres_to_link && ministeres_to_link.map(&:to_i).reject { |element| element == 0 } != @organisme.organisme_ministeres.pluck(:ministere_id)
+    if ministeres_to_link && ministeres_to_link.map(&:to_i).reject { |element| element.zero? } != @organisme.organisme_ministeres.pluck(:ministere_id)
       @organisme.organisme_ministeres.destroy_all
       selected_ministeres = ministeres_to_link || []
-      selected_ministeres.map(&:to_i).reject { |element| element == 0 }.each do |ministere_id|
+      selected_ministeres.map(&:to_i).reject { |element| element.zero? }.each do |ministere_id|
         @organisme.organisme_ministeres.create(ministere_id: ministere_id)
       end
     end
@@ -307,8 +347,8 @@ class OrganismesController < ApplicationController
           modifications << { champ: champ.to_s, nom: champs_supp_texte[i], ancienne_valeur: check_format(@organisme[champ]), nouvelle_valeur: organisme_params[champ].to_s }
         end
       end
-      if ministeres_to_link && ministeres_to_link.map(&:to_i).reject { |element| element == 0 } != @organisme.organisme_ministeres.pluck(:ministere_id)
-        nouvelle_valeur = ministeres_to_link.map(&:to_i).reject { |element| element == 0 }
+      if ministeres_to_link && ministeres_to_link.map(&:to_i).reject { |element| element.zero? } != @organisme.organisme_ministeres.pluck(:ministere_id)
+        nouvelle_valeur = ministeres_to_link.map(&:to_i).reject { |element| element.zero? }
         modifications << { champ: 'ministeres', nom: 'Ministère•s co-tutelle', ancienne_valeur: @organisme.organisme_ministeres.pluck(:ministere_id), nouvelle_valeur: nouvelle_valeur }
       end
     end

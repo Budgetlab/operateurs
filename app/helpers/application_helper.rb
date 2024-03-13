@@ -2,6 +2,7 @@
 
 # Helper Application
 module ApplicationHelper
+  include Pagy::Frontend
   def format_boolean(string)
     case string
     when nil, ''

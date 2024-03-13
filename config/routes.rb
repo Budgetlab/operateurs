@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   post '/filtre_suivi' => 'chiffres#filtre_suivi'
   post '/open_phase' => 'chiffres#open_phase'
   get '/suivi-remplissage' => 'chiffres#suivi_remplissage'
+  post '/filter_organismes' => 'organismes#filter_organismes'
   post '/import_organismes' => 'organismes#import'
   get '/organismes_ajout' => 'organismes#organismes_ajout'
   post '/import_operateurs' => 'operateurs#import'
