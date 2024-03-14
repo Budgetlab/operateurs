@@ -3,6 +3,7 @@
 require 'pagy/extras/frontend_helpers'
 
 class Pagy
+  module Extras
   module Custom
     def pagy_nav_custom(pagy, link_extra: '')
       puts pagy.inspect
@@ -36,5 +37,6 @@ class Pagy
       html << %(</ul></nav>)
     end
   end
-  Frontend.prepend Custom
+  end
+  Frontend.prepend Extras::Custom
 end
