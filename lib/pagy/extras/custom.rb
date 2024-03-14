@@ -1,10 +1,9 @@
 # lib/pagy/extras/custom.rb
 
-require 'pagy/frontend'
+require 'pagy/extras/frontend_helpers'
 
 class Pagy
-  module Frontend
-
+  module Custom
     def pagy_nav_custom(pagy, link_extra: '')
       puts pagy.inspect
       html = %(<nav role="navigation" class="fr-pagination" aria-label="Pagination"><ul class="fr-pagination__list">)
@@ -37,4 +36,5 @@ class Pagy
       html << %(</ul></nav>)
     end
   end
+  Frontend.prepend Custom
 end
