@@ -28,20 +28,20 @@
       <%= render 'organismes/form_search' %>
       </div>
     </div>
-    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w" data-controller="request">
       <div class="fr-col-12 fr-col-lg-4">
         <nav role="navigation" class="fr-sidemenu fr-sidemenu--sticky-full-height fr-mb-0-5v">
-          <div class="fr-sidemenu__inner" data-controller="request">
+          <div class="fr-sidemenu__inner">
             <div class="fr-sidemenu__title">Affiner la recherche</div>
 
-            <%= form_with(url: apply_filters_to_organisms_path, method: :post, data: {'request-target': 'form'}) do |f|%>
-              <%= f.hidden_field :etat, id: 'etat_field'%>
-              <%= f.hidden_field :statut, id: 'statut_field'%>
-              <%= f.hidden_field :famille, id: 'famille_field'%>
-              <%= f.hidden_field :nature, id: 'nature_field'%>
-              <%= f.hidden_field :controleur_id, id: 'controleur_id_field'%>
-              <%= f.hidden_field :nature_controle, id: 'nature_controle_field'%>
-              <%= f.hidden_field :operateur, id: 'operateur_field'%>
+            <%= form_with(url: organismes_path, method: :get, data: {'request-target': 'form', action: "submit->request#submitFilter"}) do |f|%>
+              <%= f.hidden_field :etat, id: 'etat_field', data: { 'request-target': 'filterField' }%>
+              <%= f.hidden_field :statut, id: 'statut_field', data: { 'request-target': 'filterField' }%>
+              <%= f.hidden_field :famille, id: 'famille_field', data: { 'request-target': 'filterField' }%>
+              <%= f.hidden_field :nature, id: 'nature_field', data: { 'request-target': 'filterField' }%>
+              <%= f.hidden_field :controleur_id, id: 'controleur_id_field', data: { 'request-target': 'filterField' }%>
+              <%= f.hidden_field :nature_controle, id: 'nature_controle_field', data: { 'request-target': 'filterField' }%>
+              <%= f.hidden_field :operateur, id: 'operateur_field', data: { 'request-target': 'filterField' }%>
               <div class="fr-label fr-text--bold">État</div>
               <ul class="fr-tags-group fr-mt-1w">
                 <% ["Actif", "Inactif", "En cours de création"].each do |etat| %>
@@ -58,13 +58,23 @@
 
               <div class="fr-select-group">
                 <label for="famille_list" class="fr-label fr-text--bold">Famille</label>
-                <%= select_tag :familles, options_for_select([["- sélectionner -", ""]] + @liste_familles.map { |famille| [famille, famille] }), {id:"famille_list",class:"fr-select", data: {field: 'famille_field',tag: 'famille_tag', action: 'change->request#addTagSelected'}}%>
+                <select id="famille_list" class="fr-select" data-field='famille_field' data-tag='famille_tag' data-action='change->request#addTagSelected'>
+                  <option value="">- sélectionner -</option>
+                  <% @liste_familles.each do |famille| %>
+                    <option value="<%= famille %>"><%= famille %></option>
+                  <% end %>
+                </select>
               </div>
               <ul class="fr-tags-group" id="famille_tag"></ul>
 
               <div class="fr-select-group">
                 <label for="nature_list" class="fr-label fr-text--bold">Nature</label>
-                <%= select_tag :natures, options_for_select([["- sélectionner -", ""]] + @liste_natures.map { |nature| [nature, nature] }), {id:"nature_list",class:"fr-select", data: {field: 'nature_field',tag: 'nature_tag', action: 'change->request#addTagSelected'}}%>
+                <select id="nature_list" class="fr-select" data-field='nature_field' data-tag='nature_tag' data-action='change->request#addTagSelected'>
+                  <option value="">- sélectionner -</option>
+                  <% @liste_natures.each do |nature| %>
+                    <option value="<%= nature %>"><%= nature %></option>
+                  <% end %>
+                </select>
               </div>
               <ul class="fr-tags-group" id="nature_tag"></ul>
 
@@ -80,7 +90,12 @@
 
               <div class="fr-select-group">
                 <label for="controleur_id_list" class="fr-label fr-text--bold">Contrôleur</label>
-                <%= select_tag :controleurs, options_for_select([["- sélectionner -", ""]] + @controleur_name_id_pairs), {id:"controleur_id_list",class:"fr-select", data: {field: 'controleur_id_field',tag: 'controleur_id_tag', action: 'change->request#addTagSelected'}}%>
+                <select id="controleur_id_list" class="fr-select" data-field='controleur_id_field' data-tag='controleur_id_tag' data-action='change->request#addTagSelected'>
+                  <option value="">- sélectionner -</option>
+                  <% @controleur_name_id_pairs.each do |pair| %>
+                    <option value="<%= pair[1] %>"><%= pair[0] %></option>
+                  <% end %>
+                </select>
               </div>
               <ul class="fr-tags-group" id="controleur_id_tag"></ul>
 
@@ -97,8 +112,8 @@
         </nav>
       </div>
       <div class="fr-col-12 fr-col-lg-8">
-        <div id="liste_organismes">
-        <%= render partial: 'organismes/index_liste', locals: {organisms_all: @extended_family_organisms, organisms_page: @organisms_page, pagy: @pagy} %>
+        <div id="liste_organismes" data-request-target="list">
+        <%= render partial: 'organismes/request_organisms_list', locals: { organisms_all: @extended_family_organisms, organisms_page: @organisms_page, pagy: @pagy} %>
         </div>
       </div>
     </div>

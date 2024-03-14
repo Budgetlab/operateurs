@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
     static get targets() {
-        return ["form"];
+        return ["form", "list", "filterField"];
     }
 
     connect() {
@@ -72,5 +72,53 @@ export default class extends Controller {
         }
         this.formTarget.requestSubmit()
     }
+
+    submitFilter(event){
+
+        event.preventDefault();
+        // ADD THIS: Reset the 'p' parameter in the URL
+        let params = new URLSearchParams(location.search);
+        params.set('p', 1);
+        history.replaceState(null, '', `${location.pathname}?${params}`);
+
+        let url = this.formTarget.action + "?" + new URLSearchParams(new FormData(this.formTarget)).toString();
+
+        fetch(url, {
+            headers: {
+                "X-Requested-With": "XMLHttpRequest"
+            }
+        })
+            .then(response => response.text())
+            .then(html => {
+                this.listTarget.innerHTML = html;
+            });
+    }
+
+    paginate(event){
+
+        let filterActivated = this.filterFieldTargets.some(field => field.value !== '')
+        if (filterActivated){
+            event.preventDefault()
+            const url = new URL(event.target.href) // The href contains the page number
+            // Retrieve active page parameter
+            let params = new URLSearchParams(url.search)
+            let page = params.get('p')
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    "Accept": "text/html"
+                },
+            })
+                .then(response => response.text())
+                .then(html => this.listTarget.innerHTML = html)
+
+            // Modify the current URL
+            let currentParams = new URLSearchParams(location.search);
+            currentParams.set('p', page)
+            history.replaceState(null, '', `${location.pathname}?${currentParams}`);
+
+        }
+    }
+
 
 }

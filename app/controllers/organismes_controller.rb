@@ -19,11 +19,19 @@ class OrganismesController < ApplicationController
     # Calculate the total repartition counts for these organisms and appropriate box titles
     @organisms_counts_by_repartition = count_organisms_by_repartition_status(@controlled_organisms)
     @box_titles = BOX_TITLE_STRINGS[@statut_user] || []
-    # Paginate the list of organisms
-    @pagy, @organisms_page = pagy(@extended_family_organisms)
     # Prepare a sorted list of organisms for search
     @search_organismes = @extended_family_organisms&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
     @controleur_name_id_pairs = User.where(statut: ['Controleur', '2B2O']).order(:nom).pluck(:nom, :id)
+    if request.xhr? || params[:etat] # AJAX request
+      filtered_organisms = apply_filters_to_organisms(@extended_family_organisms)
+      # Paginate the list of organisms
+      pagy, organisms_page = pagy(filtered_organisms)
+      render partial: 'organismes/request_organisms_list', locals: { organisms_all: filtered_organisms, organisms_page: organisms_page, pagy: pagy}
+    else
+      # regular HTML response
+      # Paginate the list of organisms
+      @pagy, @organisms_page = pagy(@extended_family_organisms)
+    end
   end
 
   def export_to_excel
@@ -35,38 +43,6 @@ class OrganismesController < ApplicationController
         headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""
         render xlsx: 'export_to_excel', filename: filename, disposition: 'attachment'
       }
-    end
-  end
-
-  def apply_filters_to_organisms
-    # Initialize filters from params
-    filters = {
-      etat: parse_params(params[:etat], nil),
-      famille: parse_params(params[:famille], nil),
-      nature: parse_params(params[:nature], nil),
-      controleur_id: parse_params(params[:controleur_id], nil),
-      nature_controle: parse_params(params[:nature_controle], nil),
-    }
-    statut_brouillon = parse_params(params[:statut], nil)&.include?('Brouillon')
-    # Start with all organisms
-    filtered_organisms = fetch_extended_family_organisms
-    # Apply filters if selections are present
-    filters.each do |key, value|
-      filtered_organisms = filtered_organisms.where(key => value) if value.present?
-    end
-    # Filter only on statut brouillon if brouillon selected
-    filtered_organisms = filtered_organisms.where.not(statut: 'valide') if statut_brouillon
-    # Filters on operateur
-    operateur_filter = parse_params(params[:operateur], nil)
-    filtered_organisms = filter_operateur(filtered_organisms, operateur_filter) if operateur_filter&.length == 1
-    pagy, organisms_page = pagy(filtered_organisms)
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.update('liste_organismes', partial: 'organismes/index_liste',
-                                                  locals: { organisms_all: filtered_organisms, organisms_page: organisms_page, pagy: pagy })
-        ]
-      end
     end
   end
 
@@ -339,6 +315,31 @@ class OrganismesController < ApplicationController
     organisms_active_tutelle = active_organisms.count { |el| el.tutelle_financiere == true }
     [active_operators, organisms_active_controlled, organisms_active_cb, organisms_active_tutelle]
   end
+
+  def apply_filters_to_organisms(organisms)
+    # Initialize filters from params
+    filters = {
+      etat: parse_params(params[:etat], nil),
+      famille: parse_params(params[:famille], nil),
+      nature: parse_params(params[:nature], nil),
+      controleur_id: parse_params(params[:controleur_id], nil),
+      nature_controle: parse_params(params[:nature_controle], nil),
+    }
+    statut_brouillon = parse_params(params[:statut], nil)&.include?('Brouillon')
+    # Start with all organisms
+    filtered_organisms = organisms
+    # Apply filters if selections are present
+    filters.each do |key, value|
+      filtered_organisms = filtered_organisms.where(key => value) if value.present?
+    end
+    # Filter only on statut brouillon if brouillon selected
+    filtered_organisms = filtered_organisms.where.not(statut: 'valide') if statut_brouillon
+    # Filters on operateur
+    operateur_filter = parse_params(params[:operateur], nil)
+    filtered_organisms = filter_operateur(filtered_organisms, operateur_filter) if operateur_filter&.length == 1
+    filtered_organisms
+  end
+
 
   # This helper method is used to parse params and return the value if it exists,
   # otherwise returns the provided default list
