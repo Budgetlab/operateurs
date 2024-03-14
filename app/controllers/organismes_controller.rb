@@ -46,10 +46,6 @@ class OrganismesController < ApplicationController
     end
   end
 
-  def organismes_ajout
-    redirect_to root_path and return unless @statut_user == '2B2O'
-  end
-
   def show
     @organisme = Organisme.includes(:ministere, :bureau, :controleur, :organisme_ministeres).find(params[:id])
     est_controleur = current_user == @organisme.controleur
@@ -159,16 +155,6 @@ class OrganismesController < ApplicationController
     redirect_to root_path and return unless @statut_user == '2B2O'
 
     @organisme = Organisme.find(params[:id]).destroy
-    respond_to do |format|
-      format.turbo_stream { redirect_to organismes_path }
-    end
-  end
-
-  def import
-    redirect_to root_path and return unless @statut_user == '2B2O'
-
-    file = params[:file]
-    Organisme.import(file) if file.present?
     respond_to do |format|
       format.turbo_stream { redirect_to organismes_path }
     end
