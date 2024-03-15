@@ -252,7 +252,7 @@ class OrganismesController < ApplicationController
     when 'Bureau Sectoriel'
       organisms = organisms.where(statut: 'valide').where("bureau_id = :user_id OR famille IN (:familles)", user_id: current_user.id, familles: @familles)
     end
-    organisms
+    organisms.order(:nom)
   end
 
   def fetch_controlled_organisms(organisms)
