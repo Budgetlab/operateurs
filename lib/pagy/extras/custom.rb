@@ -19,10 +19,10 @@ class Pagy
         pagy.series.each do |item|
           html.concat case item
                       when Integer
-                        link = pagy_link_proc(pagy, link_extra: 'class="fr-pagination__link" data-action="click->request#paginate"')
+                        link = pagy_link_proc(pagy, link_extra: 'class="fr-pagination__link"')
                         %(<li>#{link.call item}</li>)
                       when String
-                        link = pagy_link_proc(pagy, link_extra: item == pagy.page ? 'class="fr-pagination__link" aria-current="page"' : 'class="fr-pagination__link" data-action="click->request#paginate"')
+                        link = pagy_link_proc(pagy, link_extra: item == pagy.page ? 'class="fr-pagination__link" aria-current="page"' : 'class="fr-pagination__link"')
                         %(<li>#{link.call item}</li>)
                       else %(<li><a class="fr-pagination__link fr-displayed-lg">…</a></li>)
                       end

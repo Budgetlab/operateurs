@@ -22,11 +22,11 @@ class OrganismesController < ApplicationController
     # Prepare a sorted list of organisms for search
     @search_organismes = @extended_family_organisms&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
     @controleur_name_id_pairs = User.where(statut: ['Controleur', '2B2O']).order(:nom).pluck(:nom, :id)
-    if request.xhr? || params[:etat] # AJAX request
-      filtered_organisms = apply_filters_to_organisms(@extended_family_organisms)
+    if params[:etat] # request.xhr? || AJAX request
+      @extended_family_organisms = apply_filters_to_organisms(@extended_family_organisms)
       # Paginate the list of organisms
-      pagy, organisms_page = pagy(filtered_organisms)
-      render partial: 'organismes/request_organisms_list', locals: { organisms_all: filtered_organisms, organisms_page: organisms_page, pagy: pagy}
+      @pagy, @organisms_page = pagy(@extended_family_organisms)
+      # render partial: 'organismes/request_organisms_list', locals: { organisms_all: filtered_organisms, organisms_page: organisms_page, pagy: pagy}
     else
       # regular HTML response
       # Paginate the list of organisms
