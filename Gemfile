@@ -56,6 +56,7 @@ gem 'google-cloud-storage'
 gem 'pagy'
 gem 'rails_autolink'
 gem 'rails-i18n'
+gem 'ransack'
 gem 'roo', '~> 2.10.0'
 
 group :development, :test do

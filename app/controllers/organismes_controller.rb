@@ -13,25 +13,28 @@ class OrganismesController < ApplicationController
   before_action :set_famille, only: %i[index apply_filters_to_organisms show]
   def index
     # Fetch all organisms relevant to user's permissions, including those in extended families
-    @extended_family_organisms = fetch_extended_family_organisms
+    extended_family_organisms = fetch_extended_family_organisms
     # Fetch only the organisms directly under the user's control
-    @controlled_organisms = fetch_controlled_organisms(@extended_family_organisms)
+    @controlled_organisms = fetch_controlled_organisms(extended_family_organisms)
     # Calculate the total repartition counts for these organisms and appropriate box titles
     @organisms_counts_by_repartition = count_organisms_by_repartition_status(@controlled_organisms)
     @box_titles = BOX_TITLE_STRINGS[@statut_user] || []
     # Prepare a sorted list of organisms for search
-    @search_organismes = @extended_family_organisms&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
+    @search_organismes = extended_family_organisms&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
     @controleur_name_id_pairs = User.where(statut: ['Controleur', '2B2O']).order(:nom).pluck(:nom, :id)
-    if params[:etat] # request.xhr? || AJAX request
-      @extended_family_organisms = apply_filters_to_organisms(@extended_family_organisms)
+    @q = extended_family_organisms.ransack(params[:q])
+    @extended_family_organisms = @q.result.includes(:bureau, :chiffres, :controleur, :ministere, :modifications, :operateur, :organisme_destinations, :organisme_ministeres, :organisme_rattachements)
+    @pagy, @organisms_page = pagy(@extended_family_organisms)
+    # if params[:xxx] # request.xhr? || AJAX request
+      # @extended_family_organisms = apply_filters_to_organisms(@extended_family_organisms)
       # Paginate the list of organisms
-      @pagy, @organisms_page = pagy(@extended_family_organisms)
+      # @pagy, @organisms_page = pagy(@extended_family_organisms)
       # render partial: 'organismes/request_organisms_list', locals: { organisms_all: filtered_organisms, organisms_page: organisms_page, pagy: pagy}
-    else
+      # else
       # regular HTML response
       # Paginate the list of organisms
-      @pagy, @organisms_page = pagy(@extended_family_organisms)
-    end
+      # @pagy, @organisms_page = pagy(@extended_family_organisms)
+    # end
   end
 
   def export_to_excel

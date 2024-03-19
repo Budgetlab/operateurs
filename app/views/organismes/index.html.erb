@@ -34,8 +34,16 @@
           <div class="fr-sidemenu__inner">
             <div class="fr-sidemenu__title">Affiner la recherche</div>
             <% if params %><div class="fr-mb-2w"><%= link_to organismes_path, class:"fr-btn fr-btn--sm fr-btn--secondary fr-btn--icon-right fr-icon-refresh-line" do %>Réinitialiser les filtres<%end %></div><%end %>
+            <%= search_form_for @q, data: {turbo_frame: 'results', turbo_action: 'advance'} do |f| %>
+              <%= f.label :etat, class:"fr-label fr-text--bold"  %>
+              <ul class="fr-tags-group fr-mt-1w">
+                <li><label type="button" class="fr-tag"><%= check_box_tag('q[etat_in][]', 'Actif') %>Actif</label></li>
+                <li><%= check_box_tag('q[etat_in][]', 'Inactif') %>Inactif</li>
+              </ul>
+              <%= f.submit %>
+            <% end %>
 
-            <%= form_with(url: organismes_path, method: :get, data: {'request-target': 'form'}) do |f|%>
+            <%= form_with(url: organismes_path, method: :get, data: {'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance'}) do |f|%>
               <%= f.hidden_field :etat, id: 'etat_field', data: { 'request-target': 'filterField' }, value: params[:etat]%>
               <%= f.hidden_field :statut, id: 'statut_field', data: { 'request-target': 'filterField' }, value: params[:statut]%>
               <%= f.hidden_field :famille, id: 'famille_field', data: { 'request-target': 'filterField' }, value: params[:famille]%>
@@ -47,12 +55,12 @@
               <ul class="fr-tags-group fr-mt-1w">
                 <% ["Actif", "Inactif", "En cours de création"].each do |etat| %>
                 <li>
-                  <button class="fr-tag" aria-pressed="<%= params[:etat].include?(etat) ? 'true' : 'false' %>" data-action="<%= params[:etat].include?(etat) ? 'click->request#removeTagSelected' : 'click->request#addTagSelected' %>" data-field="etat_field" data-value="<%= etat %>"><%= etat %></button>
+                  <button class="fr-tag" aria-pressed="<%= params[:etat].present? && JSON.parse(params[:etat]).include?(etat) ? 'true' : 'false' %>" data-action="<%= params[:etat].present? && JSON.parse(params[:etat]).include?(etat) ? 'click->request#removeTagSelected' : 'click->request#addTagSelected' %>" data-field="etat_field" data-value="<%= etat %>"><%= etat %></button>
                 </li>
                 <% end  %>
                 <% if @statut_user == '2B2O' %>
                   <li>
-                    <button class="fr-tag" aria-pressed="<%= params[:etat].include?('Brouillon') ? 'true' : 'false' %>" data-action="<%= params[:etat].include?('Brouillon') ? 'click->request#removeTagSelected' : 'click->request#addTagSelected' %>" data-field="statut_field" data-value="Brouillon">Brouillon</button>
+                    <button class="fr-tag" aria-pressed="<%= params[:etat].present? && JSON.parse(params[:etat]).include?('Brouillon') ? 'true' : 'false' %>" data-action="<%= params[:etat].present? && JSON.parse(params[:etat]).include?('Brouillon') ? 'click->request#removeTagSelected' : 'click->request#addTagSelected' %>" data-field="statut_field" data-value="Brouillon">Brouillon</button>
                   </li>
                 <% end  %>
               </ul>
@@ -69,7 +77,7 @@
               <ul class="fr-tags-group" id="famille_tag">
               <% if params[:famille].present? %>
                 <% JSON.parse(params[:famille]).each do |famille| %>
-                  <li data-action="click->request#removeTagSelected" data-field="famille_field" data-value="<%= famille %>"><button class="fr-tag fr-tag--sm fr-tag--dismiss" aria-label="Retirer"><%= famille %></button></li>
+                  <li data-action="click->request#removeTagSelected" data-field="famille_field" data-value="<%= famille %>"><button class="fr-tag fr-tag--dismiss" aria-label="Retirer"><%= famille %></button></li>
                 <% end  %>
               <% end %>
               </ul>
@@ -86,7 +94,7 @@
               <ul class="fr-tags-group" id="nature_tag">
               <% if params[:nature].present? %>
                 <% JSON.parse(params[:nature]).each do |nature| %>
-                    <li data-action="click->request#removeTagSelected" data-field="nature_field" data-value="<%= nature %>"><button class="fr-tag fr-tag--sm fr-tag--dismiss" aria-label="Retirer"><%= nature %></button></li>
+                    <li data-action="click->request#removeTagSelected" data-field="nature_field" data-value="<%= nature %>"><button class="fr-tag fr-tag--dismiss" aria-label="Retirer"><%= nature %></button></li>
                 <% end %>
               <% end %>
               </ul>
@@ -94,10 +102,10 @@
               <div class="fr-label fr-text--bold">Opérateur</div>
               <ul class="fr-tags-group fr-mt-1w">
                 <li>
-                  <button class="fr-tag" aria-pressed="<%= params[:operateur].include?("Oui") ? 'true' : 'false' %>" data-action="<%= params[:operateur].include?("Oui") ? 'click->request#removeTagSelected' : 'click->request#addTagSelected' %>" data-field="operateur_field" data-value="Oui">Oui</button>
+                  <button class="fr-tag" aria-pressed="<%= params[:operateur].present? && JSON.parse(params[:operateur]).include?("Oui") ? 'true' : 'false' %>" data-action="<%= params[:operateur].present? && JSON.parse(params[:operateur]).include?("Oui") ? 'click->request#removeTagSelected' : 'click->request#addTagSelected' %>" data-field="operateur_field" data-value="Oui">Oui</button>
                 </li>
                 <li>
-                  <button class="fr-tag" aria-pressed="<%= params[:operateur].include?("Non") ? 'true' : 'false' %>" data-action="<%= params[:operateur].include?("Non") ? 'click->request#removeTagSelected' : 'click->request#addTagSelected' %>" data-field="operateur_field" data-value="Non">Non</button>
+                  <button class="fr-tag" aria-pressed="<%= params[:operateur].present? && JSON.parse(params[:operateur]).include?("Non") ? 'true' : 'false' %>" data-action="<%= params[:operateur].present? && JSON.parse(params[:operateur]).include?("Non") ? 'click->request#removeTagSelected' : 'click->request#addTagSelected' %>" data-field="operateur_field" data-value="Non">Non</button>
                 </li>
               </ul>
 
@@ -113,7 +121,7 @@
               <ul class="fr-tags-group" id="controleur_id_tag">
               <% if params[:controleur_id].present? %>
                 <% JSON.parse(params[:controleur_id]).each do |controleur_id| %>
-                    <li data-action="click->request#removeTagSelected" data-field="controleur_id_field" data-value="<%= controleur_id.to_i %>"><button class="fr-tag fr-tag--sm fr-tag--dismiss" aria-label="Retirer"><%= @controleur_name_id_pairs.select {|el| el[1] == controleur_id.to_i}[0]&.dig(0) %></button></li>
+                    <li data-action="click->request#removeTagSelected" data-field="controleur_id_field" data-value="<%= controleur_id.to_i %>"><button class="fr-tag fr-tag--dismiss" aria-label="Retirer"><%= @controleur_name_id_pairs.select {|el| el[1] == controleur_id.to_i}[0]&.dig(0) %></button></li>
                 <% end  %>
               <% end  %>
               </ul>
@@ -122,7 +130,7 @@
               <ul class="fr-tags-group fr-mt-1w">
                 <% ["Contrôle Economique et Financier", "Contrôle Budgétaire", "Contrôle Budgétaire EPSCP", "Autre"].each do |controle| %>
                   <li>
-                    <button class="fr-tag" aria-pressed="<%= params[:nature_controle].include?(controle) ? 'true' : 'false' %>" data-action="<%= params[:nature_controle].include?(controle) ? 'click->request#removeTagSelected' : 'click->request#addTagSelected' %>" data-field="nature_controle_field" data-value="<%= controle %>"><%= controle %></button>
+                    <button class="fr-tag" aria-pressed="<%= params[:nature_controle].present? && JSON.parse(params[:nature_controle]).include?(controle) ? 'true' : 'false' %>" data-action="<%= params[:nature_controle].present? && JSON.parse(params[:nature_controle]).include?(controle) ? 'click->request#removeTagSelected' : 'click->request#addTagSelected' %>" data-field="nature_controle_field" data-value="<%= controle %>"><%= controle %></button>
                   </li>
                 <% end  %>
               </ul>
@@ -131,9 +139,57 @@
         </nav>
       </div>
       <div class="fr-col-12 fr-col-lg-8">
-        <div id="liste_organismes" data-request-target="list">
-        <%= render partial: 'organismes/request_organisms_list', locals: { organisms_all: @extended_family_organisms, organisms_page: @organisms_page, pagy: @pagy} %>
-        </div>
+        <%= turbo_frame_tag :results, target: "_top" do %>
+          <h2 class="fr-h3"><%= pluralize(@extended_family_organisms&.length, 'résultat', plural: 'résultats')%>
+            <div class="fr-download">
+              <p><%= link_to export_to_excel_path(ids: @extended_family_organisms.map(&:id), format: 'xlsx'), class: "fr-link fr-download__link" do %>Télécharger les fiches d'identité <span class="fr-download__detail">Format .xlsx</span><%end %></p>
+            </div>
+          </h2>
+
+          <% @organisms_page.each do |organisme|%>
+            <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+              <div class="fr-col-6 fr-col-lg-12">
+                <div class="<% if organisme.statut != "valide" %>fr-badge-group<%end %>">
+                  <ul>
+                    <li><%= link_to organisme_path(organisme.id) do%><%= organisme.nom %><% if organisme.acronyme && !organisme.acronyme.blank? %> - <%= organisme.acronyme %><%end %><%end %></li>
+                  </ul>
+                  <% if organisme.statut != "valide" %>
+                    <p class="fr-badge fr-badge--yellow-moutarde fr-ml-2w">Etape <%= organisme.statut %>/6</p>
+                  <% end %>
+                </div>
+                <% if organisme.statut == "valide" %>
+                  <div><ul class="fr-tags-group">
+                    <li>
+                      <p class="fr-tag fr-tag--sm <% if organisme.etat == 'Actif'%>fr-tag--green-menthe<%elsif organisme.etat == 'En cours de création'%>fr-tag--warning<%end %>"><%= organisme.etat %></p>
+                    </li>
+                    <li>
+                      <p class="fr-tag fr-tag--sm">Famille : <%= organisme.famille %></p>
+                    </li>
+                    <li>
+                      <p class="fr-tag fr-tag--sm">Nature : <%= organisme.nature %></p>
+                    </li>
+                    <li>
+                      <p class="fr-tag fr-tag--sm">Contrôleur : <%= organisme.controleur.nom %></p>
+                    </li>
+                  </ul></div>
+                <% else %>
+                  <div class="fr-mb-2w">
+                    <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--sm">
+                      <li><%= link_to edit_organisme_path(organisme.id), class: "fr-btn fr-my-0 fr-btn--sm" do%>Reprendre le brouillon<%end %></li>
+                      <li><%= link_to organisme_path(organisme.id),data: { "turbo-method": :delete}, class: "fr-btn fr-btn--secondary fr-btn--sm fr-my-0" do%>Supprimer<%end %></li>
+                    </ul>
+                  </div>
+                <% end  %>
+              </div>
+            </div>
+            <hr class="fr-hr fr-py-1w"/>
+          <%end %>
+
+          <div class="fr-my-2w">
+            <%== pagy_nav_custom(@pagy) %>
+          </div>
+
+        <% end %>
       </div>
     </div>
 

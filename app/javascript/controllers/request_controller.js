@@ -13,34 +13,24 @@ export default class extends Controller {
         const elementType = event.currentTarget.tagName.toLowerCase();
         const fieldName = event.currentTarget.getAttribute("data-field");
         let fieldValue = document.getElementById(fieldName);
-        if (elementType === "button") {
-            let selectedValue = event.currentTarget.textContent.trim();
-            // event.currentTarget.setAttribute("aria-pressed", "true");
-            // event.currentTarget.setAttribute("data-action", "click->request#removeTagSelected"); // Change the action
-            // Mettre à jour champ_field uniquement si c'est un bouton
-            this.updateArrayfield(fieldValue, selectedValue);
-            this.formTarget.requestSubmit();
-
-        }else{
+        if (elementType === "select") {
             let selectedValue = event.currentTarget.value;
-
-            if (selectedValue) {
-                const selectedName = event.currentTarget.options[event.currentTarget.selectedIndex].text;
-                // Récupérer l'élément caché contenant les valeurs sélectionnées
-                this.updateArrayfield(fieldValue, selectedValue);
-                // Ajouter les tags
-                // const tag = `<li data-action="click->request#removeTagSelected" data-field="${fieldName}" data-value="${selectedValue}"><button class="fr-tag fr-tag--sm fr-tag--dismiss" aria-label="Retirer">${selectedName}</button></li>`;
-                // const nomTag = event.currentTarget.getAttribute("data-tag");
-                // const fieldTag = document.getElementById(nomTag);
-                // fieldTag.insertAdjacentHTML("beforeend", tag);
-                // Réinitialiser le champ select
-                // const selectElement = event.currentTarget.closest(".fr-select-group").querySelector(".fr-select");
-                //selectElement.selectedIndex = 0;
-
-                this.formTarget.requestSubmit();
-            }
+            this.updateArrayfield(fieldValue, selectedValue);
+            const selectedName = event.currentTarget.options[event.currentTarget.selectedIndex].text;
+            // Ajouter les tags
+            const tag = `<li data-action="click->request#removeTagSelected" data-field="${fieldName}" data-value="${selectedValue}"><button class="fr-tag fr-tag--dismiss" aria-label="Retirer">${selectedName}</button></li>`;
+            const nomTag = event.currentTarget.getAttribute("data-tag");
+            const fieldTag = document.getElementById(nomTag);
+            fieldTag.insertAdjacentHTML("beforeend", tag);
+            // Réinitialiser le champ select
+            const selectElement = event.currentTarget.closest(".fr-select-group").querySelector(".fr-select");
+            selectElement.selectedIndex = 0;
+        }else{
+            let selectedValue = event.currentTarget.textContent.trim();
+            this.updateArrayfield(fieldValue, selectedValue);
         }
 
+        this.formTarget.requestSubmit();
     }
 
     updateArrayfield(fieldValue, selectedValue){
@@ -54,23 +44,13 @@ export default class extends Controller {
 
     removeTagSelected(event){
         event.preventDefault();
-
-        // const selectedValue = event.target.textContent;
         const selectedValue = event.currentTarget.getAttribute("data-value")
         const fieldName = event.currentTarget.getAttribute("data-field");
         const fieldValue = document.getElementById(fieldName);
         let selectedValues = fieldValue.value ? JSON.parse(fieldValue.value) : [];
         selectedValues = selectedValues.filter(value => value !== selectedValue);
         fieldValue.value = JSON.stringify(selectedValues);
-        const elementType = event.currentTarget.tagName.toLowerCase();
-        if (elementType === "button") {
-            event.currentTarget.setAttribute("aria-pressed", "false");
-            event.currentTarget.setAttribute("data-action", "click->request#addTagSelected"); // Change the action
-
-        }else{
-            event.currentTarget.remove();
-        }
-        this.formTarget.requestSubmit()
+        // this.formTarget.requestSubmit()
     }
 
     submitFilter(event){
