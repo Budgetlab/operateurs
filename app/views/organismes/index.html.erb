@@ -10,7 +10,12 @@
     <h2 class="fr-h4 fr-my-0w">Mon périmètre [<%= @controlled_organisms&.length %>]</h2>
     <div class="fr-grid-row fr-grid-row--gutters">
       <% class_card = %w[fr-card--green-menthe fr-card--orange fr-card--grey fr-card--yellow-moutarde] %>
-      <% @box_titles.each_with_index do |title, i| %>
+      <% box_title_strings = {
+        '2B2O' => ["actifs", "soumis au décret GBCP Titre III (actifs)","en comptabilité budgétaire (actifs)", "en hors comptabilité budgétaire (actifs)"],
+        'Controleur' => ["opérateurs de l’Etat (actifs)", "en Contrôle Budgétaire  (actifs)","en Contrôle Economique et Financier (actifs)", " en Contrôle Budgétaire EPSCP (actifs)"],
+        'Bureau Sectoriel' => ["opérateurs de l’Etat (actifs)", "controlés (actifs)","en comptabilité budgétaire (actifs)", "sous Tutelle financière MCP (actifs)"]
+      } %>
+      <% box_title_strings[@statut_user].each_with_index do |title, i| %>
       <div class="fr-col-12 fr-col-lg-3">
         <div class="fr-card <%= class_card[i] %> fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
@@ -96,18 +101,18 @@
                 <label for="controleur_list" class="fr-label fr-text--bold">Contrôleur</label>
                 <select id="controleur_list" class="fr-select" data-tag='controleur_tag' data-action='change->request#addTagSelected'>
                   <option value="">- sélectionner -</option>
-                  <% @controleur_name_id_pairs.each do |pair| %>
-                    <option value="<%= pair[1] %>"><%= pair[0] %></option>
+                  <% @controleur_name_list.each do |nom| %>
+                    <option value="<%= nom%>"><%= nom %></option>
                   <% end %>
                 </select>
               </div>
               <ul class="fr-tags-group" id="controleur_tag">
-                <% @controleur_name_id_pairs.each do |pair|%>
-                  <%= check_box_tag('q[controleur_id_in][]', pair[1], params[:q] && params[:q][:controleur_id_in].present? && params[:q][:controleur_id_in].include?(pair[1]) ? true : false, {class: "fr-hidden"}) %>
+                <% @controleur_name_list.each do |nom|%>
+                  <%= check_box_tag('q[controleur_nom_in][]', nom, params[:q] && params[:q][:controleur_nom_in].present? && params[:q][:controleur_nom_in].include?(nom) ? true : false, {class: "fr-hidden"}) %>
                 <% end %>
-                <% if params[:q] && params[:q][:controleur_id_in] %>
-                  <% params[:q][:controleur_id_in].each do |pair| %>
-                    <li data-action="click->request#removeTagSelected" data-value="<%=pair[1] %>"><button class="fr-tag fr-tag--dismiss" aria-label="Retirer"><%=pair[0] %></button></li>
+                <% if params[:q] && params[:q][:controleur_nom_in] %>
+                  <% params[:q][:controleur_nom_in].each do |nom| %>
+                    <li data-action="click->request#removeTagSelected" data-value="<%=nom %>"><button class="fr-tag fr-tag--dismiss" aria-label="Retirer"><%=nom %></button></li>
                   <% end %>
                 <% end %>
               </ul>

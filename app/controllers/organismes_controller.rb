@@ -18,23 +18,12 @@ class OrganismesController < ApplicationController
     @controlled_organisms = fetch_controlled_organisms(extended_family_organisms)
     # Calculate the total repartition counts for these organisms and appropriate box titles
     @organisms_counts_by_repartition = count_organisms_by_repartition_status(@controlled_organisms)
-    @box_titles = BOX_TITLE_STRINGS[@statut_user] || []
     # Prepare a sorted list of organisms for search
     @search_organismes = extended_family_organisms&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
-    @controleur_name_id_pairs = User.where(statut: ['Controleur', '2B2O']).order(:nom).pluck(:nom, :id)
+    @controleur_name_list = User.where(statut: ['Controleur', '2B2O']).order(:nom).pluck(:nom)
     @q = extended_family_organisms.ransack(params[:q])
     @extended_family_organisms = @q.result.includes(:bureau, :chiffres, :controleur, :ministere, :modifications, :operateur, :organisme_destinations, :organisme_ministeres, :organisme_rattachements)
     @pagy, @organisms_page = pagy(@extended_family_organisms)
-    # if params[:xxx] # request.xhr? || AJAX request
-      # @extended_family_organisms = apply_filters_to_organisms(@extended_family_organisms)
-      # Paginate the list of organisms
-      # @pagy, @organisms_page = pagy(@extended_family_organisms)
-      # render partial: 'organismes/request_organisms_list', locals: { organisms_all: filtered_organisms, organisms_page: organisms_page, pagy: pagy}
-      # else
-      # regular HTML response
-      # Paginate the list of organisms
-      # @pagy, @organisms_page = pagy(@extended_family_organisms)
-    # end
   end
 
   def export_to_excel
@@ -269,8 +258,8 @@ class OrganismesController < ApplicationController
     end
   end
 
-  def count_organisms_by_repartition_status(organismes)
-    active_organisms = organismes.where(etat: 'Actif')
+  def count_organisms_by_repartition_status(organisms)
+    active_organisms = organisms.where(etat: 'Actif')
     case @statut_user
     when '2B2O'
       count_for_2b2o(active_organisms)
@@ -290,10 +279,9 @@ class OrganismesController < ApplicationController
 
   def count_for_controleur(active_organisms)
     active_operators = active_organisms.joins(:operateur).where.not(operateurs: { id: nil }).where(operateurs: { operateur_n: true }).count
-    control_types = active_organisms.group(:nature_controle).count
-    organisms_active_cb = control_types['Contrôle Budgétaire'] || 0
-    organisms_active_cef = control_types['Contrôle Economique et Financier'] || 0
-    organisms_active_epscp = control_types['Contrôle Budgétaire EPSCP'] || 0
+    organisms_active_cb = active_organisms.count { |el| el.nature_controle == 'Contrôle Budgétaire' }
+    organisms_active_cef = active_organisms.count { |el| el.nature_controle == 'Contrôle Economique et Financier' }
+    organisms_active_epscp = active_organisms.count { |el| el.nature_controle == 'Contrôle Budgétaire EPSCP' }
     [active_operators, organisms_active_cb, organisms_active_cef, organisms_active_epscp]
   end
 
