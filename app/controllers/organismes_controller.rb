@@ -7,6 +7,7 @@ class OrganismesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_famille, only: %i[index apply_filters_to_organisms show]
   def index
+    params.permit![:format]
     # Fetch all organisms relevant to user's permissions, including those in extended families
     extended_family_organisms = fetch_extended_family_organisms
     # Fetch only the organisms directly under the user's control
@@ -19,13 +20,12 @@ class OrganismesController < ApplicationController
     @q = extended_family_organisms.ransack(params[:q])
     @extended_family_organisms = @q.result.includes(:bureau, :chiffres, :controleur, :ministere, :modifications, :operateur, :organisme_destinations, :organisme_ministeres, :organisme_rattachements)
     @pagy, @organisms_page = pagy(@extended_family_organisms)
-    @export_organisms = params[:ids] ? @extended_family_organisms.where(id: params[:ids]) : @extended_family_organisms
     respond_to do |format|
       format.html
-      format.xlsx {
+      format.xlsx do
         headers['Content-Disposition'] = "attachment; filename=\"Liste_fiches_identite_organismes.xlsx\""
         render xlsx: 'index', filename: 'Liste_fiches_identite_organismes.xlsx', disposition: 'attachment'
-      }
+      end
     end
   end
 
@@ -34,10 +34,10 @@ class OrganismesController < ApplicationController
     @organisms_to_export = Organisme.where(id: params[:ids]).includes(:bureau, :controleur, :ministere, :organisme_rattachements, organisme_ministeres: [:ministere], operateur: [:mission, :programme, operateur_programmes: [:programme]]).sort_by { |organisme| normalize_name(organisme.nom) } || []
     filename = 'Liste_fiches_identite_organismes.xlsx'
     respond_to do |format|
-      format.any {
+      format.any do
         headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""
         render xlsx: 'export_to_excel', filename: filename, disposition: 'attachment'
-      }
+      end
     end
   end
 

@@ -9,7 +9,7 @@ sheet_col = Array.new(57, 15)
 wb.add_worksheet(name: "Périmètre") do |sheet|
     sheet.add_row headers, style: header
 
-    @export_organisms.each do |organisme|
+    @extended_family_organisms.each do |organisme|
 
       @operateur = organisme.operateur
 
