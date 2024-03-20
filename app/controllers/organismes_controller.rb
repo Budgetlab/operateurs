@@ -10,13 +10,7 @@ class OrganismesController < ApplicationController
     params.permit![:format] # pour le link_to excel
     # Fetch all organisms relevant to user's permissions, including those in extended families
     extended_family_organisms = fetch_extended_family_organisms
-    # Fetch only the organisms directly under the user's control
-    @controlled_organisms = fetch_controlled_organisms(extended_family_organisms)
-    # Calculate the total repartition counts for these organisms and appropriate box titles
-    @organisms_counts_by_repartition = count_organisms_by_repartition_status(@controlled_organisms)
-    # Prepare a sorted list of organisms for search
     @search_organismes = extended_family_organisms&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
-    @controleur_name_list = User.where(statut: ['Controleur', '2B2O']).order(:nom).pluck(:nom)
     @q = extended_family_organisms.ransack(params[:q])
     @extended_family_organisms = @q.result.includes(:bureau, :controleur)
     @pagy, @organisms_page = pagy(@extended_family_organisms)

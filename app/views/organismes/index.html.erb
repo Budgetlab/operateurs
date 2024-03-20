@@ -6,29 +6,7 @@
         <h1 class="fr-my-4w">Liste des organismes </h1>
       </div>
     </div>
-<div class="fr-hidden">
-    <h2 class="fr-h4 fr-my-0w">Mon périmètre [<%= @controlled_organisms&.length %>]</h2>
-    <div class="fr-grid-row fr-grid-row--gutters">
-      <% class_card = %w[fr-card--green-menthe fr-card--orange fr-card--grey fr-card--yellow-moutarde] %>
-      <% box_title_strings = {
-        '2B2O' => ["actifs", "soumis au décret GBCP Titre III (actifs)","en comptabilité budgétaire (actifs)", "en hors comptabilité budgétaire (actifs)"],
-        'Controleur' => ["opérateurs de l’Etat (actifs)", "en Contrôle Budgétaire  (actifs)","en Contrôle Economique et Financier (actifs)", " en Contrôle Budgétaire EPSCP (actifs)"],
-        'Bureau Sectoriel' => ["opérateurs de l’Etat (actifs)", "controlés (actifs)","en comptabilité budgétaire (actifs)", "sous Tutelle financière MCP (actifs)"]
-      } %>
-      <% box_title_strings[@statut_user].each_with_index do |title, i| %>
-      <div class="fr-col-12 fr-col-lg-3">
-        <div class="fr-card <%= class_card[i] %> fr-p-2w fr-card--no-border">
-          <div class="fr-cart__body">
-            <p class="fr-text--lg fr-text--bold fr-mb-0 fr-text--center"><%= pluralize(@organisms_counts_by_repartition[i] ,'Organisme', plural: 'Organismes') %></p>
-            <p class="fr-text--sm fr-mb-0 fr-text--center"><%= title %></p>
-          </div>
-        </div>
-      </div>
-      <% end %>
-    </div>
 
-    <h2 class="fr-h3 fr-my-4w">Liste des organismes périmètre étendu  [<%= @extended_family_organisms&.length %>]</h2>
-</div>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-2w">
       <div class="fr-col-12 fr-col-lg-9">
       <%= render 'organismes/form_search' %>
@@ -40,6 +18,7 @@
           <div class="fr-sidemenu__inner">
             <div class="fr-sidemenu__title">Affiner la recherche</div>
             <% if params %><div class="fr-mb-2w"><%= link_to organismes_path, class:"fr-btn fr-btn--sm fr-btn--secondary fr-btn--icon-right fr-icon-refresh-line" do %>Réinitialiser les filtres<%end %></div><%end %>
+
             <%= search_form_for @q, data: {'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance'} do |f| %>
 
               <div class="fr-label fr-text--bold">État</div>
@@ -73,7 +52,7 @@
               </ul>
 
               <div class="fr-select-group">
-                <label for="nature_list" class="fr-label fr-text--bold">Nature</label>
+                <label for="nature_list" class="fr-label fr-text--bold">Nature juridique</label>
                 <select id="nature_list" class="fr-select" data-tag='nature_tag' data-action='change->request#addTagSelected'>
                   <option value="">- sélectionner -</option>
                   <% @liste_natures.each do |nature| %>
@@ -92,23 +71,24 @@
                 <% end %>
               </ul>
 
-              <div class="fr-label fr-text--bold">Opérateur</div>
+              <div class="fr-label fr-text--bold">Opérateur <%= Date.today.year %></div>
               <ul class="fr-tags-group fr-mt-1w">
                 <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?('true') ? 'true' : 'false' %>"><label><%= check_box_tag('q[operateur_operateur_n_in][]', true, params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?(true) ? true : false, {class: "fr-hidden"}) %>Oui</label></button></li>
                 <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_not_in].present? && params[:q][:operateur_operateur_n_not_in].include?('true') ? 'true' : 'false' %>"><label><%= check_box_tag('q[operateur_operateur_n_not_in][]', true, params[:q] && params[:q][:operateur_operateur_n_not_in].present? && params[:q][:operateur_operateur_n_not_in].include?(true) ? true : false, {class: "fr-hidden"}) %>Non</label></button></li>
               </ul>
 
+              <% controleur_name_list = User.where(statut: ['Controleur', '2B2O']).order(:nom).pluck(:nom) %>
               <div class="fr-select-group">
                 <label for="controleur_list" class="fr-label fr-text--bold">Contrôleur</label>
                 <select id="controleur_list" class="fr-select" data-tag='controleur_tag' data-action='change->request#addTagSelected'>
                   <option value="">- sélectionner -</option>
-                  <% @controleur_name_list.each do |nom| %>
+                  <% controleur_name_list.each do |nom| %>
                     <option value="<%= nom%>"><%= nom %></option>
                   <% end %>
                 </select>
               </div>
               <ul class="fr-tags-group" id="controleur_tag">
-                <% @controleur_name_list.each do |nom|%>
+                <% controleur_name_list.each do |nom|%>
                   <%= check_box_tag('q[controleur_nom_in][]', nom, params[:q] && params[:q][:controleur_nom_in].present? && params[:q][:controleur_nom_in].include?(nom) ? true : false, {class: "fr-hidden"}) %>
                 <% end %>
                 <% if params[:q] && params[:q][:controleur_nom_in] %>
@@ -186,13 +166,10 @@
                 <% if organisme.statut == "valide" %>
                   <div><ul class="fr-tags-group">
                     <li>
-                      <p class="fr-tag fr-tag--sm <% if organisme.etat == 'Actif'%>fr-tag--green-menthe<%elsif organisme.etat == 'En cours de création'%>fr-tag--warning<%end %>"><%= organisme.etat %></p>
-                    </li>
-                    <li>
                       <p class="fr-tag fr-tag--sm">Famille : <%= organisme.famille %></p>
                     </li>
                     <li>
-                      <p class="fr-tag fr-tag--sm">Nature : <%= organisme.nature %></p>
+                      <p class="fr-tag fr-tag--sm">Nature juridique : <%= organisme.nature %></p>
                     </li>
                   </ul></div>
                 <% else %>

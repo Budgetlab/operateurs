@@ -95,7 +95,7 @@ class ModificationsController < ApplicationController
   def classification_modifications(organismes_ids)
     modifications_statut = []
     totaux = []
-    modification_counts = @modifications.modifications_count_by_controller(organismes_ids)
+    modification_counts = @modifications.includes(:organisme).modifications_count_by_controller(organismes_ids)
     statuts = ['En attente', 'validée', 'refusée']
     statuts.each do |statut|
       modification_statut = filter_modification_counts(modification_counts, statut)
