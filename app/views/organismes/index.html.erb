@@ -6,7 +6,7 @@
         <h1 class="fr-my-4w">Liste des organismes </h1>
       </div>
     </div>
-
+<div class="fr-hidden">
     <h2 class="fr-h4 fr-my-0w">Mon périmètre [<%= @controlled_organisms&.length %>]</h2>
     <div class="fr-grid-row fr-grid-row--gutters">
       <% class_card = %w[fr-card--green-menthe fr-card--orange fr-card--grey fr-card--yellow-moutarde] %>
@@ -28,6 +28,7 @@
     </div>
 
     <h2 class="fr-h3 fr-my-4w">Liste des organismes périmètre étendu  [<%= @extended_family_organisms&.length %>]</h2>
+</div>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-2w">
       <div class="fr-col-12 fr-col-lg-9">
       <%= render 'organismes/form_search' %>

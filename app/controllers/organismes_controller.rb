@@ -5,9 +5,9 @@ require 'google/cloud/storage'
 
 class OrganismesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_famille, only: %i[index apply_filters_to_organisms show]
+  before_action :set_famille, only: %i[index show]
   def index
-    params.permit![:format]
+    params.permit![:format] # pour le link_to excel
     # Fetch all organisms relevant to user's permissions, including those in extended families
     extended_family_organisms = fetch_extended_family_organisms
     # Fetch only the organisms directly under the user's control
@@ -22,21 +22,9 @@ class OrganismesController < ApplicationController
     @pagy, @organisms_page = pagy(@extended_family_organisms)
     respond_to do |format|
       format.html
-      format.xlsx do
+      format.any do
         headers['Content-Disposition'] = "attachment; filename=\"Liste_fiches_identite_organismes.xlsx\""
         render xlsx: 'index', filename: 'Liste_fiches_identite_organismes.xlsx', disposition: 'attachment'
-      end
-    end
-  end
-
-  def export_to_excel
-    # Prepare a sorted list of validated organisms for Excel export, including associated data
-    @organisms_to_export = Organisme.where(id: params[:ids]).includes(:bureau, :controleur, :ministere, :organisme_rattachements, organisme_ministeres: [:ministere], operateur: [:mission, :programme, operateur_programmes: [:programme]]).sort_by { |organisme| normalize_name(organisme.nom) } || []
-    filename = 'Liste_fiches_identite_organismes.xlsx'
-    respond_to do |format|
-      format.any do
-        headers['Content-Disposition'] = "attachment; filename=\"#{filename}\""
-        render xlsx: 'export_to_excel', filename: filename, disposition: 'attachment'
       end
     end
   end

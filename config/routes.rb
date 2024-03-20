@@ -7,7 +7,6 @@ Rails.application.routes.draw do
   post '/import_users' => 'users#import'
   post '/select_nom' => 'users#select_nom'
   root 'pages#index'
-  get '/export_to_excel', to: 'organismes#export_to_excel'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   resources :organismes do
     resources :chiffres, only: [:index]
