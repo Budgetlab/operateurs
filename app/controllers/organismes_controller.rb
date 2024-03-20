@@ -18,7 +18,7 @@ class OrganismesController < ApplicationController
     @search_organismes = extended_family_organisms&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
     @controleur_name_list = User.where(statut: ['Controleur', '2B2O']).order(:nom).pluck(:nom)
     @q = extended_family_organisms.ransack(params[:q])
-    @extended_family_organisms = @q.result.includes(:bureau, :chiffres, :controleur, :ministere, :modifications, :operateur, :organisme_destinations, :organisme_ministeres, :organisme_rattachements)
+    @extended_family_organisms = @q.result.includes(:controleur)
     @pagy, @organisms_page = pagy(@extended_family_organisms)
     respond_to do |format|
       format.html

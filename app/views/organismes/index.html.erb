@@ -94,8 +94,8 @@
 
               <div class="fr-label fr-text--bold">Opérateur</div>
               <ul class="fr-tags-group fr-mt-1w">
-                <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?(true) ? 'true' : 'false' %>"><label><%= check_box_tag('q[operateur_operateur_n_in][]', true, params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?(true) ? true : false, {class: "fr-hidden"}) %>Oui</label></button></li>
-                <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_not_in].present? && params[:q][:operateur_operateur_n_not_in].include?(true) ? 'true' : 'false' %>"><label><%= check_box_tag('q[operateur_operateur_n_not_in][]', true, params[:q] && params[:q][:operateur_operateur_n_not_in].present? && params[:q][:operateur_operateur_n_not_in].include?(true) ? true : false, {class: "fr-hidden"}) %>Non</label></button></li>
+                <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?('true') ? 'true' : 'false' %>"><label><%= check_box_tag('q[operateur_operateur_n_in][]', true, params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?(true) ? true : false, {class: "fr-hidden"}) %>Oui</label></button></li>
+                <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_not_in].present? && params[:q][:operateur_operateur_n_not_in].include?('true') ? 'true' : 'false' %>"><label><%= check_box_tag('q[operateur_operateur_n_not_in][]', true, params[:q] && params[:q][:operateur_operateur_n_not_in].present? && params[:q][:operateur_operateur_n_not_in].include?(true) ? true : false, {class: "fr-hidden"}) %>Non</label></button></li>
               </ul>
 
               <div class="fr-select-group">
@@ -124,6 +124,31 @@
                   <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:nature_controle_in].present? && params[:q][:nature_controle_in].include?(nature_controle) ? 'true' : 'false' %>"><label><%= check_box_tag('q[nature_controle_in][]', nature_controle, params[:q] && params[:q][:nature_controle_in].present? && params[:q][:nature_controle_in].include?(nature_controle) ? true : false, {class: "fr-hidden"}) %><%= nature_controle %></label></button></li>
                 <% end %>
               </ul>
+
+
+              <div class="fr-hidden" id="more_filters">
+                <% list_bs = User.where(statut: ['Bureau Sectoriel', '2B2O']).order(:nom).pluck(:nom) %>
+                <div class="fr-select-group">
+                  <label for="bureau_list" class="fr-label fr-text--bold">Bureau de rattachement</label>
+                  <select id="bureau_list" class="fr-select" data-tag='bureau_tag' data-action='change->request#addTagSelected'>
+                    <option value="">- sélectionner -</option>
+                    <% list_bs.each do |nom| %>
+                      <option value="<%= nom%>"><%= nom %></option>
+                    <% end %>
+                  </select>
+                </div>
+                <ul class="fr-tags-group" id="bureau_tag">
+                  <% list_bs.each do |nom|%>
+                    <%= check_box_tag('q[bureau_nom_in][]', nom, params[:q] && params[:q][:bureau_nom_in].present? && params[:q][:bureau_nom_in].include?(nom) ? true : false, {class: "fr-hidden"}) %>
+                  <% end %>
+                  <% if params[:q] && params[:q][:bureau_nom_in] %>
+                    <% params[:q][:bureau_nom_in].each do |nom| %>
+                      <li data-action="click->request#removeTagSelected" data-value="<%=nom %>"><button class="fr-tag fr-tag--dismiss" aria-label="Retirer"><%=nom %></button></li>
+                    <% end %>
+                  <% end %>
+                </ul>
+              </div>
+              <button class="fr-btn fr-btn--secondary fr-btn--sm fr-my-2w" data-tag="more_filters" data-text="Afficher moins de filtres" data-action="click->request#toggleFilter">Afficher plus de filtres</button>
             <% end %>
 
 
