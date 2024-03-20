@@ -167,13 +167,21 @@
           <% @organisms_page.each do |organisme|%>
             <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
               <div class="fr-col-6 fr-col-lg-12">
-                <div class="<% if organisme.statut != "valide" %>fr-badge-group<%end %>">
-                  <ul>
+                <div class="fr-badge-group">
+                  <ul class="fr-mr-2w fr-mb-1v">
                     <li><%= link_to organisme_path(organisme.id) do%><%= organisme.nom %><% if organisme.acronyme && !organisme.acronyme.blank? %> - <%= organisme.acronyme %><%end %><%end %></li>
                   </ul>
-                  <% if organisme.statut != "valide" %>
-                    <p class="fr-badge fr-badge--yellow-moutarde fr-ml-2w">Etape <%= organisme.statut %>/6</p>
-                  <% end %>
+                  <% class_badge_liste = if organisme.statut != "valide" then "fr-badge--yellow-moutarde" elsif current_user == organisme.controleur || (current_user.statut == "Bureau Sectoriel" && current_user == organisme.bureau) then "fr-badge--green-emeraude" else "fr-badge--blue-ecume" end%>
+
+                  <p class="fr-badge <%= class_badge_liste%>">
+                    <% if organisme.statut != "valide" %>Etape <%= organisme.statut %>/6
+                    <%elsif current_user.statut == "Bureau Sectoriel" %>
+                      <%= organisme.bureau.nom %>
+                    <% else %>
+                      <%= organisme.controleur.nom %>
+                    <% end %>
+                  </p>
+
                 </div>
                 <% if organisme.statut == "valide" %>
                   <div><ul class="fr-tags-group">
@@ -185,9 +193,6 @@
                     </li>
                     <li>
                       <p class="fr-tag fr-tag--sm">Nature : <%= organisme.nature %></p>
-                    </li>
-                    <li>
-                      <p class="fr-tag fr-tag--sm">Contrôleur : <%= organisme.controleur.nom %></p>
                     </li>
                   </ul></div>
                 <% else %>
