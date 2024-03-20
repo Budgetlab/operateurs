@@ -4,11 +4,6 @@
 require 'google/cloud/storage'
 
 class OrganismesController < ApplicationController
-  BOX_TITLE_STRINGS = {
-    '2B2O' => ["actifs", "soumis au décret GBCP Titre III (actifs)","en comptabilité budgétaire (actifs)", "en hors comptabilité budgétaire (actifs)"],
-    'Controleur' => ["opérateurs de l’Etat (actifs)", "en Contrôle Budgétaire  (actifs)","en Contrôle Economique et Financier (actifs)", " en Contrôle Budgétaire EPSCP (actifs)"],
-    'Bureau Sectoriel' => ["opérateurs de l’Etat (actifs)", "controlés (actifs)","en comptabilité budgétaire (actifs)", "sous Tutelle financière MCP (actifs)"]
-  }.freeze
   before_action :authenticate_user!
   before_action :set_famille, only: %i[index apply_filters_to_organisms show]
   def index
@@ -24,6 +19,14 @@ class OrganismesController < ApplicationController
     @q = extended_family_organisms.ransack(params[:q])
     @extended_family_organisms = @q.result.includes(:bureau, :chiffres, :controleur, :ministere, :modifications, :operateur, :organisme_destinations, :organisme_ministeres, :organisme_rattachements)
     @pagy, @organisms_page = pagy(@extended_family_organisms)
+    @export_organisms = params[:ids] ? @extended_family_organisms.where(id: params[:ids]) : @extended_family_organisms
+    respond_to do |format|
+      format.html
+      format.xlsx {
+        headers['Content-Disposition'] = "attachment; filename=\"Liste_fiches_identite_organismes.xlsx\""
+        render xlsx: 'index', filename: 'Liste_fiches_identite_organismes.xlsx', disposition: 'attachment'
+      }
+    end
   end
 
   def export_to_excel
@@ -433,4 +436,5 @@ class OrganismesController < ApplicationController
     organisme.update(tutelle_financiere: false, delegation_approbation: false, autorite_approbation: nil, ministere_id: nil)
     organisme.organisme_ministeres&.destroy_all
   end
+
 end

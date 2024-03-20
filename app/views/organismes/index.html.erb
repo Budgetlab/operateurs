@@ -133,7 +133,7 @@
         <%= turbo_frame_tag :results, target: "_top" do %>
           <h2 class="fr-h3"><%= pluralize(@extended_family_organisms&.length, 'résultat', plural: 'résultats')%>
             <div class="fr-download">
-              <p><%= link_to export_to_excel_path(ids: @extended_family_organisms.map(&:id), format: 'xlsx'), class: "fr-link fr-download__link" do %>Télécharger les fiches d'identité <span class="fr-download__detail">Format .xlsx</span><%end %></p>
+              <p><%= link_to organismes_path(ids: @extended_family_organisms.pluck(:id),format: 'xlsx'), class: "fr-link fr-download__link" do %>Télécharger les fiches d'identité <span class="fr-download__detail">Format .xlsx</span><%end %></p>
             </div>
           </h2>
 
