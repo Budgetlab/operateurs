@@ -62,4 +62,7 @@ class Operateur < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
     ["created_at", "id", "id_value", "mission_id", "nom_categorie", "operateur_n", "operateur_n1", "operateur_n2", "operateur_nf", "organisme_id", "presence_categorie", "programme_id", "updated_at"]
   end
+  def self.ransackable_associations(auth_object = nil)
+    ["mission", "operateur_programmes", "organisme", "programme"]
+  end
 end

@@ -9,15 +9,17 @@
 
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-2w">
       <div class="fr-col-12 fr-col-lg-9">
-      <%= render 'organismes/form_search' %>
+        <%= render 'organismes/form_search' %>
       </div>
     </div>
+
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w" data-controller="request">
       <div class="fr-col-12 fr-col-lg-4">
         <nav role="navigation" class="fr-sidemenu fr-sidemenu--sticky-full-height fr-mb-0-5v">
           <div class="fr-sidemenu__inner">
             <div class="fr-sidemenu__title">Affiner la recherche</div>
-            <% if params %><div class="fr-mb-2w"><%= link_to organismes_path, class:"fr-btn fr-btn--sm fr-btn--secondary fr-btn--icon-right fr-icon-refresh-line" do %>Réinitialiser les filtres<%end %></div><%end %>
+
+            <div class="fr-mb-2w"><%= link_to organismes_path, class:"fr-btn fr-btn--sm fr-btn--secondary fr-btn--icon-right fr-icon-refresh-line" do %>Réinitialiser les filtres<%end %></div>
 
             <%= search_form_for @q, data: {'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance'} do |f| %>
 
@@ -31,107 +33,50 @@
                 <% end %>
               </ul>
 
-              <div class="fr-select-group">
-                <label for="famille_list" class="fr-label fr-text--bold">Famille</label>
-                <select id="famille_list" class="fr-select" data-tag='famille_tag' data-action='change->request#addTagSelected'>
-                  <option value="">- sélectionner -</option>
-                  <% @liste_familles.each do |famille| %>
-                    <option value="<%= famille %>"><%= famille %></option>
-                  <% end %>
-                </select>
-              </div>
-              <ul class="fr-tags-group" id="famille_tag">
-                <% @liste_familles.each do |famille|%>
-                  <%= check_box_tag('q[famille_in][]', famille, params[:q] && params[:q][:famille_in].present? && params[:q][:famille_in].include?(famille) ? true : false, {class: "fr-hidden"}) %>
-                <% end %>
-                <% if params[:q] && params[:q][:famille_in] %>
-                  <% params[:q][:famille_in].each do |famille| %>
-                    <li data-action="click->request#removeTagSelected" data-value="<%=famille %>"><button class="fr-tag fr-tag--dismiss" aria-label="Retirer"><%=famille %></button></li>
-                  <% end %>
-                <% end %>
-              </ul>
+              <%= render_select_group("Famille", :famille_in, @liste_familles) %>
+              <%= render_select_group("Nature juridique", :nature_in, @liste_natures) %>
 
-              <div class="fr-select-group">
-                <label for="nature_list" class="fr-label fr-text--bold">Nature juridique</label>
-                <select id="nature_list" class="fr-select" data-tag='nature_tag' data-action='change->request#addTagSelected'>
-                  <option value="">- sélectionner -</option>
-                  <% @liste_natures.each do |nature| %>
-                    <option value="<%= nature %>"><%= nature %></option>
-                  <% end %>
-                </select>
-              </div>
-              <ul class="fr-tags-group" id="nature_tag">
-                <% @liste_natures.each do |nature|%>
-                  <%= check_box_tag('q[nature_in][]', nature, params[:q] && params[:q][:nature_in].present? && params[:q][:nature_in].include?(nature) ? true : false, {class: "fr-hidden"}) %>
-                <% end %>
-                <% if params[:q] && params[:q][:nature_in] %>
-                  <% params[:q][:nature_in].each do |nature| %>
-                    <li data-action="click->request#removeTagSelected" data-value="<%=nature %>"><button class="fr-tag fr-tag--dismiss" aria-label="Retirer"><%=nature %></button></li>
-                  <% end %>
-                <% end %>
-              </ul>
-
-              <div class="fr-label fr-text--bold">Opérateur <%= Date.today.year %></div>
-              <ul class="fr-tags-group fr-mt-1w">
-                <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?('true') ? 'true' : 'false' %>"><label><%= check_box_tag('q[operateur_operateur_n_in][]', true, params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?(true) ? true : false, {class: "fr-hidden"}) %>Oui</label></button></li>
-                <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_not_in].present? && params[:q][:operateur_operateur_n_not_in].include?('true') ? 'true' : 'false' %>"><label><%= check_box_tag('q[operateur_operateur_n_not_in][]', true, params[:q] && params[:q][:operateur_operateur_n_not_in].present? && params[:q][:operateur_operateur_n_not_in].include?(true) ? true : false, {class: "fr-hidden"}) %>Non</label></button></li>
-              </ul>
+              <%= render_tag_group "Opérateur #{Date.today.year}", :operateur_operateur_n_in, ['true', 'false'] %>
 
               <% controleur_name_list = User.where(statut: ['Controleur', '2B2O']).order(:nom).pluck(:nom) %>
-              <div class="fr-select-group">
-                <label for="controleur_list" class="fr-label fr-text--bold">Contrôleur</label>
-                <select id="controleur_list" class="fr-select" data-tag='controleur_tag' data-action='change->request#addTagSelected'>
-                  <option value="">- sélectionner -</option>
-                  <% controleur_name_list.each do |nom| %>
-                    <option value="<%= nom%>"><%= nom %></option>
-                  <% end %>
-                </select>
-              </div>
-              <ul class="fr-tags-group" id="controleur_tag">
-                <% controleur_name_list.each do |nom|%>
-                  <%= check_box_tag('q[controleur_nom_in][]', nom, params[:q] && params[:q][:controleur_nom_in].present? && params[:q][:controleur_nom_in].include?(nom) ? true : false, {class: "fr-hidden"}) %>
-                <% end %>
-                <% if params[:q] && params[:q][:controleur_nom_in] %>
-                  <% params[:q][:controleur_nom_in].each do |nom| %>
-                    <li data-action="click->request#removeTagSelected" data-value="<%=nom %>"><button class="fr-tag fr-tag--dismiss" aria-label="Retirer"><%=nom %></button></li>
-                  <% end %>
-                <% end %>
-              </ul>
-
-              <div class="fr-label fr-text--bold">Nature contrôle</div>
-              <ul class="fr-tags-group fr-mt-1w">
-                <% ["Contrôle Economique et Financier", "Contrôle Budgétaire", "Contrôle Budgétaire EPSCP", "Autre"].each do |nature_controle| %>
-                  <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:nature_controle_in].present? && params[:q][:nature_controle_in].include?(nature_controle) ? 'true' : 'false' %>"><label><%= check_box_tag('q[nature_controle_in][]', nature_controle, params[:q] && params[:q][:nature_controle_in].present? && params[:q][:nature_controle_in].include?(nature_controle) ? true : false, {class: "fr-hidden"}) %><%= nature_controle %></label></button></li>
-                <% end %>
-              </ul>
-
+              <%= render_select_group("Contrôleur", :controleur_nom_in, controleur_name_list) %>
 
               <div class="fr-hidden" id="more_filters">
+                <%= render_tag_group 'Nature contrôle', :nature_controle_in, ["Contrôle Economique et Financier", "Contrôle Budgétaire", "Contrôle Budgétaire EPSCP", "Autre"] %>
+                <%= render_select_group("Autorité contrôle", :autorite_controle_in, @liste_autorite_controle) %>
+                <%= render_tag_group 'Document de contrôle', :document_controle_present_in, ['true', 'false'] %>
+
                 <% list_bs = User.where(statut: ['Bureau Sectoriel', '2B2O']).order(:nom).pluck(:nom) %>
-                <div class="fr-select-group">
-                  <label for="bureau_list" class="fr-label fr-text--bold">Bureau de rattachement</label>
-                  <select id="bureau_list" class="fr-select" data-tag='bureau_tag' data-action='change->request#addTagSelected'>
-                    <option value="">- sélectionner -</option>
-                    <% list_bs.each do |nom| %>
-                      <option value="<%= nom%>"><%= nom %></option>
-                    <% end %>
-                  </select>
-                </div>
-                <ul class="fr-tags-group" id="bureau_tag">
-                  <% list_bs.each do |nom|%>
-                    <%= check_box_tag('q[bureau_nom_in][]', nom, params[:q] && params[:q][:bureau_nom_in].present? && params[:q][:bureau_nom_in].include?(nom) ? true : false, {class: "fr-hidden"}) %>
-                  <% end %>
-                  <% if params[:q] && params[:q][:bureau_nom_in] %>
-                    <% params[:q][:bureau_nom_in].each do |nom| %>
-                      <li data-action="click->request#removeTagSelected" data-value="<%=nom %>"><button class="fr-tag fr-tag--dismiss" aria-label="Retirer"><%=nom %></button></li>
-                    <% end %>
-                  <% end %>
-                </ul>
+                <%= render_select_group("Bureau DB de rattachement", :bureau_nom_in, list_bs) %>
+
+                <%= render_select_group("Catégorie d'opérateurs", :operateur_nom_categorie_in, @liste_autorites) %>
+                <%= render_select_group("Mission", :operateur_mission_nom_in, Mission.all.order(:nom).pluck(:nom).uniq) %>
+                <%= render_select_group("Programme chef de file", :operateur_programme_numero_in, Programme.all.order(:numero).pluck(:numero)) %>
+
+                <%= render_tag_group 'Partie I GBCP', :gbcp_1_in, ['true', 'false'] %>
+                <%= render_tag_group 'Partie III GBCP', :gbcp_3_in, ['true', 'false'] %>
+                <%= render_tag_group 'Comptabilité budgétaire', :comptabilite_budgetaire_in, ['Oui', 'Oui mais adapté', 'Non'] %>
+
+                <%= render_tag_group 'Tutelle financière MCP', :tutelle_financiere_in, ['true', 'false'] %>
+                <%= render_tag_group 'Délégation approbation BI/BR/CF', :delegation_approbation_in, ['true', 'false'] %>
+                <%= render_select_group("Autorité chargée approbation BI/BR/CF", :autorite_approbation_in, @liste_approbation) %>
+                <%= render_select_group("Ministère de tutelle", :ministere_nom_in, @liste_nom_ministeres) %>
+                <%= render_select_group("Ministère de co-tutelle", :organisme_ministeres_ministere_nom_in, @liste_nom_ministeres) %>
+
+                <%= render_tag_group 'Admin DB', :admin_db_present_in, ['true', 'false'] %>
+                <%= render_tag_group 'Présence DB au pré-CA', :admin_preca_in, ['true', 'false'] %>
+                <%= render_tag_group 'Présence contrôleur au pré-CA', :controleur_preca_in, ['true', 'false'] %>
+                <%= render_tag_group 'Présence contrôleur au CA', :controleur_ca_in, ['true', 'false'] %>
+                <%= render_tag_group 'Comité Audit Risques', :comite_audit_in, ['true', 'false'] %>
+
+                <%= render_tag_group 'APU', :apu_in, ['true', 'false'] %>
+                <%= render_tag_group 'CIASSP', :ciassp_n_in, ['true', 'false'] %>
+                <%= render_tag_group "ODAL #{Date.today.year-2}", :odal_n_in, ['true', 'false'] %>
+                <%= render_tag_group "ODAC #{Date.today.year-2}", :odac_n_in, ['true', 'false'] %>
+                <%= render_tag_group 'Arrêté Interdiction emprunt ODAC', :arrete_interdiction_odac_in, ['Annexe1', 'Annexe2', 'Exclusion'] %>
               </div>
-              <button class="fr-btn fr-btn--secondary fr-btn--sm fr-my-2w" data-tag="more_filters" data-text="Afficher moins de filtres" data-action="click->request#toggleFilter">Afficher plus de filtres</button>
+              <button class="fr-btn fr-btn--secondary fr-btn--sm fr-mb-2w" data-tag="more_filters" data-text="Afficher moins de filtres" data-action="click->request#toggleFilter">Afficher plus de filtres</button>
             <% end %>
-
-
           </div>
         </nav>
       </div>
