@@ -9,7 +9,7 @@
 
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-2w">
       <div class="fr-col-12 fr-col-lg-9">
-        <%= render 'organismes/form_search' %>
+        <%= render partial: 'organismes/form_search', locals: {organisms: @organisms_for_search} %>
       </div>
     </div>
 
@@ -24,7 +24,7 @@
             <%= search_form_for @q, data: {'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance'} do |f| %>
 
               <div class="fr-label fr-text--bold">État</div>
-              <ul class="fr-tags-group fr-mt-1w">
+              <ul class="fr-tags-group fr-my-1w">
                 <% ["Actif", "Inactif", "En cours de création"].each do |etat| %>
                   <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:etat_in].present? && params[:q][:etat_in].include?(etat) ? 'true' : 'false' %>"><label><%= check_box_tag('q[etat_in][]', etat, params[:q] && params[:q][:etat_in].present? && params[:q][:etat_in].include?(etat) ? true : false, {class: "fr-hidden"}) %><%= etat %></label></button></li>
                 <% end %>
@@ -38,20 +38,18 @@
 
               <%= render_tag_group "Opérateur #{Date.today.year}", :operateur_operateur_n_in, ['true', 'false'] %>
 
-              <% controleur_name_list = User.where(statut: ['Controleur', '2B2O']).order(:nom).pluck(:nom) %>
-              <%= render_select_group("Contrôleur", :controleur_nom_in, controleur_name_list) %>
+              <%= render_select_group("Contrôleur", :controleur_nom_in, @controleur_name_list) %>
 
               <div class="fr-hidden" id="more_filters">
                 <%= render_tag_group 'Nature contrôle', :nature_controle_in, ["Contrôle Economique et Financier", "Contrôle Budgétaire", "Contrôle Budgétaire EPSCP", "Autre"] %>
                 <%= render_select_group("Autorité contrôle", :autorite_controle_in, @liste_autorite_controle) %>
                 <%= render_tag_group 'Document de contrôle', :document_controle_present_in, ['true', 'false'] %>
 
-                <% list_bs = User.where(statut: ['Bureau Sectoriel', '2B2O']).order(:nom).pluck(:nom) %>
-                <%= render_select_group("Bureau DB de rattachement", :bureau_nom_in, list_bs) %>
+                <%= render_select_group("Bureau DB de rattachement", :bureau_nom_in, @bs_name_list) %>
 
                 <%= render_select_group("Catégorie d'opérateurs", :operateur_nom_categorie_in, @liste_autorites) %>
-                <%= render_select_group("Mission", :operateur_mission_nom_in, Mission.all.order(:nom).pluck(:nom).uniq) %>
-                <%= render_select_group("Programme chef de file", :operateur_programme_numero_in, Programme.all.order(:numero).pluck(:numero)) %>
+                <%= render_select_group("Mission", :operateur_mission_nom_in, @missions_list) %>
+                <%= render_select_group("Programme chef de file", :operateur_programme_numero_in, @programs_list) %>
 
                 <%= render_tag_group 'Partie I GBCP', :gbcp_1_in, ['true', 'false'] %>
                 <%= render_tag_group 'Partie III GBCP', :gbcp_3_in, ['true', 'false'] %>
@@ -82,9 +80,9 @@
       </div>
       <div class="fr-col-12 fr-col-lg-8">
         <%= turbo_frame_tag :results, target: "_top" do %>
-          <h2 class="fr-h3"><%= pluralize(@extended_family_organisms&.length, 'résultat', plural: 'résultats')%>
+          <h2 class="fr-h3"><%= pluralize(@organisms_for_results&.count, 'résultat', plural: 'résultats')%>
             <div class="fr-download">
-              <% path_params = params[:q] ? params.merge({format: 'xlsx'}) : {format: 'xlsx'} %>
+              <% path_params = params[:q].present? ? {q: @q_params, format: 'xlsx'} : {format: 'xlsx'} %>
               <p><%= link_to organismes_path(path_params), class: "fr-link fr-download__link", target: "_blank" do %>Télécharger les fiches d'identité <span class="fr-download__detail">Format .xlsx</span><%end %></p>
             </div>
           </h2>
@@ -96,11 +94,11 @@
                   <ul class="fr-mr-2w fr-mb-1v">
                     <li><%= link_to organisme_path(organisme.id) do%><%= organisme.nom %><% if organisme.acronyme && !organisme.acronyme.blank? %> - <%= organisme.acronyme %><%end %><%end %></li>
                   </ul>
-                  <% class_badge_liste = if organisme.statut != "valide" then "fr-badge--yellow-moutarde" elsif current_user == organisme.controleur || (current_user.statut == "Bureau Sectoriel" && current_user == organisme.bureau) then "fr-badge--green-emeraude" else "fr-badge--blue-ecume" end%>
+                  <% class_badge_liste = if organisme.statut != "valide" then "fr-badge--yellow-moutarde" elsif current_user == organisme.controleur || (@statut_user == "Bureau Sectoriel" && current_user == organisme.bureau) then "fr-badge--green-emeraude" else "fr-badge--blue-ecume" end%>
 
                   <p class="fr-badge <%= class_badge_liste%>">
                     <% if organisme.statut != "valide" %>Etape <%= organisme.statut %>/6
-                    <%elsif current_user.statut == "Bureau Sectoriel" %>
+                    <%elsif @statut_user == "Bureau Sectoriel" %>
                       <%= organisme.bureau.nom %>
                     <% else %>
                       <%= organisme.controleur.nom %>

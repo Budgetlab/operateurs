@@ -16,11 +16,11 @@
           <div class="fr-col-12">
             <div class="fr-modal__body">
               <div class="fr-modal__content fr-mb-4w">
-                <div class="fr-text--xs fr-my-2w">Résultats de recherche [<span id="nombreResultat"><%= @search_organismes&.count %></span>]</div>
+                <div class="fr-text--xs fr-my-2w">Résultats de recherche [<span id="nombreResultat"><%= organisms&.count %></span>]</div>
 
                 <p id="resultats" class="fr-hidden" >Aucun résultat</p>
 
-                <% @search_organismes&.each do |array| %>
+                <% organisms&.each do |array| %>
                   <div data-search-target="listeDeroulante">
                     <ul>
                       <li>

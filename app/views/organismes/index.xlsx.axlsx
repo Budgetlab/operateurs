@@ -9,9 +9,9 @@ sheet_col = Array.new(57, 13)
 wb.add_worksheet(name: "Périmètre") do |sheet|
     sheet.add_row headers, style: header
     sheet.auto_filter = "A1:BE1"
-    length_table = @extended_family_organisms&.length + 1 || 1
+    length_table = @organisms_for_results&.length + 1 || 1
 
-    @extended_family_organisms.includes(:bureau, :controleur, :organisme_destinations, :organisme_rattachements, :ministere, operateur: [:mission, :programme, :operateur_programmes], organisme_ministeres: [:ministere]).each do |organisme|
+    @organisms_for_results.includes(:bureau, :controleur, :organisme_destinations, :organisme_rattachements, :ministere, operateur: [:mission, :programme, :operateur_programmes], organisme_ministeres: [:ministere]).each do |organisme|
 
       date_dissolution = organisme.etat == "Inactif" ? format_boolean(format_date(organisme.date_dissolution)) : "N/A"
       effet_dissolution = organisme.etat == "Inactif" ? format_boolean(organisme.effet_dissolution) : "N/A"

@@ -56,7 +56,7 @@ module ApplicationHelper
 
   def render_tag_group(title, param_name, options)
     output = content_tag :div, title, class: 'fr-label fr-text--bold'
-    output << content_tag(:ul, class: 'fr-tags-group fr-mt-1w') do
+    output << content_tag(:ul, class: 'fr-tags-group fr-my-1w') do
       options.map do |val|
         content_tag(:li) do
           content_tag(:button, ' ', class: 'fr-tag', data: { action: 'click->request#checkTag' },

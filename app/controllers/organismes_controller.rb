@@ -6,19 +6,21 @@ require 'google/cloud/storage'
 class OrganismesController < ApplicationController
   before_action :authenticate_user!
   before_action :set_famille, only: %i[index show]
+  before_action :fetch_list_name_filter, only: :index
   def index
-    params.permit![:format] # pour le link_to excel
     # Fetch all organisms relevant to user's permissions, including those in extended families
     extended_family_organisms = fetch_extended_family_organisms
-    @search_organismes = extended_family_organisms&.pluck(:id, :nom, :acronyme)&.sort_by { |organisme| organisme[1] }
+    @organisms_for_search = extended_family_organisms.pluck(:id, :nom, :acronyme)
+    @q_params = q_params
     @q = extended_family_organisms.ransack(params[:q])
-    @extended_family_organisms = @q.result.includes(:bureau, :controleur)
-    @pagy, @organisms_page = pagy(@extended_family_organisms)
+    @organisms_for_results = @q.result.includes(:bureau, :controleur)
     respond_to do |format|
-      format.html
+      format.html do
+        @pagy, @organisms_page = pagy(@organisms_for_results)
+      end
       format.any do
-        headers['Content-Disposition'] = "attachment; filename=\"Liste_fiches_identite_organismes.xlsx\""
-        render xlsx: 'index', filename: 'Liste_fiches_identite_organismes.xlsx', disposition: 'attachment'
+        headers['Content-Disposition'] = 'attachment; filename="Liste_organismes.xlsx"'
+        render xlsx: 'index', filename: 'Liste_organismes.xlsx', disposition: 'attachment'
       end
     end
   end
@@ -187,7 +189,7 @@ class OrganismesController < ApplicationController
     file = bucket.file(filename)
     # Téléchargez le contenu du fichier PDF
     file_content = file.download.read
-    send_data file_content, :filename => filename, :disposition => "inline"
+    send_data file_content, :filename => filename, :disposition => 'inline'
   end
 
   private
@@ -225,101 +227,11 @@ class OrganismesController < ApplicationController
     organisms = Organisme.all.includes(:controleur)
     case @statut_user
     when 'Controleur'
-      organisms = organisms.where(statut: 'valide').where("controleur_id = :user_id OR famille IN (:familles)", user_id: current_user.id, familles: @familles)
+      organisms = organisms.where(statut: 'valide').where('controleur_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)
     when 'Bureau Sectoriel'
-      organisms = organisms.where(statut: 'valide').where("bureau_id = :user_id OR famille IN (:familles)", user_id: current_user.id, familles: @familles)
+      organisms = organisms.where(statut: 'valide').where('bureau_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)
     end
     organisms.order(:nom)
-  end
-
-  def fetch_controlled_organisms(organisms)
-    case @statut_user
-    when 'Controleur'
-      organisms.where(controleur_id: current_user)
-    when 'Bureau Sectoriel'
-      organisms.where(bureau_id: current_user)
-    else
-      organisms
-    end
-  end
-
-  def count_organisms_by_repartition_status(organisms)
-    active_organisms = organisms.where(etat: 'Actif')
-    case @statut_user
-    when '2B2O'
-      count_for_2b2o(active_organisms)
-    when 'Controleur'
-      count_for_controleur(active_organisms)
-    when 'Bureau Sectoriel'
-      count_for_bs(active_organisms)
-    end
-  end
-
-  def count_for_2b2o(active_organisms)
-    active_organisms_gbcp_3 = active_organisms.count { |el| el.gbcp_3 == true }
-    active_organisms_cb = active_organisms.count { |el| ['Oui', 'Oui mais adaptée'].include?(el.comptabilite_budgetaire) }
-    active_organisms_hcb = active_organisms.count { |el| el.comptabilite_budgetaire == 'Non' }
-    [active_organisms.count, active_organisms_gbcp_3, active_organisms_cb, active_organisms_hcb]
-  end
-
-  def count_for_controleur(active_organisms)
-    active_operators = active_organisms.joins(:operateur).where.not(operateurs: { id: nil }).where(operateurs: { operateur_n: true }).count
-    organisms_active_cb = active_organisms.count { |el| el.nature_controle == 'Contrôle Budgétaire' }
-    organisms_active_cef = active_organisms.count { |el| el.nature_controle == 'Contrôle Economique et Financier' }
-    organisms_active_epscp = active_organisms.count { |el| el.nature_controle == 'Contrôle Budgétaire EPSCP' }
-    [active_operators, organisms_active_cb, organisms_active_cef, organisms_active_epscp]
-  end
-
-  def count_for_bs(active_organisms)
-    active_operators = active_organisms.joins(:operateur).where.not(operateurs: { id: nil }).where(operateurs: { operateur_n: true }).count
-    organisms_active_controlled = active_organisms.count { |el| !el.nature_controle.nil? }
-    organisms_active_cb = active_organisms.count { |el| ['Oui', 'Oui mais adaptée'].include?(el.comptabilite_budgetaire) }
-    organisms_active_tutelle = active_organisms.count { |el| el.tutelle_financiere == true }
-    [active_operators, organisms_active_controlled, organisms_active_cb, organisms_active_tutelle]
-  end
-
-  def apply_filters_to_organisms(organisms)
-    # Initialize filters from params
-    filters = {
-      etat: parse_params(params[:etat], nil),
-      famille: parse_params(params[:famille], nil),
-      nature: parse_params(params[:nature], nil),
-      controleur_id: parse_params(params[:controleur_id], nil),
-      nature_controle: parse_params(params[:nature_controle], nil),
-    }
-    statut_brouillon = parse_params(params[:statut], nil)&.include?('Brouillon')
-    # Start with all organisms
-    filtered_organisms = organisms
-    # Apply filters if selections are present
-    filters.each do |key, value|
-      filtered_organisms = filtered_organisms.where(key => value) if value.present?
-    end
-    # Filter only on statut brouillon if brouillon selected
-    filtered_organisms = filtered_organisms.where.not(statut: 'valide') if statut_brouillon
-    # Filters on operateur
-    operateur_filter = parse_params(params[:operateur], nil)
-    filtered_organisms = filter_operateur(filtered_organisms, operateur_filter) if operateur_filter&.length == 1
-    filtered_organisms
-  end
-
-
-  # This helper method is used to parse params and return the value if it exists,
-  # otherwise returns the provided default list
-  def parse_params(param, default_list)
-    if param.present? && JSON.parse(param).to_a.any?
-      return JSON.parse(param)
-    end
-    default_list
-  end
-
-  def filter_operateur(organisms, param)
-    if param == ['Oui']
-      organisms.joins(:operateur).where.not(operateurs: { id: nil }).where(operateurs: { operateur_n: true })
-    elsif param == ['Non']
-      organisms.left_outer_joins(:operateur).where('operateurs.id IS NULL OR operateurs.operateur_n = ?', false)
-    else
-      organisms
-    end
   end
 
   def update_organisme_rattachements(organismes_to_link)
@@ -417,6 +329,31 @@ class OrganismesController < ApplicationController
   def update_gip(organisme)
     organisme.update(tutelle_financiere: false, delegation_approbation: false, autorite_approbation: nil, ministere_id: nil)
     organisme.organisme_ministeres&.destroy_all
+  end
+
+  def fetch_list_name_filter
+    users = User.order(:nom)
+    @bs_name_list = users.select { |user| ['Bureau Sectoriel', '2B2O'].include?(user.statut) }.map(&:nom)
+    @controleur_name_list = users.select { |user| ['Controleur', '2B2O'].include?(user.statut) }.map(&:nom)
+    @missions_list = Mission.all.order(:nom).pluck(:nom).uniq
+    @programs_list = Programme.all.order(:numero).pluck(:numero)
+  end
+
+  def q_params
+    if params[:q].present?
+      params.require(:q).permit(:etat_in => [], :statut_not_eq => [], :famille_in => [],
+                                :nature_in => [],:operateur_operateur_n_in => [], :controleur_nom_in => [],
+                                :nature_controle_in => [] ,:autorite_controle_in => [], :document_controle_present_in => [],
+                                :bureau_nom_in => [], :operateur_nom_categorie_in => [], :operateur_mission_nom_in => [],
+                                :operateur_programme_numero_in => [], :gbcp_1_in => [], :gbcp_3_in => [],
+                                :comptabilite_budgetaire_in => [], :tutelle_financiere_in => [], :delegation_approbation_in => [],
+                                :autorite_approbation_in => [], :ministere_nom_in => [],
+                                :organisme_ministeres_ministere_nom_in => [], :admin_db_present_in => [], :admin_preca_in => [],
+                                :controleur_preca_in => [], :controleur_ca_in => [], :comite_audit_in => [], :apu_in => [],
+                                :ciassp_n_in => [], :odal_n_in => [], :odac_n_in => [], :arrete_interdiction_odac_in => [])
+    else
+      {}
+    end
   end
 
 end
