@@ -1,0 +1,43 @@
+<% content_for :title do %>Liste des documents de contrôle | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container ">
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h1 class="fr-my-4w">Liste des documents de contrôle </h1>
+
+        <div class="fr-alert fr-alert--info fr-mb-4w">
+          <h3 class="fr-alert__title">Document de contrôle</h3>
+          <p>L'import des documents de contrôle est désormais possible depuis la page d'identité des organismes. Vous retrouvez sur cette page l'ensemble des documents de contrôle de vos organismes ainsi que ceux des organismes dont les familles sont communes aux vôtres.</p>
+        </div>
+
+        <div class="fr-table fr-table--layout-fixed">
+          <table>
+            <caption><%= pluralize(@control_documents&.count, 'résultats', plural: 'résultats') %></caption>
+            <thead>
+            <tr>
+              <th scope="col">Date</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Date signature</th>
+              <th scope="col">Organisme</th>
+              <th scope="col">Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @control_documents.each do |document| %>
+              <tr>
+                <td><%= format_boolean(format_date(document.created_at)) %></td>
+                <td><%= document.name %></td>
+                <td><%= format_boolean(format_date(document.date_signature)) %></td>
+                <td><%= document.organisme.nom %></td>
+                <td><%= link_to control_document_path(document.id), target: "_blank"  do %>Télécharger<%end %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>

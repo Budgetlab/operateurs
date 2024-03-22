@@ -1,18 +1,25 @@
-import Flatpickr from 'stimulus-flatpickr'
-import { French } from "flatpick-fr";
-// create a new Stimulus controller by extending stimulus-flatpickr wrapper controller
-export default class extends Flatpickr {
-    initialize() {
-        // sets your language (you can also set some global setting for all time pickers)
-        this.config = {
-            locale: French
+import { Controller } from "@hotwired/stimulus"
+import flatpickr from "flatpickr"
+import "flatpickr/dist/l10n/fr.js"
+
+export default class extends Controller {
+    static targets = []
+
+    connect() {
+        const modal = document.getElementById('picker-container')
+
+        if (modal != null){
+            flatpickr(this.element, {
+                locale: 'fr',
+                dateFormat: "d/m/Y",
+                appendTo: document.getElementById('picker-container')
+            })
+        }else {
+            flatpickr(this.element, {
+                locale: 'fr',
+                dateFormat: "d/m/Y",
+            })
         }
     }
 
-    // all flatpickr hooks are available as callbacks in your Stimulus controller
-    change(selectedDates, dateStr, instance) {
-        //console.log('the callback returns the selected dates', selectedDates)
-        //console.log('but returns it also as a string', dateStr)
-        //console.log('and the flatpickr instance', instance)
-    }
 }

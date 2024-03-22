@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_25_090119) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_22_073832) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -100,6 +100,18 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_25_090119) do
     t.float "ressources_total"
     t.index ["organisme_id"], name: "index_chiffres_on_organisme_id"
     t.index ["user_id"], name: "index_chiffres_on_user_id"
+  end
+
+  create_table "control_documents", force: :cascade do |t|
+    t.string "name"
+    t.string "gcp_link"
+    t.bigint "user_id", null: false
+    t.bigint "organisme_id", null: false
+    t.date "signature_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisme_id"], name: "index_control_documents_on_organisme_id"
+    t.index ["user_id"], name: "index_control_documents_on_user_id"
   end
 
   create_table "ministeres", force: :cascade do |t|
@@ -254,6 +266,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_25_090119) do
 
   add_foreign_key "chiffres", "organismes"
   add_foreign_key "chiffres", "users"
+  add_foreign_key "control_documents", "organismes"
+  add_foreign_key "control_documents", "users"
   add_foreign_key "missions", "programmes"
   add_foreign_key "modifications", "organismes"
   add_foreign_key "modifications", "users"

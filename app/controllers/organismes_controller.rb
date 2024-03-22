@@ -139,13 +139,6 @@ class OrganismesController < ApplicationController
     end
   end
 
-  def documents_controle
-    organismes = liste_organisme
-    array_organismes = organismes.where.not(document_controle_lien: nil).order(document_controle_date: :desc).pluck(:controleur_id, :id, :nom, :document_controle_lien, :document_controle_date, :nature_controle, :arrete_controle)
-    @grouped_organismes = array_organismes.group_by(&:first)
-    @users_hash = User.pluck(:id, :nom).to_h
-  end
-
   def create_document_controle
     @organisme = Organisme.find(params[:id])
     file = params[:file]
@@ -224,7 +217,7 @@ class OrganismesController < ApplicationController
   end
 
   def fetch_extended_family_organisms
-    organisms = Organisme.all.includes(:controleur)
+    organisms = Organisme.all.includes(:controleur, :bureau)
     case @statut_user
     when 'Controleur'
       organisms = organisms.where(statut: 'valide').where('controleur_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)

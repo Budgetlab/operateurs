@@ -1,0 +1,22 @@
+<%= turbo_frame_tag :form_control_document do %>
+<div data-controller="form" class="fr-my-4w" >
+<%= form_with(model: @control_document, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm"}, multipart: true) do |f| %>
+    <% name = @organisme.nature_controle == "Contrôle Economique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) ? "Protocole de Contrôle Economique et Financier" : "Document de contrôle"  %>
+    <%= f.hidden_field :name, value: name %>
+    <%= f.hidden_field :user_id, value: current_user.id %>
+    <%= f.hidden_field :organisme_id, value: @organisme.id %>
+    <h2 class="fr-h6">Type de document : <%= name%></h2>
+    <div class="fr-input-group" id="picker-container" >
+      <label for="signature_date" class="fr-label">Date de signature du <%= name%>*</label>
+      <%= f.text_field :signature_date, class:"fr-select", data: { 'form-target': 'fieldRequire', controller: "flatpickr"}, id: "signature_date", placeholder: "- sélectionner -"%>
+    </div>
+
+    <div class="fr-input-group">
+      <label class="fr-label" for="file">Importer un fichier<span class="fr-hint-text">Formats suggérés : pdf, docx</span></label>
+      <%= f.file_field :file, data: { 'form-target': 'fieldRequire'}, id: 'file' %>
+    </div>
+
+    <%= f.submit "Valider", data: {'form-target': "submitBouton"},class: "fr-btn" %>
+<% end  %>
+</div>
+<% end  %>

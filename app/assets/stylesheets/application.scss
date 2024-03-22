@@ -5,6 +5,10 @@
   color: var(--text-disabled-grey) !important;
   cursor: not-allowed !important;
 }
+#picker-container .flatpickr-calendar {
+  top: 4rem !important;
+  left: 0 !important;
+}
 .div-dropdown{
   position:relative;
 }

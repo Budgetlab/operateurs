@@ -8,31 +8,14 @@
               Fermer
             </button>
           </div>
-          <div class="fr-modal__content" data-controller="form">
+          <div class="fr-modal__content">
             <h1 id="modal-ajout-dc-title" class="fr-modal__title">
               <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true"></span>
-              Ajouter un document de contrôle
+              Ajouter un document
             </h1>
 
-            <div class="fr-my-4w">
-              <%= form_with(url: create_document_controle_path(id: organisme.id),data: {'form-target': "form"}, multipart: true) do |f| %>
 
-                <div class="fr-input-group">
-                  <label class="fr-label" for="file">Importer un fichier<span class="fr-hint-text">Formats suggérés : pdf, docx</span></label>
-                  <%= f.file_field :file, id: 'file' %>
-                </div>
-
-                <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
-                  <li><%= f.submit "Valider", data: {'form-target': "submitBouton"},class: "fr-btn" %></li>
-                  <li>
-                    <button class="fr-btn fr-btn--secondary" aria-controls="modal-ajout-dc" title="Fermer" data-action="form#Dropdown">
-                      Annuler
-                    </button>
-                  </li>
-                </ul>
-              <% end %>
-            </div>
-
+            <%= turbo_frame_tag :form_control_document %>
           </div>
         </div>
       </div>

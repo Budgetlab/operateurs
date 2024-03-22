@@ -1,0 +1,2 @@
+module ControlDocumentsHelper
+end

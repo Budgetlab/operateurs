@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  name: MyString
+  gcp_link: MyString
+  user: one
+  organisme: one
+  signature_date: 2024-03-22
+
+two:
+  name: MyString
+  gcp_link: MyString
+  user: two
+  organisme: two
+  signature_date: 2024-03-22
