@@ -139,52 +139,6 @@ class OrganismesController < ApplicationController
     end
   end
 
-  def create_document_controle
-    @organisme = Organisme.find(params[:id])
-    file = params[:file]
-    redirect_to @organisme and return if file.nil?
-
-    # Téléchargement du fichier sur GCS
-    bucket_name = 'budgetlab-bucket'
-    storage = Google::Cloud::Storage.new(project_id: 'apps-354210')
-    bucket = storage.bucket(bucket_name)
-    nom_fichier = "OPERA/Controle/#{@organisme.id.to_s}_#{file.original_filename}"
-    file = bucket.create_file(file.tempfile, nom_fichier)
-
-    # Enregistrement du lien du fichier dans la base de données
-    @organisme.update(document_controle_lien: file.public_url)
-    redirect_to @organisme, flash: { notice: 'ajout_dc' }
-  end
-
-  def destroy_document_controle
-    @organisme = Organisme.find(params[:id])
-    # Suppression du fichier dans GCS
-    bucket_name = 'budgetlab-bucket'
-    storage = Google::Cloud::Storage.new(project_id: 'apps-354210')
-    bucket = storage.bucket(bucket_name)
-    filename = @organisme.document_controle_lien&.gsub('https://storage.googleapis.com/budgetlab-bucket/', '')
-    # Supprimez le fichier dans GCS en utilisant son chemin ou son nom
-    bucket.file(filename)&.delete
-
-    # Supprimez le document de la base de données
-    @organisme.update(document_controle_lien: nil)
-    redirect_to @organisme, flash: { notice: 'suppression_dc' }
-  end
-
-  def download_document
-    @organisme = Organisme.find(params[:id])
-    bucket_name = 'budgetlab-bucket'
-    storage = Google::Cloud::Storage.new(project_id: 'apps-354210')
-    bucket = storage.bucket(bucket_name)
-    @lien = @organisme.document_controle_lien
-    # filename = File.basename(URI.parse(@lien).path)
-    filename = @organisme.document_controle_lien&.gsub('https://storage.googleapis.com/budgetlab-bucket/', '')
-    file = bucket.file(filename)
-    # Téléchargez le contenu du fichier PDF
-    file_content = file.download.read
-    send_data file_content, :filename => filename, :disposition => 'inline'
-  end
-
   private
 
   def organisme_params

@@ -12,6 +12,8 @@ Rails.application.routes.draw do
     resources :chiffres, only: [:index]
   end
   resources :control_documents
+  get '/documents', to: 'control_documents#documents'
+  get '/documents/:user', to: 'control_documents#controleur_documents', as: 'controleur_documents'
   resources :chiffres, except: [:index]
   post '/show_dates' => 'chiffres#show_dates'
   post '/select_comptabilite' => 'chiffres#select_comptabilite'
@@ -24,9 +26,6 @@ Rails.application.routes.draw do
   post '/open_phase' => 'chiffres#open_phase'
   get '/suivi-remplissage' => 'chiffres#suivi_remplissage'
   post '/import_operateurs' => 'operateurs#import'
-  get '/download_document' => 'organismes#download_document'
-  post '/create_document_controle' => 'organismes#create_document_controle'
-  delete '/destroy_document_controle' => 'organismes#destroy_document_controle'
   resources :ministeres
   post '/import_ministeres' => 'ministeres#import'
   get '/missions' => 'missions#index'
@@ -41,8 +40,6 @@ Rails.application.routes.draw do
   get '/donnees-personnelles', to: 'pages#donnees_personnelles'
   get '/accessibilite', to: 'pages#accessibilite'
   get '/plan', to: 'pages#plan'
-  get '/documents', to: 'control_documents#documents'
-  get '/documents/:user', to: 'control_documents#controleur_documents', as: 'controleur_documents'
   # routes pages erreurs
   match '/500', via: :all, to: 'errors#error_500'
   match '/404', via: :all, to: 'errors#error_404'

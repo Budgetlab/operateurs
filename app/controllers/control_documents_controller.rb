@@ -5,7 +5,7 @@ class ControlDocumentsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_control_document, only: %i[show destroy]
   before_action :redirect_unless_admin, only: %i[documents controleur_documents destroy]
-  before_action :set_organisme, only: [:new, :create]
+  before_action :set_organisme, only: %i[new]
   def index
     @control_documents = if @statut_user == 'Controleur'
                            current_user.control_documents.includes(:user, :organisme)
@@ -18,18 +18,20 @@ class ControlDocumentsController < ApplicationController
     @control_document = @organisme.control_documents.new
   end
   def create
-    file = params[:file]
-    redirect_back(fallback_location: root_path) and return if file.nil?
-
-    @control_document = @organisme.control_documents.new(control_document_params)
+    file = params[:control_document][:file]
+    @control_document = ControlDocument.new(control_document_params)
     # Téléchargement du fichier sur GCS
     bucket = retrieve_gcp_bucket
-    file_name = "OPERA/Controle/#{@organisme.nom.to_s}_#{file.original_filename}"
+    file_name = "OPERA/Controle/#{@control_document.id}_#{@control_document.organisme.nom.to_s}_#{file.original_filename}"
     file_gcp = bucket.create_file(file.tempfile, file_name)
 
     # save gcp_link
     @control_document.update(gcp_link: file_gcp.public_url)
-    redirect_to @organisme, flash: { notice: 'ajout_dc' }
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: turbo_stream.update('control_document', partial: 'control_documents/control_document', locals: {control_document: @control_document})
+      end
+    end
   end
 
   def show

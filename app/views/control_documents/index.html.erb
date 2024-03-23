@@ -12,7 +12,7 @@
 
         <div class="fr-table fr-table--layout-fixed">
           <table>
-            <caption><%= pluralize(@control_documents&.count, 'résultats', plural: 'résultats') %></caption>
+            <caption><%= pluralize(@control_documents&.count, 'résultat', plural: 'résultats') %></caption>
             <thead>
             <tr>
               <th scope="col">Date</th>
@@ -27,9 +27,10 @@
               <tr>
                 <td><%= format_boolean(format_date(document.created_at)) %></td>
                 <td><%= document.name %></td>
-                <td><%= format_boolean(format_date(document.date_signature)) %></td>
-                <td><%= document.organisme.nom %></td>
-                <td><%= link_to control_document_path(document.id), target: "_blank"  do %>Télécharger<%end %></td>
+                <td><%= format_boolean(format_date(document.signature_date)) %></td>
+                <td><%= link_to organisme_path(document.organisme) do %><%= document.organisme.nom %><% end %></td>
+                <td><%= link_to control_document_path(document.id), target: "_blank"  do %>Télécharger<%end %>
+                  <%= link_to control_document_path(document), data: {"turbo-method": :delete} do %>supp<% end %> </td>
               </tr>
             <% end %>
             </tbody>
