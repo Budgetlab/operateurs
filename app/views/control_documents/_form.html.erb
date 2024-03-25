@@ -14,8 +14,8 @@
             </div>
 
             <div class="fr-input-group">
-              <label class="fr-label" for="file">Importer un fichier<span class="fr-hint-text">Format suggéré : pdf</span></label>
-              <%= f.file_field :file, data: { 'form-target': 'fieldRequire'}, id: 'file' %>
+              <label class="fr-label" for="file">Importer un fichier<span class="fr-hint-text">Format : pdf</span></label>
+              <%= f.file_field :document, accept: 'application/pdf', data: { 'form-target': 'fieldRequire'}, id: 'file' %>
             </div>
 
             <%= f.submit "Valider", data: {'form-target': "submitBouton"}, 'aria-controls': "modal-ajout-dc", class: "fr-btn" %>

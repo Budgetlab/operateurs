@@ -1,5 +1,6 @@
-<p class="fr-card__desc"><%=control_document.name%><b>
-  <%= link_to control_document_path(control_document.id), target: "_blank"  do %>Télécharger<% end %></b>
+<%= render 'control_documents/flash'%>
+<p class="fr-card__desc"><%=control_document.name%> :
+  <% if control_document.document.attached? %><% if control_document.document.image? %><%= image_tag control_document.document %><%else %><b><%= link_to rails_blob_path(control_document.document, disposition: "attachment") do %>Télécharger<% end %></b><%end %><% end %>
   <%= link_to "Mettre à jour", new_control_document_path(organisme_id: control_document.organisme_id),class:"fr-btn fr-btn--secondary fr-btn--sm", 'aria-controls': "modal-ajout-dc", data: {turbo_frame: :form_control_document, fr_opened: false} %>
 </p>
 <p class="fr-card__desc">Date de signature du document : <b><%= format_boolean(format_date(control_document.signature_date)) %></b></p>

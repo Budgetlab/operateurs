@@ -23,14 +23,14 @@
             </tr>
             </thead>
             <tbody>
-            <% @control_documents.each do |document| %>
+            <% @control_documents.each do |control_document| %>
               <tr>
-                <td><%= format_boolean(format_date(document.created_at)) %></td>
-                <td><%= document.name %></td>
-                <td><%= format_boolean(format_date(document.signature_date)) %></td>
-                <td><%= link_to organisme_path(document.organisme) do %><%= document.organisme.nom %><% end %></td>
-                <td><%= link_to control_document_path(document.id), target: "_blank"  do %>Télécharger<%end %>
-                  <%= link_to control_document_path(document), data: {"turbo-method": :delete} do %>supp<% end %> </td>
+                <td><%= format_boolean(format_date(control_document.created_at)) %></td>
+                <td><%= control_document.name %></td>
+                <td><%= format_boolean(format_date(control_document.signature_date)) %></td>
+                <td><%= link_to organisme_path(control_document.organisme) do %><%= control_document.organisme.nom %><% end %></td>
+                <td><% if control_document.document.attached? %><%= link_to rails_blob_path(control_document.document, disposition: "attachment") do %>Télécharger<% end %><% end %>
+                  <%= link_to control_document_path(control_document), data: {"turbo-method": :delete} do %>supp<% end %> </td>
               </tr>
             <% end %>
             </tbody>

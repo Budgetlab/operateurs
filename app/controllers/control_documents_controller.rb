@@ -3,30 +3,24 @@
 # Controller for Control documents
 class ControlDocumentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_control_document, only: %i[show destroy]
+  before_action :set_control_document, only: %i[destroy]
   before_action :redirect_unless_admin, only: %i[documents controleur_documents destroy]
   before_action :set_organisme, only: %i[new]
   def index
     @control_documents = if @statut_user == 'Controleur'
-                           current_user.control_documents.includes(:user, :organisme)
+                           current_user.control_documents.includes(:user, :organisme).order(created_at: :desc)
                          else
-                           ControlDocument.all.includes(:user, :organisme)
+                           ControlDocument.all.includes(:user, :organisme).order(created_at: :desc)
                          end
   end
 
   def new
     @control_document = @organisme.control_documents.new
   end
-  def create
-    file = params[:control_document][:file]
-    @control_document = ControlDocument.new(control_document_params)
-    # Téléchargement du fichier sur GCS
-    bucket = retrieve_gcp_bucket
-    file_name = "OPERA/Controle/#{@control_document.id}_#{@control_document.organisme.nom.to_s}_#{file.original_filename}"
-    file_gcp = bucket.create_file(file.tempfile, file_name)
 
-    # save gcp_link
-    @control_document.update(gcp_link: file_gcp.public_url)
+  def create
+    @control_document = ControlDocument.new(control_document_params)
+    flash[:notice] = @control_document.save ? 'control_document_success' : 'control_document_failed'
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: turbo_stream.update('control_document', partial: 'control_documents/control_document', locals: {control_document: @control_document})
@@ -34,25 +28,10 @@ class ControlDocumentsController < ApplicationController
     end
   end
 
-  def show
-    bucket = retrieve_gcp_bucket
-    filename = @control_document.gcp_link&.gsub('https://storage.googleapis.com/budgetlab-bucket/', '')
-    file = bucket.file(filename)
-    # Téléchargez le contenu du fichier PDF
-    file_content = file.download.read
-    send_data file_content, filename:, disposition: 'inline'
-  end
-
   def destroy
-    # Suppression du fichier dans GCS
-    bucket = retrieve_gcp_bucket
-    filename = @control_document.gcp_link&.gsub('https://storage.googleapis.com/budgetlab-bucket/', '')
-    # Supprimez le fichier dans GCS en utilisant son chemin ou son nom
-    bucket.file(filename)&.delete
-
-    # Supprimez le document de la base de données
     @organisme = @control_document.organisme
-    @control_document.destroy
+    @control_document.document&.purge
+    @control_document&.destroy
     redirect_to @organisme, flash: { notice: 'suppression_dc' }
   end
 
@@ -72,13 +51,7 @@ class ControlDocumentsController < ApplicationController
   end
 
   def control_document_params
-    params.require(:control_document).permit(:name, :gcp_link, :user_id, :organisme_id, :signature_date)
-  end
-
-  def retrieve_gcp_bucket
-    bucket_name = 'budgetlab-bucket'
-    storage = Google::Cloud::Storage.new(project_id: 'apps-354210')
-    storage.bucket(bucket_name)
+    params.require(:control_document).permit(:name, :gcp_link, :user_id, :organisme_id, :signature_date, :document)
   end
 
   def redirect_unless_admin
@@ -87,6 +60,5 @@ class ControlDocumentsController < ApplicationController
 
   def set_organisme
     @organisme = Organisme.find(params[:organisme_id])
-    redirect_to root_path and return unless @organisme
   end
 end
