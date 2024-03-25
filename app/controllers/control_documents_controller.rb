@@ -27,7 +27,6 @@ class ControlDocumentsController < ApplicationController
   end
 
   def destroy
-    @control_document.document.purge
     @control_document&.destroy
     redirect_to control_documents_path
   end
