@@ -273,20 +273,12 @@
                   <p class="fr-card__desc">Autorité de contrôle : <b><%= format_boolean(@organisme.autorite_controle) %></b></p>
                   <p class="fr-card__desc">Texte réglementaire de désignation de l'autorité de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_reglementaire_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
                   <p class="fr-card__desc">Référence de l’arrêté de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-                  <p class="fr-card__desc fr-my-0" id="control_document">
-                    <% if @organisme.document_controle_present %>
-                      <%  if @organisme.control_documents.count > 0 %>
-                        <% document = @organisme.control_documents.order(created_at: :desc).first %>
-                        <%= render partial: 'control_documents/control_document', locals: {control_document: document} %>
-                      <% else %>
-                      <p class="fr-card__desc">
-                        <% if @organisme.nature_controle == "Contrôle Economique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) %>Protocole de Contrôle Economique et Financier<%else %>Document de contrôle<%end %> : <%= link_to "Ajouter un document", new_control_document_path(organisme_id: @organisme.id),class:"fr-btn fr-btn--secondary fr-btn--sm", 'aria-controls': "modal-ajout-dc", data: {turbo_frame: :form_control_document, fr_opened: false} %>
-                      </p>
-                      <% end  %>
-                    <% else  %>
-                      <p class="fr-card__desc"><% if @organisme.nature_controle == "Contrôle Economique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) %>Protocole de Contrôle Economique et Financier<%else %>Document de contrôle<%end %> :<b><%= format_boolean(@organisme.document_controle_present) %></b></p>
-                    <%end %>
-                  </p>
+                  <p class="fr-card__desc"><% if @organisme.nature_controle == "Contrôle Economique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) %>Protocole de Contrôle Economique et Financier<%else %>Document de contrôle<%end %> : <b><%= format_boolean(@organisme.document_controle_present) %></b></p>
+                  <% if @organisme.document_controle_present %>
+                  <div class="fr-card__desc fr-my-0" id="control_document">
+                      <%= render partial: 'control_documents/control_document', locals: {organisme: @organisme} %>
+                  </div>
+                  <% end  %>
                 <% end %>
                 <p class="fr-card__desc">Référence de l’arrêté de nomination du commissaire du gouvernement : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_nomination),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
 
@@ -294,9 +286,9 @@
             </div>
           </div>
 
-              <dialog id="modal-ajout-dc" class="fr-modal" aria-labelledby="modal-ajout-dc-title">
-                <%= render partial: 'organismes/modal_ajout_dc',locals: {organisme: @organisme} %>
-              </dialog>
+
+                <%= render partial: 'organismes/modal_ajout_dc'%>
+
 
           <%else  %>
             <p class="fr-badge fr-badge--warning">Non complété</p>

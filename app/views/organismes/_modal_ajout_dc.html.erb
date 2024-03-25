@@ -1,15 +1,15 @@
-<% unless organisme.nil?%>
+<dialog id="modal-document-control" class="fr-modal" aria-labelledby="modal-document-control--title">
   <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
       <div class="fr-col-12 fr-col-md-10 fr-col-lg-9">
         <div class="fr-modal__body">
           <div class="fr-modal__header">
-            <button class="fr-btn--close fr-btn" aria-controls="modal-ajout-dc" title="Fermer">
+            <button class="fr-btn--close fr-btn" aria-controls="modal-document-control" title="Fermer">
               Fermer
             </button>
           </div>
           <div class="fr-modal__content">
-            <h1 id="modal-ajout-dc-title" class="fr-modal__title">
+            <h1 id="modal-document-control--title" class="fr-modal__title">
               <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true"></span>
               Ajouter un document
             </h1>
@@ -19,5 +19,4 @@
       </div>
     </div>
   </div>
-
-<% end %>
+</dialog>

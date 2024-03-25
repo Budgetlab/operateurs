@@ -22,12 +22,13 @@
     <h2 class="fr-my-3w">Documents de contrôle [<%= @controleur.control_documents.length%>]</h2>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
       <div class="fr-col-12 fr-col-lg-12">
-        <% @controleur.control_documents.each do |document|%>
+        <% @controleur.control_documents.each do |control_document|%>
           <div>
-            <b><%= link_to control_document_path(document), target: "_blank"  do %><%=document.name%><%end %>
-               [<%= link_to organisme_path(document.organisme_id) do%><%= document.organisme.nom %><% end %>]</b>  signé le : <%= format_boolean(format_date(document.signature_date)) %>
+            <p class="fr-badge fr-badge--green-menthe"><%= control_document.name %></p>
+            <b>[<%= link_to organisme_path(control_document.organisme_id) do%><%= control_document.organisme.nom %><% end %>]</b>  signé le : <%= format_boolean(format_date(control_document.signature_date)) %>, ajouté le : <%= format_boolean(format_date(control_document.created_at)) %>
           </div>
-          <hr class="fr-hr fr-my-3w"/>
+          <div><% if control_document.document.attached? %><%= link_to rails_blob_path(control_document.document, disposition: "attachment"), class: "fr-link fr-icon-download-line fr-link--icon-right" do %><%= control_document.document.filename %><% end %><%end %></div>
+          <hr class="fr-hr fr-pb-1w fr-mt-2w"/>
         <% end  %>
       </div>
     </div>

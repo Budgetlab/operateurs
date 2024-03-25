@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_03_25_082441) do
+ActiveRecord::Schema[7.1].define(version: 2024_03_25_145053) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -132,7 +132,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_03_25_082441) do
 
   create_table "control_documents", force: :cascade do |t|
     t.string "name"
-    t.string "gcp_link"
     t.bigint "user_id", null: false
     t.bigint "organisme_id", null: false
     t.date "signature_date"

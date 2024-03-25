@@ -7,11 +7,9 @@ class ControlDocumentsController < ApplicationController
   before_action :redirect_unless_admin, only: %i[documents controleur_documents destroy]
   before_action :set_organisme, only: %i[new]
   def index
-    @control_documents = if @statut_user == 'Controleur'
-                           current_user.control_documents.includes(:user, :organisme).order(created_at: :desc)
-                         else
-                           ControlDocument.all.includes(:user, :organisme).order(created_at: :desc)
-                         end
+    control_documents = @statut_user == 'Controleur' ? current_user.control_documents : ControlDocument.all
+    @q = control_documents.ransack(params[:q])
+    @control_documents = @q.result.includes(:user, :organisme)
   end
 
   def new
@@ -20,19 +18,18 @@ class ControlDocumentsController < ApplicationController
 
   def create
     @control_document = ControlDocument.new(control_document_params)
-    flash[:notice] = @control_document.save ? 'control_document_success' : 'control_document_failed'
+    flash[:notice] = @control_document.save && @control_document.document.attached? ? 'control_document_success' : 'control_document_failed'
     respond_to do |format|
       format.turbo_stream do
-        render turbo_stream: turbo_stream.update('control_document', partial: 'control_documents/control_document', locals: {control_document: @control_document})
+        render turbo_stream: turbo_stream.update('control_document', partial: 'control_documents/control_document', locals: {organisme: @control_document.organisme})
       end
     end
   end
 
   def destroy
-    @organisme = @control_document.organisme
-    @control_document.document&.purge
+    @control_document.document.purge
     @control_document&.destroy
-    redirect_to @organisme, flash: { notice: 'suppression_dc' }
+    redirect_to control_documents_path
   end
 
   def documents

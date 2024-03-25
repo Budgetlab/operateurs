@@ -15,9 +15,9 @@
             <caption><%= pluralize(@control_documents&.count, 'résultat', plural: 'résultats') %></caption>
             <thead>
             <tr>
-              <th scope="col">Date</th>
+              <th scope="col">Date <%= sort_link(@q, :created_at, '', default_order: :desc, class: 'fr-btn fr-btn--sm fr-btn--tertiary-no-outline') %> </th>
               <th scope="col">Nom</th>
-              <th scope="col">Date signature</th>
+              <th scope="col">Date signature <%= sort_link(@q, :signature_date, '', class: 'fr-btn fr-btn--sm fr-btn--tertiary-no-outline') %> </th>
               <th scope="col">Organisme</th>
               <th scope="col">Action</th>
             </tr>
@@ -29,8 +29,8 @@
                 <td><%= control_document.name %></td>
                 <td><%= format_boolean(format_date(control_document.signature_date)) %></td>
                 <td><%= link_to organisme_path(control_document.organisme) do %><%= control_document.organisme.nom %><% end %></td>
-                <td><% if control_document.document.attached? %><%= link_to rails_blob_path(control_document.document, disposition: "attachment") do %>Télécharger<% end %><% end %>
-                  <%= link_to control_document_path(control_document), data: {"turbo-method": :delete} do %>supp<% end %> </td>
+                <td><% if control_document.document.attached? %><%= link_to rails_blob_path(control_document.document, disposition: "attachment"), class: "fr-icon-download-line fr-link--icon-right" do %>Télécharger<% end %><% end %>
+                  <%= link_to control_document_path(control_document), data: {"turbo-method": :delete} do %><span class="fr-icon--sm fr-icon-delete-fill" aria-hidden="true"></span><% end %> </td>
               </tr>
             <% end %>
             </tbody>
