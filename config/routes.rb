@@ -12,8 +12,6 @@ Rails.application.routes.draw do
     resources :chiffres, only: [:index]
   end
   resources :control_documents
-  get '/documents', to: 'control_documents#documents'
-  get '/documents/:user', to: 'control_documents#controleur_documents', as: 'controleur_documents'
   resources :chiffres, except: [:index]
   post '/show_dates' => 'chiffres#show_dates'
   post '/select_comptabilite' => 'chiffres#select_comptabilite'

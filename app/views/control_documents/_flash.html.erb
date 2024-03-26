@@ -2,10 +2,10 @@
   <% flash.each do |type, msg| %>
     <% if msg == "control_document_success" %>
       <div class="fr-alert fr-alert--success fr-alert--sm fr-mt-1w">
-        <p>Le document a été importé avec succès.</p>
+        <p>Le document a été importé avec succès. Vous pouvez retrouver tous les documents de contrôle <%= link_to control_documents_path do%>ici<%end %></p>
         <button class="fr-link--close fr-link" title="Masquer le message" onclick="const alert = this.parentNode; alert.parentNode.removeChild(alert)">Masquer le message</button>
       </div>
-    <% elsif msg = "control_document_failed" %>
+    <% elsif msg == "control_document_failed" %>
       <div class="fr-alert fr-alert--error fr-alert--sm fr-mt-1w">
         <p>L'import du document a échoué.</p>
         <button class="fr-link--close fr-link" title="Masquer le message" onclick="const alert = this.parentNode; alert.parentNode.removeChild(alert)">Masquer le message</button>

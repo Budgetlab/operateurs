@@ -92,7 +92,7 @@
               <div class="fr-col-6 fr-col-lg-12">
                 <div class="fr-badge-group">
                   <ul class="fr-mr-2w fr-mb-1v">
-                    <li><%= link_to organisme_path(organisme.id) do%><%= organisme.nom %><% if organisme.acronyme && !organisme.acronyme.blank? %> - <%= organisme.acronyme %><%end %><%end %></li>
+                    <li><%= link_to organisme_path(organisme.id) do%><%= organisme.nom %><% if organisme.acronyme.present? %> - <%= organisme.acronyme %><%end %><%end %></li>
                   </ul>
                   <% class_badge_liste = if organisme.statut != "valide" then "fr-badge--yellow-moutarde" elsif current_user == organisme.controleur || (@statut_user == "Bureau Sectoriel" && current_user == organisme.bureau) then "fr-badge--green-emeraude" else "fr-badge--blue-ecume" end%>
 

@@ -124,29 +124,23 @@
 
                 <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
-                    <%= f.radio_button :document_controle_present, true, id: "radio-document-1", checked: @organisme.document_controle_present == true, data: {action: "change->form#ChangePresenceDocument" } %>
+                    <%= f.radio_button :document_controle_present, true, id: "radio-document-1", checked: @organisme.document_controle_present == true %>
                     <label class="fr-label" for="radio-document-1">Oui</label>
                   </div>
                 </div>
                 <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
-                    <%= f.radio_button :document_controle_present, false, checked: @organisme.document_controle_present == false, id:"radio-document-b", data: {action: "change->form#ChangePresenceDocument" }  %>
+                    <%= f.radio_button :document_controle_present, false, checked: @organisme.document_controle_present == false, id:"radio-document-b"  %>
                     <label class="fr-label" for="radio-document-b">Non</label>
                   </div>
                 </div>
                 <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
-                    <%= f.radio_button :document_controle_present, "", checked: @organisme.document_controle_present.nil? , id:"radio-document", data: {action: "change->form#ChangePresenceDocument" }  %>
+                    <%= f.radio_button :document_controle_present, "", checked: @organisme.document_controle_present.nil? , id:"radio-document"  %>
                     <label class="fr-label" for="radio-document">Non renseigné</label>
                   </div>
                 </div>
               </fieldset>
-            </div>
-            <div class="fr-col-12 fr-col-lg-6">
-              <div class="fr-input-group">
-                <label for="date_signature" class="fr-label">Date de signature du document/protocole*</label>
-                <%= f.text_field :document_controle_date, class:"fr-select", data: { 'form-target': 'fieldRequire', controller: "flatpickr",flatpickr_date_format: "d/m/Y", flatpickr_default_date: format_date(@organisme.document_controle_date)}, value: @organisme.document_controle_date, id: "date_signature", placeholder: "- sélectionner -"%>
-              </div>
             </div>
           </div>
           <% end %>

@@ -4,12 +4,11 @@
 class ControlDocumentsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_control_document, only: %i[destroy]
-  before_action :redirect_unless_admin, only: %i[documents controleur_documents destroy]
   before_action :set_organisme, only: %i[new]
   def index
-    control_documents = @statut_user == 'Controleur' ? current_user.control_documents : ControlDocument.all
+    control_documents = fetch_extended_family_documents
     @q = control_documents.ransack(params[:q])
-    @control_documents = @q.result.includes(:user, :organisme)
+    @control_documents = @q.result.includes(organisme: :controleur)
   end
 
   def new
@@ -31,15 +30,6 @@ class ControlDocumentsController < ApplicationController
     redirect_to control_documents_path
   end
 
-  def documents
-    @controleurs = User.where(statut: ['Controleur', '2B2O']).includes(:control_documents)
-  end
-
-  def controleur_documents
-    @controleur = User.find_by(nom: params[:user])
-    redirect_to documents_path and return unless @controleur
-  end
-
   private
 
   def set_control_document
@@ -47,14 +37,21 @@ class ControlDocumentsController < ApplicationController
   end
 
   def control_document_params
-    params.require(:control_document).permit(:name, :gcp_link, :user_id, :organisme_id, :signature_date, :document)
-  end
-
-  def redirect_unless_admin
-    redirect_to root_path and return unless @statut_user == '2B2O'
+    params.require(:control_document).permit(:name, :user_id, :organisme_id, :signature_date, :document)
   end
 
   def set_organisme
     @organisme = Organisme.find(params[:organisme_id])
+  end
+
+  def fetch_extended_family_documents
+    control_documents = ControlDocument.all
+    case @statut_user
+    when 'Controleur'
+      control_documents = control_documents.joins(:organisme).where('organismes.controleur_id = :user_id OR organismes.famille IN (:familles)', user_id: current_user.id, familles: @familles)
+    when 'Bureau Sectoriel'
+      control_documents = control_documents.joins(:organisme).where(organismes: { bureau: current_user })
+    end
+    control_documents.order(created_at: :desc)
   end
 end

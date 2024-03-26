@@ -18,9 +18,6 @@ export default class extends Controller {
         if (this.element.querySelector('#radio-controle-1') != null) {
             this.ChangeControle();
         }
-        if (this.element.querySelector('#radio-document-1') != null){
-            this.ChangePresenceDocument();
-        }
         if (this.element.querySelector('#radio-tutelle-1') != null){
             this.ChangeTutelle();
         }
@@ -279,7 +276,7 @@ export default class extends Controller {
                 if (field.nodeName === 'INPUT') {
                     if (field.name == "organisme[document_controle_present]"){
                         field.closest('fieldset').disabled = false;
-                    }else if (field.id != "date_signature"){
+                    }else {
                         this.enableInput(field);
                     }
                 }else if (field.nodeName === 'SELECT') {
@@ -288,11 +285,6 @@ export default class extends Controller {
             }
 
         })
-    }
-    ChangePresenceDocument(){
-        const doc = this.element.querySelector('#radio-document-1').checked;
-        const date = document.getElementById("date_signature");
-        this.changeField(doc,date);
     }
 
     ChangeTutelle(){

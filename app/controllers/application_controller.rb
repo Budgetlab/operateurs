@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :set_global_variable
   before_action :set_modifications
+  before_action :set_famille
   def redirect_back_or(path)
     redirect_to request.referer || path
   end
@@ -50,6 +51,15 @@ class ApplicationController < ActionController::Base
     @statut_user = current_user.statut
     @modifications = @statut_user == '2B2O' ? Modification.where.not(user_id: current_user.id) : current_user.modifications
     @modifications_attente = @modifications.select { |modification| modification.statut == 'En attente' }
+  end
+
+  def set_famille
+    if @statut_user == 'Controleur'
+      @familles = current_user.controleur_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
+      @familles += ['Universités'] if current_user.nom == 'CBCM MEN-MESRI'
+    elsif @statut_user == 'Bureau Sectoriel'
+      @familles = current_user.bureau_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
+    end
   end
 
   protected

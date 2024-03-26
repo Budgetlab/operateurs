@@ -103,14 +103,9 @@
 
 
             <li class="fr-nav__item">
-              <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-documents" <%= current_page?(documents_path) || current_page?(control_documents_path)  ? 'aria-current="true"' : '' %>>Documents</button>
+              <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-documents" <%= current_page?(control_documents_path)  ? 'aria-current="true"' : '' %>>Documents</button>
               <div class="fr-collapse fr-menu" id="menu-documents">
                 <ul class="fr-menu__list">
-                  <% if @statut_user == "2B2O"%>
-                  <li>
-                    <%= active_link_to documents_path, class: "fr-nav__link", target: "_self" do%>Documents par contrôleurs<%end %>
-                  </li>
-                  <% end %>
                   <li>
                     <%= active_link_to control_documents_path, class: "fr-nav__link", target: "_self" do%>Documents de contrôle<%end%>
                   </li>

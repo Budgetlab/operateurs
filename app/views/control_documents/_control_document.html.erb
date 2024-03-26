@@ -1,9 +1,8 @@
 <%  if organisme.control_documents&.count > 0 %>
-  <% organisme.control_documents.order(created_at: :desc).each do |control_document| %>
-    <p class="fr-card__desc"><%=control_document.name%> signé le <%= format_boolean(format_date(control_document.signature_date)) %>
-      <% if control_document.document.attached? %> : <%= link_to rails_blob_path(control_document.document, disposition: "attachment"), class: "fr-link fr-link--sm fr-icon-download-line fr-link--icon-right" do %><%= control_document.document.filename %><% end %><%end %>
-    </p>
-  <%end %>
+  <% control_document = organisme.control_documents.order(created_at: :desc).first %>
+  <p class="fr-card__desc"><%=control_document.name%> signé le <%= format_boolean(format_date(control_document.signature_date)) %>
+    <% if control_document.document.attached? %> : <%= link_to rails_blob_path(control_document.document, disposition: "attachment"), class: "fr-link fr-link--sm fr-icon-download-line fr-link--icon-right" do %>Téléchager<% end %><%end %>
+  </p>
 <% end %>
 <%= render 'control_documents/flash'%>
 <p class="fr-card__desc"><%= link_to "Ajouter un nouveau document", new_control_document_path(organisme_id: organisme.id),class:"fr-btn fr-btn--secondary fr-btn--sm", 'aria-controls': "modal-document-control", data: {turbo_frame: :form_control_document, fr_opened: false} %></p>

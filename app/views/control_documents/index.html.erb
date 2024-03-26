@@ -6,19 +6,33 @@
         <h1 class="fr-my-4w">Liste des documents de contrôle </h1>
 
         <div class="fr-alert fr-alert--info fr-mb-4w">
-          <h3 class="fr-alert__title">Document de contrôle</h3>
-          <p>L'import des documents de contrôle est désormais possible depuis la page d'identité des organismes. Vous retrouvez sur cette page l'ensemble des documents de contrôle de vos organismes ainsi que ceux des organismes dont les familles sont communes aux vôtres.</p>
+          <h3 class="fr-alert__title">Document de contrôle <p class="fr-badge fr-badge--new fr-badge--sm">Nouveau</p></h3>
+          <p>L'import des documents de contrôle est désormais possible depuis la page d'identité des organismes. Vous retrouvez sur cette page l'ensemble des documents de contrôle liés à vos organismes.</p>
         </div>
 
+        <div class="fr-mb-2w">
+        <%= search_form_for @q, data: {turbo_frame: 'table', turbo_action: 'advance'} do |f| %>
+          <div class="fr-search-bar fr-search-bar--lg" role="search">
+            <%= f.search_field :organisme_nom_or_organisme_acronyme_or_organisme_controleur_nom_cont, class: 'fr-input', placeholder: "Filtrer les résultats sur un organisme ou un contrôleur" %>
+            <%= f.submit "Rechercher", class:"fr-btn" %>
+          </div>
+        <% end %>
+        </div>
+
+        <%= turbo_frame_tag :table do %>
+          <% if params[:q].present? %>
+            <div class="fr-mb-1w"><%= link_to control_documents_path, data: {turbo_frame: "_top"}, class:"fr-btn fr-btn--sm fr-btn--tertiary fr-btn--icon-right fr-icon-refresh-line" do %>Réinitialiser la recherche<%end %></div>
+          <% end %>
         <div class="fr-table fr-table--layout-fixed">
           <table>
-            <caption><%= pluralize(@control_documents&.count, 'résultat', plural: 'résultats') %></caption>
+            <caption><%= pluralize(@control_documents&.count, 'résultat', plural: 'résultats') %> </caption>
             <thead>
             <tr>
-              <th scope="col">Date <%= sort_link(@q, :created_at, '', default_order: :desc, class: 'fr-btn fr-btn--sm fr-btn--tertiary-no-outline') %> </th>
-              <th scope="col">Nom</th>
+              <th scope="col">Date ajout <%= sort_link(@q, :created_at, '', default_order: :desc, class: 'fr-btn fr-btn--sm fr-btn--tertiary-no-outline') %> </th>
+              <th scope="col">Type</th>
               <th scope="col">Date signature <%= sort_link(@q, :signature_date, '', class: 'fr-btn fr-btn--sm fr-btn--tertiary-no-outline') %> </th>
               <th scope="col">Organisme</th>
+              <th scope="col">Contrôleur</th>
               <th scope="col">Action</th>
             </tr>
             </thead>
@@ -28,14 +42,16 @@
                 <td><%= format_boolean(format_date(control_document.created_at)) %></td>
                 <td><%= control_document.name %></td>
                 <td><%= format_boolean(format_date(control_document.signature_date)) %></td>
-                <td><%= link_to organisme_path(control_document.organisme) do %><%= control_document.organisme.nom %><% end %></td>
-                <td><% if control_document.document.attached? %><%= link_to rails_blob_path(control_document.document, disposition: "attachment"), class: "fr-icon-download-line fr-link--icon-right" do %>Télécharger<% end %><% end %>
-                  <%= link_to control_document_path(control_document), data: {"turbo-method": :delete} do %><span class="fr-icon--sm fr-icon-delete-fill" aria-hidden="true"></span><% end %> </td>
+                <td><%= link_to organisme_path(control_document.organisme), data: {turbo_frame: "_top"} do %><%= control_document.organisme.nom %><% if control_document.organisme.acronyme.present? %>- <%= control_document.organisme.acronyme %><%end %><% end %></td>
+                <td><%= control_document.organisme.controleur.nom %></td>
+                <td><% if control_document.document.attached? %><%= link_to rails_blob_path(control_document.document, disposition: "attachment"), data: {turbo_frame: "_top"},  class: "fr-icon-download-line fr-link--icon-right" do %>Télécharger<% end %><% end %>
+                  <%= link_to control_document_path(control_document), data: {turbo_frame: "_top", "turbo-method": :delete} do %><span class="fr-icon--sm fr-icon-delete-fill" aria-hidden="true"></span><% end %> </td>
               </tr>
             <% end %>
             </tbody>
           </table>
         </div>
+        <% end %>
 
       </div>
     </div>

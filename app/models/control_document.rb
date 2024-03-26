@@ -7,4 +7,8 @@ class ControlDocument < ApplicationRecord
   def self.ransackable_attributes(auth_object = nil)
     ["created_at", "id", "name", "organisme_id", "signature_date", "updated_at", "user_id"]
   end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["document_attachment", "document_blob", "organisme", "user"]
+  end
 end
