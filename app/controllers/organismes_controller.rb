@@ -49,7 +49,7 @@ class OrganismesController < ApplicationController
     filename = 'fiche_organisme.xlsx'
     respond_to do |format|
       format.html
-      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
+      format.any { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
     end
   end
 
@@ -171,7 +171,7 @@ class OrganismesController < ApplicationController
   end
 
   def fetch_extended_family_organisms
-    organisms = Organisme.all.includes(:controleur, :bureau)
+    organisms = Organisme.all.includes(:controleur, :bureau, :operateur)
     case @statut_user
     when 'Controleur'
       organisms = organisms.where(statut: 'valide').where('controleur_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)
@@ -288,7 +288,7 @@ class OrganismesController < ApplicationController
 
   def q_params
     if params[:q].present?
-      params.require(:q).permit(:etat_in => [], :statut_not_eq => [], :famille_in => [],
+      params.require(:q).permit(:nom_or_acronyme_cont, :operateur_id_null => [], :etat_in => [], :statut_not_eq => [], :famille_in => [],
                                 :nature_in => [],:operateur_operateur_n_in => [], :controleur_nom_in => [],
                                 :nature_controle_in => [] ,:autorite_controle_in => [], :document_controle_present_in => [],
                                 :bureau_nom_in => [], :operateur_nom_categorie_in => [], :operateur_mission_nom_in => [],

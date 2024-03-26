@@ -32,7 +32,8 @@ wb.add_worksheet(name: "Périmètre") do |sheet|
       operateur_programmes = operateur ? operateur.operateur_programmes.map { |el| el.programme.numero }.presence || "Aucun" : "N/A"
 
       array_controle = organisme.presence_controle ? [format_boolean(organisme.nature_controle), format_boolean(organisme.texte_soumission_controle), format_boolean(organisme.autorite_controle), format_boolean(organisme.texte_reglementaire_controle),format_boolean(organisme.arrete_controle), format_boolean(organisme.document_controle_present)] : ["N/A","N/A",'N/A','N/A','N/A','N/A']
-      document_controle_date = organisme.document_controle_present ? format_boolean(format_date(organisme.document_controle_date)) : "N/A"
+      last_document_controle_date = organisme.control_documents.last&.signature_date if !organisme.control_documents.nil?
+      document_controle_date = organisme.document_controle_present ? format_boolean(format_date(last_document_controle_date)) : "N/A"
       admin_db_fonction = organisme.admin_db_present ? format_boolean(organisme.admin_db_fonction) : "N/A"
       delegation_approbation = organisme.tutelle_financiere ? format_boolean(organisme.delegation_approbation) : "N/A"
 

@@ -7,7 +7,7 @@
       </div>
     </div>
 
-    <div class="fr-grid-row fr-grid-row--gutters fr-mb-2w">
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-2w fr-hidden">
       <div class="fr-col-12 fr-col-lg-9">
         <%= render partial: 'organismes/form_search', locals: {organisms: @organisms_for_search} %>
       </div>
@@ -22,6 +22,9 @@
             <div class="fr-mb-2w"><%= link_to organismes_path, class:"fr-btn fr-btn--sm fr-btn--secondary fr-btn--icon-right fr-icon-refresh-line" do %>Réinitialiser les filtres<%end %></div>
 
             <%= search_form_for @q, data: {'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance'} do |f| %>
+              <div class="fr-mb-1w" role="search">
+                <%= f.search_field :nom_or_acronyme_cont, class: 'fr-input',id: 'search-input', placeholder: "Filtrer sur le nom ou l'acronyme", oninput: 'this.form.requestSubmit()' %>
+              </div>
 
               <div class="fr-label fr-text--bold">État</div>
               <ul class="fr-tags-group fr-my-1w">
@@ -36,7 +39,6 @@
               <%= render_select_group("Famille", :famille_in, @liste_familles) %>
               <%= render_select_group("Nature juridique", :nature_in, @liste_natures) %>
 
-              <%= render_tag_group "Opérateur #{Date.today.year}", :operateur_operateur_n_in, ['true', 'false'] %>
 
               <%= render_select_group("Contrôleur", :controleur_nom_in, @controleur_name_list) %>
 
@@ -46,6 +48,20 @@
                 <%= render_tag_group 'Document de contrôle', :document_controle_present_in, ['true', 'false'] %>
 
                 <%= render_select_group("Bureau DB de rattachement", :bureau_nom_in, @bs_name_list) %>
+                <%= render_tag_group "Opérateur #{Date.today.year}", :operateur_operateur_n_in, ['true', 'false'] %>
+                <div class="fr-label fr-text--bold">Opérateur</div>
+                <ul class="fr-tags-group fr-my-1w">
+                  <li>
+                    <button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?('true') ? 'true' : 'false' %>">
+                      <label><%= check_box_tag "q[operateur_operateur_n_in][]", true, params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?('true') ? true : false, { class: 'fr-hidden' } %> Oui</label>
+                    </button>
+                  </li>
+                  <li>
+                    <button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_null].present? && params[:q][:operateur_operateur_n_null] == 'true' ? 'true' : 'false' %>">
+                      <label><%= check_box_tag "q[operateur_operateur_n_null]", true, params[:q] && params[:q][:operateur_operateur_n_null].present? && params[:q][:operateur_operateur_n_null] == 'true'  ? true : false, { class: 'fr-hidden' } %> Non</label>
+                    </button>
+                  </li>
+                </ul>
 
                 <%= render_select_group("Catégorie d'opérateurs", :operateur_nom_categorie_in, @liste_autorites) %>
                 <%= render_select_group("Mission", :operateur_mission_nom_in, @missions_list) %>
