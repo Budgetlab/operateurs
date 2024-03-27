@@ -92,4 +92,12 @@ class Organisme < ApplicationRecord
   def self.ransackable_associations(auth_object = nil)
     ["bureau", "chiffres", "controleur", "ministere", "modifications", "operateur", "organisme_destinations", "organisme_ministeres", "organisme_rattachements"]
   end
+
+  ransacker :nom, type: :string do
+    Arel.sql("unaccent(\"nom\")")
+  end
+
+  ransacker :acronyme, type: :string do
+    Arel.sql("unaccent(\"acronyme\")")
+  end
 end

@@ -11,6 +11,9 @@
               </p>
             </div>
             <div class="fr-header__navbar">
+              <button class="fr-btn--search fr-btn" data-fr-opened="false" aria-controls="modal-474" id="button-475" title="Rechercher">
+                Rechercher
+              </button>
               <button class="fr-btn--menu fr-btn" data-fr-opened="false" aria-controls="modal-499" aria-haspopup="menu" id="button-500" title="Menu">
                 Menu
               </button>
@@ -33,6 +36,25 @@
                   <%= link_to "Se déconnecter", destroy_user_session_path, data: { "turbo-method": :delete }, class:"fr-btn fr-fi-logout-box-r-line" %>
                 </li>
               </ul>
+            </div>
+            <div class="fr-header__search fr-modal" id="modal-474">
+              <div class="fr-container fr-container-lg--fluid">
+                <button class="fr-btn--close fr-btn" aria-controls="modal-474" title="Fermer">
+                  Fermer
+                </button>
+                <%= search_form_for @search, as: :organisme_search, url: search_organismes_path, html: { method: :post }, data: {controller: 'search', 'search-target': 'form'} do |f| %>
+                  <div class="fr-search-bar" id="search-473" role="search">
+                    <label class="fr-label" for="search-473-input">Rechercher</label>
+                    <%= f.search_field :nom_or_acronyme_contains, class: 'fr-input',id: 'search-473-input', placeholder: "Rechercher un organisme", data: { 'search-target': 'input', action:'input->search#autocomplete'} %>
+                    <button class="fr-btn" title="Rechercher" aria-controls="modal-autocomplete-search" aria-expanded="false" data-search-target="button" data-action="search#Dropdown">
+                      Rechercher un organisme par son nom ou son acronyme
+                    </button>
+                    <div id="modal-autocomplete-search" class="fr-p-0">
+                      <div id="search_results"><%= render partial: 'organismes/search_organismes', locals: {organisms_for_results: nil} %></div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
             </div>
           </div>
         <% end %>
@@ -111,7 +133,6 @@
                   </li>
                 </ul>
               </div>
-
             </li>
 
 

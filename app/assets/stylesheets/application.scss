@@ -259,3 +259,30 @@ select:disabled {
 .fr-tag label{
   cursor: pointer !important;
 }
+
+
+.fr-header .fr-container-lg--fluid {
+      overflow: initial;
+    }
+#search-473 {
+  position: relative;
+}
+.modal-autocomplete-search_active {
+  display: block !important;
+  z-index: 1;
+}
+#modal-autocomplete-search {
+  border: 0;
+  display: none;
+  z-index: 1;
+  left: auto;
+  position: absolute;
+  right: 0;
+  text-align: left;
+  top: 2.5rem;
+  width: 100%;
+}
+#modal-autocomplete-search .fr-modal__body {
+  max-height: 14rem !important;
+  overflow: auto;
+}

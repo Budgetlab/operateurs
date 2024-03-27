@@ -16,7 +16,14 @@ class PagesController < ApplicationController
   def mentions_legales; end
   def accessibilite; end
   def donnees_personnelles; end
-  def plan; end
+  def plan
+    Organisme.all.each do |organisme|
+      if organisme.famille&.last == ' '
+        organisme.famille = organisme.famille.rstrip
+        organisme.save
+      end
+    end
+  end
 
   private
 

@@ -12,6 +12,7 @@ class ApplicationController < ActionController::Base
   before_action :set_global_variable
   before_action :set_modifications
   before_action :set_famille
+  before_action :set_global_search_variable
   def redirect_back_or(path)
     redirect_to request.referer || path
   end
@@ -60,6 +61,10 @@ class ApplicationController < ActionController::Base
     elsif @statut_user == 'Bureau Sectoriel'
       @familles = current_user.bureau_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
     end
+  end
+
+  def set_global_search_variable
+    @search = Organisme.ransack([:organisme_search], search_key: :organisme_search)
   end
 
   protected

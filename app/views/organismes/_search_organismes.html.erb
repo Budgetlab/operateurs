@@ -1,0 +1,23 @@
+
+  <div class="fr-container fr-p-0">
+    <div class="fr-grid-row">
+      <div class="fr-col-12">
+        <div class="fr-modal__body">
+          <div class="fr-modal__content fr-mb-4w">
+            <div class="fr-text--xs fr-my-2w">Résultats de recherche [<span><%= organisms_for_results&.count %></span>]</div>
+            <div><ol>
+                <% organisms_for_results&.each do |organisme| %>
+              <li class="fr-mb-1w">
+                    <%= link_to organisme_path(organisme), class: 'fr-link' do %>
+                      <%= organisme.nom %><% if organisme.acronyme.present? %> - <%= organisme.acronyme %><%end %>
+                    <%end %>
+                  </li>
+                <%end %>
+            </ol>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+

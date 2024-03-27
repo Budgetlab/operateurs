@@ -45,6 +45,19 @@ class OrganismesController < ApplicationController
     end
   end
 
+  def search_organismes
+    extended_family_organisms = fetch_extended_family_organisms
+    @q = extended_family_organisms.ransack(params[:organisme_search])
+    @organisms_for_results = @q.result(distinct: true)
+    respond_to do |format|
+      format.turbo_stream do
+        render turbo_stream: [
+          turbo_stream.update('search_results', partial: 'organismes/search_organismes', locals: {organisms_for_results: @organisms_for_results})
+        ]
+      end
+    end
+  end
+
   def show
     @organisme = Organisme.includes(:ministere, :bureau, :controleur, :organisme_ministeres).find(params[:id])
     est_controleur = current_user == @organisme.controleur

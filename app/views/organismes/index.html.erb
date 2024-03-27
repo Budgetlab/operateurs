@@ -23,7 +23,7 @@
 
             <%= search_form_for @q, data: {'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance'} do |f| %>
               <div class="fr-mb-1w" role="search">
-                <%= f.search_field :nom_or_acronyme_cont, class: 'fr-input',id: 'search-input', placeholder: "Filtrer sur le nom ou l'acronyme", oninput: 'this.form.requestSubmit()' %>
+                <%= f.search_field :nom_or_acronyme_contains, class: 'fr-input',id: 'search-input', placeholder: "Filtrer sur le nom ou l'acronyme", oninput: 'this.form.requestSubmit()' %>
               </div>
 
               <div class="fr-label fr-text--bold">État</div>

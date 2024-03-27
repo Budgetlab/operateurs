@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   post '/select_nom' => 'users#select_nom'
   root 'pages#index'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  post '/search_organismes' => 'organismes#search_organismes'
   resources :organismes do
     resources :chiffres, only: [:index]
   end

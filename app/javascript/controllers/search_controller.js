@@ -9,7 +9,10 @@ export default class extends Controller {
     autocomplete() {
         const query = this.inputTarget.value.trim();
         this.formTarget.requestSubmit();
-        this.collapseMenu(query, this.buttonTarget);
+        const id_target = this.buttonTarget.getAttribute('aria-controls');
+        const target = document.getElementById(id_target) ;
+        // this.collapseMenu(query, this.buttonTarget);
+        this.showSearchModal(query, target)
     }
 
     // liste déroulante de check box multi select dans formulaire
@@ -99,6 +102,14 @@ export default class extends Controller {
             target.setAttribute("aria-expanded", "true");
         }else{
             target.setAttribute("aria-expanded", "false");
+        }
+    }
+
+    showSearchModal(searchTerm, target){
+        if (searchTerm.length >= 1) {
+            target.classList.add("modal-autocomplete-search_active");
+        }else{
+            target.classList.remove("modal-autocomplete-search_active");
         }
     }
 
