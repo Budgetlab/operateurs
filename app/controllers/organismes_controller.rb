@@ -12,8 +12,28 @@ class OrganismesController < ApplicationController
     extended_family_organisms = fetch_extended_family_organisms
     @organisms_for_search = extended_family_organisms.pluck(:id, :nom, :acronyme)
     @q_params = q_params
-    @q = extended_family_organisms.ransack(params[:q])
+    q_params_send = params[:q]
+    if q_params_send
+      if q_params_send[:operateur_operateur_n_null] == 'true' && q_params[:operateur_operateur_n_in]&.include?('true')
+        value_resset_all = true
+        q_params_send.delete(:operateur_operateur_n_null)
+        q_params_send.delete(:operateur_operateur_n_in)
+      elsif q_params_send[:operateur_operateur_n_null] == 'true'
+        value_resset_operateur_n = true
+        q_params_send.delete(:operateur_operateur_n_null)
+        extended_family_organisms_not_operateur = extended_family_organisms.where(operateurs: { operateur_n: nil} )
+        extended_family_organisms_operateur_false = extended_family_organisms.where(operateurs: { operateur_n: false} )
+        extended_family_organisms = extended_family_organisms_not_operateur.or(extended_family_organisms_operateur_false)
+      end
+    end
+    @q = extended_family_organisms.ransack(q_params_send)
     @organisms_for_results = @q.result.includes(:bureau, :controleur)
+    if value_resset_all
+      q_params_send[:operateur_operateur_n_null] = 'true'
+      q_params_send[:operateur_operateur_n_in] = ["true"]
+    elsif value_resset_operateur_n
+      q_params_send[:operateur_operateur_n_null] = 'true'
+    end
     respond_to do |format|
       format.html do
         @pagy, @organisms_page = pagy(@organisms_for_results)
@@ -288,7 +308,7 @@ class OrganismesController < ApplicationController
 
   def q_params
     if params[:q].present?
-      params.require(:q).permit(:nom_or_acronyme_cont, :operateur_id_null => [], :etat_in => [], :statut_not_eq => [], :famille_in => [],
+      params.require(:q).permit(:nom_or_acronyme_cont, :operateur_operateur_n_null, :etat_in => [], :statut_not_eq => [], :famille_in => [],
                                 :nature_in => [],:operateur_operateur_n_in => [], :controleur_nom_in => [],
                                 :nature_controle_in => [] ,:autorite_controle_in => [], :document_controle_present_in => [],
                                 :bureau_nom_in => [], :operateur_nom_categorie_in => [], :operateur_mission_nom_in => [],

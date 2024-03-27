@@ -5,4 +5,6 @@
   </p>
 <% end %>
 <%= render 'control_documents/flash'%>
+<% if @statut_user == '2B2O' || current_user == organisme.controleur %>
 <p class="fr-card__desc"><%= link_to "Ajouter un nouveau document", new_control_document_path(organisme_id: organisme.id),class:"fr-btn fr-btn--secondary fr-btn--sm", 'aria-controls': "modal-document-control", data: {turbo_frame: :form_control_document, fr_opened: false} %></p>
+<% end %>
