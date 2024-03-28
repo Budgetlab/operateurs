@@ -28161,24 +28161,24 @@ a.fr-password__btn:not([href]) {
     color: #3a3a3a;
   }
 
-  .fr-header ul {
-    list-style-type: none;
-  }
+//  .fr-header ul {
+//  list-style-type: none;
+//}
 
-  .fr-header ol {
-    list-style-type: none;
-  }
+//.fr-header ol {
+//  list-style-type: none;
+//}
 
-  .fr-header ul,
-  .fr-header ol {
-    padding-left: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-  }
+//.fr-header ul,
+//.fr-header ol {
+//  padding-left: 0;
+//  margin-top: 0;
+//  margin-bottom: 0;
+//}
 
-  .fr-header [href] {
-    text-decoration: none;
-  }
+//.fr-header [href] {
+//  text-decoration: none;
+//}
 
   .fr-header .fr-btns-group:not(.fr-btns-group--sm):not(.fr-btns-group--lg):not([class^=fr-btns-group--icon-]):not([class*=" fr-btns-group--icon-"]) .fr-btn:not([class^=fr-icon-]):not([class*=" fr-icon-"]):not([class^=fr-fi-]):not([class*=" fr-fi-"]):not(.fr-btn--display)::before {
     width: 1rem;
