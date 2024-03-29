@@ -1,5 +1,5 @@
 <%  if organisme.control_documents&.count > 0 %>
-  <% control_document = organisme.control_documents.order(:created_at).last %>
+  <% control_document = organisme.control_documents.order(:signature_date).last %>
   <p class="fr-card__desc"><%=control_document.name%> signé le <%= format_boolean(format_date(control_document.signature_date)) %>
     <% if control_document.document.attached? %> : <%= link_to rails_blob_path(control_document.document, disposition: "attachment"), class: "fr-link fr-link--sm fr-icon-download-line fr-link--icon-right" do %>Téléchager<% end %><%end %>
   </p>
