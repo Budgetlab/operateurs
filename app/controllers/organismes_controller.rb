@@ -10,7 +10,6 @@ class OrganismesController < ApplicationController
   def index
     # Fetch all organisms relevant to user's permissions, including those in extended families
     extended_family_organisms = fetch_extended_family_organisms
-    @organisms_for_search = extended_family_organisms.pluck(:id, :nom, :acronyme)
     @q_params = q_params
     q_params_send = params[:q]
     if q_params_send
