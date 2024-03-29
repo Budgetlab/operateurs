@@ -94,10 +94,10 @@ class Organisme < ApplicationRecord
   end
 
   ransacker :nom, type: :string do
-    Arel.sql("unaccent(\"nom\")")
+    Arel.sql("unaccent(organismes.\"nom\")")
   end
 
   ransacker :acronyme, type: :string do
-    Arel.sql("unaccent(\"acronyme\")")
+    Arel.sql("unaccent(organismes.\"acronyme\")")
   end
 end

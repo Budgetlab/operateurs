@@ -13,7 +13,7 @@
         <div class="fr-mb-2w">
         <%= search_form_for @q, data: {turbo_frame: 'table', turbo_action: 'advance'} do |f| %>
           <div class="fr-search-bar fr-search-bar--lg" role="search">
-            <%= f.search_field :organisme_nom_or_organisme_acronyme_or_organisme_controleur_nom_cont, class: 'fr-input', placeholder: "Filtrer les résultats sur un organisme ou un contrôleur" %>
+            <%= f.search_field :organisme_nom_or_organisme_acronyme_or_organisme_controleur_nom_contains, class: 'fr-input', placeholder: "Filtrer les résultats sur un organisme ou un contrôleur" %>
             <%= f.submit "Rechercher", class:"fr-btn" %>
           </div>
         <% end %>
@@ -23,7 +23,7 @@
           <% if params[:q].present? %>
             <div class="fr-mb-1w"><%= link_to control_documents_path, data: {turbo_frame: "_top"}, class:"fr-btn fr-btn--sm fr-btn--tertiary fr-btn--icon-right fr-icon-refresh-line" do %>Réinitialiser la recherche<%end %></div>
           <% end %>
-        <div class="fr-table fr-table--layout-fixed">
+          <div class="fr-table fr-table--layout-fixed">
           <table>
             <caption><%= pluralize(@control_documents&.count, 'résultat', plural: 'résultats') %> </caption>
             <thead>

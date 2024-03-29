@@ -34,6 +34,10 @@ class User < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["created_at", "email", "encrypted_password", "id", "id_value", "nom", "remember_created_at", "reset_password_sent_at", "reset_password_token", "statut", "updated_at"]
+    ["created_at", "email", "encrypted_password", "id", "nom", "remember_created_at", "reset_password_sent_at", "reset_password_token", "statut", "updated_at"]
+  end
+
+  ransacker :nom, type: :string do
+    Arel.sql("unaccent(users.\"nom\")")
   end
 end
