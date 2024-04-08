@@ -3,7 +3,7 @@
   <div class="fr-container ">
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-12">
-        <h1 class="fr-my-4w">Liste des organismes </h1>
+        <h1 class="fr-my-4w">Liste des organismes</h1>
       </div>
     </div>
 
@@ -34,9 +34,9 @@
               <%= render_select_group("Nature juridique", :nature_in, @liste_natures) %>
 
 
-              <%= render_select_group("Contrôleur", :controleur_nom_in, @controleur_name_list) %>
+              <%= render_select_group("Contrôleur référent", :controleur_nom_in_insensitive, @controleur_name_list) %>
 
-              <div class="fr-hidden" id="more_filters">
+
                 <%= render_tag_group 'Nature contrôle', :nature_controle_in, ["Contrôle Economique et Financier", "Contrôle Budgétaire", "Contrôle Budgétaire EPSCP", "Autre"] %>
                 <%= render_select_group("Autorité contrôle", :autorite_controle_in, @liste_autorite_controle) %>
                 <%= render_tag_group 'Document de contrôle', :document_controle_present_in, ['true', 'false'] %>
@@ -81,9 +81,8 @@
                 <%= render_tag_group 'CIASSP', :ciassp_n_in, ['true', 'false'] %>
                 <%= render_tag_group "ODAL #{Date.today.year-2}", :odal_n_in, ['true', 'false'] %>
                 <%= render_tag_group "ODAC #{Date.today.year-2}", :odac_n_in, ['true', 'false'] %>
-                <%= render_tag_group 'Arrêté Interdiction emprunt ODAC', :arrete_interdiction_odac_in, ['Annexe1', 'Annexe2', 'Exclusion'] %>
-              </div>
-              <button class="fr-btn fr-btn--secondary fr-btn--sm fr-mb-2w" data-tag="more_filters" data-text="Afficher moins de filtres" data-action="click->request#toggleFilter">Afficher plus de filtres</button>
+                <%= render_tag_group 'Arrêté Interdiction emprunt ODAC', :arrete_interdiction_odac_in, ['Annexe 1', 'Annexe 2', 'Exclusion'] %>
+
             <% end %>
           </div>
         </nav>
@@ -91,6 +90,10 @@
       <div class="fr-col-12 fr-col-lg-8">
         <%= turbo_frame_tag :results, target: "_top" do %>
           <h2 class="fr-h3"><%= pluralize(@organisms_for_results&.count, 'résultat', plural: 'résultats')%>
+            <a class="fr-link" aria-describedby="info_resultats" id="link-info_resultats" href="#" data-controller="filter" data-action="filter#Dropdown">
+              <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true"></span>
+            </a>
+            <span class="fr-tooltip fr-placement" id="info_resultats" role="tooltip" aria-hidden="true">Par défaut, les résultats incluent les organismes de mon périmètre et ceux des familles auxquelles j’ai accès.</span>
             <div class="fr-download">
               <% path_params = params[:q].present? ? {q: @q_params, format: 'xlsx'} : {format: 'xlsx'} %>
               <p><%= link_to organismes_path(path_params), class: "fr-link fr-download__link", target: "_blank" do %>Télécharger les fiches d'identité <span class="fr-download__detail">Format .xlsx</span><%end %></p>
@@ -104,16 +107,14 @@
                   <ul class="fr-mr-2w fr-mb-1v">
                     <li><%= link_to organisme_path(organisme.id) do%><%= organisme.nom %><% if organisme.acronyme.present? %> - <%= organisme.acronyme %><%end %><%end %></li>
                   </ul>
-                  <% class_badge_liste = if organisme.statut != "valide" then "fr-badge--yellow-moutarde" elsif current_user == organisme.controleur || (@statut_user == "Bureau Sectoriel" && current_user == organisme.bureau) then "fr-badge--green-emeraude" else "fr-badge--blue-ecume" end%>
+                  <% class_badge_controleur = if current_user == organisme.controleur then "fr-badge--green-emeraude" else "fr-badge--blue-ecume" end%>
+                  <% class_badge_bs = if current_user == organisme.bureau then "fr-badge--green-emeraude" else "fr-badge--purple-glycine" end%>
+                  <% if organisme.statut != "valide" %>
+                    <p class="fr-badge fr-badge--yellow-moutarde">Etape <%= organisme.statut %>/6</p>
+                  <% else %>
+                    <p class="fr-badge <%= class_badge_controleur%>"><%= organisme.controleur.nom %></p><% if organisme.bureau %><p class="fr-badge <%= class_badge_bs %>"><%= organisme.bureau.nom %></p><% end %>
+                  <% end %>
 
-                  <p class="fr-badge <%= class_badge_liste%>">
-                    <% if organisme.statut != "valide" %>Etape <%= organisme.statut %>/6
-                    <%elsif @statut_user == "Bureau Sectoriel" %>
-                      <%= organisme.bureau.nom %>
-                    <% else %>
-                      <%= organisme.controleur.nom %>
-                    <% end %>
-                  </p>
 
                 </div>
                 <% if organisme.statut == "valide" %>

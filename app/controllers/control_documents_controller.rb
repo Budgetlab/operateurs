@@ -52,6 +52,6 @@ class ControlDocumentsController < ApplicationController
     when 'Bureau Sectoriel'
       control_documents = control_documents.joins(:organisme).where(organismes: { bureau: current_user })
     end
-    control_documents.order(created_at: :desc)
+    control_documents.order(signature_date: :desc)
   end
 end

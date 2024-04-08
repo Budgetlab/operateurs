@@ -320,8 +320,8 @@ class OrganismesController < ApplicationController
 
   def q_params
     if params[:q].present?
-      params.require(:q).permit(:nom_or_acronyme_cont, :operateur_operateur_n_null, :etat_in => [], :statut_not_eq => [], :famille_in => [],
-                                :nature_in => [],:operateur_operateur_n_in => [], :controleur_nom_in => [],
+      params.require(:q).permit(:nom_or_acronyme_contains, :operateur_operateur_n_null, :etat_in => [], :statut_not_eq => [], :famille_in => [],
+                                :nature_in => [],:operateur_operateur_n_in => [], :controleur_nom_in_insensitive => [],
                                 :nature_controle_in => [] ,:autorite_controle_in => [], :document_controle_present_in => [],
                                 :bureau_nom_in => [], :operateur_nom_categorie_in => [], :operateur_mission_nom_in => [],
                                 :operateur_programme_numero_in => [], :gbcp_1_in => [], :gbcp_3_in => [],

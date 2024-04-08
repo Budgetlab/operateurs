@@ -18,6 +18,13 @@ class UsersController < ApplicationController
         organisme.famille = 'Soutien à l’enseignement supérieur et à la recherche'
         organisme.save
       end
+      if organisme.arrete_interdiction_odac == "Annexe1"
+        organisme.arrete_interdiction_odac = 'Annexe 1'
+        organisme.save
+      elsif organisme.arrete_interdiction_odac == "Annexe2"
+        organisme.arrete_interdiction_odac = 'Annexe 2'
+        organisme.save
+      end
 
     end
     @familles = Organisme.all.pluck(:famille).uniq
