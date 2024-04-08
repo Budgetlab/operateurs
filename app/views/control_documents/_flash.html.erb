@@ -10,6 +10,11 @@
         <p>L'import du document a échoué.</p>
         <button class="fr-link--close fr-link" title="Masquer le message" onclick="const alert = this.parentNode; alert.parentNode.removeChild(alert)">Masquer le message</button>
       </div>
+    <% elsif msg == "control_document_deleted" %>
+      <div class="fr-alert fr-alert--success fr-alert--sm fr-mt-1w">
+        <p>Le document a été supprimé avec succès.</p>
+        <button class="fr-link--close fr-link" title="Masquer le message" onclick="const alert = this.parentNode; alert.parentNode.removeChild(alert)">Masquer le message</button>
+      </div>
     <% end %>
   <% end %>
 <% end %>

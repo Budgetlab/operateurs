@@ -9,8 +9,9 @@
           <h3 class="fr-alert__title">Document de contrôle <p class="fr-badge fr-badge--new fr-badge--sm">Nouveau</p></h3>
           <p>L'import des documents de contrôle est désormais possible depuis la page d'identité des organismes. Vous retrouvez sur cette page l'ensemble des documents de contrôle ouverts sur votre périmètre.</p>
         </div>
+        <%= render 'control_documents/flash'%>
 
-        <div class="fr-mb-2w">
+        <div class="fr-my-2w">
         <%= search_form_for @q, data: {turbo_frame: 'table', turbo_action: 'advance'} do |f| %>
           <div class="fr-search-bar fr-search-bar--lg" role="search">
             <%= f.search_field :organisme_nom_or_organisme_acronyme_or_organisme_controleur_nom_contains, class: 'fr-input', placeholder: "Filtrer les résultats sur un organisme ou un contrôleur" %>
@@ -24,33 +25,56 @@
             <div class="fr-mb-1w"><%= link_to control_documents_path, data: {turbo_frame: "_top"}, class:"fr-btn fr-btn--sm fr-btn--tertiary fr-btn--icon-right fr-icon-refresh-line" do %>Réinitialiser la recherche<%end %></div>
           <% end %>
           <div class="fr-table fr-table--layout-fixed">
-          <table>
-            <caption><%= pluralize(@control_documents&.count, 'résultat', plural: 'résultats') %> </caption>
-            <thead>
-            <tr>
-              <th scope="col">Date signature <%= sort_link(@q, :signature_date, '', default_order: :desc, class: 'fr-btn fr-btn--sm fr-btn--tertiary-no-outline') %> </th>
-              <th scope="col">Type</th>
-              <th scope="col">Date ajout <%= sort_link(@q, :created_at, '', class: 'fr-btn fr-btn--sm fr-btn--tertiary-no-outline') %> </th>
-              <th scope="col">Organisme</th>
-              <th scope="col">Contrôleur référent</th>
-              <th scope="col">Action</th>
-            </tr>
-            </thead>
-            <tbody>
-            <% @control_documents.each do |control_document| %>
+            <table>
+              <caption><%= pluralize(@control_documents&.count, 'résultat', plural: 'résultats') %> </caption>
+              <thead>
               <tr>
-                <td><%= format_boolean(format_date(control_document.signature_date)) %></td>
-                <td><%= control_document.name %></td>
-                <td><%= format_boolean(format_date(control_document.created_at)) %></td>
-                <td><%= link_to organisme_path(control_document.organisme), data: {turbo_frame: "_top"} do %><%= control_document.organisme.nom %><% if control_document.organisme.acronyme.present? %>- <%= control_document.organisme.acronyme %><%end %><% end %></td>
-                <td><%= control_document.organisme.controleur.nom %></td>
-                <td><% if control_document.document.attached? %><%= link_to rails_blob_path(control_document.document, disposition: "attachment"), data: {turbo_frame: "_top"},  class: "fr-icon-download-line fr-link--icon-right" do %>Télécharger<% end %><% end %>
-                  <% if @statut_user == "2B2O" %><%= link_to control_document_path(control_document), data: {turbo_frame: "_top", "turbo-method": :delete} do %><span class="fr-icon--sm fr-icon-delete-fill" aria-hidden="true"></span><% end %><% end %> </td>
+                <th scope="col">Date signature <%= sort_link(@q, :signature_date, '', default_order: :desc, class: 'fr-btn fr-btn--sm fr-btn--tertiary-no-outline') %> </th>
+                <th scope="col">Type</th>
+                <th scope="col">Date ajout <%= sort_link(@q, :created_at, '', class: 'fr-btn fr-btn--sm fr-btn--tertiary-no-outline') %> </th>
+                <th scope="col">Organisme</th>
+                <th scope="col">Contrôleur référent</th>
+                <th scope="col">Action</th>
               </tr>
-            <% end %>
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+              <% @control_documents.each do |control_document| %>
+                <tr>
+                  <td><%= format_boolean(format_date(control_document.signature_date)) %></td>
+                  <td><%= control_document.name %></td>
+                  <td><%= format_boolean(format_date(control_document.created_at)) %></td>
+                  <td><%= link_to organisme_path(control_document.organisme), data: {turbo_frame: "_top"} do %><%= control_document.organisme.nom %><% if control_document.organisme.acronyme.present? %>- <%= control_document.organisme.acronyme %><%end %><% end %></td>
+                  <td><%= control_document.organisme.controleur.nom %></td>
+                  <td><% if control_document.document.attached? %><%= link_to rails_blob_path(control_document.document, disposition: "attachment"), data: {turbo_frame: "_top"},  class: "fr-icon-download-line fr-link--icon-right" do %>Télécharger<% end %><% end %>
+                    <% if @statut_user == "2B2O" %><%= link_to edit_control_document_path(control_document), 'aria-controls': "modal-document-control", data: {turbo_frame: :form_control_document, fr_opened: false} do %><span class="fr-icon--sm fr-icon-delete-fill" aria-hidden="true"></span><% end %><% end %> </td>
+                </tr>
+              <% end %>
+              </tbody>
+            </table>
+          </div>
+
+          <dialog id="modal-document-control" class="fr-modal" aria-labelledby="modal-document-control--title">
+            <div class="fr-container fr-container--fluid fr-container-md">
+              <div class="fr-grid-row fr-grid-row--center">
+                <div class="fr-col-12 fr-col-md-10 fr-col-lg-9">
+                  <div class="fr-modal__body">
+                    <div class="fr-modal__header">
+                      <button class="fr-btn--close fr-btn" aria-controls="modal-document-control" title="Fermer">
+                        Fermer
+                      </button>
+                    </div>
+                    <div class="fr-modal__content">
+                      <h1 id="modal-document-control--title" class="fr-modal__title">
+                        <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true"></span>
+                        Supprimer un document
+                      </h1>
+                      <%= turbo_frame_tag :form_control_document %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </dialog>
         <% end %>
 
       </div>

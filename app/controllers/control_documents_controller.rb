@@ -3,7 +3,7 @@
 # Controller for Control documents
 class ControlDocumentsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_control_document, only: %i[destroy]
+  before_action :set_control_document, only: %i[edit destroy]
   before_action :set_organisme, only: %i[new]
   def index
     control_documents = fetch_extended_family_documents
@@ -25,9 +25,11 @@ class ControlDocumentsController < ApplicationController
     end
   end
 
+  def edit; end
+
   def destroy
     @control_document&.destroy
-    redirect_to control_documents_path
+    redirect_to control_documents_path, flash: { notice: 'control_document_deleted' }
   end
 
   private
