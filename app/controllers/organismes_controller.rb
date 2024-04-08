@@ -5,7 +5,6 @@ require 'google/cloud/storage'
 
 class OrganismesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_famille, only: %i[index show]
   before_action :fetch_list_name_filter, only: :index
   def index
     # Fetch all organisms relevant to user's permissions, including those in extended families
@@ -60,7 +59,7 @@ class OrganismesController < ApplicationController
   def show
     @organisme = Organisme.includes(:ministere, :bureau, :controleur, :organisme_ministeres).find(params[:id])
     est_controleur = current_user == @organisme.controleur
-    est_bureau_ou_famille = current_user == @organisme.bureau || @familles&.include?(@organisme.famille)
+    est_bureau_ou_famille = @statut_user == 'Bureau Sectoriel' || @familles&.include?(@organisme.famille)
     redirect_to root_path and return unless @statut_user == '2B2O' || est_controleur || est_bureau_ou_famille
 
     @admin = @statut_user == '2B2O' || (est_controleur && @organisme.etat != 'Inactif')
@@ -193,22 +192,13 @@ class OrganismesController < ApplicationController
     end
   end
 
-  def set_famille
-    if @statut_user == 'Controleur'
-      @familles = current_user.controleur_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
-      @familles += ['Universités'] if current_user.nom == 'CBCM MEN-MESRI'
-    elsif @statut_user == 'Bureau Sectoriel'
-      @familles = current_user.bureau_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
-    end
-  end
-
   def fetch_extended_family_organisms
     organisms = Organisme.all.includes(:controleur, :bureau, :operateur)
     case @statut_user
     when 'Controleur'
       organisms = organisms.where(statut: 'valide').where('controleur_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)
     when 'Bureau Sectoriel'
-      organisms = organisms.where(statut: 'valide').where('bureau_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)
+      organisms = organisms.where(statut: 'valide')
     end
     organisms.order(:nom)
   end

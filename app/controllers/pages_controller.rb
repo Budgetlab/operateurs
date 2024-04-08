@@ -3,7 +3,6 @@
 # Controller Pages statiques
 class PagesController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_famille, only: [:index]
   def index
     # Fetch all organisms relevant to user's permissions, including those in extended families
     extended_family_organisms = fetch_extended_family_organisms
@@ -21,15 +20,6 @@ class PagesController < ApplicationController
 
   private
 
-  def set_famille
-    if @statut_user == 'Controleur'
-      @familles = current_user.controleur_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
-      @familles += ['Universités'] if current_user.nom == 'CBCM MEN-MESRI'
-    elsif @statut_user == 'Bureau Sectoriel'
-      @familles = current_user.bureau_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
-    end
-  end
-
   # filtre édition + lecture :récuperer les organismes qui lui appartiennent + ceux de la même famille (excluant aucune)
   # (attention si on ne prend que ceux des familles en commune on oublie les siens avec famille aucune)
   def fetch_extended_family_organisms
@@ -38,7 +28,7 @@ class PagesController < ApplicationController
     when 'Controleur'
       organisms = organisms.where(statut: 'valide').where('controleur_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)
     when 'Bureau Sectoriel'
-      organisms = organisms.where(statut: 'valide').where('bureau_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)
+      organisms = organisms.where(statut: 'valide')
     end
     organisms.order(:nom)
   end

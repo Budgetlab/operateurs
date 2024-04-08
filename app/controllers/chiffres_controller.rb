@@ -10,7 +10,7 @@ class ChiffresController < ApplicationController
   # page des chiffres clés de l'organisme
   def index
     @est_editeur = current_user == @organisme.controleur
-    est_bureau_ou_famille = current_user == @organisme.bureau || @familles&.include?(@organisme.famille)
+    est_bureau_ou_famille = @statut_user == 'Bureau Sectoriel' || @familles&.include?(@organisme.famille)
     redirect_to root_path and return unless @statut_user == '2B2O' || @est_editeur || est_bureau_ou_famille
 
     @chiffres = @organisme.chiffres.order(exercice_budgetaire: :desc)

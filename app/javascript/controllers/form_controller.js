@@ -1126,6 +1126,22 @@ export default class extends Controller {
         e.preventDefault();
     }
 
+    checkFile(event){
+        event.preventDefault();
+        const fileInput = event.currentTarget
+        const fileName = fileInput.files[0].name;
+        const fileExtension = fileName.split('.').pop().toLowerCase();
+        const error_message = document.getElementById("file-upload-with-error")
+
+        if(fileExtension !== 'pdf') {
+            fileInput.value = null;
+            error_message.classList.remove('fr-hidden');
+        }else{
+            error_message.classList.add('fr-hidden');
+        }
+        this.validateForm(this.formTarget);
+    }
+
 
 }
 function getSelectedValues(event) {

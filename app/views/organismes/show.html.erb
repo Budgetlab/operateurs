@@ -307,7 +307,7 @@
                 <% if @organisme.tutelle_financiere %>
                   <p class="fr-card__desc">Délégation de l'approbation des BI / BR / comptes financiers <%= render partial: "organismes/tooltip", locals: {num_id: "delegation_approbation"} %> : <b><%= format_boolean(@organisme.delegation_approbation) %></b></p>
                 <%end %>
-                <p class="fr-card__desc">Autorité chargée de l’approbation : <b><%= format_boolean(@organisme.autorite_approbation) %></b></p>
+                <p class="fr-card__desc">Autorité chargée de l’approbation : <b><%= format_texte(@organisme.autorite_approbation) %></b></p>
                 <p class="fr-card__desc">Ministère de tutelle principale : <b><% if @organisme.ministere %><%= @organisme.ministere.nom %><%else %>Aucun<%end %></b></p>
                 <p class="fr-card__desc">Ministère•s de co-tutelle : <b><% if @organisme_ministeres && !@organisme_ministeres.empty? %><% @organisme_ministeres.each do |orga|%><%= orga.ministere.nom %> - <%end %><%else %>Aucun<%end %></b></p>
 

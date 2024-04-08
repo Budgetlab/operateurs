@@ -16,6 +16,19 @@ module ApplicationHelper
     end
   end
 
+  def format_texte(string)
+    case string
+    when nil, ''
+      'Aucun'
+    when true, 'true'
+      'Oui'
+    when false, 'false'
+      'Non'
+    else
+      string
+    end
+  end
+
   def format_date(date)
     return if date.nil?
 

@@ -7,7 +7,7 @@
 
         <div class="fr-alert fr-alert--info fr-mb-4w">
           <h3 class="fr-alert__title">Document de contrôle <p class="fr-badge fr-badge--new fr-badge--sm">Nouveau</p></h3>
-          <p>L'import des documents de contrôle est désormais possible depuis la page d'identité des organismes. Vous retrouvez sur cette page l'ensemble des documents de contrôle liés à vos organismes.</p>
+          <p>L'import des documents de contrôle est désormais possible depuis la page d'identité des organismes. Vous retrouvez sur cette page l'ensemble des documents de contrôle ouverts sur votre périmètre.</p>
         </div>
 
         <div class="fr-mb-2w">
@@ -32,7 +32,7 @@
               <th scope="col">Type</th>
               <th scope="col">Date ajout <%= sort_link(@q, :created_at, '', class: 'fr-btn fr-btn--sm fr-btn--tertiary-no-outline') %> </th>
               <th scope="col">Organisme</th>
-              <th scope="col">Contrôleur</th>
+              <th scope="col">Contrôleur référent</th>
               <th scope="col">Action</th>
             </tr>
             </thead>

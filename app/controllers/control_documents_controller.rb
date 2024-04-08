@@ -50,7 +50,7 @@ class ControlDocumentsController < ApplicationController
     when 'Controleur'
       control_documents = control_documents.joins(:organisme).where('organismes.controleur_id = :user_id OR organismes.famille IN (:familles)', user_id: current_user.id, familles: @familles)
     when 'Bureau Sectoriel'
-      control_documents = control_documents.joins(:organisme).where(organismes: { bureau: current_user })
+      control_documents = control_documents.joins(:organisme)
     end
     control_documents.order(signature_date: :desc)
   end

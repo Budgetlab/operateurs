@@ -1,21 +1,33 @@
 <%= turbo_frame_tag :form_control_document do %>
   <div class="fr-grid-row fr-grid-row--gutters">
-    <div class="fr-col-12 fr-col-lg-10">
-        <div data-controller="form" class="fr-my-4w" >
+    <div class="fr-col-12 fr-col-lg-12">
+        <div data-controller="form" class="fr-my-2w" >
         <%= form_with(model: @control_document, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm"}, multipart: true) do |f| %>
             <% name = @organisme.nature_controle == "Contrôle Economique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) ? "Protocole de Contrôle Economique et Financier" : "Document de contrôle"  %>
             <%= f.hidden_field :name, value: name %>
             <%= f.hidden_field :user_id, value: current_user.id %>
             <%= f.hidden_field :organisme_id, value: @organisme.id %>
-            <h2 class="fr-h6"><%= name%></h2>
+            <h2 class="fr-h6 fr-mb-2w"><%= name%></h2>
+            <div class="fr-notice fr-notice--info fr-mb-2w">
+              <div class="fr-container">
+                <div class="fr-notice__body">
+                  <p class="fr-notice__title">
+                    Veillez à ajouter le document pdf signé et notifié à l’organisme
+                  </p>
+                </div>
+              </div>
+            </div>
             <div class="fr-input-group" id="picker-container" >
               <label for="signature_date" class="fr-label">Date de signature du <%= name%>*</label>
               <%= f.text_field :signature_date, class:"fr-select", data: { 'form-target': 'fieldRequire', controller: "flatpickr"}, id: "signature_date", placeholder: "- sélectionner -"%>
             </div>
 
-            <div class="fr-input-group">
-              <label class="fr-label" for="file">Importer un fichier<span class="fr-hint-text">Format : pdf</span></label>
-              <%= f.file_field :document, accept: 'application/pdf', data: { 'form-target': 'fieldRequire'}, id: 'file' %>
+            <div class="fr-upload-group fr-mb-2w">
+              <label class="fr-label" for="file">Ajouter un fichier*<span class="fr-hint-text">Format du fichier : pdf uniquement</span></label>
+              <%= f.file_field :document, accept: 'application/pdf', data: { 'form-target': 'fieldRequire', action: 'change->form#checkFile'}, id: 'file', class: "fr-upload" %>
+              <p id="file-upload-with-error" class="fr-error-text fr-hidden">
+                Format de fichier non supporté. Seuls les fichiers au format pdf sont acceptés.
+              </p>
             </div>
 
             <%= f.submit "Valider", data: {'form-target': "submitBouton"}, 'aria-controls': "modal-document-control", class: "fr-btn" %>
