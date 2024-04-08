@@ -90,10 +90,11 @@
       <div class="fr-col-12 fr-col-lg-8">
         <%= turbo_frame_tag :results, target: "_top" do %>
           <h2 class="fr-h3"><%= pluralize(@organisms_for_results&.count, 'résultat', plural: 'résultats')%>
-            <a class="fr-link" aria-describedby="info_resultats" id="link-info_resultats" href="#" data-controller="filter" data-action="filter#Dropdown">
+            <% if @statut_user == 'Controleur' %><a class="fr-link" aria-describedby="info_resultats" id="link-info_resultats" href="#" data-controller="filter" data-action="filter#Dropdown">
               <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true"></span>
             </a>
-            <span class="fr-tooltip fr-placement" id="info_resultats" role="tooltip" aria-hidden="true">Par défaut, les résultats incluent les organismes de mon périmètre et ceux des familles auxquelles j’ai accès.</span>
+            <span class="fr-tooltip fr-placement" id="info_resultats" role="tooltip" aria-hidden="true">Les résultats incluent les organismes de votre périmètre et ceux des familles auxquelles vous avez accès. Pour afficher uniquement vos organismes, sélectionnez votre profil dans controleur référent.</span>
+            <% end %>
             <div class="fr-download">
               <% path_params = params[:q].present? ? {q: @q_params, format: 'xlsx'} : {format: 'xlsx'} %>
               <p><%= link_to organismes_path(path_params), class: "fr-link fr-download__link", target: "_blank" do %>Télécharger les fiches d'identité <span class="fr-download__detail">Format .xlsx</span><%end %></p>

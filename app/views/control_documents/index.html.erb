@@ -45,8 +45,15 @@
                   <td><%= format_boolean(format_date(control_document.created_at)) %></td>
                   <td><%= link_to organisme_path(control_document.organisme), data: {turbo_frame: "_top"} do %><%= control_document.organisme.nom %><% if control_document.organisme.acronyme.present? %>- <%= control_document.organisme.acronyme %><%end %><% end %></td>
                   <td><%= control_document.organisme.controleur.nom %></td>
-                  <td><% if control_document.document.attached? %><%= link_to rails_blob_path(control_document.document, disposition: "attachment"), data: {turbo_frame: "_top"},  class: "fr-icon-download-line fr-link--icon-right" do %>Télécharger<% end %><% end %>
-                    <% if @statut_user == "2B2O" %><%= link_to edit_control_document_path(control_document), 'aria-controls': "modal-document-control", data: {turbo_frame: :form_control_document, fr_opened: false} do %><span class="fr-icon--sm fr-icon-delete-fill" aria-hidden="true"></span><% end %><% end %> </td>
+                  <td>
+                    <% if control_document.document.attached? %>
+                        <%= link_to rails_blob_path(control_document.document, disposition: "attachment"), data: {turbo_frame: "_top"},  class: 'fr-icon-download-line fr-link--icon-right' do %>Télécharger<% end %>
+                    <% end %>
+                    <% if @statut_user == "2B2O" %>
+                      <%= link_to edit_control_document_path(control_document), class: 'fr-btn fr-btn--sm fr-btn--tertiary fr-icon-delete-fill', 'aria-controls': "modal-document-control", data: {turbo_frame: :form_control_document, fr_opened: false} do %>Supprimer<% end %>
+                    <% end %>
+                  </td>
+
                 </tr>
               <% end %>
               </tbody>
