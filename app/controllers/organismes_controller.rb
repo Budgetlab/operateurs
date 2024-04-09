@@ -4,8 +4,13 @@
 require 'google/cloud/storage'
 
 class OrganismesController < ApplicationController
+  include Authentication
   before_action :authenticate_user!
+  before_action :redirect_unless_admin, only: %i[new create destroy]
   before_action :fetch_list_name_filter, only: :index
+  before_action :set_organisme, only: %i[show edit update destroy]
+  before_action :redirect_unless_access, only: :show
+  before_action :redirect_unless_editor, only: %i[edit update]
   def index
     # Fetch all organisms relevant to user's permissions, including those in extended families
     extended_family_organisms = fetch_extended_family_organisms
@@ -57,12 +62,7 @@ class OrganismesController < ApplicationController
   end
 
   def show
-    @organisme = Organisme.includes(:ministere, :bureau, :controleur, :organisme_ministeres).find(params[:id])
-    est_controleur = current_user == @organisme.controleur
-    est_bureau_ou_famille = @statut_user == 'Bureau Sectoriel' || @familles&.include?(@organisme.famille)
-    redirect_to root_path and return unless @statut_user == '2B2O' || est_controleur || est_bureau_ou_famille
-
-    @admin = @statut_user == '2B2O' || (est_controleur && @organisme.etat != 'Inactif')
+    @admin = @statut_user == '2B2O' || (current_user == @organisme.controleur && @organisme.etat != 'Inactif')
     @est_valide = @organisme.statut == 'valide'
     @organisme_ministeres = @organisme.organisme_ministeres.includes(:ministere)
     @operateur = Operateur.includes(:mission, :programme, :operateur_programmes).find_by(organisme_id: @organisme.id)
@@ -85,8 +85,6 @@ class OrganismesController < ApplicationController
   end
 
   def new
-    redirect_to root_path and return unless @statut_user == '2B2O'
-
     @organisme = Organisme.new
     @bureaux = User.where(statut: 'Bureau Sectoriel').order(nom: :asc)
     @organismes = Organisme.where.not(id: @organisme.id).sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:nom, :id, :siren, :etat, :acronyme)
@@ -97,8 +95,6 @@ class OrganismesController < ApplicationController
   end
 
   def create
-    redirect_to root_path and return unless @statut_user == '2B2O'
-
     organismes_to_link = params[:organisme].delete(:organismes)
     @organisme = Organisme.new(organisme_params)
     @organisme.controleur = current_user if @organisme.controleur_id.nil?
@@ -111,10 +107,6 @@ class OrganismesController < ApplicationController
   end
 
   def edit
-    @organisme = Organisme.find(params[:id])
-    @est_controleur = current_user == @organisme.controleur && @organisme.statut == 'valide' && @statut_user != '2B2O' && @organisme.etat != 'Inactif'
-    redirect_to root_path and return unless @statut_user == '2B2O' || @est_controleur
-
     redirect_to edit_organisme_path(@organisme) if params[:step] && @organisme.statut != 'valide' && params[:step].to_i > @organisme.statut.to_i + 1
 
     if params[:step].to_i == 1
@@ -131,9 +123,6 @@ class OrganismesController < ApplicationController
   end
 
   def update
-    @organisme = Organisme.find(params[:id])
-    redirect_to root_path and return unless @statut_user == '2B2O' || current_user == @organisme.controleur
-
     organismes_to_link = params[:organisme].delete(:organismes)
     ministeres_to_link = params[:organisme].delete(:ministeres)
     reset_values(%i[date_dissolution effet_dissolution]) if params[:organisme][:etat]
@@ -162,12 +151,8 @@ class OrganismesController < ApplicationController
   end
 
   def destroy
-    redirect_to root_path and return unless @statut_user == '2B2O'
-
-    @organisme = Organisme.find(params[:id]).destroy
-    respond_to do |format|
-      format.turbo_stream { redirect_to organismes_path }
-    end
+    @organisme&.destroy
+    redirect_to organismes_path
   end
 
   private
@@ -190,6 +175,21 @@ class OrganismesController < ApplicationController
     param_names.each do |param|
       params[:organisme][param.to_sym] = params[:organisme].fetch(param.to_sym, nil)
     end
+  end
+
+  def set_organisme
+    @organisme = Organisme.includes(:ministere, :bureau, :controleur, :organisme_ministeres).find(params[:id])
+  end
+
+  def redirect_unless_access
+    is_controleur_or_famille = current_user == @organisme.controleur || @familles&.include?(@organisme.famille)
+    condition_access = @statut_user == 'Bureau Sectoriel' || @statut_user == '2B2O' || is_controleur_or_famille
+    redirect_to root_path and return unless condition_access
+  end
+
+  def redirect_unless_editor
+    is_controleur_editor = current_user == @organisme.controleur && @organisme.statut == 'valide' && @organisme.etat != 'Inactif'
+    redirect_to root_path and return unless @statut_user == '2B2O' || is_controleur_editor
   end
 
   def fetch_extended_family_organisms
