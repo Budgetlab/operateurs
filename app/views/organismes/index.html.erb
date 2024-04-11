@@ -37,8 +37,8 @@
               <%= render_select_group("Contrôleur référent", :controleur_nom_in_insensitive, @controleur_name_list) %>
 
               <div class="fr-hidden" id="more_filters">
-                <%= render_tag_group 'Nature contrôle', :nature_controle_in, ["Contrôle Économique et Financier", "Contrôle Budgétaire", "Contrôle Budgétaire EPSCP", "Autre"] %>
-                <%= render_select_group("Autorité contrôle", :autorite_controle_in, @liste_autorite_controle) %>
+                <%= render_tag_group 'Nature du contrôle', :nature_controle_in, ["Contrôle Économique et Financier", "Contrôle Budgétaire", "Contrôle Budgétaire EPSCP", "Autre"] %>
+                <%= render_select_group("Autorité de contrôle", :autorite_controle_in, @liste_autorite_controle) %>
                 <%= render_tag_group 'Document de contrôle', :document_controle_present_in, ['true', 'false'] %>
 
                 <%= render_select_group("Bureau DB de rattachement", :bureau_nom_in, @bs_name_list) %>
@@ -66,8 +66,8 @@
                 <%= render_tag_group 'Comptabilité budgétaire', :comptabilite_budgetaire_in, ['Oui', 'Oui mais adapté', 'Non'] %>
 
                 <%= render_tag_group 'Tutelle financière MCP', :tutelle_financiere_in, ['true', 'false'] %>
-                <%= render_tag_group 'Délégation approbation BI/BR/CF', :delegation_approbation_in, ['true', 'false'] %>
-                <%= render_select_group("Autorité chargée approbation BI/BR/CF", :autorite_approbation_in, @liste_approbation) %>
+                <%= render_tag_group "Délégation de l'approbation BI/BR/CF", :delegation_approbation_in, ['true', 'false'] %>
+                <%= render_select_group("Autorité chargée de l'approbation BI/BR/CF", :autorite_approbation_in, @liste_approbation) %>
                 <%= render_select_group("Ministère de tutelle", :ministere_nom_in, @liste_nom_ministeres) %>
                 <%= render_select_group("Ministère de co-tutelle", :organisme_ministeres_ministere_nom_in, @liste_nom_ministeres) %>
 
@@ -75,13 +75,13 @@
                 <%= render_tag_group 'Présence DB au pré-CA', :admin_preca_in, ['true', 'false'] %>
                 <%= render_tag_group 'Présence contrôleur au pré-CA', :controleur_preca_in, ['true', 'false'] %>
                 <%= render_tag_group 'Présence contrôleur au CA', :controleur_ca_in, ['true', 'false'] %>
-                <%= render_tag_group 'Comité Audit Risques', :comite_audit_in, ['true', 'false'] %>
+                <%= render_tag_group 'Comité Audit et Risques', :comite_audit_in, ['true', 'false'] %>
 
                 <%= render_tag_group 'APU', :apu_in, ['true', 'false'] %>
                 <%= render_tag_group 'CIASSP', :ciassp_n_in, ['true', 'false'] %>
                 <%= render_tag_group "ODAL #{Date.today.year-2}", :odal_n_in, ['true', 'false'] %>
                 <%= render_tag_group "ODAC #{Date.today.year-2}", :odac_n_in, ['true', 'false'] %>
-                <%= render_tag_group 'Arrêté Interdiction emprunt ODAC', :arrete_interdiction_odac_in, ['Annexe 1', 'Annexe 2', 'Exclusion'] %>
+                <%= render_tag_group 'Arrêté interdiction emprunt ODAC', :arrete_interdiction_odac_in, ['Annexe 1', 'Annexe 2', 'Exclusion'] %>
               </div>
               <button class="fr-btn fr-btn--secondary fr-btn--sm fr-mb-2w" data-tag="more_filters" data-text="Afficher moins de filtres" data-action="click->request#toggleFilter">Afficher plus de filtres</button>
 
