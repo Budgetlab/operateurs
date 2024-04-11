@@ -86,18 +86,12 @@ class OrganismesController < ApplicationController
 
   def new
     @organisme = Organisme.new
-    @bureaux = User.where(statut: 'Bureau Sectoriel').order(nom: :asc)
-    @organismes = Organisme.where.not(id: @organisme.id).sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:nom, :id, :siren, :etat, :acronyme)
-    @noms_organismes = @organismes.map { |el| el[0] }
-    @siren_organismes = @organismes.map { |el| el[2] }.compact
-    @organismes_rattachement = @organismes.select { |el| el[3] == 'Actif' || el[3] == 'En cours de création' }
-    @liste_organisme_rattachement = @organisme.organisme_rattachements.pluck(:organisme_destination_id)
+    get_variables_step1
   end
 
   def create
     organismes_to_link = params[:organisme].delete(:organismes)
     @organisme = Organisme.new(organisme_params)
-    @organisme.controleur = current_user if @organisme.controleur_id.nil?
     if @organisme.save
       update_organisme_rattachements(organismes_to_link)
       redirect_to edit_organisme_path(@organisme.id)
@@ -109,17 +103,11 @@ class OrganismesController < ApplicationController
   def edit
     redirect_to edit_organisme_path(@organisme) if params[:step] && @organisme.statut != 'valide' && params[:step].to_i > @organisme.statut.to_i + 1
 
-    if params[:step].to_i == 1
-      @bureaux = User.where(statut: 'Bureau Sectoriel').order(nom: :asc)
-      @organismes = Organisme.where.not(id: @organisme.id).sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:nom, :id, :siren, :etat, :acronyme)
-      @noms_organismes = @organismes.map { |el| el[0] }
-      @siren_organismes = @organismes.map { |el| el[2] }.compact
-      @organismes_rattachement = @organismes.select { |el| el[3] == 'Actif' || el[3] == 'En cours de création' }
-      @liste_organisme_rattachement = @organisme.organisme_rattachements.pluck(:organisme_destination_id)
-    end
+    get_variables_step1 if params[:step].to_i == 1
     @controleurs = User.where(statut: 'Controleur').order(nom: :asc)
     @ministeres = Ministere.order(nom: :asc)
     @liste_ministere = @organisme.organisme_ministeres.pluck(:ministere_id)
+    @est_controleur = current_user == @organisme.controleur && @organisme.statut == 'valide' && @statut_user != '2B2O' && @organisme.etat != 'Inactif'
   end
 
   def update
@@ -201,6 +189,15 @@ class OrganismesController < ApplicationController
       organisms = organisms.where(statut: 'valide')
     end
     organisms.order(:nom)
+  end
+
+  def get_variables_step1
+    @bureaux = User.where(statut: 'Bureau Sectoriel').order(nom: :asc)
+    @organismes = Organisme.where.not(id: @organisme.id).sort_by { |organisme| normalize_name(organisme.nom) }.pluck(:nom, :id, :siren, :etat, :acronyme)
+    @noms_organismes = @organismes.map { |el| el[0] }
+    @siren_organismes = @organismes.map { |el| el[2] }.compact
+    @organismes_rattachement = @organismes.select { |el| el[3] == 'Actif' || el[3] == 'En cours de création' }
+    @liste_organisme_rattachement = @organisme.organisme_rattachements.pluck(:organisme_destination_id)
   end
 
   def update_organisme_rattachements(organismes_to_link)
