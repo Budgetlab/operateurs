@@ -22,6 +22,8 @@
             <th scope="col">Taux de budgets renseignés (%)</th>
             <th scope="col">BI 2024 renseignés</th>
             <th scope="col">Taux BI 2024 renseignés (%)</th>
+            <th scope="col">CF 2023 renseignés</th>
+            <th scope="col">Taux CF 2023 renseignés (%)</th>
           </tr>
         </thead>
         <tbody>
@@ -32,15 +34,19 @@
           <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] == 0 ? 100 : (@array_remplissage_user.transpose.map{|e| e.inject(:+)}[2] * 100 / @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1]) %>%</td>
           <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[3] %></td>
           <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] == 0 ? 100 : (@array_remplissage_user.transpose.map{|e| e.inject(:+)}[3] * 100 / @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1]).round %>%</td>
+          <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[4] %></td>
+          <td><%= @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1] == 0 ? 100 : (@array_remplissage_user.transpose.map{|e| e.inject(:+)}[4] * 100 / @array_remplissage_user.transpose.map{|e| e.inject(:+)}[1]).round %>%</td>
         </tr>
           <%@array_remplissage_user.each do |array| %>
           <tr>
             <td><%= array[0] %></td>
             <td><%= array[1] %></td>
             <td><%= array[2] %></td>
-            <td><%= array[4] %>%</td>
-            <td><%= array[3] %></td>
             <td><%= array[5] %>%</td>
+            <td><%= array[3] %></td>
+            <td><%= array[6] %>%</td>
+            <td><%= array[4] %></td>
+            <td><%= array[7] %>%</td>
           </tr>
           <% end  %>
         </tbody>

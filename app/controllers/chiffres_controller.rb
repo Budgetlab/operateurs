@@ -253,7 +253,7 @@ class ChiffresController < ApplicationController
   def suivi_remplissage
     redirect_to root_path and return unless @statut_user == '2B2O'
 
-    @users = User.where(statut: ['2B2O', 'Controleur'])
+    @users = User.where(statut: ['Controleur'])
     hash_organismes_users = Organisme.group(:controleur_id, :etat, :id).count
     hash_chiffres_users = Chiffre.group(:user_id, :statut, :exercice_budgetaire, :type_budget, :organisme_id).count
     @array_remplissage_user = []
@@ -262,9 +262,11 @@ class ChiffresController < ApplicationController
       array_user = [user.nom,
                     hash_organismes_users.select { |key, _value| key[0] == user.id && key.include?('Actif') }.values.sum,
                     hash_chiffres_users.select { |key, _value| key[0] == user.id && key.include?('valide') }.values.sum,
-                    hash_chiffres_users.select { |key, _value| key[0] == user.id && key.include?('valide') && key[2] == 2024 && key[3] == 'Budget initial' }.values.sum]
+                    hash_chiffres_users.select { |key, _value| key[0] == user.id && key.include?('valide') && key[2] == 2024 && key[3] == 'Budget initial' }.values.sum,
+                    hash_chiffres_users.select { |key, _value| key[0] == user.id && key.include?('valide') && key[2] == 2023 && key[3] == 'Compte financier' }.values.sum]
       array_user << (array_user[1].zero? ? 100 : (array_user[2].to_f / array_user[1]) * 100).round
       array_user << (array_user[1].zero? ? 100 : (array_user[3].to_f / array_user[1]) * 100).round
+      array_user << (array_user[1].zero? ? 100 : (array_user[4].to_f / array_user[1]) * 100).round
       @array_remplissage_user << array_user
     end
 
