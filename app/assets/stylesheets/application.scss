@@ -41,6 +41,10 @@
 .fr-text--underline{
   text-decoration: underline;
 }
+.fr-capitalize::first-letter{
+  text-transform: uppercase !important;
+}
+
 .shadow{
   filter: drop-shadow(var(--lifted-shadow)) !important;
 }
