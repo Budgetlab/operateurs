@@ -3,11 +3,11 @@
     <div class="fr-col-12 fr-col-lg-12">
         <div data-controller="form" class="fr-my-2w" >
         <%= form_with(model: @control_document, data: {'form-target': "form", action: "change->form#validateForm input->form#validateForm"}, multipart: true) do |f| %>
-            <% name = @organisme.nature_controle == "Contrôle Economique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) ? "Protocole de Contrôle Economique et Financier" : "Document de contrôle"  %>
+            <% name = @organisme.nature_controle == "Contrôle Économique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) ? "protocole de Contrôle Économique et Financier" : "document de contrôle"  %>
             <%= f.hidden_field :name, value: name %>
             <%= f.hidden_field :user_id, value: current_user.id %>
             <%= f.hidden_field :organisme_id, value: @organisme.id %>
-            <h2 class="fr-h6 fr-mb-2w"><%= name%></h2>
+            <h2 class="fr-h6 fr-mb-2w">Nouveau <%= name%></h2>
             <div class="fr-notice fr-notice--info fr-mb-2w">
               <div class="fr-container">
                 <div class="fr-notice__body">

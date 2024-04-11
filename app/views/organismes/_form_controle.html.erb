@@ -83,7 +83,7 @@
             <div class="fr-col-12 fr-col-lg-4">
               <div class="fr-select-group">
                 <label for="nature" class="fr-label">Nature du contrôle* <%= render partial: "organismes/tooltip", locals: {num_id: "nature_controle"} %></label>
-                <%= f.select :nature_controle,[["- sélectionner -",""],['Contrôle Economique et Financier','Contrôle Economique et Financier'], ['Contrôle Budgétaire','Contrôle Budgétaire'], ['Contrôle Budgétaire EPSCP','Contrôle Budgétaire EPSCP'], ['Autre','Autre']],{selected: @organisme.nature_controle}, {data: {'form-target': 'fieldRequire'}, id:"nature",class:"fr-select"}%>
+                <%= f.select :nature_controle,[["- sélectionner -",""],['Contrôle Économique et Financier','Contrôle Économique et Financier'], ['Contrôle Budgétaire','Contrôle Budgétaire'], ['Contrôle Budgétaire EPSCP','Contrôle Budgétaire EPSCP'], ['Autre','Autre']],{selected: @organisme.nature_controle}, {data: {'form-target': 'fieldRequire'}, id:"nature",class:"fr-select"}%>
               </div>
             </div>
             <div class="fr-col-12 fr-col-lg-6">

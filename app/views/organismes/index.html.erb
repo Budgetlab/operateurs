@@ -36,8 +36,8 @@
 
               <%= render_select_group("Contrôleur référent", :controleur_nom_in_insensitive, @controleur_name_list) %>
 
-
-                <%= render_tag_group 'Nature contrôle', :nature_controle_in, ["Contrôle Economique et Financier", "Contrôle Budgétaire", "Contrôle Budgétaire EPSCP", "Autre"] %>
+              <div class="fr-hidden" id="more_filters">
+                <%= render_tag_group 'Nature contrôle', :nature_controle_in, ["Contrôle Économique et Financier", "Contrôle Budgétaire", "Contrôle Budgétaire EPSCP", "Autre"] %>
                 <%= render_select_group("Autorité contrôle", :autorite_controle_in, @liste_autorite_controle) %>
                 <%= render_tag_group 'Document de contrôle', :document_controle_present_in, ['true', 'false'] %>
 
@@ -82,6 +82,8 @@
                 <%= render_tag_group "ODAL #{Date.today.year-2}", :odal_n_in, ['true', 'false'] %>
                 <%= render_tag_group "ODAC #{Date.today.year-2}", :odac_n_in, ['true', 'false'] %>
                 <%= render_tag_group 'Arrêté Interdiction emprunt ODAC', :arrete_interdiction_odac_in, ['Annexe 1', 'Annexe 2', 'Exclusion'] %>
+              </div>
+              <button class="fr-btn fr-btn--secondary fr-btn--sm fr-mb-2w" data-tag="more_filters" data-text="Afficher moins de filtres" data-action="click->request#toggleFilter">Afficher plus de filtres</button>
 
             <% end %>
           </div>

@@ -25,6 +25,10 @@ class UsersController < ApplicationController
         organisme.arrete_interdiction_odac = 'Annexe 2'
         organisme.save
       end
+      if organisme.nature_controle == 'Contrôle Economique et Financier'
+        organisme.nature_controle = 'Contrôle Économique et Financier'
+        organisme.save
+      end
 
     end
     @familles = Organisme.all.pluck(:famille).uniq

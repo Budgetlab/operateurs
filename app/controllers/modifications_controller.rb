@@ -67,6 +67,7 @@ class ModificationsController < ApplicationController
     modification&.update(modification_params)
     message = modification ? modification.statut : 'supprimée'
     update_champ_organisme(modification) if modification&.statut == 'validée'
+    update_gip(modification.organisme) if modification.champ == 'nature' && modification.nouvelle_valeur == 'GIP'
     redirect_to request.referer.presence || root_path, flash: { notice: message }
   end
 
@@ -133,6 +134,11 @@ class ModificationsController < ApplicationController
     else
       organisme.update(champ => modification.nouvelle_valeur)
     end
+  end
+
+  def update_gip(organisme)
+    organisme.update(tutelle_financiere: false, delegation_approbation: false, autorite_approbation: nil, ministere_id: nil)
+    organisme.organisme_ministeres&.destroy_all
   end
 
 end

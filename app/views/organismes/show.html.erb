@@ -273,7 +273,7 @@
                   <p class="fr-card__desc">Autorité de contrôle : <b><%= format_boolean(@organisme.autorite_controle) %></b></p>
                   <p class="fr-card__desc">Texte réglementaire de désignation de l'autorité de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_reglementaire_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
                   <p class="fr-card__desc">Référence de l’arrêté de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-                  <p class="fr-card__desc"><% if @organisme.nature_controle == "Contrôle Economique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) %>Protocole de Contrôle Economique et Financier<%else %>Document de contrôle<%end %> : <b><%= format_boolean(@organisme.document_controle_present) %></b></p>
+                  <p class="fr-card__desc"><% if @organisme.nature_controle == "Contrôle Économique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) %>Protocole de Contrôle Economique et Financier<%else %>Document de contrôle<%end %> : <b><%= format_boolean(@organisme.document_controle_present) %></b></p>
                   <% if @organisme.document_controle_present %>
                   <div class="fr-card__desc fr-my-0" id="control_document">
                       <%= render partial: 'control_documents/control_document', locals: {organisme: @organisme} %>
