@@ -41,7 +41,7 @@
               <% @control_documents.each do |control_document| %>
                 <tr>
                   <td><%= format_boolean(format_date(control_document.signature_date)) %></td>
-                  <td><%= control_document.name %></td>
+                  <td><%= control_document.name.capitalize %></td>
                   <td><%= format_boolean(format_date(control_document.created_at)) %></td>
                   <td><%= link_to organisme_path(control_document.organisme), data: {turbo_frame: "_top"} do %><%= control_document.organisme.nom %><% if control_document.organisme.acronyme.present? %>- <%= control_document.organisme.acronyme %><%end %><% end %></td>
                   <td><%= control_document.organisme.controleur.nom %></td>
