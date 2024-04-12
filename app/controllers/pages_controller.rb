@@ -6,7 +6,7 @@ class PagesController < ApplicationController
   def index
     # Fetch all organisms relevant to user's permissions, including those in extended families
     extended_family_organisms = fetch_extended_family_organisms
-    @search_organismes = extended_family_organisms.pluck(:id, :nom, :acronyme)
+    @search_organismes = extended_family_organisms.order(:nom).pluck(:id, :nom, :acronyme)
     # fetch last 6 updated organisms of the user
     organismes_user = fetch_user_organisms(extended_family_organisms)
     @organismes_last = organismes_user ? organismes_user.order(updated_at: :desc).limit(6).pluck(:id, :nom, :acronyme, :updated_at, :nature, :famille, :etat, :statut) : []
@@ -30,7 +30,7 @@ class PagesController < ApplicationController
     when 'Bureau Sectoriel'
       organisms = organisms.where(statut: 'valide')
     end
-    organisms.order(:nom)
+    organisms
   end
 
   # fetch only those corresponding to the user
