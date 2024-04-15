@@ -29,6 +29,10 @@ class UsersController < ApplicationController
         organisme.nature_controle = 'Contrôle Économique et Financier'
         organisme.save
       end
+      if organisme.famille == 'EPF et EPFA et 50 pas'
+        organisme.famille = 'EPF et EPA et 50 pas'
+        organisme.save
+      end
 
     end
     @familles = Organisme.all.pluck(:famille).uniq
