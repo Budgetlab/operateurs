@@ -15,8 +15,8 @@
         <% end %>
       </div>
       <div class="fr-my-4w"><%= @noms_users.length %> users : <%= @noms_users %></div>
-      <div class="fr-my-4w"><%=@familles.count %>/<%= @liste_familles.count %>-<%= @familles %></div>
-      <div class="fr-my-4w"><%= @natures.count %>/<%= @liste_natures.count %> - <%= @natures %>-</div>
+      <div class="fr-my-4w"><%=@familles.count %>/<%= @liste_familles.count %>-<%= @familles - @liste_familles %>-<%= @familles %></div>
+      <div class="fr-my-4w"><%= @natures.count %>/<%= @liste_natures.count %> -<%= @natures - @liste_natures%> -<%= @natures %>-</div>
     </div>
   </div>
 </main>
