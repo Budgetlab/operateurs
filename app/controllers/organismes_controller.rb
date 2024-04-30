@@ -18,23 +18,21 @@ class OrganismesController < ApplicationController
     q_params_send = params[:q]
     if q_params_send
       if q_params_send[:operateur_operateur_n_null] == 'true' && q_params[:operateur_operateur_n_in]&.include?('true')
-        value_resset_all = true
+        value_reset_all = true
         q_params_send.delete(:operateur_operateur_n_null)
         q_params_send.delete(:operateur_operateur_n_in)
       elsif q_params_send[:operateur_operateur_n_null] == 'true'
-        value_resset_operateur_n = true
+        value_reset_operateur_n = true
         q_params_send.delete(:operateur_operateur_n_null)
-        extended_family_organisms_not_operateur = extended_family_organisms.where(operateurs: { operateur_n: nil} )
-        extended_family_organisms_operateur_false = extended_family_organisms.where(operateurs: { operateur_n: false} )
-        extended_family_organisms = extended_family_organisms_not_operateur.or(extended_family_organisms_operateur_false)
+        extended_family_organisms = extended_family_organisms.where(operateurs: { operateur_n: [nil, false] })
       end
     end
     @q = extended_family_organisms.ransack(q_params_send)
     @organisms_for_results = @q.result.includes(:bureau, :controleur)
-    if value_resset_all
+    if value_reset_all
       q_params_send[:operateur_operateur_n_null] = 'true'
       q_params_send[:operateur_operateur_n_in] = ["true"]
-    elsif value_resset_operateur_n
+    elsif value_reset_operateur_n
       q_params_send[:operateur_operateur_n_null] = 'true'
     end
     respond_to do |format|

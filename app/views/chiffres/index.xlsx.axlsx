@@ -7,12 +7,14 @@
     col_cell_grey = s.add_style bg_color: 'FFDFDEDF'
     tbl_cell = s.add_style border: { style: :thin, color: '161616' }, alignment:{ :horizontal => :right }
 
-  	wb.add_worksheet(name: "Chiffres clés") do |sheet| 	
-      sheet.add_row [@organisme.nom], style: titre_header
-      sheet.add_border "A1", {edges: :all, style: :thick}
+  	wb.add_worksheet(name: "Chiffres clés") do |sheet|
       
-      @tableau = [nil, nil] + @chiffres_export.pluck(:type_budget,:exercice_budgetaire).map { |sous_tableau| sous_tableau.join(' ') }
+      @tableau = [@organisme.nom, nil] + @chiffres_export.pluck(:type_budget,:exercice_budgetaire).map { |sous_tableau| sous_tableau.join(' ') }
       sheet.add_row(@tableau)
+      sheet.add_border "A1", {edges: :all, style: :thick}
+
+      @array_phase = ["Phase",nil] + @chiffres_export.pluck(:phase).map { |value| value }
+      sheet.add_row(@array_phase)
 
       @array_compta = ["OCB/OHCB",nil] + @chiffres_export.pluck(:comptabilite_budgetaire).map { |value| value ? "OCB" : "OHCB" }
       sheet.add_row(@array_compta)

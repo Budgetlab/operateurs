@@ -2,50 +2,42 @@
 
 # Controller Pages Chiffres
 class ChiffresController < ApplicationController
+  include Authentication
   before_action :authenticate_user!
   before_action :find_organisme, only: %i[index show_dates]
-  before_action :set_famille, only: %i[index show_dates]
   before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy open_phase]
-
+  before_action :redirect_unless_access, only: :index
+  before_action :redirect_unless_controleur, only: :new
   # page des chiffres clés de l'organisme
   def index
+    # Check if the logged-in user is the "controller" of the organism, and store the result in @est_editeur
     @est_editeur = current_user == @organisme.controleur
-    est_bureau_ou_famille = @statut_user == 'Bureau Sectoriel' || @familles&.include?(@organisme.famille)
-    redirect_to root_path and return unless @statut_user == '2B2O' || @est_editeur || est_bureau_ou_famille
-
+    # Fetch all "chiffres" attached to the organism and sort them descendingly by "exercice_budgetaire"
     @chiffres = @organisme.chiffres.order(exercice_budgetaire: :desc)
-    if params[:paramId]
-      @chiffre_param = Chiffre.where(id: params[:paramId].to_i).first
-      redirect_to organisme_chiffres_path(@organisme) and return unless @chiffre_param && @chiffre_param.organisme_id == @organisme.id
+    # Establish which "exercice_budgetaire" should be shown, using either parameters or fetching from chiffres
+    @exercice_budgetaire = set_exercice_budgetaire_chiffres(params[:paramId], params[:exercice_budgetaire], @chiffres)
+    # Get only the chiffres for the established "exercice_budgetaire", default to an empty array if none found
+    @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire) || []
+    # Show a default "chiffre" based on the given parameters or the established "exercice_budgetaire"
+    @chiffre_default = set_default_chiffre(params[:paramId], @exercice_budgetaire, @chiffres)
+    # If a paramId is given and it doesn't match the organism's id linked to the default chiffre, redirect to the organism's chiffres index page
+    redirect_to organisme_chiffres_path(@organisme) and return if params[:paramId] && @chiffre_default&.organisme_id != @organisme.id
 
-      @date = @chiffre_param.exercice_budgetaire
-    else
-      @date_dernier_chiffre = @chiffres.first&.exercice_budgetaire || Date.today.year
-      @date = params[:exercice_budgetaire] && [2022, 2023, 2024].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : @date_dernier_chiffre
-    end
-
-    liste_budgets(@date, @chiffres)
-    @bi_selected = [@compte_financier, @budgets_rectificatifs].flatten.empty? || (params[:paramId] && params[:paramId].to_i == @budget_initial.first&.id)
-    @cf_selected = !@compte_financier.empty? && params[:paramId].nil? || params[:paramId].to_i == @compte_financier.first&.id
-    @chiffres_export = @chiffres.where(statut: 'valide').order(Arel.sql(" exercice_budgetaire DESC, CASE
-      WHEN type_budget = 'Compte financier' THEN 1
-      WHEN type_budget = 'Budget rectificatif' THEN 2
-      ELSE 3
-    END, created_at DESC"))
-    filename = "chiffres_#{@organisme.nom}.xlsx"
+    # Prepare the chiffres data for export
+    @chiffres_export = set_export_chiffres(@chiffres)
+    filename = "Budgets #{@organisme.nom}.xlsx"
     respond_to do |format|
       format.html
-      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
+      format.any { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
     end
   end
 
   def show_dates
     @est_editeur = current_user == @organisme.controleur
     @chiffres = @organisme.chiffres
-    @date = params[:exercice_budgetaire] && [2022, 2023, 2024].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
-    liste_budgets(@date, @chiffres)
-    @bi_selected = [@compte_financier, @budgets_rectificatifs].flatten.empty?
-    @cf_selected = !@compte_financier.empty?
+    @exercice_budgetaire = params[:exercice_budgetaire] && [2022, 2023, 2024].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
+    @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire) || []
+    @chiffre_default = set_default_chiffre(nil, @exercice_budgetaire, @chiffres)
     respond_to do |format|
       format.turbo_stream do
         render turbo_stream: [
@@ -56,8 +48,6 @@ class ChiffresController < ApplicationController
   end
 
   def new
-    redirect_to root_path and return unless @statut_user == 'Controleur'
-
     @chiffre = Chiffre.new
     @organismes = current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif')
   end
@@ -314,15 +304,6 @@ class ChiffresController < ApplicationController
     @organisme = Organisme.find(params[:organisme_id])
   end
 
-  def liste_budgets(exercice_budgetaire, chiffres)
-    @budget_initial = filter_chiffres('Budget initial', exercice_budgetaire, chiffres)
-    @budgets_rectificatifs = filter_chiffres('Budget rectificatif', exercice_budgetaire, chiffres)
-    @compte_financier = filter_chiffres('Compte financier', exercice_budgetaire, chiffres)
-  end
-
-  def filter_chiffres(type_budget, exercice_budgetaire, chiffres)
-    chiffres.order(created_at: :asc).select { |el| el.type_budget == type_budget && el.exercice_budgetaire == exercice_budgetaire }
-  end
 
   def select_chiffres
     @organismes_id = current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif').pluck(:id) if @statut_user == 'Bureau Sectoriel'
@@ -338,15 +319,6 @@ class ChiffresController < ApplicationController
   def normalize_name(name)
     # Supprime les accents et met le texte en minuscules
     I18n.transliterate(name).downcase
-  end
-
-  def set_famille
-    if @statut_user == 'Controleur'
-      @familles = current_user.controleur_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
-      @familles += ['Universités'] if current_user.nom == 'CBCM MEN-MESRI'
-    elsif @statut_user == 'Bureau Sectoriel'
-      @familles = current_user.bureau_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
-    end
   end
 
   def find_chiffre_and_organisme
@@ -417,6 +389,38 @@ class ChiffresController < ApplicationController
       resultat << sous_tableau_recent
     end
     resultat
+  end
+
+  def redirect_unless_access
+    is_controleur_or_famille = current_user == @organisme.controleur || @familles&.include?(@organisme.famille)
+    condition_access = @statut_user == 'Bureau Sectoriel' || @statut_user == '2B2O' || is_controleur_or_famille
+    redirect_to root_path and return unless condition_access
+  end
+
+  def set_exercice_budgetaire_chiffres(params_id, params_exercice_budgetaire, chiffres)
+    if params_id
+      Chiffre.find(params_id.to_i)&.exercice_budgetaire
+    elsif params_exercice_budgetaire && [2022, 2023, 2024].include?(params_exercice_budgetaire.to_i)
+      params_exercice_budgetaire.to_i
+    else
+      chiffres&.first&.exercice_budgetaire || Date.today.year
+    end
+  end
+
+  def set_default_chiffre(params_id, date, chiffres)
+    params_id ? Chiffre.find(params_id.to_i) : chiffres&.where(exercice_budgetaire: date)&.order(Arel.sql("CASE
+      WHEN type_budget = 'Compte financier' THEN 1
+      WHEN type_budget = 'Budget rectificatif' THEN 2
+      ELSE 3
+    END, created_at DESC"))&.first
+  end
+
+  def set_export_chiffres(chiffres)
+    chiffres.where(statut: 'valide').order(Arel.sql(" exercice_budgetaire DESC, CASE
+      WHEN type_budget = 'Compte financier' THEN 1
+      WHEN type_budget = 'Budget rectificatif' THEN 2
+      ELSE 3
+    END, created_at DESC"))
   end
 
 end
