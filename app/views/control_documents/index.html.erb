@@ -47,7 +47,7 @@
                   <td><%= control_document.organisme.controleur.nom %></td>
                   <td>
                     <% if control_document.document.attached? %>
-                        <%= link_to rails_blob_path(control_document.document, disposition: "attachment"), data: {turbo_frame: "_top"},  class: 'fr-icon-download-line fr-link--icon-right' do %>Télécharger<% end %>
+                        <%= link_to control_document.document.url(disposition: "attachment"),data: {turbo_frame: "_top"},  class: 'fr-icon-download-line fr-link--icon-right' do %>Télécharger<% end %>
                     <% end %>
                     <% if @statut_user == "2B2O" %>
                       <%= link_to edit_control_document_path(control_document), class: 'fr-btn fr-btn--sm fr-btn--tertiary fr-icon-delete-fill', 'aria-controls': "modal-document-control", data: {turbo_frame: :form_control_document, fr_opened: false} do %>Supprimer<% end %>
