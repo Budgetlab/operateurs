@@ -43,8 +43,8 @@
               <h3 class="fr-card__title"><%= link_to new_chiffre_path do %>Renseigner un nouveau budget<%end %></h3>
               <p class="fr-card__desc">Renseigner le budget d’un organisme de mon périmètre à chaque étape du cycle budgétaire.</p>
               <% elsif @statut_user == "Bureau Sectoriel" %>
-                <h3 class="fr-card__title"><%= link_to budgets_suivi_path do %>Suivre les budgets par organisme<%end %></h3>
-                <p class="fr-card__desc">Pour chaque organisme, suivez l’évolution du budget au cours de l’exercice budgétaire.</p>
+                <h3 class="fr-card__title"><%= link_to budgets_path do %>Suivre les budgets<%end %></h3>
+                <p class="fr-card__desc">Accéder et comparer l'ensemble des budgets sur les organismes de mon périmètre.</p>
               <%end %>
             </div>
           </div>

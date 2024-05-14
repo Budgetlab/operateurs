@@ -178,48 +178,18 @@ class ChiffresController < ApplicationController
     end
   end
 
-  def suivi
-    liste_organisme
-    @liste_organismes = @organismes.pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
-    liste_chiffres_organismes = @organismes.joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite", "chiffres.created_at AS chiffre_date")
-    @liste_chiffres_organismes = liste_chiffres(liste_chiffres_organismes)
-  end
-
-  def filtre_suivi
-    liste_organisme
-    @liste_organismes = @organismes.pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
-    liste_chiffres_organismes = @organismes.joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite", "chiffres.created_at AS chiffre_date")
-    @liste_chiffres_organismes = liste_chiffres(liste_chiffres_organismes)
-    liste_organismes_filter_id = []
-    [[params[:budget_bis], 'Budget initial'], [params[:budget_brs], 'Budget rectificatif'], [params[:budget_cfs], 'Compte financier']].each do |param|
-      if param[0]&.include?('Brouillon')
-        @liste_chiffres_brouillon_id = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i && el[3] != 'valide' }.map { |el| el[0] }.uniq
-        liste_organismes_filter_id += @liste_chiffres_brouillon_id
-      end
-      if param[0]&.include?('Non renseigné') || param[0]&.include?('Aucun')
-        id_orga_chiffres = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i}.map { |el| el[0] }.uniq
-        @liste_organismes_nr_id = @liste_organismes.reject { |el| id_orga_chiffres.include?(el[0]) }.map { |el| el[0] }.uniq
-        liste_organismes_filter_id += @liste_organismes_nr_id
-      end
-      if param[0] && param[0].length != 6
-        @liste_chiffres_risque_id = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i && param[0].include?(el[4]) && el[3] == 'valide' }.map { |el| el[0] }.uniq
-        liste_organismes_filter_id += @liste_chiffres_risque_id
-      end
-    end
-    if params[:budget_bis].length != 6 || params[:budget_brs].length != 6 || params[:budget_cfs].length != 6
-      @liste_organismes = @liste_organismes.select { |el| liste_organismes_filter_id.include?(el[0]) }
-    end
-
+  def budgets
+    organisms_user = liste_organisme
+    chiffres_user = Chiffre.where(statut: 'valide').where(organisme_id: organisms_user.pluck(:id)).order(updated_at: :desc)
+    @q_params = q_params
+    @q = chiffres_user.ransack(params[:q])
+    @chiffres = @q.result.includes(:organisme, :user)
+    @pagy, @chiffres_page = pagy(@chiffres)
     respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.update("suivi_table_body#{params[:exercice].to_s}", partial: 'chiffres/suivi_table_body', locals: { exercice: params[:exercice].to_i, liste_organismes: @liste_organismes, liste_chiffres_organismes: @liste_chiffres_organismes }),
-          turbo_stream.update("total_table#{params[:exercice].to_s}", partial: 'chiffres/suivi_table_total', locals: { total: @liste_organismes.length })
-        ]
-      end
+      format.html
+      format.xlsx
     end
   end
-
   def destroy
     redirect_unless_can_edit
 
@@ -331,14 +301,14 @@ class ChiffresController < ApplicationController
   end
 
   def liste_organisme
-    @organismes = case @statut_user
-                        when '2B2O'
-                          Organisme.where(statut: 'valide', etat: 'Actif')
-                        when 'Controleur'
-                          current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif')
-                        when 'Bureau Sectoriel'
-                          current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif')
-                        end
+    case @statut_user
+    when '2B2O'
+      Organisme.where(statut: 'valide', etat: 'Actif')
+    when 'Controleur'
+      current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif')
+    when 'Bureau Sectoriel'
+      current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif')
+    end
   end
 
   def updateRisque(chiffre)
@@ -421,6 +391,16 @@ class ChiffresController < ApplicationController
       WHEN type_budget = 'Budget rectificatif' THEN 2
       ELSE 3
     END, created_at DESC"))
+  end
+
+  def q_params
+    if params[:q].present?
+      params.require(:q).permit(:organisme_nom_or_organisme_acronyme_contains, :user_nom_in_insensitive => [], :organisme_famille_in => [],
+                                :exercice_budgetaire_in => [],:type_budget_in => [], :phase_in => [],
+                                :comptabilite_budgetaire_in => [] ,:operateur_in => [], :risque_insolvabilite_in => [])
+    else
+      {}
+    end
   end
 
 end

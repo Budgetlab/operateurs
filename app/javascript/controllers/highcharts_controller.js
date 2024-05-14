@@ -33,7 +33,7 @@ export default class extends Controller {
         }
     }
     syntheseBudget(data, title){
-        const colors = ["var(--green-emeraude-850-200)","var(--pink-tuile-925-125-active)", "var(--green-tilleul-verveine-925-125)","var(--pink-tuile-main-556)","var(--background-disabled-grey)"]
+        const colors = ["var(--green-emeraude-850-200)","var(--green-tilleul-verveine-925-125)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"]
         const options = {
             chart: {
                 height:'100%',

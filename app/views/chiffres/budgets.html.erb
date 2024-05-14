@@ -1,0 +1,90 @@
+<% content_for :title do %>Liste des budgets | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container ">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h1 class="fr-my-4w">Liste des budgets</h1>
+      </div>
+    </div>
+
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w" data-controller="request">
+      <div class="fr-col-12 fr-col-lg-4">
+        <nav role="navigation" class="fr-sidemenu fr-sidemenu--sticky-full-height fr-mb-0-5v">
+          <div class="fr-sidemenu__inner">
+            <div class="fr-sidemenu__title">Affiner la recherche</div>
+
+            <div class="fr-mb-2w"><%= link_to budgets_path, class:"fr-btn fr-btn--sm fr-btn--secondary fr-btn--icon-right fr-icon-refresh-line" do %>Réinitialiser les filtres<%end %></div>
+
+            <%= search_form_for @q, url: budgets_path, data: {'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance'} do |f| %>
+              <div class="fr-mb-2w" role="search">
+                <%= f.search_field :organisme_nom_or_organisme_acronyme_contains, class: 'fr-input',id: 'search-input', placeholder: "Filtrer sur le nom ou l'acronyme", oninput: 'this.form.requestSubmit()' %>
+              </div>
+              <%= render_select_group("Contrôleur référent", :user_nom_in_insensitive, User.order(nom: :asc).where(statut: 'Controleur').map(&:nom)) %>
+
+              <%= render_select_group("Famille", :organisme_famille_in, @liste_familles) %>
+
+              <%= render_tag_group 'Exercice budgétaire', :exercice_budgetaire_in, ['2022', '2023', '2024'] %>
+              <%= render_tag_group 'Type de budget', :type_budget_in, ["Budget initial", "Budget rectificatif", "Compte financier"] %>
+              <%= render_tag_group 'Phase', :phase_in, ["pré-CA", "CA", "Budget voté","CF arrêté"] %>
+              <%= render_tag_group 'Comptabilité budgétaire', :comptabilite_budgetaire_in, ['true', 'false'] %>
+              <%= render_tag_group 'Opérateur', :operateur_in, ['true', 'false'] %>
+              <%= render_tag_group 'Examen', :risque_insolvabilite_in, ["Situation saine", "Situation saine a priori mais à surveiller", "Risque d’insoutenabilité à moyen terme", "Risque d’insoutenabilité élevé"] %>
+
+            <%end %>
+          </div>
+        </nav>
+      </div>
+      <div class="fr-col-12 fr-col-lg-8">
+        <%= turbo_frame_tag :results, target: "_top" do %>
+          <h2 class="fr-h3"><%= pluralize(@chiffres&.count, 'résultat', plural: 'résultats')%>
+            <% if @statut_user == 'Controleur' %>
+              <a class="fr-link" aria-describedby="info_resultats" id="link-info_resultats" href="#" data-controller="filter" data-action="filter#Dropdown">
+              <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true"></span></a>
+              <span class="fr-tooltip fr-placement" id="info_resultats" role="tooltip" aria-hidden="true">Les résultats incluent les organismes de votre périmètre et ceux des familles auxquelles vous avez accès. Pour afficher uniquement vos organismes, sélectionnez votre profil dans controleur référent.</span>
+            <% end %>
+            <div class="fr-download">
+              <% path_params = params[:q].present? ? {q: @q_params, format: 'xlsx'} : {format: 'xlsx'} %>
+              <p><%= link_to budgets_path(path_params), class: "fr-link fr-download__link", target: "_blank" do %>Télécharger les budgets <span class="fr-download__detail">Format .xlsx</span><%end %></p>
+            </div>
+          </h2>
+          <% @chiffres_page.each do |chiffre|%>
+            <% class_badge_controleur = if current_user == chiffre.user then "fr-badge--green-emeraude" else "fr-badge--blue-ecume" end%>
+            <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+              <div class="fr-col-6 fr-col-lg-12">
+                <div class="fr-badge-group">
+                  <ul class="fr-mr-2w fr-mb-1v">
+                    <li><%= link_to organisme_chiffres_path(chiffre.organisme, paramId: chiffre.id) do%><%= chiffre.type_budget %> <%= chiffre.exercice_budgetaire %> - <%= chiffre.organisme.nom %><% if chiffre.organisme.acronyme.present? %> - <%= chiffre.organisme.acronyme %><%end %><%end %></li>
+                  </ul>
+                  <p class="fr-badge <%= class_badge_controleur%>"><%= chiffre.user.nom %></p>
+                  <p class="fr-badge"><%= chiffre.risque_insolvabilite %></p>
+                </div>
+                <div><ul class="fr-tags-group">
+                  <li>
+                    <p class="fr-tag fr-tag--sm"><%= chiffre.operateur ? 'Operateur' : 'Non opérateur' %></p>
+                  </li>
+                  <li>
+                    <p class="fr-tag fr-tag--sm"><%= chiffre.comptabilite_budgetaire ? 'Comptabilité budgétaire' : "Hors comptabilité budgétaire" %></p>
+                  </li>
+                  <li>
+                    <p class="fr-tag fr-tag--sm">Phase : <%= chiffre.phase %></p>
+                  </li>
+                  <li>
+                    <p class="fr-tag fr-tag--sm">Famille : <%= chiffre.organisme.famille %></p>
+                  </li>
+                  <li>
+                    <p class="fr-tag fr-tag--sm">MAJ le : <%= format_date(chiffre.updated_at) %></p>
+                  </li>
+                </ul></div>
+              </div>
+            </div>
+            <hr class="fr-hr fr-py-1w"/>
+          <%end %>
+
+          <div class="fr-my-2w">
+            <%== pagy_nav_custom(@pagy) %>
+          </div>
+        <%end %>
+      </div>
+    </div>
+  </div>
+</main>
