@@ -129,8 +129,8 @@ module ApplicationHelper
   end
 
   def numero_br(chiffre)
-    rectificatifs = Chiffre.where(exercice_budgetaire: chiffre.exercice_budgetaire, type_budget: "Budget rectificatif").order(:created_at)
-    rectificatifs.index(chiffre)
+    rectificatifs = Chiffre.where(organisme_id: chiffre.organisme_id, exercice_budgetaire: chiffre.exercice_budgetaire, type_budget: "Budget rectificatif").order(:created_at)
+    rectificatifs.index(chiffre)+1
   end
 
 end
