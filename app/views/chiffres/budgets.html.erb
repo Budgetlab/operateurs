@@ -53,7 +53,7 @@
               <div class="fr-col-6 fr-col-lg-12">
                 <div class="fr-badge-group">
                   <ul class="fr-mr-2w fr-mb-1v">
-                    <li><%= link_to organisme_chiffres_path(chiffre.organisme, paramId: chiffre.id) do%><%= chiffre.type_budget %> <%= chiffre.exercice_budgetaire %> - <%= chiffre.organisme.nom %><% if chiffre.organisme.acronyme.present? %> - <%= chiffre.organisme.acronyme %><%end %><%end %></li>
+                    <li><%= link_to organisme_chiffres_path(chiffre.organisme, paramId: chiffre.id) do%><%= chiffre.type_budget %> <% if chiffre.type_budget == "Budget rectificatif" %>n° <%= numero_br(chiffre) %><%end %> <%= chiffre.exercice_budgetaire %> - <%= chiffre.organisme.nom %><% if chiffre.organisme.acronyme.present? %> - <%= chiffre.organisme.acronyme %><%end %><%end %></li>
                   </ul>
                   <p class="fr-badge <%= class_badge_controleur%>"><%= chiffre.user.nom %></p>
                   <p class="fr-badge <%= class_badge(chiffre.risque_insolvabilite) %>"><%= chiffre.risque_insolvabilite %></p>

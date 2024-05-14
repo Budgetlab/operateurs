@@ -17,7 +17,7 @@ class ChiffresController < ApplicationController
     # Establish which "exercice_budgetaire" should be shown, using either parameters or fetching from chiffres
     @exercice_budgetaire = set_exercice_budgetaire_chiffres(params[:paramId], params[:exercice_budgetaire], @chiffres)
     # Get only the chiffres for the established "exercice_budgetaire", default to an empty array if none found
-    @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire) || []
+    @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire).order(created_at: :asc) || []
     # Show a default "chiffre" based on the given parameters or the established "exercice_budgetaire"
     @chiffre_default = set_default_chiffre(params[:paramId], @exercice_budgetaire, @chiffres)
     # If a paramId is given and it doesn't match the organism's id linked to the default chiffre, redirect to the organism's chiffres index page
@@ -36,7 +36,7 @@ class ChiffresController < ApplicationController
     @est_editeur = current_user == @organisme.controleur
     @chiffres = @organisme.chiffres
     @exercice_budgetaire = params[:exercice_budgetaire] && [2022, 2023, 2024].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
-    @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire) || []
+    @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire).order(created_at: :asc) || []
     @chiffre_default = set_default_chiffre(nil, @exercice_budgetaire, @chiffres)
     respond_to do |format|
       format.turbo_stream do

@@ -83,7 +83,7 @@ sheet_col = Array.new(157, 12)
         @chiffres.where(statut: 'valide').each do |chiffre|
             sheet.add_row [chiffre.organisme.nom,chiffre.organisme.famille,chiffre.organisme.nature,chiffre.organisme.bureau&.nom,
             chiffre.organisme.nature_controle, chiffre.organisme.autorite_controle,
-            chiffre.exercice_budgetaire, chiffre.type_budget, chiffre.comptabilite_budgetaire ? 'OCB' : 'OHCB', chiffre.operateur ? 'Op' : 'Non Op', chiffre.phase,
+            chiffre.exercice_budgetaire, chiffre.type_budget == "Budget rectificatif" ? chiffre.type_budget.to_s + ' n°' + numero_br(chiffre).to_s : chiffre.type_budget, chiffre.comptabilite_budgetaire ? 'OCB' : 'OHCB', chiffre.operateur ? 'Op' : 'Non Op', chiffre.phase,
             chiffre.emplois_total, chiffre.emplois_plafond, chiffre.emplois_hors_plafond, ratio(chiffre.emplois_hors_plafond,chiffre.emplois_total,1),
             chiffre.emplois_plafond_rappel, chiffre.emplois_plafond_prenotifie,
             chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel,chiffre.comptabilite_budgetaire ? ratio(chiffre.emplois_depenses_personnel,chiffre.emplois_total,1) : ratio(chiffre.emplois_charges_personnel,chiffre.emplois_total,1),

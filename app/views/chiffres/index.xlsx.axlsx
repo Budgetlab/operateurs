@@ -9,7 +9,7 @@
 
   	wb.add_worksheet(name: "Chiffres clés") do |sheet|
       
-      @tableau = [@organisme.nom, nil] + @chiffres_export.pluck(:type_budget,:exercice_budgetaire).map { |sous_tableau| sous_tableau.join(' ') }
+      @tableau = [@organisme.nom, nil] + @chiffres_export.map { |chiffre| chiffre.type_budget == "Budget rectificatif" ? "#{chiffre.type_budget} n°#{numero_br(chiffre)} #{chiffre.exercice_budgetaire}" : "#{chiffre.type_budget} #{chiffre.exercice_budgetaire}"}
       sheet.add_row(@tableau)
       sheet.add_border "A1", {edges: :all, style: :thick}
 
