@@ -113,4 +113,19 @@ module ApplicationHelper
     select_group.concat(tags_group)
   end
 
+  def class_badge(risque_solvabilite)
+    case risque_solvabilite
+    when 'Situation saine'
+      'fr-badge--no-icon fr-badge--success'
+    when 'Situation saine a priori mais à surveiller'
+      'fr-badge--no-icon fr-badge--green-tilleul-verveine'
+    when 'Risque d’insoutenabilité à moyen terme'
+      'fr-badge--no-icon fr-badge--warning'
+    when 'Risque d’insoutenabilité élevé'
+      'fr-badge--no-icon fr-badge--error'
+    else
+      ''
+    end
+  end
+
 end

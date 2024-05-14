@@ -56,7 +56,7 @@
                     <li><%= link_to organisme_chiffres_path(chiffre.organisme, paramId: chiffre.id) do%><%= chiffre.type_budget %> <%= chiffre.exercice_budgetaire %> - <%= chiffre.organisme.nom %><% if chiffre.organisme.acronyme.present? %> - <%= chiffre.organisme.acronyme %><%end %><%end %></li>
                   </ul>
                   <p class="fr-badge <%= class_badge_controleur%>"><%= chiffre.user.nom %></p>
-                  <p class="fr-badge"><%= chiffre.risque_insolvabilite %></p>
+                  <p class="fr-badge <%= class_badge(chiffre.risque_insolvabilite) %>"><%= chiffre.risque_insolvabilite %></p>
                 </div>
                 <div><ul class="fr-tags-group">
                   <li>

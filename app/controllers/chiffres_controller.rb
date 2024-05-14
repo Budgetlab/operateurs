@@ -179,8 +179,8 @@ class ChiffresController < ApplicationController
   end
 
   def budgets
-    organisms_user = liste_organisme
-    chiffres_user = Chiffre.where(statut: 'valide').where(organisme_id: organisms_user.pluck(:id)).order(updated_at: :desc)
+    extended_family_organisms = fetch_extended_family_organisms
+    chiffres_user = Chiffre.where(statut: 'valide').where(organisme_id: extended_family_organisms.pluck(:id)).order(updated_at: :desc)
     @q_params = q_params
     @q = chiffres_user.ransack(params[:q])
     @chiffres = @q.result.includes(:organisme, :user)
@@ -190,6 +190,7 @@ class ChiffresController < ApplicationController
       format.xlsx
     end
   end
+
   def destroy
     redirect_unless_can_edit
 
@@ -274,7 +275,6 @@ class ChiffresController < ApplicationController
     @organisme = Organisme.find(params[:organisme_id])
   end
 
-
   def select_chiffres
     @organismes_id = current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif').pluck(:id) if @statut_user == 'Bureau Sectoriel'
     @chiffres = if @statut_user == 'Controleur'
@@ -300,15 +300,12 @@ class ChiffresController < ApplicationController
     return redirect_to(root_path) unless @organisme && current_user == @organisme.controleur
   end
 
-  def liste_organisme
-    case @statut_user
-    when '2B2O'
-      Organisme.where(statut: 'valide', etat: 'Actif')
-    when 'Controleur'
-      current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif')
-    when 'Bureau Sectoriel'
-      current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif')
+  def fetch_extended_family_organisms
+    organisms = Organisme.where(statut: 'valide', etat: 'Actif').includes(:controleur, :bureau, :operateur)
+    if @statut_user == 'Controleur'
+      organisms = organisms.where('controleur_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)
     end
+    organisms
   end
 
   def updateRisque(chiffre)
