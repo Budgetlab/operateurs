@@ -11,7 +11,6 @@ class PagesController < ApplicationController
     @organismes_user = fetch_user_organisms(extended_family_organisms)
     @organismes_last = @organismes_user ? @organismes_user.order(updated_at: :desc).limit(4).pluck(:id, :nom, :acronyme, :updated_at, :nature, :famille, :etat, :statut) : []
     @chiffres = Chiffre.where(statut: 'valide').where(organisme_id: @organismes_user.pluck(:id))
-    # @chiffres = @statut_user == 'Controleur' ? current_user.chiffres.where(statut: 'valide') : Chiffre.all.where(statut: 'valide')
     @chiffres_bi_2024 = calculate_chiffres_budget_exercice(@chiffres, @organismes_user, 2024, 'Budget initial')
     @chiffres_cf_2023 = calculate_chiffres_budget_exercice(@chiffres, @organismes_user, 2023, 'Compte financier')
   end
@@ -49,15 +48,15 @@ class PagesController < ApplicationController
     end
   end
   def calculate_chiffres_budget_exercice(chiffres, organismes, exercice_budgetaire, type_budget)
-    chiffres_bi_2024 = []
+    chiffres_budget = []
     risques = ["Situation saine","Situation saine a priori mais à surveiller",'Risque d’insoutenabilité à moyen terme','Risque d’insoutenabilité élevé']
     chiffres_selected = chiffres.where(exercice_budgetaire: exercice_budgetaire, type_budget: type_budget)
     risques.each do |risque|
-      chiffres_bi_2024 << chiffres_selected.where(risque_insolvabilite: risque)&.length
+      chiffres_budget << chiffres_selected.where(risque_insolvabilite: risque)&.length
     end
     chiffres_empty = organismes&.length - chiffres_selected&.length
-    chiffres_bi_2024 << chiffres_empty
-    chiffres_bi_2024
+    chiffres_budget << chiffres_empty
+    chiffres_budget
   end
 
 end

@@ -15,6 +15,14 @@
     </div>
 
     <%= turbo_frame_tag :results, target: "_top" do %>
+      <div class="fr-grid-row fr-grid-row--gutters" data-controller="highcharts" data-highcharts-budgetsbi="<%= @chiffres_bi_2024 %>" data-highcharts-budgetscf="<%= @chiffres_cf_2023 %>">
+        <div class="fr-col-12 fr-col-lg-4 fr-col-offset-2">
+          <div data-highcharts-target="canvasBI"></div>
+        </div>
+        <div class="fr-col-12 fr-col-lg-4">
+          <div data-highcharts-target="canvasCF"></div>
+        </div>
+      </div>
     <div class="fr-download">
       <% path_params = params[:q].present? ? {q: @q_params, format: 'xlsx'} : {format: 'xlsx'} %>
       <p><%= link_to suivi_remplissage_path(path_params), class: "fr-download__link" do %> Télécharger le suivi du remplissage
