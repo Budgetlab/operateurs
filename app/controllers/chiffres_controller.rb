@@ -8,6 +8,7 @@ class ChiffresController < ApplicationController
   before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy open_phase]
   before_action :redirect_unless_access, only: :index
   before_action :redirect_unless_controleur, only: :new
+  before_action :redirect_unless_admin, only: :suivi_remplissage
   # page des chiffres clés de l'organisme
   def index
     # Check if the logged-in user is the "controller" of the organism, and store the result in @est_editeur
@@ -212,27 +213,11 @@ class ChiffresController < ApplicationController
   end
 
   def suivi_remplissage
-    redirect_to root_path and return unless @statut_user == '2B2O'
-
-    @users = User.where(statut: ['Controleur'])
-    hash_organismes_users = Organisme.group(:controleur_id, :etat, :id).count
-    hash_chiffres_users = Chiffre.group(:user_id, :statut, :exercice_budgetaire, :type_budget, :organisme_id).count
-    @array_remplissage_user = []
-
-    @users.each do |user|
-      array_user = [user.nom,
-                    hash_organismes_users.select { |key, _value| key[0] == user.id && key.include?('Actif') }.values.sum,
-                    hash_chiffres_users.select { |key, _value| key[0] == user.id && key.include?('valide') }.values.sum,
-                    hash_chiffres_users.select { |key, _value| key[0] == user.id && key.include?('valide') && key[2] == 2024 && key[3] == 'Budget initial' }.values.sum,
-                    hash_chiffres_users.select { |key, _value| key[0] == user.id && key.include?('valide') && key[2] == 2023 && key[3] == 'Compte financier' }.values.sum]
-      array_user << (array_user[1].zero? ? 100 : (array_user[2].to_f / array_user[1]) * 100).round
-      array_user << (array_user[1].zero? ? 100 : (array_user[3].to_f / array_user[1]) * 100).round
-      array_user << (array_user[1].zero? ? 100 : (array_user[4].to_f / array_user[1]) * 100).round
-      @array_remplissage_user << array_user
-    end
-
-    @array_remplissage_user = @array_remplissage_user.sort_by { |e| -e[4] }
-
+    @q_params = q_params
+    @q = Organisme.ransack(params[:q])
+    @organisms = @q.result.includes(:controleur)
+    @organisms_id = @organisms.pluck(:id)
+    @controleurs = User.where(statut: ['Controleur']).includes(:chiffres, :controleur_organismes).order(nom: :asc)
     respond_to do |format|
       format.html
       format.xlsx
@@ -391,7 +376,7 @@ class ChiffresController < ApplicationController
     if params[:q].present?
       params.require(:q).permit(:organisme_nom_or_organisme_acronyme_contains, :user_nom_in_insensitive => [], :organisme_famille_in => [],
                                 :exercice_budgetaire_in => [],:type_budget_in => [], :phase_in => [],
-                                :comptabilite_budgetaire_in => [] ,:operateur_in => [], :risque_insolvabilite_in => [])
+                                :comptabilite_budgetaire_in => [] ,:operateur_in => [], :risque_insolvabilite_in => [], :famille_in => [])
     else
       {}
     end

@@ -40,4 +40,20 @@ class User < ApplicationRecord
   ransacker :nom, type: :string do
     Arel.sql("unaccent(users.\"nom\")")
   end
+
+  def total_organisms(organisms_id)
+    controleur_organismes.select { |organism| organisms_id.include?(organism.id) && organism.etat == 'Actif' }.size
+  end
+
+  def total_chiffres(organisms_id)
+    chiffres.select { |chiffre| organisms_id.include?(chiffre.organisme_id) && chiffre.statut == 'valide' }.size
+  end
+
+  def total_bi(exercice_budgetaire, organisms_id)
+    chiffres.select { |chiffre| organisms_id.include?(chiffre.organisme_id) && chiffre.statut == 'valide' && chiffre.type_budget == "Budget initial" && chiffre.exercice_budgetaire == exercice_budgetaire.to_i }.size
+  end
+
+  def total_cf(exercice_budgetaire, organisms_id)
+    chiffres.select { |chiffre| organisms_id.include?(chiffre.organisme_id) && chiffre.statut == 'valide' && chiffre.type_budget == "Compte financier" && chiffre.exercice_budgetaire == exercice_budgetaire.to_i }.size
+  end
 end

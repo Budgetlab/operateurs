@@ -63,7 +63,7 @@ module ApplicationHelper
 
   def ratio(a, b, n)
     if !a.nil? && !b.nil? && b != 0
-      (a / b) * n
+      ((a.to_f/ b.to_f) * n).round
     end
   end
 
