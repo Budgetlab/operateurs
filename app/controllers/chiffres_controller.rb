@@ -216,7 +216,7 @@ class ChiffresController < ApplicationController
     @q_params = q_params
     @q = Organisme.ransack(params[:q])
     @organisms = @q.result.includes(:controleur)
-    @organisms_id = @organisms.pluck(:id)
+    @organisms_id = @statut_user == "2B2O" ? @organisms.where(etat: "Actif").where.not(controleur_id: current_user.id).pluck(:id) : @organisms.where(etat: "Actif").pluck(:id)
     @controleurs = User.where(statut: ['Controleur']).includes(:chiffres, :controleur_organismes).order(nom: :asc)
     @chiffres = Chiffre.where(statut: 'valide').where(organisme_id: @organisms_id)
     @chiffres_bi_2024 = calculate_chiffres_budget_exercice(@chiffres, @organisms_id, 2024, 'Budget initial')
