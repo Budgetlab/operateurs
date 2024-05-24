@@ -43,8 +43,8 @@
               <h3 class="fr-card__title"><%= link_to new_chiffre_path do %>Renseigner un nouveau budget<%end %></h3>
               <p class="fr-card__desc">Renseigner le budget d’un organisme de mon périmètre à chaque étape du cycle budgétaire.</p>
               <% elsif @statut_user == "Bureau Sectoriel" %>
-                <h3 class="fr-card__title"><%= link_to budgets_suivi_path do %>Suivre les budgets par organisme<%end %></h3>
-                <p class="fr-card__desc">Pour chaque organisme, suivez l’évolution du budget au cours de l’exercice budgétaire.</p>
+                <h3 class="fr-card__title"><%= link_to budgets_path do %>Suivre les budgets<%end %></h3>
+                <p class="fr-card__desc">Accéder et comparer l'ensemble des budgets sur les organismes de mon périmètre.</p>
               <%end %>
             </div>
           </div>
@@ -61,39 +61,66 @@
     </div>
 
 
-    <h2>Derniers organismes modifiés</h2>
+
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
-      <% badge_classes = {
-        "Inactif" => "fr-badge",
-        "Actif" => "fr-badge fr-badge--green-menthe",
-        "En cours de création" => "fr-badge fr-badge--warning fr-badge--no-icon"
-      } %>
-      <% @organismes_last.each do |organisme| %>
-        <% badge_class = badge_classes[organisme[6]] || "fr-badge" # Utiliser fr-badge par défaut si aucune correspondance n'est trouvée %>
-      <div class="fr-col-12 fr-col-lg-4">
-        <div class="fr-card fr-enlarge-link">
+      <div class="fr-col-12 fr-col-lg-4" data-controller="highcharts" data-highcharts-budgetsbi="<%= @chiffres_bi_2024 %>" data-highcharts-budgetscf="<%= @chiffres_cf_2023 %>">
+        <h2>Suivi des budgets</h2>
+        <div class="fr-card fr-card--shadow fr-card--auto">
           <div class="fr-card__body">
             <div class="fr-card__content">
-              <h3 class="fr-card__title"><%= link_to organisme_path(organisme[0]) do %><%= organisme[1] %><% if organisme[2] && !organisme[2].blank? %> - <%= organisme[2] %><%end %><%end %></h3>
-              <p class="fr-card__desc">Nature juridique : <%= format_boolean(organisme[4]) %></p>
-              <p class="fr-card__desc">Famille : <%= format_boolean(organisme[5]) %></p>
-              <div class="fr-card__start">
-                <ul class="fr-tags-group">
-                  <li>
-                    <p class="<%= badge_class %>"><%= organisme[6] %></p>
-                    <% if organisme[7] != "valide" %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><%end %>
-                  </li>
+              <div class="fr-card__desc">
+
+                <ul class="fr-badges-group">
+                  <li><p class="fr-badge "><%= @chiffres_bi_2024.take(4).sum %>/<%= @organismes_user_active&.length %> BI 2024</p></li>
                 </ul>
-                <p class="fr-card__detail fr-icon-arrow-right-line">Modifié le <%= format_date(organisme[3])%></p>
+
+                <div data-highcharts-target="canvasBI"></div>
+                <ul class="fr-badges-group">
+                  <li><p class="fr-badge "><%= @chiffres_cf_2023.take(4).sum %>/<%= @organismes_user_active&.length %> CF 2023</p></li>
+                </ul>
+                <div data-highcharts-target="canvasCF"></div>
+
               </div>
             </div>
           </div>
         </div>
       </div>
-      <%end %>
+      <div class="fr-col-12 fr-col-lg-8">
+        <h2>Derniers organismes modifiés</h2>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <% badge_classes = {
+            "Inactif" => "fr-badge",
+            "Actif" => "fr-badge fr-badge--green-menthe",
+            "En cours de création" => "fr-badge fr-badge--warning fr-badge--no-icon"
+          } %>
+          <% @organismes_last.each do |organisme| %>
+            <% badge_class = badge_classes[organisme[6]] || "fr-badge" # Utiliser fr-badge par défaut si aucune correspondance n'est trouvée %>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-card fr-enlarge-link">
+                <div class="fr-card__body">
+                  <div class="fr-card__content">
+                    <h3 class="fr-card__title"><%= link_to organisme_path(organisme[0]) do %><%= organisme[1] %><% if organisme[2] && !organisme[2].blank? %> - <%= organisme[2] %><%end %><%end %></h3>
+                    <p class="fr-card__desc">Nature juridique : <%= format_boolean(organisme[4]) %></p>
+                    <p class="fr-card__desc">Famille : <%= format_boolean(organisme[5]) %></p>
+                    <div class="fr-card__start">
+                      <ul class="fr-tags-group">
+                        <li>
+                          <p class="<%= badge_class %>"><%= organisme[6] %></p>
+                          <% if organisme[7] != "valide" %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><%end %>
+                        </li>
+                      </ul>
+                      <p class="fr-card__detail fr-icon-arrow-right-line">Modifié le <%= format_date(organisme[3])%></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <%end %>
+        </div>
+      </div>
     </div>
   </div>
-  <% if @statut_user != "2B2O" %>
+
   <div class="fr-follow">
     <div class="fr-container">
       <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
@@ -112,5 +139,5 @@
       </div>
     </div>
   </div>
-  <%end %>
+
 </main>

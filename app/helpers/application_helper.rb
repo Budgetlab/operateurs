@@ -63,7 +63,9 @@ module ApplicationHelper
 
   def ratio(a, b, n)
     if !a.nil? && !b.nil? && b != 0
-      (a / b) * n
+      ((a.to_f/ b.to_f) * n.to_f).round
+    else
+      n
     end
   end
 
@@ -111,6 +113,26 @@ module ApplicationHelper
       checkbox_tags.concat(button_tags)
     end
     select_group.concat(tags_group)
+  end
+
+  def class_badge(risque_solvabilite)
+    case risque_solvabilite
+    when 'Situation saine'
+      'fr-badge--no-icon fr-badge--success'
+    when 'Situation saine a priori mais à surveiller'
+      'fr-badge--no-icon fr-badge--green-tilleul-verveine'
+    when 'Risque d’insoutenabilité à moyen terme'
+      'fr-badge--no-icon fr-badge--warning'
+    when 'Risque d’insoutenabilité élevé'
+      'fr-badge--no-icon fr-badge--error'
+    else
+      ''
+    end
+  end
+
+  def numero_br(chiffre)
+    rectificatifs = Chiffre.where(organisme_id: chiffre.organisme_id, exercice_budgetaire: chiffre.exercice_budgetaire, type_budget: "Budget rectificatif").order(:created_at)
+    rectificatifs.index(chiffre)+1
   end
 
 end

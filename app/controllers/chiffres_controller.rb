@@ -8,6 +8,7 @@ class ChiffresController < ApplicationController
   before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy open_phase]
   before_action :redirect_unless_access, only: :index
   before_action :redirect_unless_controleur, only: :new
+  before_action :redirect_unless_admin, only: :suivi_remplissage
   # page des chiffres clés de l'organisme
   def index
     # Check if the logged-in user is the "controller" of the organism, and store the result in @est_editeur
@@ -17,7 +18,7 @@ class ChiffresController < ApplicationController
     # Establish which "exercice_budgetaire" should be shown, using either parameters or fetching from chiffres
     @exercice_budgetaire = set_exercice_budgetaire_chiffres(params[:paramId], params[:exercice_budgetaire], @chiffres)
     # Get only the chiffres for the established "exercice_budgetaire", default to an empty array if none found
-    @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire) || []
+    @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire).order(created_at: :asc) || []
     # Show a default "chiffre" based on the given parameters or the established "exercice_budgetaire"
     @chiffre_default = set_default_chiffre(params[:paramId], @exercice_budgetaire, @chiffres)
     # If a paramId is given and it doesn't match the organism's id linked to the default chiffre, redirect to the organism's chiffres index page
@@ -36,7 +37,7 @@ class ChiffresController < ApplicationController
     @est_editeur = current_user == @organisme.controleur
     @chiffres = @organisme.chiffres
     @exercice_budgetaire = params[:exercice_budgetaire] && [2022, 2023, 2024].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
-    @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire) || []
+    @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire).order(created_at: :asc) || []
     @chiffre_default = set_default_chiffre(nil, @exercice_budgetaire, @chiffres)
     respond_to do |format|
       format.turbo_stream do
@@ -149,7 +150,7 @@ class ChiffresController < ApplicationController
   end
 
   def historique
-    select_chiffres
+    @chiffres = select_chiffres
     @exercices = @chiffres.pluck(:exercice_budgetaire).uniq.sort
     respond_to do |format|
       format.html
@@ -158,7 +159,7 @@ class ChiffresController < ApplicationController
   end
 
   def filtre_chiffres
-    select_chiffres
+    @chiffres = select_chiffres
     @exercices = @chiffres.pluck(:exercice_budgetaire).uniq.sort
     @chiffres = @chiffres.select { |el| params[:budgets].include?(el.type_budget) } if params[:budgets] && params[:budgets].length != 3
     @chiffres = @chiffres.select { |el| params[:phases].include?(el.phase) } if params[:phases] && params[:phases].length != 4
@@ -178,45 +179,16 @@ class ChiffresController < ApplicationController
     end
   end
 
-  def suivi
-    liste_organisme
-    @liste_organismes = @organismes.pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
-    liste_chiffres_organismes = @organismes.joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite", "chiffres.created_at AS chiffre_date")
-    @liste_chiffres_organismes = liste_chiffres(liste_chiffres_organismes)
-  end
-
-  def filtre_suivi
-    liste_organisme
-    @liste_organismes = @organismes.pluck(:id, :nom, :acronyme).sort_by { |e| normalize_name(e[1]) }
-    liste_chiffres_organismes = @organismes.joins(:chiffres).pluck(:id,"chiffres.type_budget AS chiffre_budget","chiffres.exercice_budgetaire AS chiffre_exercice", "chiffres.statut AS chiffre_statut", "chiffres.risque_insolvabilite AS chiffre_risque_insolvabilite", "chiffres.created_at AS chiffre_date")
-    @liste_chiffres_organismes = liste_chiffres(liste_chiffres_organismes)
-    liste_organismes_filter_id = []
-    [[params[:budget_bis], 'Budget initial'], [params[:budget_brs], 'Budget rectificatif'], [params[:budget_cfs], 'Compte financier']].each do |param|
-      if param[0]&.include?('Brouillon')
-        @liste_chiffres_brouillon_id = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i && el[3] != 'valide' }.map { |el| el[0] }.uniq
-        liste_organismes_filter_id += @liste_chiffres_brouillon_id
-      end
-      if param[0]&.include?('Non renseigné') || param[0]&.include?('Aucun')
-        id_orga_chiffres = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i}.map { |el| el[0] }.uniq
-        @liste_organismes_nr_id = @liste_organismes.reject { |el| id_orga_chiffres.include?(el[0]) }.map { |el| el[0] }.uniq
-        liste_organismes_filter_id += @liste_organismes_nr_id
-      end
-      if param[0] && param[0].length != 6
-        @liste_chiffres_risque_id = @liste_chiffres_organismes.select { |el| param[1] == el[1] && el[2] == params[:exercice].to_i && param[0].include?(el[4]) && el[3] == 'valide' }.map { |el| el[0] }.uniq
-        liste_organismes_filter_id += @liste_chiffres_risque_id
-      end
-    end
-    if params[:budget_bis].length != 6 || params[:budget_brs].length != 6 || params[:budget_cfs].length != 6
-      @liste_organismes = @liste_organismes.select { |el| liste_organismes_filter_id.include?(el[0]) }
-    end
-
+  def budgets
+    extended_family_organisms = fetch_extended_family_organisms
+    chiffres_user = Chiffre.where(statut: 'valide').where(organisme_id: extended_family_organisms.pluck(:id)).order(updated_at: :desc)
+    @q_params = q_params
+    @q = chiffres_user.ransack(params[:q])
+    @chiffres = @q.result.includes(:organisme, :user)
+    @pagy, @chiffres_page = pagy(@chiffres)
     respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.update("suivi_table_body#{params[:exercice].to_s}", partial: 'chiffres/suivi_table_body', locals: { exercice: params[:exercice].to_i, liste_organismes: @liste_organismes, liste_chiffres_organismes: @liste_chiffres_organismes }),
-          turbo_stream.update("total_table#{params[:exercice].to_s}", partial: 'chiffres/suivi_table_total', locals: { total: @liste_organismes.length })
-        ]
-      end
+      format.html
+      format.xlsx
     end
   end
 
@@ -241,27 +213,14 @@ class ChiffresController < ApplicationController
   end
 
   def suivi_remplissage
-    redirect_to root_path and return unless @statut_user == '2B2O'
-
-    @users = User.where(statut: ['Controleur'])
-    hash_organismes_users = Organisme.group(:controleur_id, :etat, :id).count
-    hash_chiffres_users = Chiffre.group(:user_id, :statut, :exercice_budgetaire, :type_budget, :organisme_id).count
-    @array_remplissage_user = []
-
-    @users.each do |user|
-      array_user = [user.nom,
-                    hash_organismes_users.select { |key, _value| key[0] == user.id && key.include?('Actif') }.values.sum,
-                    hash_chiffres_users.select { |key, _value| key[0] == user.id && key.include?('valide') }.values.sum,
-                    hash_chiffres_users.select { |key, _value| key[0] == user.id && key.include?('valide') && key[2] == 2024 && key[3] == 'Budget initial' }.values.sum,
-                    hash_chiffres_users.select { |key, _value| key[0] == user.id && key.include?('valide') && key[2] == 2023 && key[3] == 'Compte financier' }.values.sum]
-      array_user << (array_user[1].zero? ? 100 : (array_user[2].to_f / array_user[1]) * 100).round
-      array_user << (array_user[1].zero? ? 100 : (array_user[3].to_f / array_user[1]) * 100).round
-      array_user << (array_user[1].zero? ? 100 : (array_user[4].to_f / array_user[1]) * 100).round
-      @array_remplissage_user << array_user
-    end
-
-    @array_remplissage_user = @array_remplissage_user.sort_by { |e| -e[4] }
-
+    @q_params = q_params
+    @q = Organisme.ransack(params[:q])
+    @organisms = @q.result.includes(:controleur)
+    @organisms_id = @statut_user == "2B2O" ? @organisms.where(etat: "Actif").where.not(controleur_id: current_user.id).pluck(:id) : @organisms.where(etat: "Actif").pluck(:id)
+    @controleurs = User.where(statut: ['Controleur']).includes(:chiffres, :controleur_organismes).order(nom: :asc)
+    @chiffres = Chiffre.where(statut: 'valide').where(organisme_id: @organisms_id)
+    @chiffres_bi_2024 = calculate_chiffres_budget_exercice(@chiffres, @organisms_id, 2024, 'Budget initial')
+    @chiffres_cf_2023 = calculate_chiffres_budget_exercice(@chiffres, @organisms_id, 2023, 'Compte financier')
     respond_to do |format|
       format.html
       format.xlsx
@@ -304,16 +263,12 @@ class ChiffresController < ApplicationController
     @organisme = Organisme.find(params[:organisme_id])
   end
 
-
   def select_chiffres
-    @organismes_id = current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif').pluck(:id) if @statut_user == 'Bureau Sectoriel'
-    @chiffres = if @statut_user == 'Controleur'
-                  current_user.chiffres.includes(:organisme).order(created_at: :desc)
-                elsif @statut_user == 'Bureau Sectoriel'
-                  Chiffre.where(organisme_id: @organismes_id).includes(:organisme).order(created_at: :desc)
-                else
-                  Chiffre.all.includes(:organisme).order(created_at: :desc)
-                end
+    if @statut_user == 'Controleur'
+      current_user.chiffres.includes(:organisme).order(created_at: :desc)
+    else
+      Chiffre.all.includes(:organisme).order(created_at: :desc)
+    end
   end
 
   def normalize_name(name)
@@ -330,15 +285,12 @@ class ChiffresController < ApplicationController
     return redirect_to(root_path) unless @organisme && current_user == @organisme.controleur
   end
 
-  def liste_organisme
-    @organismes = case @statut_user
-                        when '2B2O'
-                          Organisme.where(statut: 'valide', etat: 'Actif')
-                        when 'Controleur'
-                          current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif')
-                        when 'Bureau Sectoriel'
-                          current_user.bureau_organismes.where(statut: 'valide', etat: 'Actif')
-                        end
+  def fetch_extended_family_organisms
+    organisms = Organisme.where(statut: 'valide', etat: 'Actif').includes(:controleur, :bureau, :operateur)
+    if @statut_user == 'Controleur'
+      organisms = organisms.where('controleur_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)
+    end
+    organisms
   end
 
   def updateRisque(chiffre)
@@ -421,6 +373,28 @@ class ChiffresController < ApplicationController
       WHEN type_budget = 'Budget rectificatif' THEN 2
       ELSE 3
     END, created_at DESC"))
+  end
+
+  def q_params
+    if params[:q].present?
+      params.require(:q).permit(:organisme_nom_or_organisme_acronyme_contains, :user_nom_in_insensitive => [], :organisme_famille_in => [],
+                                :exercice_budgetaire_in => [],:type_budget_in => [], :phase_in => [],
+                                :comptabilite_budgetaire_in => [] ,:operateur_in => [], :risque_insolvabilite_in => [], :famille_in => [])
+    else
+      {}
+    end
+  end
+
+  def calculate_chiffres_budget_exercice(chiffres, organismes, exercice_budgetaire, type_budget)
+    chiffres_budget = []
+    risques = ["Situation saine","Situation saine a priori mais à surveiller",'Risque d’insoutenabilité à moyen terme','Risque d’insoutenabilité élevé']
+    chiffres_selected = chiffres.where(exercice_budgetaire: exercice_budgetaire, type_budget: type_budget)
+    risques.each do |risque|
+      chiffres_budget << chiffres_selected.where(risque_insolvabilite: risque)&.length
+    end
+    chiffres_empty = organismes&.length - chiffres_selected&.length
+    chiffres_budget << chiffres_empty
+    chiffres_budget
   end
 
 end

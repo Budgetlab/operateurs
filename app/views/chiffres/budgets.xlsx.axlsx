@@ -37,30 +37,30 @@ sheet_col = Array.new(157, 12)
         "Niveaux de trésorerie", nil,nil,nil,nil,nil,nil,nil,"Variation",nil,nil,"Point haut / Point bas",nil,nil,nil,nil,nil,
         "Fonds de roulement",nil,nil,"Besoin en fonds de roulement",nil,nil,"Solde budgétaire","Trésorerie","Examen","Commentaires",nil], style: sub_header_style, height: 40
         sheet.merge_cells("B2:E2")
-                sheet.merge_cells("F2:G2")
-                sheet.merge_cells("H2:L2")
-                sheet.merge_cells("M2:P2")
-                sheet.merge_cells("Q2:R2")
-                sheet.merge_cells("S2:T2")
-                sheet.merge_cells("U2:V2")
-                sheet.merge_cells("W2:Y2")
-                sheet.merge_cells("Z2:AF2")
-                sheet.merge_cells("AG2:AW2")
-                sheet.merge_cells("AX2:BV2")
-                sheet.merge_cells("BW2:CC2")
-                sheet.merge_cells("CD2:CH2")
-                sheet.merge_cells("CJ2:CL2")
-                sheet.merge_cells("CN2:CO2")
-                sheet.merge_cells("CP2:CR2")
-                sheet.merge_cells("CS2:CZ2")
-                sheet.merge_cells("DA2:DH2")
-                sheet.merge_cells("DI2:DK2")
-                sheet.merge_cells("DL2:DQ2")
-                sheet.merge_cells("DR2:DT2")
-                sheet.merge_cells("DU2:DW2")
-                sheet.merge_cells("EA2:EB2")
+        sheet.merge_cells("F2:G2")
+        sheet.merge_cells("H2:L2")
+        sheet.merge_cells("M2:P2")
+        sheet.merge_cells("Q2:R2")
+        sheet.merge_cells("S2:T2")
+        sheet.merge_cells("U2:V2")
+        sheet.merge_cells("W2:Y2")
+        sheet.merge_cells("Z2:AF2")
+        sheet.merge_cells("AG2:AW2")
+        sheet.merge_cells("AX2:BV2")
+        sheet.merge_cells("BW2:CC2")
+        sheet.merge_cells("CD2:CH2")
+        sheet.merge_cells("CJ2:CL2")
+        sheet.merge_cells("CN2:CO2")
+        sheet.merge_cells("CP2:CR2")
+        sheet.merge_cells("CS2:CZ2")
+        sheet.merge_cells("DA2:DH2")
+        sheet.merge_cells("DI2:DK2")
+        sheet.merge_cells("DL2:DQ2")
+        sheet.merge_cells("DR2:DT2")
+        sheet.merge_cells("DU2:DW2")
+        sheet.merge_cells("EA2:EB2")
 
-        sheet.add_row ["Organisme", "Siren", "Famille", "Nature Juridique", "Bureau DB","Nature Contrôle", "Autorité de contrôle",
+        sheet.add_row ["Organisme","Siren", "Famille", "Nature Juridique", "Bureau DB","Nature Contrôle", "Autorité de contrôle",
         "Exercice Budgetaire", "Type de Budget", "OCB/OHCB", "Op/Non Op", "Phase",
         "Total des emplois rémunérés par l'organisme (en ETPT)", "Dont Emplois sous plafond LFI (en ETPT)", "Dont Emplois hors plafond LFI (en ETPT)", "Hors plafond/ total effectif rémunérés par l'organisme",
         "Rappel du plafond d'emplois (en ETPT) inscrit en PLF / en LFI", "Plafond d'emplois (en ETPT) pré-notifié à l'organisme par le RPROG",
@@ -70,17 +70,17 @@ sheet_col = Array.new(157, 12)
         "Total des autorisations d'engagement (AE)", "Dont total des dépenses de personnel (AE)", "Dont total des dépenses de fonctionnement (AE)", "Dont total des dépenses d'intervention (AE)", "Dont total des dépenses d'investissement (AE)", "Total des crédits de paiement (CP)", "Dont total des dépenses de personnel (CP)", "Poids relatif des dépenses de personnel", "Total des dépenses de fonctionnement (CP)", "Poids  des dépenses de fonctionnement (CP)", "Total des dépenses d'intervention (CP)", "Poids  des dépenses d'intervention (CP)", "Dont total des dépenses d'investissement (CP)", "Poids  des dépenses d'investissement (CP)", "Total des dépenses sur recettes fléchées (en CP)", "Total des crédits de paiement ouverts en N pour des opérations pluriannuelles", "Poids des CP au titre d'opérations pluriannuelles",
         "Total des recettes","Total des recettes globalisées","Dont Subvention pour charges de service public", "Dont Subvention pour charges d'investissement globalisée", "Dont Autres financements de l'Etat", "Dont Fiscalité affectée", "Dont Autres financements publics", "Dont Recettes propres globalisées", "Total des recettes fléchées", "Poids des recettes non fléchées", "Dont Subvention pour charges d'investissement fléchée", "Dont Autres financements de l'Etat fléchés", "Dont Autres financements publics fléchés", "Dont Recettes propres fléchées", "Total des subventions de l'Etat", "Poids des financements de l'Etat", "Taux de couverture des dépenses de personnel et de fonctionnement par la SCSP", "Total des recettes propres", "Taux de recettes propres", "Poids de la SCSP sur recettes totales", "Solde budgétaire", "Solde budgétaire résultant des opérations fléchées", "Niveau final des restes à payer", "Variation des restes à payer", "Poids des restes à payer",
         "Total des charges", "Dont charges de personnel", "poids relatif des charges de Personnel", "Dont Charges de fonctionnement (autre que les charges de personnel)", "poids relatif des charges de fonctionnement", "Dont Charges d'intervention", "poids relatif des charges d'intervention", "Total des produits", "Dont subventions de l'Etat", "Dont fiscalité affectée", "Dont Autres subventions", "Dont Autres produits", "Résultat", "Charges non décaissables", "Charges décaissables", "Produits non encaissables", "Capacité d'autofinancement", "Total des emplois", "Dont Investissements", "Total des ressources", "Dont financement de l'actif par l'Etat", "Dont autres ressources", "Décaissements non budgétaires", "dont Opérations au nom et pour le compte de tiers (besoins) pour OCB ou dont Opérations au nom et pour le compte de tiers (débits) pour OHCB", "dont Emprunts, Prêts, Dépôts et cautionnements (besoins)","dont Autres décaissements non budgétaires", "Encaissements non budgétaires", "dont Opérations au nom et pour le compte de tiers (financements)pour OCB ou dont Opérations au nom et pour le compte de tiers (crédits) pour OHCB", "dont Emprunts, Prêts, Dépôts et cautionnements (financements)", "dont Autres encaissements non budgétaires",
-        "Niveau initial de la trésorerie", "Niveau final de la trésorerie", "Dont trésorerie fléchée", "Dont trésorerie non fléchée", "Trésorerie en jours de fonctionnement", "Taux de couverture des restes à payer par la trésorerie", "Poids de la trésorerie non fléchée", "Trésorerie non fléchée en jours de fonctionnement", "Variation de trésorerie", "Variation de trésorerie fléchée", "Variation de trésorerie non fléchée", "Point le plus bas dans le plan de trésorerie", "Mois", "Niveau le plus de trésorerie en jours de fonctionnement", "Point le plus haut dans le plan de trésorerie", "Mois", "Niveau le plus bas de trésorerie en jours de fonctionnement",
+        "Niveau initial de la trésorerie", "Niveau final de la trésorerie",  "Dont trésorerie fléchée", "Dont trésorerie non fléchée", "Trésorerie en jours de fonctionnement", "Taux de couverture des restes à payer par la trésorerie", "Poids de la trésorerie non fléchée", "Trésorerie non fléchée en jours de fonctionnement", "Variation de trésorerie", "Variation de trésorerie fléchée", "Variation de trésorerie non fléchée", "Point le plus bas dans le plan de trésorerie", "Mois", "Niveau le plus de trésorerie en jours de fonctionnement", "Point le plus haut dans le plan de trésorerie", "Mois", "Niveau le plus bas de trésorerie en jours de fonctionnement",
         "Niveau initial du fonds de roulement","Variation du fonds de roulement","Niveau final du fonds de roulement","Niveau initial du besoin en fonds de roulement","Variation du besoin en fonds de roulement", "Niveau final du besoin en fonds de roulement", "Solde budgétaire", "Variation de trésorerie", "Degré de risque d'insolvabilité", "Commentaires sur le budget", "Autres points de vigilance"], style: col_header_style, height: 90
 
         sheet.add_border "A3:EB3", { edges: [:bottom], style: :thick }
 
         # Appliquer les filtres sur la dernière ligne d'en-tête
         sheet.auto_filter = "A3:EB3"
-        chiffres = @chiffres.where(statut: 'valide')
-        length_table = chiffres&.length + 3 || 3
 
-        chiffres.where(statut: 'valide').each do |chiffre|
+        length_table = @chiffres&.length + 3 || 3
+
+        @chiffres.where(statut: 'valide').each do |chiffre|
             sheet.add_row [chiffre.organisme.nom," "+format_boolean(chiffre.organisme.siren),chiffre.organisme.famille,chiffre.organisme.nature,chiffre.organisme.bureau&.nom,
             chiffre.organisme.nature_controle, chiffre.organisme.autorite_controle,
             chiffre.exercice_budgetaire, chiffre.type_budget == "Budget rectificatif" ? chiffre.type_budget.to_s + ' n°' + numero_br(chiffre).to_s : chiffre.type_budget, chiffre.comptabilite_budgetaire ? 'OCB' : 'OHCB', chiffre.operateur ? 'Op' : 'Non Op', chiffre.phase,
@@ -121,4 +121,3 @@ sheet_col = Array.new(157, 12)
                 end
               end
     end
- 

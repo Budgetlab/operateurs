@@ -116,4 +116,12 @@ class Chiffre < ApplicationRecord
     (fonds_roulement_variation || 0) - (tresorerie_variation || 0)
   end
 
+  def self.ransackable_attributes(auth_object = nil)
+    ["capacite_autofinancement", "charges_fonctionnement", "charges_intervention", "charges_non_decaissables", "commentaire", "commentaire_annexe", "comptabilite_budgetaire", "created_at", "credits_ae_fonctionnement", "credits_ae_intervention", "credits_ae_investissement", "credits_ae_total", "credits_cp_fonctionnement", "credits_cp_intervention", "credits_cp_investissement", "credits_cp_operations", "credits_cp_recettes_flechees", "credits_cp_total", "credits_financements_etat_autres", "credits_financements_etat_fleches", "credits_financements_publics_autres", "credits_financements_publics_fleches", "credits_fiscalite_affectee", "credits_recettes_propres_flechees", "credits_recettes_propres_globalisees", "credits_restes_a_payer", "credits_subvention_investissement_flechee", "credits_subvention_investissement_globalisee", "credits_subvention_sp", "decaissements_autres", "decaissements_emprunts", "decaissements_operations", "emplois_autre_entite", "emplois_charges_personnel", "emplois_contractuels", "emplois_contractuels_montant", "emplois_cout_investissements", "emplois_cout_total", "emplois_depenses_personnel", "emplois_hors_plafond", "emplois_non_remuneres", "emplois_plafond", "emplois_plafond_prenotifie", "emplois_plafond_rappel", "emplois_schema", "emplois_schema_prenotifie", "emplois_titulaires", "emplois_titulaires_montant", "emplois_total", "encaissements_autres", "encaissements_emprunts", "encaissements_operations", "exercice_budgetaire", "fonds_roulement_besoin_final", "fonds_roulement_final", "fonds_roulement_variation", "id", "id_value", "operateur", "organisme_id", "phase", "produits_autres", "produits_fiscalite_affectee", "produits_non_encaissables", "produits_subventions_autres", "produits_subventions_etat", "ressources_autres", "ressources_financement_etat", "ressources_total", "risque_insolvabilite", "statut", "tresorerie_finale", "tresorerie_finale_flechee", "tresorerie_finale_non_flechee", "tresorerie_max", "tresorerie_max_date", "tresorerie_min", "tresorerie_min_date", "tresorerie_variation", "tresorerie_variation_flechee", "tresorerie_variation_non_flechee", "type_budget", "updated_at", "user_id"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["organisme", "user"]
+  end
+
 end

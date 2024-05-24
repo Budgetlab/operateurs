@@ -8,7 +8,7 @@
     </li>
     <% budgets_rectificatifs.each_with_index do |budget, i| %>
       <li role="presentation">
-        <button id="budget-rectificatif-<%= i %>" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= budget.id == @chiffre_default&.id %>" aria-controls="budget-rectificatif-tab-<%= i %>" data-action="click->tab#showSection">BR <%= i+1 %></button>
+        <button id="budget-rectificatif-<%= i %>" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= budget.id == @chiffre_default&.id %>" aria-controls="budget-rectificatif-tab-<%= i %>" data-action="click->tab#showSection">BR n°<%= i+1 %></button>
       </li>
     <% end %>
     <% if !compte_financier.empty? %>
