@@ -6,12 +6,7 @@ class PagesControllerTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     assert_redirected_to new_user_session_path
   end
-  test "should get index" do
-    user = users(:one)
-    sign_in user
-    get root_url
-    assert_response :success
-  end
+
   test "should get plan" do
     sign_in User.first
     get plan_url

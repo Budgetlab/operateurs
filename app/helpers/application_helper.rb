@@ -65,7 +65,7 @@ module ApplicationHelper
     if !a.nil? && !b.nil? && b != 0
       ((a.to_f/ b.to_f) * n.to_f).round
     else
-      n.to_f
+      n
     end
   end
 
