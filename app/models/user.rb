@@ -17,7 +17,6 @@ class User < ApplicationRecord
   has_many :control_documents
 
   def self.import(file)
-    User.where.not(statut: '2B2O').destroy_all
     data = Roo::Spreadsheet.open(file.path)
     headers = data.row(1) # get header row
     data.each_with_index do |row, idx|
