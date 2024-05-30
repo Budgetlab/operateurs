@@ -3,7 +3,7 @@
   <div class="fr-container">
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-12">
-        <h1 class="fr-my-4w">Suivi du remplissage des budgets par contrôleur</h1>
+        <h1 class="fr-my-4w">Suivi du remplissage des budgets</h1>
       </div>
     </div>
     <div data-controller="request">
@@ -23,50 +23,52 @@
           <div data-highcharts-target="canvasCF"></div>
         </div>
       </div>
-    <div class="fr-download">
-      <% path_params = params[:q].present? ? {q: @q_params, format: 'xlsx'} : {format: 'xlsx'} %>
-      <p><%= link_to suivi_remplissage_path(path_params), class: "fr-download__link" do %> Télécharger le suivi du remplissage
-          <span class="fr-download__detail">Format .xlsx</span>
-        <%end %></p>
-    </div>
-    <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll fr-table--min-height">
-      <table>
-        <caption></caption>
-        <thead>
-          <tr>
-            <th scope="col">Contrôleur</th>
-            <th scope="col">Nombre d'organismes actifs</th>
-            <th scope="col">Somme de budgets renseignés</th>
-            <th scope="col">BI 2024 renseignés</th>
-            <th scope="col">Taux BI 2024 renseignés (%)</th>
-            <th scope="col">CF 2023 renseignés</th>
-            <th scope="col">Taux CF 2023 renseignés (%)</th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr class="total">
-          <td>Total</td>
-          <td><%= @controleurs.sum {|c| c.total_organisms(@organisms_id) }%></td>
-          <td><%= @controleurs.sum {|c| c.total_chiffres(@organisms_id) }%></td>
-          <td><%= @controleurs.sum {|c| c.total_bi(2024, @organisms_id) } %></td>
-          <td><%= ratio(@controleurs.sum {|c| c.total_bi(2024, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 100)%>%</td>
-          <td><%= @controleurs.sum {|c| c.total_cf(2023, @organisms_id) } %></td>
-          <td><%= ratio(@controleurs.sum {|c| c.total_cf(2023, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 100)%>%</td>
-        </tr>
-        <% @controleurs.each do |controleur| %>
+      <% if @statut_user == "2B2O" %>
+      <div class="fr-download">
+        <% path_params = params[:q].present? ? {q: @q_params, format: 'xlsx'} : {format: 'xlsx'} %>
+        <p><%= link_to suivi_remplissage_path(path_params), class: "fr-download__link" do %> Télécharger le suivi du remplissage
+            <span class="fr-download__detail">Format .xlsx</span>
+          <%end %></p>
+      </div>
+      <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll fr-table--min-height">
+        <table>
+          <caption></caption>
+          <thead>
             <tr>
-              <td><%= controleur.nom %></td>
-              <td><%= controleur.total_organisms(@organisms_id)%></td>
-              <td><%= controleur.total_chiffres(@organisms_id) %></td>
-              <td><%= controleur.total_bi(2024,@organisms_id) %></td>
-              <td><%= ratio(controleur.total_bi(2024,@organisms_id),controleur.total_organisms(@organisms_id), 100) || 100%>%</td>
-              <td><%= controleur.total_cf(2023,@organisms_id) %></td>
-              <td><%= ratio(controleur.total_cf(2023,@organisms_id),controleur.total_organisms(@organisms_id), 100) || 100%>%</td>
+              <th scope="col">Contrôleur</th>
+              <th scope="col">Nombre d'organismes actifs</th>
+              <th scope="col">Somme de budgets renseignés</th>
+              <th scope="col">BI 2024 renseignés</th>
+              <th scope="col">Taux BI 2024 renseignés (%)</th>
+              <th scope="col">CF 2023 renseignés</th>
+              <th scope="col">Taux CF 2023 renseignés (%)</th>
             </tr>
-        <% end %>
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+          <tr class="total">
+            <td>Total</td>
+            <td><%= @controleurs.sum {|c| c.total_organisms(@organisms_id) }%></td>
+            <td><%= @controleurs.sum {|c| c.total_chiffres(@organisms_id) }%></td>
+            <td><%= @controleurs.sum {|c| c.total_bi(2024, @organisms_id) } %></td>
+            <td><%= ratio(@controleurs.sum {|c| c.total_bi(2024, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 100)%>%</td>
+            <td><%= @controleurs.sum {|c| c.total_cf(2023, @organisms_id) } %></td>
+            <td><%= ratio(@controleurs.sum {|c| c.total_cf(2023, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 100)%>%</td>
+          </tr>
+          <% @controleurs.each do |controleur| %>
+              <tr>
+                <td><%= controleur.nom %></td>
+                <td><%= controleur.total_organisms(@organisms_id)%></td>
+                <td><%= controleur.total_chiffres(@organisms_id) %></td>
+                <td><%= controleur.total_bi(2024,@organisms_id) %></td>
+                <td><%= ratio(controleur.total_bi(2024,@organisms_id),controleur.total_organisms(@organisms_id), 100) || 100%>%</td>
+                <td><%= controleur.total_cf(2023,@organisms_id) %></td>
+                <td><%= ratio(controleur.total_cf(2023,@organisms_id),controleur.total_organisms(@organisms_id), 100) || 100%>%</td>
+              </tr>
+          <% end %>
+          </tbody>
+        </table>
+      </div>
+      <% end  %>
     <% end %>
   </div>
 </main>
