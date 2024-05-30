@@ -65,7 +65,15 @@ module ApplicationHelper
     if !a.nil? && !b.nil? && b != 0
       ((a.to_f/ b.to_f) * n.to_f).round
     else
-      n
+      nil
+    end
+  end
+
+  def ratio_excel_percent(a, b, n)
+    if !a.nil? && !b.nil? && b != 0
+      ((a.to_f/ b.to_f) * n.to_f).round(2) # dans tableau excel on veut 2 décimal pour les pourcentages
+    else
+      nil
     end
   end
 

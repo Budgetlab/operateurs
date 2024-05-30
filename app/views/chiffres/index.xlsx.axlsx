@@ -35,7 +35,7 @@
       @emplois_hors_plafond = [@colonnes[4],nil] + @chiffres_export.pluck(:emplois_hors_plafond)
       sheet.add_row(@emplois_hors_plafond)
 
-      @taux = [@colonnes[5],nil] + @chiffres_export.pluck(:emplois_hors_plafond, :emplois_total).map { |x, y| ratio(x,y,1) }
+      @taux = [@colonnes[5],nil] + @chiffres_export.pluck(:emplois_hors_plafond, :emplois_total).map { |x, y| ratio_excel_percent(x,y,1) }
       sheet.add_row(@taux)
 
       sheet.add_row [@colonnes[6]], style: titre_header
@@ -76,7 +76,7 @@
       @emplois_autre_entite = [@colonnes[16],nil] + @chiffres_export.pluck(:emplois_autre_entite)
       sheet.add_row(@emplois_autre_entite)
 
-      @part_emplois = [@colonnes[17],nil] + @chiffres_export.pluck(:emplois_non_remuneres, :emplois_autre_entite, :emplois_total).map { |x, y, z| ratio(z+x-y,z,1) if y }
+      @part_emplois = [@colonnes[17],nil] + @chiffres_export.pluck(:emplois_non_remuneres, :emplois_autre_entite, :emplois_total).map { |x, y, z| ratio_excel_percent(z+x-y,z,1) if y }
       sheet.add_row(@part_emplois)
 
       sheet.add_row [@colonnes[18]], style: titre_header
@@ -85,7 +85,7 @@
       sheet.add_row(@emplois_titulaires)
       @emplois_contractuels = [@colonnes[20],nil] + @chiffres_export.pluck(:emplois_contractuels)
       sheet.add_row(@emplois_contractuels)
-      @part_contractuels = [@colonnes[21],nil] + @chiffres_export.pluck(:emplois_contractuels, :emplois_total).map { |x, y| ratio(x,y,1) }
+      @part_contractuels = [@colonnes[21],nil] + @chiffres_export.pluck(:emplois_contractuels, :emplois_total).map { |x, y| ratio_excel_percent(x,y,1) }
       sheet.add_row(@part_contractuels)
       
       @emplois_titulaires_montant = [@colonnes[22],nil] + @chiffres_export.pluck(:emplois_titulaires_montant)
@@ -122,25 +122,25 @@
       @credits_cp_personnel = [@colonnes_credits[8],nil] + @emplois_depenses_personnel
       sheet.add_row(@credits_cp_personnel)
       @credits_cp_investissement = [@colonnes_credits[14],nil] + @chiffres_export.pluck(:credits_cp_investissement)
-      @poids_cp_personnel = [@colonnes_credits[9],nil] + @credits_cp_personnel[2..-1].zip(@credits_cp_total[2..-1], @credits_cp_investissement[2..-1]).map { |x, y, z| !y.nil? && !z.nil? ? ratio(x,y-z,1) : '' }
+      @poids_cp_personnel = [@colonnes_credits[9],nil] + @credits_cp_personnel[2..-1].zip(@credits_cp_total[2..-1], @credits_cp_investissement[2..-1]).map { |x, y, z| !y.nil? && !z.nil? ? ratio_excel_percent(x,y-z,1) : '' }
       sheet.add_row(@poids_cp_personnel)
       @credits_cp_fonctionnement = [@colonnes_credits[10],nil] + @chiffres_export.pluck(:credits_cp_fonctionnement)
       sheet.add_row(@credits_cp_fonctionnement)
-      @poids_cp_fonctionnement = [@colonnes_credits[11],nil] + @credits_cp_fonctionnement[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      @poids_cp_fonctionnement = [@colonnes_credits[11],nil] + @credits_cp_fonctionnement[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio_excel_percent(x,y,1) }
       sheet.add_row(@poids_cp_fonctionnement)
       @credits_cp_intervention = [@colonnes_credits[12],nil] + @chiffres_export.pluck(:credits_cp_intervention)
       sheet.add_row(@credits_cp_intervention)
-      @poids_cp_intervention = [@colonnes_credits[13],nil] + @credits_cp_intervention[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      @poids_cp_intervention = [@colonnes_credits[13],nil] + @credits_cp_intervention[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio_excel_percent(x,y,1) }
       sheet.add_row(@poids_cp_intervention)
 
       sheet.add_row(@credits_cp_investissement)
-      @poids_cp_investissement = [@colonnes_credits[15],nil] + @credits_cp_investissement[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      @poids_cp_investissement = [@colonnes_credits[15],nil] + @credits_cp_investissement[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio_excel_percent(x,y,1) }
       sheet.add_row(@poids_cp_investissement)
       @credits_cp_recettes_flechees = [@colonnes_credits[16],nil] + @chiffres_export.pluck(:credits_cp_recettes_flechees)
       sheet.add_row(@credits_cp_recettes_flechees)
       @credits_cp_operations = [@colonnes_credits[17],nil] + @chiffres_export.pluck(:credits_cp_operations)
       sheet.add_row(@credits_cp_operations)
-      @poids_cp_op = [@colonnes_credits[18],nil] + @credits_cp_operations[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio(x,y,1) }
+      @poids_cp_op = [@colonnes_credits[18],nil] + @credits_cp_operations[2..-1].zip(@credits_cp_total[2..-1]).map { |x, y| ratio_excel_percent(x,y,1) }
       sheet.add_row(@poids_cp_op)
 
       sheet.add_row [@colonnes_credits[19]], style: titre_header
@@ -159,13 +159,13 @@
       @credits_recettes_flechees = [@colonnes_credits[28],nil] + @credits_recettes_propres_flechees[2..-1].zip(@credits_financements_publics_fleches[2..-1],@credits_financements_etat_fleches[2..-1], @credits_subvention_investissement_flechee[2..-1]).map { |el| el.compact.reduce(0, :+) }
       @credits_recettes_non_flechees = [@colonnes_credits[21],nil] + @credits_recettes_propres_globalisees[2..-1].zip(@credits_financements_publics_autres[2..-1],@credits_fiscalite_affectee[2..-1], @credits_financements_etat_autres[2..-1], @credits_subvention_investissement_globalisee[2..-1], @credits_subvention_sp[2..-1]).map { |el| el.compact.reduce(0, :+) }
       @credits_recettes = [@colonnes_credits[20],nil] + @credits_recettes_flechees[2..-1].zip(@credits_recettes_non_flechees[2..-1]).map { |el| el.compact.reduce(0, :+) }
-      @poids_recettes_non_flechees = [@colonnes_credits[29],nil] + @credits_recettes_non_flechees[2..-1].zip(@credits_recettes[2..-1]).map { |x, y| ratio(x,y,1) }
+      @poids_recettes_non_flechees = [@colonnes_credits[29],nil] + @credits_recettes_non_flechees[2..-1].zip(@credits_recettes[2..-1]).map { |x, y| ratio_excel_percent(x,y,1) }
       @subv_etat = [@colonnes_credits[34],nil] + @credits_financements_etat_fleches[2..-1].zip(@credits_financements_etat_autres[2..-1], @credits_subvention_sp[2..-1], @credits_subvention_investissement_globalisee[2..-1], @credits_subvention_investissement_flechee[2..-1]).map { |el| el.compact.reduce(0, :+) }
-      @poids_subv_etat = [@colonnes_credits[35],nil] + @subv_etat[2..-1].zip(@credits_recettes[2..-1]).map { |x, y| ratio(x,y,1) }
-      @taux_scsp = [@colonnes_credits[36],nil] + @chiffres_export.pluck(:credits_subvention_sp, :emplois_depenses_personnel, :credits_cp_fonctionnement).map { |x, y, z| y.nil? ? nil : ratio(x,y+z,1) }
+      @poids_subv_etat = [@colonnes_credits[35],nil] + @subv_etat[2..-1].zip(@credits_recettes[2..-1]).map { |x, y| ratio_excel_percent(x,y,1) }
+      @taux_scsp = [@colonnes_credits[36],nil] + @chiffres_export.pluck(:credits_subvention_sp, :emplois_depenses_personnel, :credits_cp_fonctionnement).map { |x, y, z| y.nil? ? nil : ratio_excel_percent(x,y+z,1) }
       @recettes_propres = [@colonnes_credits[37],nil] + @credits_recettes_propres_flechees[2..-1].zip(@credits_recettes_propres_globalisees[2..-1]).map { |el| el.compact.reduce(0, :+) }
-      @taux_recettes_propres = [@colonnes_credits[38],nil] + @recettes_propres[2..-1].zip(@credits_recettes[2..-1]).map { |x, y| ratio(x,y,1) }
-      @poids_scsp = [@colonnes_credits[39],nil] + @credits_subvention_sp[2..-1].zip(@credits_recettes[2..-1]).map { |x, y| ratio(x,y,1) }
+      @taux_recettes_propres = [@colonnes_credits[38],nil] + @recettes_propres[2..-1].zip(@credits_recettes[2..-1]).map { |x, y| ratio_excel_percent(x,y,1) }
+      @poids_scsp = [@colonnes_credits[39],nil] + @credits_subvention_sp[2..-1].zip(@credits_recettes[2..-1]).map { |x, y| ratio_excel_percent(x,y,1) }
       @solde = [@colonnes_credits[40],nil] + @credits_recettes[2..-1].zip(@credits_cp_total[2..-1]).map { |a,b| a.nil? ? nil : (a || 0) - (b || 0)  }
       @solde_fleche = [@colonnes_credits[41],nil] + @credits_recettes_flechees[2..-1].zip(@credits_cp_recettes_flechees[2..-1]).map { |a,b| a.nil? ? nil : (a || 0) - (b || 0)  }
 
@@ -199,7 +199,7 @@
       sheet.add_row(@credits_restes_a_payer)
       @var_restes_a_payer = [@colonnes_credits[43],nil] + @credits_ae_total[2..-1].zip(@credits_cp_total[2..-1]).map { |a,b| a.nil? ? nil : (a || 0) - (b || 0)  }
       sheet.add_row(@var_restes_a_payer)
-      @poids_restes_a_payer = [@colonnes_credits[44],nil] + @chiffres_export.pluck(:credits_restes_a_payer, :credits_cp_total, :emplois_depenses_personnel).map { |x, y, z| y.nil? ? nil : ratio(x,y-z,1) }
+      @poids_restes_a_payer = [@colonnes_credits[44],nil] + @chiffres_export.pluck(:credits_restes_a_payer, :credits_cp_total, :emplois_depenses_personnel).map { |x, y, z| y.nil? ? nil : ratio_excel_percent(x,y-z,1) }
       sheet.add_row(@poids_restes_a_payer)
 
       sheet.add_row
@@ -212,9 +212,9 @@
       @charges_total = [@colonnes_compta[1],nil] + @chiffres_export.pluck(:emplois_charges_personnel, :charges_fonctionnement, :charges_intervention).map{ |a,b,c| a + b + c}
       @charges_non_decaissables = [@colonnes_compta[15],nil] + @chiffres_export.pluck(:charges_non_decaissables)
       @charges_decaissables = [@colonnes_compta[16],nil] + @charges_total[2..-1].zip(@charges_non_decaissables[2..-1]).map { |a,b| (a || 0) - (b || 0)  }
-      @poids_charges_personnel = [@colonnes_compta[3],nil] + @charges_personnel[2..-1].zip(@charges_decaissables[2..-1]).map { |x, y| ratio(x,y,1) }
-      @poids_charges_fonctionnement = [@colonnes_compta[5],nil] + @charges_fonctionnement[2..-1].zip(@charges_decaissables[2..-1]).map { |x, y| ratio(x,y,1) }
-      @poids_charges_intervention = [@colonnes_compta[7],nil] + @charges_intervention[2..-1].zip(@charges_decaissables[2..-1]).map { |x, y| ratio(x,y,1) }
+      @poids_charges_personnel = [@colonnes_compta[3],nil] + @charges_personnel[2..-1].zip(@charges_decaissables[2..-1]).map { |x, y| ratio_excel_percent(x,y,1) }
+      @poids_charges_fonctionnement = [@colonnes_compta[5],nil] + @charges_fonctionnement[2..-1].zip(@charges_decaissables[2..-1]).map { |x, y| ratio_excel_percent(x,y,1) }
+      @poids_charges_intervention = [@colonnes_compta[7],nil] + @charges_intervention[2..-1].zip(@charges_decaissables[2..-1]).map { |x, y| ratio_excel_percent(x,y,1) }
       sheet.add_row(@charges_total)
       sheet.add_row(@charges_personnel)
       sheet.add_row(@poids_charges_personnel)
@@ -293,8 +293,8 @@
       @tresorerie_variation_flechee = [@colonnes_treso[10],nil] + @chiffres_export.pluck(:tresorerie_variation_flechee)
       @tresorerie_variation_non_flechee = [@colonnes_treso[11],nil] + @chiffres_export.pluck(:tresorerie_variation_non_flechee)
       @tresorerie_initial = [@colonnes_treso[1],nil] + @chiffres_export.pluck(:tresorerie_finale, :tresorerie_variation).map{|a,b| (a || 0) - (b ||0)}
-      @taux_rap = [@colonnes_treso[4],nil] + @chiffres_export.pluck(:tresorerie_finale, :credits_restes_a_payer).map { |x, y| ratio(x,y,1) }
-      @poids_nf = [@colonnes_treso[6],nil] + @chiffres_export.pluck(:tresorerie_finale_non_flechee, :tresorerie_finale).map { |x, y| ratio(x,y,1) }
+      @taux_rap = [@colonnes_treso[4],nil] + @chiffres_export.pluck(:tresorerie_finale, :credits_restes_a_payer).map { |x, y| ratio_excel_percent(x,y,1) }
+      @poids_nf = [@colonnes_treso[6],nil] + @chiffres_export.pluck(:tresorerie_finale_non_flechee, :tresorerie_finale).map { |x, y| ratio_excel_percent(x,y,1) }
 
       @tresorerie_min = [@colonnes_treso[13],nil] + @chiffres_export.pluck(:tresorerie_min)
       @tresorerie_min_date = [@colonnes_treso[14],nil] + @chiffres_export.pluck(:tresorerie_min_date).map{ |date| !date.nil? ? I18n.localize(date, format: '%B') : "" }

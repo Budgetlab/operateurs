@@ -10,7 +10,7 @@ sheet_col = Array.new(8, 25)
         sheet.auto_filter = "A1:G1"
         sheet.add_row ['Total', @controleurs.sum {|c| c.total_organisms(@organisms_id) }, @controleurs.sum {|c| c.total_chiffres(@organisms_id) }, @controleurs.sum {|c| c.total_bi(2024, @organisms_id) },ratio(@controleurs.sum {|c| c.total_bi(2024, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 1), @controleurs.sum {|c| c.total_cf(2023, @organisms_id) },ratio(@controleurs.sum {|c| c.total_cf(2023, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 1) ], style: [cell_grey, cell_grey, cell_grey, cell_grey, cell_grey_percent, cell_grey, cell_grey_percent]
         @controleurs.each do |controleur|
-            sheet.add_row [controleur.nom, controleur.total_organisms(@organisms_id), controleur.total_chiffres(@organisms_id), controleur.total_bi(2024,@organisms_id), ratio(controleur.total_bi(2024,@organisms_id),controleur.total_organisms(@organisms_id), 100.0) / 100.0 || 1, controleur.total_cf(2023,@organisms_id), ratio(controleur.total_cf(2023,@organisms_id),controleur.total_organisms(@organisms_id), 100.0) / 100.0 || 1], style: [nil, nil, nil, nil, percent, nil, percent]
+            sheet.add_row [controleur.nom, controleur.total_organisms(@organisms_id), controleur.total_chiffres(@organisms_id), controleur.total_bi(2024,@organisms_id), ratio_excel_percent(controleur.total_bi(2024,@organisms_id),controleur.total_organisms(@organisms_id), 1) || 1, controleur.total_cf(2023,@organisms_id), ratio_excel_percent(controleur.total_cf(2023,@organisms_id),controleur.total_organisms(@organisms_id), 1) || 1], style: [nil, nil, nil, nil, percent, nil, percent]
         end
 
         sheet.rows.each do |row|
