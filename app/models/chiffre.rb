@@ -56,7 +56,7 @@ class Chiffre < ApplicationRecord
   end
 
   def solde_budgetaire_fleche
-    (credits_financements_etat_fleches || 0) + (credits_financements_publics_fleches || 0) + (credits_recettes_propres_flechees || 0) + (credits_subvention_investissement_flechee || 0) - (credits_cp_recettes_flechees || 0)
+    credits_cp_recettes_flechees ? (credits_financements_etat_fleches || 0) + (credits_financements_publics_fleches || 0) + (credits_recettes_propres_flechees || 0) + (credits_subvention_investissement_flechee || 0) - (credits_cp_recettes_flechees || 0) : nil
   end
 
   def var_restes_a_payer
