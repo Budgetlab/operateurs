@@ -37,12 +37,12 @@ export default class extends Controller {
             this.chart.reflow();
         }
         if (treso != null && treso.length > 0) {
-            const options_treso = this.syntheseBar(treso, "Évolution de la trésorerie finale et du fonds de roulement final", abscisses, "Trésorerie finale",'Trésorerie finale', " €", "Fonds de roulement final", "Fonds de roulement final", fr_final );
+            const options_treso = this.syntheseBar("Évolution de la trésorerie finale et du fonds de roulement final", abscisses, "Trésorerie finale (€)",'Trésorerie finale', treso, " €", "Fonds de roulement final (€)", "Fonds de roulement final", fr_final, " €" );
             this.chart = Highcharts.chart(this.canvasTresoTarget, options_treso);
             this.chart.reflow();
         }
         if (emplois != null && emplois.length > 0) {
-            const options_emplois = this.syntheseBar(emploiscout, "Évolution de la masse salariale et des emplois", abscisses, "Masse salariale",'Masse salariale', " €", "Emplois totaux", "Emplois totaux", emplois, "" );
+            const options_emplois = this.syntheseBar("Évolution de la masse salariale et des autorisations d'emplois", abscisses, "Masse salariale (€)",'Masse salariale', emploiscout," €", "Autorisations d'emplois (ETPT)", "Autorisations d'emplois", emplois, " ETPT" );
             this.chart = Highcharts.chart(this.canvasEmploisTarget, options_emplois);
             this.chart.reflow();
         }
@@ -130,7 +130,7 @@ export default class extends Controller {
         return options
     }
 
-    syntheseBar(data, title, abscisses, title_y, serie_name,value_tooltip1, title_y2, serie_name2, data2, value_tooltip2){
+    syntheseBar(title, abscisses, title_y1, serie_name1,data1, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2){
         const colors = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"]
         const options = {
             chart: {
@@ -168,7 +168,7 @@ export default class extends Controller {
             },
             yAxis: [{
                 title: {
-                    text: title_y,
+                    text: title_y1,
                     style: {
                         color: 'var(--text-title-grey)',
                     },
@@ -178,6 +178,7 @@ export default class extends Controller {
                         color: 'var(--text-title-grey)',
                     },
                 },
+                opposite: false,
             }, {
                 title: {
                     text: title_y2,
@@ -199,10 +200,10 @@ export default class extends Controller {
                 }
             },
             series: [{
-                name: serie_name,
-                data: data,
+                name: serie_name1,
+                data: data1,
                 type: 'column',
-                yAxis: 1,
+                yAxis: 0,
                 tooltip: {
                     valueSuffix: value_tooltip1
                 }
@@ -210,6 +211,7 @@ export default class extends Controller {
                 name: serie_name2,
                 data: data2,
                 type: 'spline',
+                yAxis: 1,
                 tooltip: {
                     valueSuffix: value_tooltip2
                 }
