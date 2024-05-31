@@ -34,7 +34,7 @@
                   <%= link_to organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>Fiche d'identité<%end %>
                 </li>
                 <li class="fr-sidemenu__item">
-                  <button class="fr-sidemenu__btn" aria-expanded="true" aria-controls="fr-sidemenu-item-0" aria-current="true">
+                  <button class="fr-sidemenu__btn" aria-expanded="false" aria-controls="fr-sidemenu-item-0" aria-current="true">
                     Données budgétaires et comptables
                   </button>
                   <div class="fr-collapse" id="fr-sidemenu-item-0">
@@ -60,7 +60,9 @@
                     </ul>
                   </div>
                 </li>
-
+                <li class="fr-sidemenu__item">
+                  <%= link_to organisme_restitutions_path(organisme_id: @organisme), class: "fr-sidemenu__link fr-icon-bar-chart-box-fill fr-link--icon-right", target: "_self" do %>Restitutions graphiques<%end %>
+                </li>
               </ul>
             </div>
           </div>

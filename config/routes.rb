@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   post '/search_organismes' => 'organismes#search_organismes'
   resources :organismes do
     resources :chiffres, only: [:index]
+    get 'restitutions', to: 'chiffres#restitutions'
   end
   resources :control_documents
   resources :chiffres, except: [:index]

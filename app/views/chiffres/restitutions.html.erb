@@ -1,0 +1,63 @@
+<% content_for :title do %>Restitutions graphiques de l'organisme <%= @organisme.nom %> | OPERA <% end %>
+<main role="main" data-controller="toggle" >
+  <div class="fr-container">
+    <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
+      <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+      <div class="fr-collapse" id="breadcrumb-1">
+        <ol class="fr-breadcrumb__list">
+          <li>
+            <%= link_to root_path, class:"fr-breadcrumb__link" do %>Accueil<%end %>
+          </li>
+          <li>
+            <%= link_to budgets_path, class:"fr-breadcrumb__link" do %>Liste des budgets<%end %>
+          </li>
+          <li>
+            <a class="fr-breadcrumb__link" aria-current="page"><%= @organisme.nom %></a>
+          </li>
+        </ol>
+      </div>
+    </nav>
+
+    <h1 class="fr-mb-4w title-btn"><%= @organisme.nom %></h1>
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-4">
+        <nav class="fr-sidemenu fr-sidemenu--sticky-full-height" aria-labelledby="fr-sidemenu-title">
+          <div class="fr-sidemenu__inner">
+            <button class="fr-sidemenu__btn" hidden aria-controls="fr-sidemenu-wrapper" aria-expanded="false">
+              Dans cette rubrique
+            </button>
+            <div class="fr-collapse" id="fr-sidemenu-wrapper">
+              <div class="fr-sidemenu__title" id="fr-sidemenu-title">Sections</div>
+              <ul class="fr-sidemenu__list">
+                <li class="fr-sidemenu__item">
+                  <%= link_to organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>Fiche d'identité<%end %>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <%= link_to organisme_chiffres_path(@organisme),class: "fr-sidemenu__link", target:"_self" do%>Données budgétaires et comptables<%end %>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <%= link_to organisme_restitutions_path(organisme_id: @organisme), class: "fr-sidemenu__link fr-icon-bar-chart-box-fill fr-link--icon-right",'aria-current': 'page', target: "_self" do %>Restitutions graphiques<%end %>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <div class="fr-col-12 fr-col-lg-8" >
+        <% if @chiffres.empty? %>
+          <div class="fr-highlight">
+            <p>Il n'y a pas encore de budgets renseignés pour cet organisme.</p>
+          </div>
+        <% else %>
+          <div data-controller="highcharts" data-highcharts-abscisses="<%= @abscisses %>" data-highcharts-treso="<%= @tresorerie_finale %>" data-highcharts-frfinal="<%= @fr_final %>"data-highcharts-emplois="<%=@emplois_total %>" data-highcharts-emploiscout="<%=@emplois_cout_total %>" >
+            <div data-highcharts-target="canvasTreso"></div>
+            <br>
+            <div data-highcharts-target="canvasEmplois"></div>
+          </div>
+          <% end %>
+      </div>
+    </div>
+  </div>
+</main>

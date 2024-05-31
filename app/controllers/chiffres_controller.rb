@@ -4,7 +4,7 @@
 class ChiffresController < ApplicationController
   include Authentication
   before_action :authenticate_user!
-  before_action :find_organisme, only: %i[index show_dates]
+  before_action :find_organisme, only: %i[index show_dates restitutions]
   before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy open_phase]
   before_action :redirect_unless_access, only: :index
   before_action :redirect_unless_controleur, only: :new
@@ -225,6 +225,19 @@ class ChiffresController < ApplicationController
       format.html
       format.xlsx
     end
+  end
+
+  def restitutions
+    @chiffres = @organisme.chiffres&.where(statut: 'valide')&.order(Arel.sql(" exercice_budgetaire ASC, CASE
+      WHEN type_budget = 'Budget initial' THEN 1
+      WHEN type_budget = 'Budget rectificatif' THEN 2
+      ELSE 3
+    END, created_at ASC"))
+    @abscisses = @chiffres.map { |chiffre| "#{chiffre.type_budget} #{chiffre.exercice_budgetaire}" }
+    @tresorerie_finale = @chiffres.map {|chiffre| chiffre.tresorerie_finale }
+    @fr_final = @chiffres.map {|chiffre| chiffre.fonds_roulement_final }
+    @emplois_total = @chiffres.map {|chiffre| chiffre.emplois_total }
+    @emplois_cout_total = @chiffres.map {|chiffre| chiffre.emplois_cout_total }
   end
 
   private

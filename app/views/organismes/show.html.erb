@@ -78,7 +78,7 @@
               <div class="fr-sidemenu__title" id="fr-sidemenu-title">Sections</div>
               <ul class="fr-sidemenu__list">
                 <li class="fr-sidemenu__item">
-                  <button class="fr-sidemenu__btn" aria-expanded="true" aria-controls="fr-sidemenu-item-0" aria-current="true">
+                  <button class="fr-sidemenu__btn" aria-expanded="false" aria-controls="fr-sidemenu-item-0" aria-current="true">
                     Fiche d'identité
                   </button>
                   <div class="fr-collapse" id="fr-sidemenu-item-0">
@@ -114,9 +114,12 @@
                   </div>
                 </li>
                 <% if @est_valide %>
-                <li class="fr-sidemenu__item">
-                  <%= link_to organisme_chiffres_path(@organisme),class: "fr-sidemenu__link", target:"_self" do%>Données budgétaires et comptables<%end %>
-                </li>
+                  <li class="fr-sidemenu__item">
+                    <%= link_to organisme_chiffres_path(@organisme),class: "fr-sidemenu__link", target:"_self" do%>Données budgétaires et comptables<%end %>
+                  </li>
+                  <li class="fr-sidemenu__item">
+                    <%= link_to organisme_restitutions_path(organisme_id: @organisme), class: "fr-sidemenu__link fr-icon-bar-chart-box-fill fr-link--icon-right", target: "_self" do %>Restitutions graphiques<%end %>
+                  </li>
                 <% end %>
               </ul>
             </div>

@@ -11,7 +11,7 @@ nodata(Highcharts)
 
 export default class extends Controller {
     static get targets() {
-        return ['canvasBI','canvasCF'
+        return ['canvasBI','canvasCF', 'canvasTreso', 'canvasEmplois'
         ];
     }
     connect() {
@@ -21,6 +21,11 @@ export default class extends Controller {
     showViz(){
         const budgetsbi = JSON.parse(this.data.get("budgetsbi"));
         const budgetscf = JSON.parse(this.data.get("budgetscf"));
+        const abscisses = JSON.parse(this.data.get("abscisses"));
+        const treso = JSON.parse(this.data.get("treso"));
+        const fr_final = JSON.parse(this.data.get("frfinal"));
+        const emplois = JSON.parse(this.data.get("emplois"));
+        const emploiscout = JSON.parse(this.data.get("emploiscout"));
         if (budgetsbi != null && budgetsbi.length > 0) {
             const options = this.syntheseBudget(budgetsbi, "Répartition des budgets initiaux 2024");
             this.chart = Highcharts.chart(this.canvasBITarget, options);
@@ -29,6 +34,16 @@ export default class extends Controller {
         if (budgetscf != null && budgetscf.length > 0) {
             const options2 = this.syntheseBudget(budgetscf, "Répartition des comptes financiers 2023");
             this.chart = Highcharts.chart(this.canvasCFTarget, options2);
+            this.chart.reflow();
+        }
+        if (treso != null && treso.length > 0) {
+            const options_treso = this.syntheseBar(treso, "Évolution de la trésorerie finale et du fonds de roulement final", abscisses, "Trésorerie finale",'Trésorerie finale', " €", "Fonds de roulement final", "Fonds de roulement final", fr_final );
+            this.chart = Highcharts.chart(this.canvasTresoTarget, options_treso);
+            this.chart.reflow();
+        }
+        if (emplois != null && emplois.length > 0) {
+            const options_emplois = this.syntheseBar(emploiscout, "Évolution de la masse salariale et des emplois", abscisses, "Masse salariale",'Masse salariale', " €", "Emplois totaux", "Emplois totaux", emplois, "" );
+            this.chart = Highcharts.chart(this.canvasEmploisTarget, options_emplois);
             this.chart.reflow();
         }
     }
@@ -111,6 +126,111 @@ export default class extends Controller {
                     { name: 'Budgets non renseignés', y: data[4] }
                 ]
             }]
+        }
+        return options
+    }
+
+    syntheseBar(data, title, abscisses, title_y, serie_name,value_tooltip1, title_y2, serie_name2, data2, value_tooltip2){
+        const colors = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"]
+        const options = {
+            chart: {
+                height: 400,
+                style:{
+                    fontFamily: "Marianne",
+                },
+                type: 'column',
+            },
+            exporting:{enabled: true},
+            colors: colors,
+
+            title: {
+                text: title,
+
+                style: {
+                    fontSize: '13px',
+                    fontWeight: "900",
+                    color: 'var(--text-title-grey)',
+                },
+            },
+            legend:{
+                itemStyle: {
+                    color: 'var(--text-title-grey)',
+                },
+            },
+            tooltip: {
+                borderColor: 'transparent',
+                borderRadius: 16,
+                backgroundColor: "rgba(245, 245, 245, 1)",
+            },
+            xAxis: {
+                categories: abscisses,
+
+            },
+            yAxis: [{
+                title: {
+                    text: title_y,
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+                labels: {
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+            }, {
+                title: {
+                    text: title_y2,
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+                labels: {
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+                opposite: true,
+            }],
+            plotOptions: {
+                column: {
+                    maxPointWidth: 50,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: serie_name,
+                data: data,
+                type: 'column',
+                yAxis: 1,
+                tooltip: {
+                    valueSuffix: value_tooltip1
+                }
+            },{
+                name: serie_name2,
+                data: data2,
+                type: 'spline',
+                tooltip: {
+                    valueSuffix: value_tooltip2
+                }
+            }],
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            floating: false,
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            x: 0,
+                            y: 0
+                        },
+                    }
+                }],
+            }
         }
         return options
     }
