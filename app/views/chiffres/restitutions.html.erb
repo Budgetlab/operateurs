@@ -36,9 +36,8 @@
                   <%= link_to organisme_chiffres_path(@organisme),class: "fr-sidemenu__link", target:"_self" do%>Données budgétaires et comptables<%end %>
                 </li>
                 <li class="fr-sidemenu__item">
-                  <%= link_to organisme_restitutions_path(organisme_id: @organisme), class: "fr-sidemenu__btn fr-icon-bar-chart-box-fill fr-link--icon-right",'aria-current': true, target: "_self" do %>Restitutions graphiques<%end %>
+                  <button class="fr-sidemenu__btn fr-btn--icon-right fr-icon-bar-chart-box-fill" aria-current="true">Restitutions graphiques </button>
                 </li>
-
               </ul>
             </div>
           </div>
