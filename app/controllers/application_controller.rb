@@ -58,8 +58,8 @@ class ApplicationController < ActionController::Base
     if @statut_user == 'Controleur'
       @familles = current_user.controleur_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
       @familles += ['Universités'] if current_user.nom == 'CBCM MEN-MESRI'
-    elsif @statut_user == 'Bureau Sectoriel'
-      @familles = current_user.bureau_organismes.pluck(:famille).uniq.reject { |element| element == 'Aucune' }
+    else
+      @familles = @liste_familles
     end
   end
 

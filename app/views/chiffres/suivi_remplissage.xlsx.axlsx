@@ -1,8 +1,8 @@
 wb = xlsx_package.workbook
 s = wb.styles
-col_header_blue = s.add_style bg_color: 'dae1f2', sz: 13, b: true
-cell_grey = s.add_style bg_color: 'bdd7ee'
-cell_grey_percent = s.add_style bg_color: 'bdd7ee', num_fmt: 9
+col_header_blue = s.add_style bg_color: 'FFDFDEDF', sz: 13, b: true
+cell_grey = s.add_style bg_color: 'dae1f2'
+cell_grey_percent = s.add_style bg_color: 'dae1f2', num_fmt: 9
 percent = s.add_style num_fmt: 9
 sheet_col = Array.new(8, 25)
   	wb.add_worksheet(name: "Suivi du remplissage") do |sheet|
@@ -10,7 +10,9 @@ sheet_col = Array.new(8, 25)
         sheet.auto_filter = "A1:G1"
         sheet.add_row ['Total', @controleurs.sum {|c| c.total_organisms(@organisms_id) }, @controleurs.sum {|c| c.total_chiffres(@organisms_id) }, @controleurs.sum {|c| c.total_bi(2024, @organisms_id) },ratio_excel_percent(@controleurs.sum {|c| c.total_bi(2024, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 1), @controleurs.sum {|c| c.total_cf(2023, @organisms_id) },ratio_excel_percent(@controleurs.sum {|c| c.total_cf(2023, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 1) ], style: [cell_grey, cell_grey, cell_grey, cell_grey, cell_grey_percent, cell_grey, cell_grey_percent]
         @controleurs.each do |controleur|
+          if controleur.total_organisms(@organisms_id) > 0
             sheet.add_row [controleur.nom, controleur.total_organisms(@organisms_id), controleur.total_chiffres(@organisms_id), controleur.total_bi(2024,@organisms_id), ratio_excel_percent(controleur.total_bi(2024,@organisms_id),controleur.total_organisms(@organisms_id), 1) || 1, controleur.total_cf(2023,@organisms_id), ratio_excel_percent(controleur.total_cf(2023,@organisms_id),controleur.total_organisms(@organisms_id), 1) || 1], style: [nil, nil, nil, nil, percent, nil, percent]
+          end
         end
 
         sheet.rows.each do |row|

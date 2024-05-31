@@ -8,7 +8,7 @@ class ChiffresController < ApplicationController
   before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy open_phase]
   before_action :redirect_unless_access, only: :index
   before_action :redirect_unless_controleur, only: :new
-  before_action :redirect_unless_admin, only: :suivi_remplissage
+  # before_action :redirect_unless_admin, only: :suivi_remplissage
   # page des chiffres clés de l'organisme
   def index
     # Check if the logged-in user is the "controller" of the organism, and store the result in @est_editeur
@@ -214,7 +214,8 @@ class ChiffresController < ApplicationController
 
   def suivi_remplissage
     @q_params = q_params
-    @q = Organisme.ransack(params[:q])
+    extended_family_organisms = fetch_extended_family_organisms
+    @q = extended_family_organisms.ransack(params[:q])
     @organisms = @q.result.includes(:controleur)
     @organisms_id = @statut_user == "2B2O" ? @organisms.where(etat: "Actif").where.not(controleur_id: current_user.id).pluck(:id) : @organisms.where(etat: "Actif").pluck(:id)
     @controleurs = User.where(statut: ['Controleur']).includes(:chiffres, :controleur_organismes).order(nom: :asc)
@@ -234,10 +235,10 @@ class ChiffresController < ApplicationController
       ELSE 3
     END, created_at ASC"))
     @abscisses = @chiffres.map { |chiffre| "#{chiffre.type_budget} #{chiffre.exercice_budgetaire}" }
-    @tresorerie_finale = @chiffres.map {|chiffre| chiffre.tresorerie_finale }
-    @fr_final = @chiffres.map {|chiffre| chiffre.fonds_roulement_final }
-    @emplois_total = @chiffres.map {|chiffre| chiffre.emplois_total }
-    @emplois_cout_total = @chiffres.map {|chiffre| chiffre.emplois_cout_total }
+    @tresorerie_finale = @chiffres.map { |chiffre| chiffre.tresorerie_finale }
+    @fr_final = @chiffres.map { |chiffre| chiffre.fonds_roulement_final }
+    @emplois_total = @chiffres.map { |chiffre| chiffre.emplois_total }
+    @emplois_cout_total = @chiffres.map { |chiffre| chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel }
   end
 
   private

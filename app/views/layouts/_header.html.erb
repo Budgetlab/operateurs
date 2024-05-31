@@ -113,11 +113,11 @@
                 <li>
                   <%= active_link_to budgets_path, class: "fr-nav__link", target: "_self" do%>Liste des budgets<%end%>
                 </li>
-                <% if @statut_user == '2B2O' %>
-                  <li>
-                    <%= active_link_to suivi_remplissage_path, class: "fr-nav__link", target: "_self" do%>Suivi du remplissage<%end%>
-                  </li>
-                <% end  %>
+
+                <li>
+                  <%= active_link_to suivi_remplissage_path, class: "fr-nav__link", target: "_self" do%>Suivi du remplissage<%end%>
+                </li>
+
               </ul>
             </div>
 

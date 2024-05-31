@@ -4,15 +4,22 @@
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-12">
         <h1 class="fr-my-4w">Suivi du remplissage des budgets</h1>
+        <% if @statut_user == 'Controleur' || @statut_user == "Bureau Sectoriel"%>
+          <div class="fr-highlight">
+            <p>Les résultats incluent les budgets de votre périmètre et ceux des familles auxquelles vous avez accès.</p>
+          </div>
+        <% end %>
       </div>
     </div>
+    <% if @familles&.length > 0 %>
     <div data-controller="request">
     <%= search_form_for @q, url: suivi_remplissage_path, data: {'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance'} do |f| %>
       <div class="fr-mb-2w" role="search">
-        <%= render_select_group("Filtrer par famille d'organismes", :famille_in, @liste_familles) %>
+        <%= render_select_group("Filtrer par famille d'organismes", :famille_in, @familles) %>
       </div>
     <% end %>
     </div>
+    <% end  %>
 
     <%= turbo_frame_tag :results, target: "_top" do %>
       <div class="fr-grid-row fr-grid-row--gutters" data-controller="highcharts" data-highcharts-budgetsbi="<%= @chiffres_bi_2024 %>" data-highcharts-budgetscf="<%= @chiffres_cf_2023 %>">
@@ -23,7 +30,7 @@
           <div data-highcharts-target="canvasCF"></div>
         </div>
       </div>
-      <% if @statut_user == "2B2O" %>
+
       <div class="fr-download">
         <% path_params = params[:q].present? ? {q: @q_params, format: 'xlsx'} : {format: 'xlsx'} %>
         <p><%= link_to suivi_remplissage_path(path_params), class: "fr-download__link" do %> Télécharger le suivi du remplissage
@@ -55,6 +62,7 @@
             <td><%= ratio(@controleurs.sum {|c| c.total_cf(2023, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 100)%>%</td>
           </tr>
           <% @controleurs.each do |controleur| %>
+            <% if controleur.total_organisms(@organisms_id) > 0 %>
               <tr>
                 <td><%= controleur.nom %></td>
                 <td><%= controleur.total_organisms(@organisms_id)%></td>
@@ -64,11 +72,12 @@
                 <td><%= controleur.total_cf(2023,@organisms_id) %></td>
                 <td><%= ratio(controleur.total_cf(2023,@organisms_id),controleur.total_organisms(@organisms_id), 100) || 100%>%</td>
               </tr>
+            <% end %>
           <% end %>
           </tbody>
         </table>
       </div>
-      <% end  %>
+
     <% end %>
   </div>
 </main>
