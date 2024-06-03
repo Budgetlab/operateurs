@@ -50,7 +50,7 @@
             <p>Il n'y a pas encore de budgets renseignés pour cet organisme.</p>
           </div>
         <% else %>
-          <div data-controller="highcharts" data-highcharts-abscisses="<%= @abscisses %>" data-highcharts-treso="<%= @tresorerie_finale %>" data-highcharts-frfinal="<%= @fr_final %>"data-highcharts-emplois="<%=@emplois_total %>" data-highcharts-emploiscout="<%=@emplois_cout_total %>" >
+          <div data-controller="highcharts" data-highcharts-abscisses="<%= @abscisses %>" data-highcharts-groupeddatas="<%= @grouped_chiffres_by_exercice.to_json %>">
             <div data-highcharts-target="canvasTreso"></div>
             <br>
             <div data-highcharts-target="canvasEmplois"></div>

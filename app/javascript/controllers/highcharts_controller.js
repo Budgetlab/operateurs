@@ -22,10 +22,7 @@ export default class extends Controller {
         const budgetsbi = JSON.parse(this.data.get("budgetsbi"));
         const budgetscf = JSON.parse(this.data.get("budgetscf"));
         const abscisses = JSON.parse(this.data.get("abscisses"));
-        const treso = JSON.parse(this.data.get("treso"));
-        const fr_final = JSON.parse(this.data.get("frfinal"));
-        const emplois = JSON.parse(this.data.get("emplois"));
-        const emploiscout = JSON.parse(this.data.get("emploiscout"));
+        const grouped_datas = JSON.parse(this.data.get("groupeddatas"));
         if (budgetsbi != null && budgetsbi.length > 0) {
             const options = this.syntheseBudget(budgetsbi, "Répartition des budgets initiaux 2024");
             this.chart = Highcharts.chart(this.canvasBITarget, options);
@@ -36,13 +33,55 @@ export default class extends Controller {
             this.chart = Highcharts.chart(this.canvasCFTarget, options2);
             this.chart.reflow();
         }
-        if (treso != null && treso.length > 0) {
-            const options_treso = this.syntheseBar("Évolution de la trésorerie finale et du fonds de roulement final", abscisses, "Trésorerie finale (€)",'Trésorerie finale', treso, " €", "Fonds de roulement final (€)", "Fonds de roulement final", fr_final, " €" );
+        if (grouped_datas != null ) {
+            let dataTreso = [];
+            let dataFR = [];
+            let dataCP = [];
+            let dataETPT = [];
+            Object.keys(grouped_datas).forEach((exercice, i) => {
+                const chiffres = grouped_datas[exercice];
+                chiffres.forEach((chiffre, j) => {
+                    let adjustment;
+                    if (chiffres.length === 1) {
+                        adjustment = 0;
+                    } else if (chiffres.length === 2) {
+                        adjustment = (j === 0 ? -0.12 : 0.12);
+                    } else {
+                        adjustment = 0.22 * (j - Math.floor(chiffres.length / 2));
+                    }
+                    let x_placement = chiffres.length === 1 ? i : i + (j === 0 ? -0.12 : 0.12);
+                    const point = {
+                        x: i + adjustment,  // Adjust point placement for scatter
+                        y: chiffre[1],
+                        name: chiffre[0]
+                    };
+                    const point2 = {
+                        x: i + adjustment,  // Adjust point placement for scatter
+                        y: chiffre[2],
+                        name: chiffre[0]
+                    };
+                    const point3 = {
+                        x: i + adjustment, // Adjust point placement for scatter
+                        y: chiffre[3],
+                        name: chiffre[0]
+                    };
+                    const point4 = {
+                        x: i + adjustment, // Adjust point placement for scatter
+                        y: chiffre[4],
+                        name: chiffre[0]
+                    };
+                    dataTreso.push(point);
+                    dataFR.push(point2);
+                    dataETPT.push(point3);
+                    dataCP.push(point4)
+                });
+            });
+
+            const options_treso = this.syntheseBar("Évolution de la trésorerie finale et du fonds de roulement final", abscisses, "Trésorerie finale (€)",'Trésorerie finale', dataTreso, " €", "Fonds de roulement final (€)", "Fonds de roulement final", dataFR, " €" );
             this.chart = Highcharts.chart(this.canvasTresoTarget, options_treso);
             this.chart.reflow();
-        }
-        if (emplois != null && emplois.length > 0) {
-            const options_emplois = this.syntheseBar("Évolution de la masse salariale et des autorisations d'emplois", abscisses, "Masse salariale (€)",'Masse salariale', emploiscout," €", "Autorisations d'emplois (ETPT)", "Autorisations d'emplois", emplois, " ETPT" );
+
+            const options_emplois = this.syntheseBar("Évolution de la masse salariale et des autorisations d'emplois", abscisses, "Masse salariale (€)",'Masse salariale', dataCP," €", "Autorisations d'emplois (ETPT)", "Autorisations d'emplois", dataETPT, " ETPT" );
             this.chart = Highcharts.chart(this.canvasEmploisTarget, options_emplois);
             this.chart.reflow();
         }
@@ -132,6 +171,7 @@ export default class extends Controller {
 
     syntheseBar(title, abscisses, title_y1, serie_name1,data1, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2){
         const colors = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"]
+console.log(abscisses)
         const options = {
             chart: {
                 height: 400,
@@ -142,7 +182,6 @@ export default class extends Controller {
             },
             exporting:{enabled: true},
             colors: colors,
-
             title: {
                 text: title,
 
@@ -164,58 +203,68 @@ export default class extends Controller {
             },
             xAxis: {
                 categories: abscisses,
-
+                labels: {
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
             },
-            yAxis: [{
-                title: {
-                    text: title_y1,
-                    style: {
-                        color: 'var(--text-title-grey)',
+            yAxis: [
+                {
+                    title: {
+                        text: title_y1,
+                        style: {
+                            color: 'var(--text-title-grey)',
+                        },
                     },
-                },
-                labels: {
-                    style: {
-                        color: 'var(--text-title-grey)',
+                    labels: {
+                        style: {
+                            color: 'var(--text-title-grey)',
+                        },
                     },
-                },
-                opposite: false,
-            }, {
-                title: {
-                    text: title_y2,
-                    style: {
-                        color: 'var(--text-title-grey)',
+                    opposite: false,
+                }, {
+                    title: {
+                        text: title_y2,
+                        style: {
+                            color: 'var(--text-title-grey)',
+                        },
                     },
-                },
-                labels: {
-                    style: {
-                        color: 'var(--text-title-grey)',
+                    labels: {
+                        style: {
+                            color: 'var(--text-title-grey)',
+                        },
                     },
-                },
-                opposite: true,
-            }],
+                    opposite: true,
+                    }],
             plotOptions: {
                 column: {
-                    maxPointWidth: 50,
-                    borderWidth: 0
+                    grouping: false,
+                    shadow: false,
+                    borderWidth: 0,
+                    maxPointWidth: 40,
                 }
             },
             series: [{
                 name: serie_name1,
-                data: data1,
                 type: 'column',
-                yAxis: 0,
                 tooltip: {
                     valueSuffix: value_tooltip1
-                }
-            },{
+                },
+                pointPadding: 0.2,
+                data: data1,
+
+            }, {
                 name: serie_name2,
-                data: data2,
                 type: 'spline',
-                yAxis: 1,
+                data: data2,
+                pointPadding: 0.2,
                 tooltip: {
                     valueSuffix: value_tooltip2
-                }
-            }],
+                },
+                yAxis: 1 // Placer sur le deuxième axe Y
+            }]
+            ,
             responsive: {
                 rules: [{
                     condition: {

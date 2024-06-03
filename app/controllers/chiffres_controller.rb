@@ -234,7 +234,11 @@ class ChiffresController < ApplicationController
       WHEN type_budget = 'Budget rectificatif' THEN 2
       ELSE 3
     END, created_at ASC"))
-    @abscisses = @chiffres.map { |chiffre| "#{chiffre.type_budget} #{chiffre.exercice_budgetaire}" }
+    @grouped_chiffres_by_exercice = @chiffres.group_by(&:exercice_budgetaire).transform_values do |chiffres|
+      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.fonds_roulement_final, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel] }
+    end
+    puts @grouped_chiffres_by_exercice
+    @abscisses = @grouped_chiffres_by_exercice.keys.map(&:to_s)
     @tresorerie_finale = @chiffres.map { |chiffre| chiffre.tresorerie_finale }
     @fr_final = @chiffres.map { |chiffre| chiffre.fonds_roulement_final }
     @emplois_total = @chiffres.map { |chiffre| chiffre.emplois_total }
