@@ -6,7 +6,7 @@ class ChiffresController < ApplicationController
   before_action :authenticate_user!
   before_action :find_organisme, only: %i[index show_dates restitutions]
   before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy open_phase]
-  before_action :redirect_unless_access, only: :index
+  before_action :redirect_unless_access, only: %i[index restitutions]
   before_action :redirect_unless_controleur, only: :new
   # before_action :redirect_unless_admin, only: :suivi_remplissage
   # page des chiffres clés de l'organisme
@@ -217,7 +217,7 @@ class ChiffresController < ApplicationController
     extended_family_organisms = fetch_extended_family_organisms
     @q = extended_family_organisms.ransack(params[:q])
     @organisms = @q.result.includes(:controleur)
-    @organisms_id = @statut_user == "2B2O" ? @organisms.where(etat: "Actif").where.not(controleur_id: current_user.id).pluck(:id) : @organisms.where(etat: "Actif").pluck(:id)
+    @organisms_id = @statut_user == "2B2O" ? @organisms.where(etat: "Actif", presence_controle: true, gbcp_1: true).where.not(controleur_id: current_user.id).pluck(:id) : @organisms.where(etat: "Actif", presence_controle: true, gbcp_1: true).pluck(:id)
     @controleurs = User.where(statut: ['Controleur']).includes(:chiffres, :controleur_organismes).order(nom: :asc)
     @chiffres = Chiffre.where(statut: 'valide').where(organisme_id: @organisms_id)
     @chiffres_bi_2024 = calculate_chiffres_budget_exercice(@chiffres, @organisms_id, 2024, 'Budget initial')
@@ -235,7 +235,9 @@ class ChiffresController < ApplicationController
       ELSE 3
     END, created_at ASC"))
     @grouped_chiffres_by_exercice = @chiffres.group_by(&:exercice_budgetaire).transform_values do |chiffres|
-      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.fonds_roulement_final, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel] }
+      last_br = chiffres.select { |chiffre| chiffre.type_budget == 'Budget rectificatif'}.sort_by(&:created_at)&.last
+
+      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.fonds_roulement_final, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel] if (chiffre.type_budget != "Budget rectificatif" || (chiffre.type_budget == "Budget rectificatif" && chiffre.id == last_br&.id) ) }.compact
     end
     puts @grouped_chiffres_by_exercice
     @abscisses = @grouped_chiffres_by_exercice.keys.map(&:to_s)
