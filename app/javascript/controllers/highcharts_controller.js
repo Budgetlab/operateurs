@@ -77,11 +77,14 @@ export default class extends Controller {
                 });
             });
 
-            const options_treso = this.syntheseBar("Évolution de la trésorerie finale et du fonds de roulement final", abscisses, "Trésorerie finale (€)",'Trésorerie finale', dataTreso, " €", "Fonds de roulement final (€)", "Fonds de roulement final", dataFR, " €" );
+            const colors_treso = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"];
+            const colors_emplois = ["var(--blue-ecume-850-200)","var(--pink-macaron-main-689)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"];
+
+            const options_treso = this.syntheseBar("Évolution de la trésorerie finale et du fonds de roulement final", abscisses, "Trésorerie finale (€)",'Trésorerie finale', dataTreso, " €", "Fonds de roulement final (€)", "Fonds de roulement final", dataFR, " €", colors_treso );
             this.chart = Highcharts.chart(this.canvasTresoTarget, options_treso);
             this.chart.reflow();
 
-            const options_emplois = this.syntheseBar("Évolution de la masse salariale et des autorisations d'emplois", abscisses, "Masse salariale (€)",'Masse salariale', dataCP," €", "Autorisations d'emplois (ETPT)", "Autorisations d'emplois", dataETPT, " ETPT" );
+            const options_emplois = this.syntheseBar("Évolution de la masse salariale et des autorisations d'emplois", abscisses, "Masse salariale (€)",'Masse salariale', dataCP," €", "Autorisations d'emplois (ETPT)", "Autorisations d'emplois", dataETPT, " ETPT", colors_emplois );
             this.chart = Highcharts.chart(this.canvasEmploisTarget, options_emplois);
             this.chart.reflow();
         }
@@ -169,9 +172,7 @@ export default class extends Controller {
         return options
     }
 
-    syntheseBar(title, abscisses, title_y1, serie_name1,data1, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2){
-        const colors = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"]
-console.log(abscisses)
+    syntheseBar(title, abscisses, title_y1, serie_name1,data1, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors){
         const options = {
             chart: {
                 height: 400,
@@ -214,12 +215,12 @@ console.log(abscisses)
                     title: {
                         text: title_y1,
                         style: {
-                            color: 'var(--text-title-grey)',
+                            color: colors[0],
                         },
                     },
                     labels: {
                         style: {
-                            color: 'var(--text-title-grey)',
+                            color: colors[0],
                         },
                     },
                     opposite: false,
@@ -227,12 +228,12 @@ console.log(abscisses)
                     title: {
                         text: title_y2,
                         style: {
-                            color: 'var(--text-title-grey)',
+                            color: colors[1],
                         },
                     },
                     labels: {
                         style: {
-                            color: 'var(--text-title-grey)',
+                            color: colors[1],
                         },
                     },
                     opposite: true,
