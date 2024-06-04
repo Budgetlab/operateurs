@@ -335,7 +335,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Solde budgétaire résultant des opérations fléchées <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_solde_budgetaire_fleche_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.credits_cp_recettes_flechees %><%= format_nombre_entier(@total_recettes_flechees-chiffre.credits_cp_recettes_flechees) %><%else %>-<%end %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.credits_cp_recettes_flechees %><%= format_nombre_entier(@total_recettes_flechees-chiffre.credits_cp_recettes_flechees) %><%else %>ND<%end %> €</p>
         </div>
       </div>
     </div>

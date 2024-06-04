@@ -109,7 +109,7 @@
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
     <div>Point le plus haut dans le plan de trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_max_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.tresorerie_max) %> € au mois de <% if chiffre.tresorerie_max_date %><%= I18n.localize(chiffre.tresorerie_max_date, format: '%B')  %><%else %>-<%end %></div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.tresorerie_max) %> € au mois de <% if chiffre.tresorerie_max_date %><%= I18n.localize(chiffre.tresorerie_max_date, format: '%B')  %><%else %>ND<%end %></div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
     <div class="fr-mb-2w">
@@ -125,7 +125,7 @@
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
     <div>Point le plus bas dans le plan de trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_min_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.tresorerie_min) %> € au mois de <% if chiffre.tresorerie_min_date %><%= I18n.localize(chiffre.tresorerie_min_date, format: '%B') %><%else %>-<%end %></div>
+    <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.tresorerie_min) %> € au mois de <% if chiffre.tresorerie_min_date %><%= I18n.localize(chiffre.tresorerie_min_date, format: '%B') %><%else %>ND<%end %></div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
     <div class="fr-mb-2w">

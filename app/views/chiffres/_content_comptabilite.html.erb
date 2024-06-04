@@ -177,7 +177,7 @@
           <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
             <div class="fr-cart__body">
               <p class="fr-mb-0 fr-text--center">Décaissements non budgétaires <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_dec_t", chiffre: chiffre} %></p>
-              <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.decaissements_operations.nil? && chiffre.decaissements_emprunts.nil? && chiffre.decaissements_autres.nil? %>-<%else %><%= format_nombre_entier(@total_decaissement) %><%end %> €</p>
+              <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.decaissements_operations.nil? && chiffre.decaissements_emprunts.nil? && chiffre.decaissements_autres.nil? %>ND<%else %><%= format_nombre_entier(@total_decaissement) %><%end %> €</p>
             </div>
           </div>
         </div>
@@ -187,7 +187,7 @@
           <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
             <div class="fr-cart__body">
               <p class="fr-mb-0 fr-text--center">Encaissements non budgétaires <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_enc_t", chiffre: chiffre} %></p>
-              <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.encaissements_operations.nil? && chiffre.encaissements_emprunts.nil? && chiffre.encaissements_autres.nil? %>-<%else %><%= format_nombre_entier(@total_encaissement) %><%end %> €</p>
+              <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.encaissements_operations.nil? && chiffre.encaissements_emprunts.nil? && chiffre.encaissements_autres.nil? %>ND<%else %><%= format_nombre_entier(@total_encaissement) %><%end %> €</p>
             </div>
           </div>
         </div>
