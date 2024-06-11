@@ -8,61 +8,129 @@ class Chiffre < ApplicationRecord
 
   # Part des personnels exerçant leurs missions dans l'organisme dans le total des emplois rémunérés directement par l'organisme
   def indicateur_part_personnel_organisme
-    numerateur = emplois_total + (emplois_non_remuneres || 0) - (emplois_autre_entite || 0)
+    numerateur = emplois_autre_entite ? emplois_total + (emplois_non_remuneres || 0) - (emplois_autre_entite || 0) : nil
     ratio(numerateur, emplois_total, 100)
   end
 
+  # Hors-plafond / total effectifs rémunérés par l'organisme
+  def ratio_hors_plafond
+    ratio(emplois_hors_plafond, emplois_total, 100)
+  end
+
+  # Coût moyen par ETPT
+  def cout_moyen_etpt
+    numerateur = comptabilite_budgetaire ? emplois_depenses_personnel : emplois_charges_personnel
+    ratio(numerateur, emplois_total, 1)
+  end
+
+  # Coût moyen des emplois titulaires
+  def cout_moyen_titulaires
+    ratio(emplois_titulaires_montant, emplois_titulaires, 1)
+  end
+
+  # Coût moyen des emplois contractuels
+  def cout_moyen_contractuels
+    ratio(emplois_contractuels_montant, emplois_contractuels, 1)
+  end
+
+  # Part des contractuels dans le total des emplois rémunérés par l’organisme
+  def part_contractuels
+    ratio(emplois_contractuels, emplois_total, 100)
+  end
+
+  # Poids des dépenses de personnel
   def indicateur_poids_depenses_personnel
     denominateur = (credits_cp_total || 0) - (credits_cp_investissement || 0)
     ratio(emplois_depenses_personnel, denominateur, 100)
   end
 
+  # Part relative des dépenses de fonctionnement (CP) dans le total des dépenses (CP)
+  def part_cp_fonctionnement
+    ratio(credits_cp_fonctionnement, credits_cp_total, 100)
+  end
+
+  # Part relative des dépenses d'intervention (CP) dans le total des dépenses (CP)
+  def part_cp_intervention
+    ratio(credits_cp_intervention, credits_cp_total, 100)
+  end
+
+  # Part relative des dépenses d'investissement (CP) dans le total des dépenses (CP)
+  def part_cp_investissement
+    ratio(credits_cp_investissement, credits_cp_total, 100)
+  end
+
+  # Poids des crédits de paiement au titre d'opérations pluriannuelles
+  def poids_cp_operations
+    ratio(credits_cp_operations, credits_cp_total, 100)
+  end
+
+  # Total des subventions de l’Etat
   def subv_etat
     (credits_financements_etat_autres || 0) + (credits_financements_etat_fleches || 0) + (credits_subvention_sp || 0) + (credits_subvention_investissement_globalisee || 0) + (credits_subvention_investissement_flechee || 0)
   end
 
+  # Total des recettes globalisées
   def recettes_globalisees
     (credits_financements_etat_autres || 0) + (credits_fiscalite_affectee || 0) + (credits_financements_publics_autres || 0) + (credits_recettes_propres_globalisees || 0) + (credits_subvention_sp || 0) + (credits_subvention_investissement_globalisee || 0)
   end
+
+  # Total des recettes fléchées
   def recettes_flechees
     (credits_financements_etat_fleches || 0) + (credits_financements_publics_fleches || 0) + (credits_recettes_propres_flechees || 0) + (credits_subvention_investissement_flechee || 0)
   end
 
+  # Total des recettes
   def recettes_total
-    (credits_financements_etat_autres || 0) + (credits_fiscalite_affectee || 0) + (credits_financements_publics_autres || 0) + (credits_recettes_propres_globalisees || 0) + (credits_subvention_sp || 0) + (credits_subvention_investissement_globalisee || 0) + (credits_financements_etat_fleches || 0) + (credits_financements_publics_fleches || 0) + (credits_recettes_propres_flechees || 0) + (credits_subvention_investissement_flechee || 0)
+    recettes_globalisees + recettes_flechees
   end
 
+  # Poids des recettes non fléchées
+  def poids_recettes_globalisees
+    ratio(recettes_globalisees,recettes_total,100)
+  end
+
+  # Poids des financements de l’Etat suvb etat / total recettes
+  def poids_financements_etat
+    ratio(subv_etat, recettes_total, 100)
+  end
+
+  # Taux de couverture des dépenses de personnel et de fonctionnement par de la SCSP
   def taux_couverture_scsp
     denominateur = (emplois_depenses_personnel || 0) + (credits_cp_fonctionnement || 0)
     ratio(credits_subvention_sp, denominateur, 100)
   end
 
+  # Poids de la SCSP sur recettes totales
   def poids_scsp
-    total_recettes = (credits_financements_etat_autres || 0) + (credits_fiscalite_affectee || 0) + (credits_financements_publics_autres || 0) + (credits_recettes_propres_globalisees || 0) + (credits_subvention_sp || 0) + (credits_subvention_investissement_globalisee || 0) + (credits_financements_etat_fleches || 0) + (credits_financements_publics_fleches || 0) + (credits_recettes_propres_flechees || 0) + (credits_subvention_investissement_flechee || 0)
-    ratio(credits_subvention_sp, total_recettes, 100)
+    ratio(credits_subvention_sp, recettes_total, 100)
   end
 
+  # Total des recettes propres
   def total_recettes_propres
     (credits_recettes_propres_globalisees || 0) + (credits_recettes_propres_flechees || 0)
   end
 
+  # Taux de recettes propres
   def taux_recettes_propres
-    numerateur = (credits_recettes_propres_globalisees || 0) + (credits_recettes_propres_flechees || 0)
-    total_recettes = (credits_financements_etat_autres || 0) + (credits_fiscalite_affectee || 0) + (credits_financements_publics_autres || 0) + (credits_recettes_propres_globalisees || 0) + (credits_subvention_sp || 0) + (credits_subvention_investissement_globalisee || 0) + (credits_financements_etat_fleches || 0) + (credits_financements_publics_fleches || 0) + (credits_recettes_propres_flechees || 0) + (credits_subvention_investissement_flechee || 0)
-    ratio(numerateur,total_recettes,100)
+    ratio(total_recettes_propres,recettes_total,100)
   end
+
+  # Solde budgétaire = total_recettes - credits_cp_total
   def solde_budgetaire
-    (credits_financements_etat_autres || 0) + (credits_fiscalite_affectee || 0) + (credits_financements_publics_autres || 0) + (credits_recettes_propres_globalisees || 0) + (credits_subvention_sp || 0) + (credits_subvention_investissement_globalisee || 0) + (credits_financements_etat_fleches || 0) + (credits_financements_publics_fleches || 0) + (credits_recettes_propres_flechees || 0) + (credits_subvention_investissement_flechee || 0) - (credits_cp_total || 0)
+    recettes_total - (credits_cp_total || 0)
   end
 
+  # Solde budgétaire résultant des opérations fléchées = total_recettes_flechees-credits_cp_recettes_flechees
   def solde_budgetaire_fleche
-    credits_cp_recettes_flechees ? (credits_financements_etat_fleches || 0) + (credits_financements_publics_fleches || 0) + (credits_recettes_propres_flechees || 0) + (credits_subvention_investissement_flechee || 0) - (credits_cp_recettes_flechees || 0) : nil
+    credits_cp_recettes_flechees ? recettes_flechees - (credits_cp_recettes_flechees || 0) : nil
   end
 
+  # Variations des restes à payer
   def var_restes_a_payer
     (credits_ae_total || 0) - (credits_cp_total || 0)
   end
 
+  # Poids des restes à payer
   def poids_restes_a_payer
     denominateur = (credits_cp_total || 0) - (emplois_depenses_personnel || 0)
     ratio(credits_restes_a_payer,denominateur,100)

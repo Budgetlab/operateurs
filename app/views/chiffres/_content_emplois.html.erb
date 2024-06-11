@@ -1,14 +1,16 @@
 <h3 class="fr-h4">Emplois rémunérés par l’organisme</h3>
+<% title_emplois = chiffre.comptabilite_budgetaire ? 'autorisation d’emplois' : 'emplois' %>
+<% title_depenses_or_charges =  chiffre.comptabilite_budgetaire ? 'dépenses' : 'charges'%>
 <% if chiffre.operateur == true %>
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-12 fr-col-lg-6">
-      <div><% if chiffre.comptabilite_budgetaire == true %>Autorisation d’emplois<%else %>Emplois<%end %> sous plafond LFI <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_plafond_t", chiffre: chiffre} %></div>
+      <div class="fr-capitalize"><%= title_emplois %> sous plafond LFI <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_plafond_t", chiffre: chiffre} %></div>
       <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_plafond) %> ETPT</div>
     </div>
   </div>
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-12 fr-col-lg-6">
-      <div><% if chiffre.comptabilite_budgetaire == true %>Autorisation d’emplois<%else %>Emplois<%end %> hors plafond LFI <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_hors_plafond_t", chiffre: chiffre} %></div>
+      <div class="fr-capitalize"><%= title_emplois %> hors plafond LFI <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_hors_plafond_t", chiffre: chiffre} %></div>
       <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_hors_plafond) %> ETPT</div>
     </div>
     <div class="fr-col-12 fr-col-lg-6">
@@ -16,7 +18,7 @@
         <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
             <p class="fr-mb-0 fr-text--center">Hors-plafond / total effectifs rémunérés par l'organisme</p>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_hors_plafond,chiffre.emplois_total,100)) %> %</p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.ratio_hors_plafond) %> %</p>
           </div>
         </div>
       </div>
@@ -27,7 +29,7 @@
       <div class="fr-mb-2w">
         <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
-            <p class="fr-mb-0 fr-text--center">Total des <% if chiffre.comptabilite_budgetaire == true %>autorisations d'emplois<%else %>emplois<%end %> rémunérés par l'organisme <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_total_t", chiffre: chiffre} %></p>
+            <p class="fr-mb-0 fr-text--center">Total des <%= title_emplois %> rémunérés par l'organisme <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_total_t", chiffre: chiffre} %></p>
             <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_decimal(chiffre.emplois_total) %> ETPT</p>
           </div>
         </div>
@@ -37,7 +39,7 @@
 <%else %>
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-12 fr-col-lg-6">
-      <div>Total des <% if chiffre.comptabilite_budgetaire == true %>autorisations d'emplois<%else %>emplois<%end %> rémunérés par l'organisme <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_total2_t", chiffre: chiffre} %></div>
+      <div>Total des <%= title_emplois %> rémunérés par l'organisme <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_total2_t", chiffre: chiffre} %></div>
       <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_total) %> ETPT</div>
     </div>
   </div>
@@ -57,11 +59,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Coût moyen par ETPT <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_cout_t", chiffre: chiffre} %></p>
-          <% if chiffre.comptabilite_budgetaire == true %>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_depenses_personnel,chiffre.emplois_total,1)) %> €</p>
-          <%else %>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_charges_personnel,chiffre.emplois_total,1)) %> €</p>
-          <% end %>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.cout_moyen_etpt) %> €</p>
         </div>
       </div>
     </div>
@@ -95,7 +93,7 @@
     </div>
   </div>
 <% end  %>
-<h3 class="fr-h4 fr-mt-4w options fr-hidden">Répartition des emplois et dépenses de personnel par statut</h3>
+<h3 class="fr-h4 fr-mt-4w options fr-hidden">Répartition des emplois et <%= title_depenses_or_charges %> de personnel par statut</h3>
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
     <div>Total des emplois titulaires <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_titulaires_t", chiffre: chiffre} %></div>
@@ -104,7 +102,7 @@
 </div>
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
-    <div><% if chiffre.comptabilite_budgetaire == true %>Dépenses<%else %>Charges<%end %> de personnel des emplois titulaires <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_titulaires_montant_t", chiffre: chiffre} %></div>
+    <div class="fr-capitalize"><%= title_depenses_or_charges %> de personnel des emplois titulaires <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_titulaires_montant_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.emplois_titulaires_montant) %> €</div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
@@ -112,7 +110,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Coût moyen des emplois titulaires</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_titulaires_montant,chiffre.emplois_titulaires,1)) %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.cout_moyen_titulaires) %> €</p>
         </div>
       </div>
     </div>
@@ -128,7 +126,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Part des contractuels dans le total des emplois rémunérés par l’organisme</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_contractuels,chiffre.emplois_total,100)) %> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.part_contractuels) %> %</p>
         </div>
       </div>
     </div>
@@ -136,7 +134,7 @@
 </div>
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
-    <div><% if chiffre.comptabilite_budgetaire == true %>Dépenses<%else %>Charges<%end %> de personnel des emplois contractuels <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_contractuels_montant_t", chiffre: chiffre} %></div>
+    <div class="fr-capitalize"><%= title_depenses_or_charges %> de personnel des emplois contractuels <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_contractuels_montant_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.emplois_contractuels_montant) %> €</div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
@@ -144,7 +142,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Coût moyen des emplois contractuels</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_contractuels_montant,chiffre.emplois_contractuels,1)) %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.cout_moyen_contractuels) %> €</p>
         </div>
       </div>
     </div>
@@ -167,7 +165,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Part des personnels exerçant leurs missions dans l’organisme dans le total des emplois rémunérés directement par l’organisme <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_cout_autre_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.emplois_autre_entite %><%= format_nombre_entier(chiffre.indicateur_part_personnel_organisme) %><%else %>ND<%end %> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.indicateur_part_personnel_organisme) %> %</p>
         </div>
       </div>
     </div>

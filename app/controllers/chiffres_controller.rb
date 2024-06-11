@@ -241,10 +241,6 @@ class ChiffresController < ApplicationController
     end
     puts @grouped_chiffres_by_exercice
     @abscisses = @grouped_chiffres_by_exercice.keys.map(&:to_s)
-    @tresorerie_finale = @chiffres.map { |chiffre| chiffre.tresorerie_finale }
-    @fr_final = @chiffres.map { |chiffre| chiffre.fonds_roulement_final }
-    @emplois_total = @chiffres.map { |chiffre| chiffre.emplois_total }
-    @emplois_cout_total = @chiffres.map { |chiffre| chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel }
   end
 
   private

@@ -25,7 +25,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_jours_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.tresorerie_finale,@den,1)) %> Jours</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.jours_fonctionnement_tresorerie) %> Jours</p>
         </div>
       </div>
     </div>
@@ -116,7 +116,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Niveau le plus haut de trésorerie en jours de fonctionnement</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.tresorerie_max,@den,1)) %> Jours</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.jours_fonctionnement_tresorerie_max) %> Jours</p>
         </div>
       </div>
     </div>
@@ -132,7 +132,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Niveau le plus bas de trésorerie en jours de fonctionnement</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.tresorerie_min,@den,1)) %> Jours</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.jours_fonctionnement_tresorerie_min) %> Jours</p>
         </div>
       </div>
     </div>

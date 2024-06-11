@@ -39,7 +39,7 @@ module ApplicationHelper
   def format_nombre(nombre)
     case nombre
     when nil, ''
-      'ND'
+      'Ø'
     else
       number_with_delimiter('%.11g' % ('%.1f' % nombre), locale: :fr)
     end
@@ -47,7 +47,7 @@ module ApplicationHelper
   def format_nombre_decimal(nombre)
     case nombre
     when nil, ''
-      'ND'
+      'Ø'
     else
       number_with_delimiter('%.11g' % ('%.2f' % nombre), locale: :fr)
     end
@@ -55,7 +55,7 @@ module ApplicationHelper
   def format_nombre_entier(nombre)
     case nombre
     when nil, ''
-      'ND'
+      'Ø'
     else
       number_with_delimiter('%.11g' % ('%.0f' % nombre), locale: :fr)
     end
