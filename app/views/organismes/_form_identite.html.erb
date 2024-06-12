@@ -60,7 +60,7 @@
           <div class="fr-col-12 fr-col-lg-3">
             <div class="fr-select-group">
               <label for="datecreation" class="fr-label">Date de création <%= render partial: "organismes/tooltip", locals: {num_id: "date_creation"} %></label>
-              <%= f.text_field :date_creation, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_default_date: format_date(@organisme.date_creation)}, value: @organisme.date_creation, id: "datecreation", placeholder: "- sélectionner -"%>
+              <%= f.text_field :date_creation, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y",flatpickr_default_date: format_date(@organisme.date_creation)}, value: format_date(@organisme.date_creation), id: "datecreation", placeholder: "- sélectionner -"%>
             </div>
 
           </div>
@@ -133,7 +133,7 @@
             <%else %>
             <div class="fr-input-group">
               <label for="date_previsionnelle_dissolution" class="fr-label ">Date prévisionnelle dissolution <%= render partial: "organismes/tooltip", locals: {num_id: "date_previsionnelle_dissolution"} %></label>
-              <%= f.text_field :date_previsionnelle_dissolution, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y", flatpickr_default_date: format_date(@organisme.date_previsionnelle_dissolution)}, value: @organisme.date_previsionnelle_dissolution, id: "date_previsionnelle_dissolution", placeholder: "- sélectionner -"%>
+              <%= f.text_field :date_previsionnelle_dissolution, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y", flatpickr_default_date: format_date(@organisme.date_previsionnelle_dissolution)}, value: format_date(@organisme.date_previsionnelle_dissolution), id: "date_previsionnelle_dissolution", placeholder: "- sélectionner -"%>
             </div>
             <%end %>
           </div>
@@ -144,7 +144,7 @@
             <%else %>
             <div class="fr-input-group">
               <label for="date_dissolution" class="fr-label">Date de dissolution</label>
-              <%= f.text_field :date_dissolution, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y", flatpickr_default_date: format_date(@organisme.date_dissolution)}, value: @organisme.date_dissolution, id: "date_dissolution", placeholder: "- sélectionner -"%>
+              <%= f.text_field :date_dissolution, class:"fr-select", data: { controller: "flatpickr",flatpickr_date_format: "d/m/Y", flatpickr_default_date: format_date(@organisme.date_dissolution)}, value: format_date(@organisme.date_dissolution), id: "date_dissolution", placeholder: "- sélectionner -"%>
             </div>
             <%end %>
           </div>

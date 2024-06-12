@@ -80,7 +80,7 @@ export default class extends Controller {
             const colors_treso = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"];
             const colors_emplois = ["var(--blue-ecume-850-200)","var(--pink-macaron-main-689)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"];
 
-            const options_treso = this.syntheseBar("Évolution de la trésorerie finale et du fonds de roulement final", abscisses, "Trésorerie finale (€)",'Trésorerie finale', dataTreso, " €", "Fonds de roulement final (€)", "Fonds de roulement final", dataFR, " €", colors_treso );
+            const options_treso = this.syntheseBar("Évolution de la trésorerie finale et des jours de fonctionnement", abscisses, "Trésorerie finale (€)",'Trésorerie finale', dataTreso, " €", "Trésorerie en jours de fonctionnement (Jours)", "Trésorerie en jours de fonctionnement", dataFR, " Jours", colors_treso );
             this.chart = Highcharts.chart(this.canvasTresoTarget, options_treso);
             this.chart.reflow();
 
@@ -260,6 +260,131 @@ export default class extends Controller {
                 type: 'spline',
                 data: data2,
                 pointPadding: 0.2,
+                tooltip: {
+                    valueSuffix: value_tooltip2
+                },
+                yAxis: 1 // Placer sur le deuxième axe Y
+            }]
+            ,
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            floating: false,
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            x: 0,
+                            y: 0
+                        },
+                    }
+                }],
+            }
+        }
+        return options
+    }
+
+    syntheseBar1(title, abscisses, title_y1, serie_name1,data1, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors){
+        const options = {
+            chart: {
+                height: 400,
+                style:{
+                    fontFamily: "Marianne",
+                },
+                type: 'column',
+            },
+            exporting:{enabled: true},
+            colors: colors,
+            title: {
+                text: title,
+
+                style: {
+                    fontSize: '13px',
+                    fontWeight: "900",
+                    color: 'var(--text-title-grey)',
+                },
+            },
+            legend:{
+                itemStyle: {
+                    color: 'var(--text-title-grey)',
+                },
+            },
+            tooltip: {
+                borderColor: 'transparent',
+                borderRadius: 16,
+                backgroundColor: "rgba(245, 245, 245, 1)",
+            },
+            xAxis: {
+                categories: [2019,2020,2021,2022,2023,2024,2025],
+                labels: {
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+            },
+            yAxis: [
+                {
+                    title: {
+                        text: "tréso",
+                        style: {
+                            color: colors[0],
+                        },
+                    },
+                    labels: {
+                        style: {
+                            color: colors[0],
+                        },
+                    },
+                    opposite: false,
+                }, {
+                    title: {
+                        text: "jours",
+                        style: {
+                            color: colors[1],
+                        },
+                    },
+                    labels: {
+                        style: {
+                            color: colors[1],
+                        },
+                    },
+                    opposite: true,
+                }],
+            plotOptions: {
+                column: {
+                }
+            },
+            series: [{
+                name: "treso bi",
+                type: 'column',
+                tooltip: {
+                    valueSuffix: value_tooltip1
+                },
+                data: [10,20,30,40,50,20],
+
+            }, {
+                name: "treso cf",
+                type: 'column',
+                tooltip: {
+                    valueSuffix: value_tooltip1
+                },
+                data: [12,22,33,40,50,30],
+
+            },{
+                name: "jours bi",
+                type: 'spline',
+                data: [100,200,300,400,500,400],
+                tooltip: {
+                    valueSuffix: value_tooltip2
+                },
+                yAxis: 1 // Placer sur le deuxième axe Y
+            },{
+                name: "jours cf",
+                type: 'spline',
+                data: [110,210,330,400,500,420],
                 tooltip: {
                     valueSuffix: value_tooltip2
                 },

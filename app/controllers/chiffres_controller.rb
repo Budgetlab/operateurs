@@ -237,7 +237,7 @@ class ChiffresController < ApplicationController
     @grouped_chiffres_by_exercice = @chiffres.group_by(&:exercice_budgetaire).transform_values do |chiffres|
       last_br = chiffres.select { |chiffre| chiffre.type_budget == 'Budget rectificatif'}.sort_by(&:created_at)&.last
 
-      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.fonds_roulement_final, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel] if (chiffre.type_budget != "Budget rectificatif" || (chiffre.type_budget == "Budget rectificatif" && chiffre.id == last_br&.id) ) }.compact
+      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie.round, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel] if (chiffre.type_budget != "Budget rectificatif" || (chiffre.type_budget == "Budget rectificatif" && chiffre.id == last_br&.id) ) }.compact
     end
     puts @grouped_chiffres_by_exercice
     @abscisses = @grouped_chiffres_by_exercice.keys.map(&:to_s)
