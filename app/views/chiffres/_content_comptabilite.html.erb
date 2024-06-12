@@ -8,7 +8,7 @@
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Total des charges</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@total_charges) %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.total_charges) %> €</p>
         </div>
       </div>
     </div>
@@ -19,7 +19,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Poids relatif des charges de personnel <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_personnel_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_charges_personnel,@charges_decaissables,100)) %> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_charges_personnel) %> %</p>
         </div>
       </div>
     </div>
@@ -31,7 +31,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Poids des charges de fonctionnement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_fonctionnement_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.charges_fonctionnement,@charges_decaissables,100)) %> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_charges_fonctionnement) %> %</p>
         </div>
       </div>
     </div>
@@ -43,7 +43,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Poids des charges d'intervention <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_intervention_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.charges_intervention,@charges_decaissables,100)) %> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_charges_intervention) %> %</p>
         </div>
       </div>
     </div>
@@ -55,7 +55,7 @@
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Total des produits</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@total_produits) %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.total_produits) %> €</p>
         </div>
       </div>
     </div>
@@ -76,7 +76,7 @@
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Résultat <%= render partial: "chiffres/tooltip", locals: {num_id: "resultat_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@total_produits - @total_charges) %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.resultat) %> €</p>
         </div>
       </div>
     </div>
@@ -90,7 +90,7 @@
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Charges décaissables</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@charges_decaissables) %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.charges_decaissables) %> €</p>
         </div>
       </div>
     </div>
@@ -128,7 +128,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Taux de ressources propres <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_ressources_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.produits_autres - (chiffre.produits_non_encaissables || 0) + chiffre.ressources_autres,@total_produits - (chiffre.produits_non_encaissables || 0) + chiffre.ressources_total - chiffre.capacite_autofinancement,100)) %> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.taux_ressources_propres) %> %</p>
         </div>
       </div>
     </div>
@@ -177,7 +177,7 @@
           <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
             <div class="fr-cart__body">
               <p class="fr-mb-0 fr-text--center">Décaissements non budgétaires <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_dec_t", chiffre: chiffre} %></p>
-              <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.decaissements_operations.nil? && chiffre.decaissements_emprunts.nil? && chiffre.decaissements_autres.nil? %>ND<%else %><%= format_nombre_entier(@total_decaissement) %><%end %> €</p>
+              <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.decaissements_non_budgetaires) %> €</p>
             </div>
           </div>
         </div>
@@ -187,7 +187,7 @@
           <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
             <div class="fr-cart__body">
               <p class="fr-mb-0 fr-text--center">Encaissements non budgétaires <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_enc_t", chiffre: chiffre} %></p>
-              <p class="fr-text--bold fr-mb-0 fr-text--center"><% if chiffre.encaissements_operations.nil? && chiffre.encaissements_emprunts.nil? && chiffre.encaissements_autres.nil? %>ND<%else %><%= format_nombre_entier(@total_encaissement) %><%end %> €</p>
+              <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.encaissements_non_budgetaires) %> €</p>
             </div>
           </div>
         </div>

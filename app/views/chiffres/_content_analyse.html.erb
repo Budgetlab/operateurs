@@ -8,7 +8,7 @@
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Niveau initial du fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_fr_initial_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.fonds_roulement_final - chiffre.fonds_roulement_variation) %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.fonds_roulement_initial) %> €</p>
         </div>
       </div>
     </div>
@@ -19,7 +19,7 @@
         <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
             <p class="fr-mb-0 fr-text--center">Niveau initial du besoin en fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_bfr_initial_t", chiffre: chiffre} %></p>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%if chiffre.fonds_roulement_besoin_final %><%= format_nombre_entier(chiffre.fonds_roulement_besoin_final - @variation_brf) %><%else %>ND<%end %> €</p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"><<%= format_nombre_entier(chiffre.fonds_roulement_besoin_initial) %> €</p>
           </div>
         </div>
       </div>
@@ -31,7 +31,7 @@
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@solde) %>€</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.solde_budgetaire) %>€</p>
         </div>
       </div>
     </div>
@@ -56,7 +56,7 @@
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Variation du besoin en fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_besoin_fr_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@variation_brf) %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.variation_bfr) %> €</p>
         </div>
       </div>
     </div>

@@ -136,52 +136,102 @@ class Chiffre < ApplicationRecord
     ratio(credits_restes_a_payer,denominateur,100)
   end
 
+  # Total des charges
   def total_charges
     (emplois_charges_personnel || 0) + (charges_fonctionnement || 0) + (charges_intervention || 0)
   end
 
+  # Total des produits
   def total_produits
     (produits_subventions_etat || 0) + (produits_fiscalite_affectee || 0) + (produits_subventions_autres || 0) + (produits_autres || 0)
   end
 
+  # résultat
+  def resultat
+    total_produits - total_charges
+  end
+
   def charges_decaissables
-    (emplois_charges_personnel || 0) + (charges_fonctionnement || 0) + (charges_intervention || 0) - (charges_non_decaissables || 0)
+    total_charges - (charges_non_decaissables || 0)
+  end
+
+  # Poids relatif des charges de personnel
+  def poids_charges_personnel
+    ratio(emplois_charges_personnel, charges_decaissables, 100)
+  end
+
+  # Poids des charges de fonctionnement
+  def poids_charges_fonctionnement
+    ratio(charges_fonctionnement, charges_decaissables, 100)
+  end
+
+  # Poids des charges d'intervention
+  def poids_charges_intervention
+    ratio(charges_intervention, charges_decaissables, 100)
+  end
+
+  # Taux de ressources propres
+  def taux_ressources_propres
+    numerateur = produits_autres - (produits_non_encaissables || 0) + ressources_autres
+    denominateur = total_produits - (produits_non_encaissables || 0) + ressources_total - capacite_autofinancement
+    ratio(numerateur, denominateur, 100)
   end
 
   def encaissements_non_budgetaires
-    (encaissements_operations || 0) + (encaissements_emprunts || 0) + (encaissements_autres || 0)
+    encaissements_operations.nil? && encaissements_emprunts.nil? && encaissements_autres.nil? ? nil : (encaissements_operations || 0) + (encaissements_emprunts || 0) + (encaissements_autres || 0)
   end
 
   def decaissements_non_budgetaires
-    (decaissements_operations || 0) + (decaissements_emprunts || 0) + (decaissements_autres || 0)
+    decaissements_operations.nil? && decaissements_emprunts.nil? && decaissements_autres.nil? ? nil : (decaissements_operations || 0) + (decaissements_emprunts || 0) + (decaissements_autres || 0)
   end
 
   def jours_fonctionnement_tresorerie
-    charges_decaissables = (emplois_charges_personnel || 0) + (charges_fonctionnement || 0) + (charges_intervention || 0) - (charges_non_decaissables || 0)
     denominateur = comptabilite_budgetaire ? ((credits_cp_total || 0) - (credits_cp_investissement || 0)) / 360 : charges_decaissables / 360
     ratio(tresorerie_finale,denominateur,1)
   end
 
+  # Taux de couverture des restes à payer par la trésorerie
+  def taux_couverture_rap
+    ratio(tresorerie_finale, credits_restes_a_payer, 100)
+  end
+
+  # Niveau initial de trésorerie
+  def tresorerie_initiale
+    (tresorerie_finale || 0) - (tresorerie_variation || 0)
+  end
+
   def jours_fonctionnement_tresorerie_non_flechee
-    charges_decaissables = (emplois_charges_personnel || 0) + (charges_fonctionnement || 0) + (charges_intervention || 0) - (charges_non_decaissables || 0)
     denominateur = comptabilite_budgetaire ? ((credits_cp_total || 0) - (credits_cp_investissement || 0)) / 360 : charges_decaissables / 360
     ratio(tresorerie_finale_non_flechee,denominateur,1)
   end
 
+  # Poids de la trésorerie non fléchée
+  def poids_tresorerie_non_flechee
+    ratio(tresorerie_finale_non_flechee, tresorerie_finale, 100)
+  end
+
   def jours_fonctionnement_tresorerie_min
-    charges_decaissables = (emplois_charges_personnel || 0) + (charges_fonctionnement || 0) + (charges_intervention || 0) - (charges_non_decaissables || 0)
     denominateur = comptabilite_budgetaire ? ((credits_cp_total || 0) - (credits_cp_investissement || 0)) / 360 : charges_decaissables / 360
     ratio(tresorerie_min,denominateur,1)
   end
 
   def jours_fonctionnement_tresorerie_max
-    charges_decaissables = (emplois_charges_personnel || 0) + (charges_fonctionnement || 0) + (charges_intervention || 0) - (charges_non_decaissables || 0)
     denominateur = comptabilite_budgetaire ? ((credits_cp_total || 0) - (credits_cp_investissement || 0)) / 360 : charges_decaissables / 360
     ratio(tresorerie_max,denominateur,1)
   end
 
   def variation_bfr
     (fonds_roulement_variation || 0) - (tresorerie_variation || 0)
+  end
+
+  # Niveau initial du besoin en fonds de roulement
+  def fonds_roulement_besoin_initial
+    fonds_roulement_besoin_final ? fonds_roulement_besoin_final - variation_bfr : nil
+  end
+
+  # Niveau initial du fonds de roulement
+  def fonds_roulement_initial
+    (fonds_roulement_final || 0) - (fonds_roulement_variation || 0)
   end
 
   def self.ransackable_attributes(auth_object = nil)

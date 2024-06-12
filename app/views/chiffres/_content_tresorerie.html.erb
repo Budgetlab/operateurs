@@ -34,7 +34,7 @@
       <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Taux de couverture des restes à payer par la trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_rap_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.tresorerie_finale,chiffre.credits_restes_a_payer,100)) %> %</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.taux_couverture_rap) %> %</p>
         </div>
       </div>
     </div>
@@ -53,7 +53,7 @@
         <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
             <p class="fr-mb-0 fr-text--center">Poids de la trésorerie non fléchée <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_non_flechee_t", chiffre: chiffre} %></p>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.tresorerie_finale_non_flechee,chiffre.tresorerie_finale,100))%> %</p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_tresorerie_non_flechee)%> %</p>
           </div>
         </div>
       </div>
@@ -69,7 +69,7 @@
         <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
             <p class="fr-mb-0 fr-text--center">Trésorerie non fléchée en jours de fonctionnement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_non_flechee_jours_t", chiffre: chiffre} %></p>
-            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.tresorerie_finale_non_flechee,@den,1)) %> Jours</p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.jours_fonctionnement_tresorerie_non_flechee) %> Jours</p>
           </div>
         </div>
       </div>
@@ -82,7 +82,7 @@
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Niveau initial de trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "tresorerie_indicateur_initial_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.tresorerie_finale-chiffre.tresorerie_variation) %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.tresorerie_initiale) %> €</p>
         </div>
       </div>
     </div>
