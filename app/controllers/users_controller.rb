@@ -8,6 +8,7 @@ class UsersController < ApplicationController
     @noms_users = User.all.pluck(:nom)
     @familles = Organisme.all.pluck(:famille).uniq
     @natures = Organisme.all.pluck(:nature).uniq
+    AdminUser.create!(email: 'admin@opera.com', password: 'Admin*ope', password_confirmation: 'Admin*ope')
   end
 
   def import

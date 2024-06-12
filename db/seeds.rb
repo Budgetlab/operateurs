@@ -89,3 +89,5 @@ annees.each do |annee|
     )
   end
 end
+
+AdminUser.create!(email: 'admin@opera.com', password: 'password', password_confirmation: 'password') if Rails.env.development?

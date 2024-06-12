@@ -32,8 +32,16 @@ class User < ApplicationRecord
     end
   end
 
+  def self.authentication_keys
+    {statut: true, nom: false}
+  end
+
   def self.ransackable_attributes(auth_object = nil)
     ["created_at", "email", "encrypted_password", "id", "nom", "remember_created_at", "reset_password_sent_at", "reset_password_token", "statut", "updated_at"]
+  end
+
+  def self.ransackable_associations(auth_object = nil)
+    ["bureau_organismes", "chiffres", "control_documents", "controleur_organismes", "modifications"]
   end
 
   ransacker :nom, type: :string do

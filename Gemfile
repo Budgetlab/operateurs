@@ -47,6 +47,7 @@ gem "sassc-rails"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
+gem 'activeadmin'
 gem 'active_link_to'
 gem 'caxlsx'
 gem 'caxlsx_rails'

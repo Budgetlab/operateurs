@@ -50,8 +50,8 @@ class ApplicationController < ActionController::Base
     return unless current_user
 
     @statut_user = current_user.statut
-    @modifications = @statut_user == '2B2O' ? Modification.where.not(user_id: current_user.id) : current_user.modifications
-    @modifications_attente = @modifications.select { |modification| modification.statut == 'En attente' }
+    @modifications_all = @statut_user == '2B2O' ? Modification.where.not(user_id: current_user.id) : current_user.modifications
+    @modifications_attente = @modifications_all.select { |modification| modification.statut == 'En attente' }
   end
 
   def set_famille
