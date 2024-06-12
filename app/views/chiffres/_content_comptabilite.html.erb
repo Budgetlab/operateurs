@@ -1,6 +1,3 @@
-<% @total_charges = chiffre.emplois_charges_personnel + chiffre.charges_fonctionnement + chiffre.charges_intervention %>
-<% @total_produits = chiffre.produits_subventions_etat + chiffre.produits_fiscalite_affectee + chiffre.produits_subventions_autres + chiffre.produits_autres %>
-<% @charges_decaissables = @total_charges - (chiffre.charges_non_decaissables || 0) %>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
     <h3 class="fr-h4">Charges</h3>
@@ -149,8 +146,6 @@
     </div>
   </div>
   <% if chiffre.comptabilite_budgetaire == true %>
-    <% @total_encaissement = (chiffre.encaissements_operations || 0) + (chiffre.encaissements_emprunts || 0) + (chiffre.encaissements_autres || 0) %>
-    <% @total_decaissement = (chiffre.decaissements_operations || 0) + (chiffre.decaissements_emprunts || 0) + (chiffre.decaissements_autres || 0) %>
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-6">
         <div>Emprunts, Prêts, Dépôts et cautionnements (besoins) <%= render partial: "chiffres/tooltip", locals: {num_id: "decaissements_emprunts_t", chiffre: chiffre} %></div>

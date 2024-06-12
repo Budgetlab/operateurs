@@ -1,13 +1,3 @@
-<% @total_subv_etat = chiffre.credits_financements_etat_autres + chiffre.credits_financements_etat_fleches %>
-<% @total_recettes_globalisees = chiffre.credits_financements_etat_autres +  chiffre.credits_fiscalite_affectee + chiffre.credits_financements_publics_autres + chiffre.credits_recettes_propres_globalisees%>
-<% @total_recettes_flechees = chiffre.credits_financements_etat_fleches + chiffre.credits_financements_publics_fleches + chiffre.credits_recettes_propres_flechees %>
-<% if chiffre.operateur == true %>
-  <% @total_recettes_globalisees = @total_recettes_globalisees + chiffre.credits_subvention_sp + chiffre.credits_subvention_investissement_globalisee %>
-  <% @total_recettes_flechees = @total_recettes_flechees + chiffre.credits_subvention_investissement_flechee %>
-  <% @total_subv_etat = @total_subv_etat + chiffre.credits_subvention_sp + chiffre.credits_subvention_investissement_globalisee + chiffre.credits_subvention_investissement_flechee %>
-<%end %>
-<% @total_recettes = @total_recettes_globalisees + @total_recettes_flechees %>
-<% @solde = @total_recettes - chiffre.credits_cp_total %>
 <h3 class="fr-h4 fr-mt-4w">Dépenses</h3>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">

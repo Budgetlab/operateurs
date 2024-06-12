@@ -1,8 +1,3 @@
-<% if chiffre.comptabilite_budgetaire == true  %>
-  <% @den = (chiffre.credits_cp_total - chiffre.credits_cp_investissement)/360 %>
-<% else %>
-  <% @den = @charges_decaissables/360 %>
-<% end  %>
 <h3 class="fr-h4">Niveaux de trésorerie</h3>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
