@@ -11,7 +11,7 @@ nodata(Highcharts)
 
 export default class extends Controller {
     static get targets() {
-        return ['canvasBI','canvasCF', 'canvasTreso', 'canvasEmplois'
+        return ['canvasBI','canvasCF', 'canvasTreso', 'canvasEmplois', 'canvasCharges'
         ];
     }
     connect() {
@@ -77,15 +77,58 @@ export default class extends Controller {
                 });
             });
 
-            const colors_treso = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"];
-            const colors_emplois = ["var(--blue-ecume-850-200)","var(--pink-macaron-main-689)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"];
+            const colors_treso = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--green-menthe-main-548)", "var(--purple-glycine-sun-319-moon-630)","var(--background-disabled-grey)"];
+            const colors_emplois = ["var(--blue-ecume-850-200)","var(--blue-ecume-main-400)", "var(--pink-macaron-main-689)","var(--pink-macaron-sun-406-moon-833)","var(--background-disabled-grey)"];
+            const colors_charges = ["var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active","var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active" ];
 
-            const options_treso = this.syntheseBar("Évolution de la trésorerie finale et des jours de fonctionnement", abscisses, "Trésorerie finale (€)",'Trésorerie finale', dataTreso, " €", "Trésorerie en jours de fonctionnement (Jours)", "Trésorerie en jours de fonctionnement", dataFR, " Jours", colors_treso );
+            let data_bi = {
+                dataTresoBI: [],
+                dataTresojoursBI: [],
+                dataETPTBI: [],
+                dataCPBI: [],
+                dataChargesBI_perso: [],
+                dataChargesBI_fonctionnement: [],
+                dataChargesBI_intervention: [],
+            }
+            let data_cf = {
+                dataTresoCF: [],
+                dataTresojoursCF: [],
+                dataETPTCF: [],
+                dataCPCF: [],
+                dataChargesCF_perso: [],
+                dataChargesCF_fonctionnement: [],
+                dataChargesCF_intervention: [],
+            }
+            abscisses.forEach((exercice) => {
+                const chiffres = grouped_datas[exercice];
+                let item;
+                let item_cf;
+                if (chiffres) {
+                    item = chiffres.find(([budgetType]) => budgetType === "Budget initial");
+                    item_cf = chiffres.find(([budgetType]) => budgetType === "Compte financier");
+                }
+                Object.keys(data_bi).forEach((key, index) => {
+                    data_bi[key].push(item ? item[index + 1] : null);
+                })
+                Object.keys(data_cf).forEach((key, index) => {
+                    data_cf[key].push(item_cf ? item_cf[index + 1] : null);
+                });
+            })
+            let dataChargesBI = [data_bi.dataChargesBI_perso,data_bi.dataChargesBI_fonctionnement, data_bi.dataChargesBI_intervention]
+            let dataChargesCF = [data_cf.dataChargesCF_perso,data_cf.dataChargesCF_fonctionnement, data_cf.dataChargesCF_intervention]
+
+            // const options_treso = this.syntheseBarSimple("Évolution de la trésorerie finale", abscisses, "Trésorerie finale (€)",'Trésorerie finale BI', dataTresoBI, " €", "Trésorerie en jours de fonctionnement (Jours)", "Trésorerie finale CF", dataTresoCF, " Jours", colors_treso, "Trésorerie en jours de fonctionnement BI", dataTresojoursBI, "Trésorerie en jours de fonctionnement CF", dataTresojoursCF );
+            const options_treso = this.syntheseBarSimple("Évolution de la trésorerie finale", abscisses, "Trésorerie finale (€)",'Trésorerie finale BI', data_bi.dataTresoBI, " €",  "Trésorerie finale CF", data_cf.dataTresoCF,  colors_treso);
             this.chart = Highcharts.chart(this.canvasTresoTarget, options_treso);
             this.chart.reflow();
 
-            const options_emplois = this.syntheseBar("Évolution de la masse salariale et des autorisations d'emplois", abscisses, "Masse salariale (€)",'Masse salariale', dataCP," €", "Autorisations d'emplois (ETPT)", "Autorisations d'emplois", dataETPT, " ETPT", colors_emplois );
+            // const options_emplois = this.syntheseBar("Évolution de la masse salariale et des autorisations d'emplois", abscisses, "Masse salariale (€)",'Masse salariale', dataCP," €", "Autorisations d'emplois (ETPT)", "Autorisations d'emplois", dataETPT, " ETPT", colors_emplois );
+            const options_emplois = this.syntheseBar1("Évolution de la masse salariale et des autorisations d'emplois", abscisses, "Masse salariale (€)",'Masse salariale BI', data_bi.dataCPBI," €", "Autorisations d'emplois (ETPT)", "Masse salariale CF", data_cf.dataCPCF, " ETPT", colors_emplois, "Autorisations d'emplois BI", data_bi.dataETPTBI,"Autorisations d'emplois CF",data_cf.dataETPTCF );
             this.chart = Highcharts.chart(this.canvasEmploisTarget, options_emplois);
+            this.chart.reflow();
+
+            const options_charges = this.syntheseBarStacked("Évolution des charges", abscisses, "Montant (€)",' €', dataChargesBI,dataChargesCF, colors_charges );
+            this.chart = Highcharts.chart(this.canvasChargesTarget, options_charges);
             this.chart.reflow();
         }
     }
@@ -287,7 +330,7 @@ export default class extends Controller {
         return options
     }
 
-    syntheseBar1(title, abscisses, title_y1, serie_name1,data1, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors){
+    syntheseBar1(title, abscisses, title_y1, serie_name1,data1, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors, serie_name3, data3, serie_name4, data4){
         const options = {
             chart: {
                 height: 400,
@@ -318,7 +361,7 @@ export default class extends Controller {
                 backgroundColor: "rgba(245, 245, 245, 1)",
             },
             xAxis: {
-                categories: [2019,2020,2021,2022,2023,2024,2025],
+                categories: abscisses,
                 labels: {
                     style: {
                         color: 'var(--text-title-grey)',
@@ -328,65 +371,103 @@ export default class extends Controller {
             yAxis: [
                 {
                     title: {
-                        text: "tréso",
+                        text: title_y1,
                         style: {
-                            color: colors[0],
+                            color: 'var(--text-title-grey)',
                         },
                     },
                     labels: {
                         style: {
-                            color: colors[0],
+                            color: 'var(--text-title-grey)',
                         },
                     },
-                    opposite: false,
+                    top: '40%',
+                    height: '60%',
                 }, {
                     title: {
-                        text: "jours",
+                        text: title_y2,
                         style: {
-                            color: colors[1],
+                            color: 'var(--text-title-grey)',
                         },
                     },
                     labels: {
                         style: {
-                            color: colors[1],
+                            color: 'var(--text-title-grey)',
                         },
                     },
-                    opposite: true,
+                    opposite:true,
+                    height: '40%',
                 }],
             plotOptions: {
                 column: {
                 }
             },
             series: [{
-                name: "treso bi",
+                name: serie_name1,
                 type: 'column',
                 tooltip: {
                     valueSuffix: value_tooltip1
                 },
-                data: [10,20,30,40,50,20],
+                data: data1,
+                dataLabels: {
+                    enabled: true,           // Active les dataLabels
+                    format: 'BI',            // Met le format des labels à 'BI'
+                    inside: false,
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    crop: false,
+                    overflow: 'none',
+                },
 
             }, {
-                name: "treso cf",
+                name: serie_name2,
                 type: 'column',
                 tooltip: {
                     valueSuffix: value_tooltip1
                 },
-                data: [12,22,33,40,50,30],
+                data: data2,
+                dataLabels: {
+                    enabled: true,           // Active les dataLabels
+                    format: 'CF',            // Met le format des labels à 'BI'
+                    inside: false,
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    crop: false,
+                    overflow: 'none',
+                },
 
             },{
-                name: "jours bi",
-                type: 'spline',
-                data: [100,200,300,400,500,400],
+                name: serie_name3,
+                type: 'column',
+                data: data3,
                 tooltip: {
                     valueSuffix: value_tooltip2
+                },
+                dataLabels: {
+                    enabled: true,           // Active les dataLabels
+                    format: 'BI',            // Met le format des labels à 'BI'
+                    inside: false,
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    crop: false,
+                    overflow: 'none',
                 },
                 yAxis: 1 // Placer sur le deuxième axe Y
             },{
-                name: "jours cf",
-                type: 'spline',
-                data: [110,210,330,400,500,420],
+                name: serie_name4,
+                type: 'column',
+                data: data4,
                 tooltip: {
                     valueSuffix: value_tooltip2
+                },
+                dataLabels: {
+                    enabled: true,           // Active les dataLabels
+                    format: 'CF',            // Met le format des labels à 'BI'
+                    inside: false,
+                    align: 'center',
+                    verticalAlign: 'bottom',
+                    crop: false,
+                    overflow: 'none',
                 },
                 yAxis: 1 // Placer sur le deuxième axe Y
             }]
@@ -412,5 +493,215 @@ export default class extends Controller {
         return options
     }
 
+    syntheseBarSimple(title, abscisses, title_y, serie_name1, data1, value_tooltip, serie_name2, data2, colors){
+        const options = {
+            chart: {
+                height: 400,
+                style:{
+                    fontFamily: "Marianne",
+                },
+                type: 'column',
+            },
+            exporting:{enabled: true},
+            colors: colors,
+            title: {
+                text: title,
+
+                style: {
+                    fontSize: '13px',
+                    fontWeight: "900",
+                    color: 'var(--text-title-grey)',
+                },
+            },
+            legend:{
+                itemStyle: {
+                    color: 'var(--text-title-grey)',
+                },
+            },
+            tooltip: {
+                borderColor: 'transparent',
+                borderRadius: 16,
+                backgroundColor: "rgba(245, 245, 245, 1)",
+            },
+            xAxis: {
+                categories: abscisses,
+                labels: {
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+            },
+            yAxis: [
+                {
+                    title: {
+                        text: title_y,
+                        style: {
+                            color: 'var(--text-title-grey)',
+                        },
+                    },
+                    labels: {
+                        style: {
+                            color: 'var(--text-title-grey)',
+                        },
+                    },
+                    opposite: false,
+                }],
+            plotOptions: {
+                column: {
+                }
+            },
+            series: [{
+                name: serie_name1,
+                type: 'column',
+                tooltip: {
+                    valueSuffix: value_tooltip
+                },
+                data: data1,
+                dataLabels: {
+                    enabled: true,           // Active les dataLabels
+                    format: 'BI',            // Met le format des labels à 'BI'
+                }
+
+            }, {
+                name: serie_name2,
+                type: 'column',
+                tooltip: {
+                    valueSuffix: value_tooltip
+                },
+                data: data2,
+                dataLabels: {
+                    enabled: true,           // Active les dataLabels
+                    format: 'CF',            // Met le format des labels à 'BI'
+                }
+            }]
+            ,
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            floating: false,
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            x: 0,
+                            y: 0
+                        },
+                    }
+                }],
+            }
+        }
+        return options
+    }
+
+    syntheseBarStacked(title, abscisses, title_y, value_tooltip, data1, data2, colors){
+        let serie_name1 = ["Charges de personnel BI", "Charges de fonctionnement BI", "Charges d'intervention BI"];
+        let serie_name2 = ["Charges de personnel CF", "Charges de fonctionnement CF", "Charges d'intervention CF"];
+        let series = [];
+
+        data1.forEach((data, i) => {
+
+            let serie = { name: serie_name1[i],
+                tooltip: {
+                valueSuffix: value_tooltip
+                },
+                stack: "BI",
+                data: data,
+            };
+            series.push(serie);
+        });
+        data2.forEach((data, i) => {
+            let serie = { name: serie_name2[i],
+                tooltip: {
+                    valueSuffix: value_tooltip
+                },
+                stack: "CF",
+                data: data};
+            series.push(serie);
+        });
+
+        const options = {
+            chart: {
+                height: 400,
+                style:{
+                    fontFamily: "Marianne",
+                },
+                type: 'column',
+            },
+            exporting:{enabled: true},
+            colors: colors,
+            title: {
+                text: title,
+
+                style: {
+                    fontSize: '13px',
+                    fontWeight: "900",
+                    color: 'var(--text-title-grey)',
+                },
+            },
+            legend:{
+                itemStyle: {
+                    color: 'var(--text-title-grey)',
+                },
+            },
+            tooltip: {
+                borderColor: 'transparent',
+                borderRadius: 16,
+                backgroundColor: "rgba(245, 245, 245, 1)",
+            },
+            xAxis: {
+                categories: abscisses,
+                labels: {
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+            },
+            yAxis: [
+                {
+                    title: {
+                        text: title_y,
+                        style: {
+                            color: 'var(--text-title-grey)',
+                        },
+                    },
+                    labels: {
+                        style: {
+                            color: 'var(--text-title-grey)',
+                        },
+                    },
+                    stackLabels: {
+                        enabled: true,
+                    }
+                }],
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                }
+            },
+            series: series
+            ,
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            floating: false,
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            x: 0,
+                            y: 0
+                        },
+                    }
+                }],
+            }
+        }
+        return options
+    }
 
 }

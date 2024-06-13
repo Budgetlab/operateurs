@@ -229,18 +229,18 @@ class ChiffresController < ApplicationController
   end
 
   def restitutions
-    @chiffres = @organisme.chiffres&.where(statut: 'valide')&.order(Arel.sql(" exercice_budgetaire ASC, CASE
-      WHEN type_budget = 'Budget initial' THEN 1
-      WHEN type_budget = 'Budget rectificatif' THEN 2
-      ELSE 3
-    END, created_at ASC"))
+    @chiffres = @organisme.chiffres&.where(statut: 'valide', type_budget: ['Budget initial','Compte financier'])&.order(:exercice_budgetaire)
     @grouped_chiffres_by_exercice = @chiffres.group_by(&:exercice_budgetaire).transform_values do |chiffres|
-      last_br = chiffres.select { |chiffre| chiffre.type_budget == 'Budget rectificatif'}.sort_by(&:created_at)&.last
-
-      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie.round, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel] if (chiffre.type_budget != "Budget rectificatif" || (chiffre.type_budget == "Budget rectificatif" && chiffre.id == last_br&.id) ) }.compact
+      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie.round, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel, chiffre.emplois_charges_personnel, chiffre.charges_fonctionnement, chiffre.charges_intervention] }.compact
     end
     puts @grouped_chiffres_by_exercice
-    @abscisses = @grouped_chiffres_by_exercice.keys.map(&:to_s)
+    #@abscisses = @grouped_chiffres_by_exercice.keys.map(&:to_s)
+    exercices = @chiffres.map(&:exercice_budgetaire)
+    first_exercice = exercices.min
+    last_exercice = exercices.max
+
+    @abscisses = (first_exercice..last_exercice).map(&:to_s)
+    puts @abscisses
   end
 
   private
