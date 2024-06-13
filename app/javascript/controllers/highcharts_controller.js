@@ -16,6 +16,7 @@ export default class extends Controller {
     }
     connect() {
         this.showViz();
+        this.transformValue()
     }
 
     showViz(){
@@ -34,49 +35,6 @@ export default class extends Controller {
             this.chart.reflow();
         }
         if (grouped_datas != null ) {
-            let dataTreso = [];
-            let dataFR = [];
-            let dataCP = [];
-            let dataETPT = [];
-            Object.keys(grouped_datas).forEach((exercice, i) => {
-                const chiffres = grouped_datas[exercice];
-                chiffres.forEach((chiffre, j) => {
-                    let adjustment;
-                    if (chiffres.length === 1) {
-                        adjustment = 0;
-                    } else if (chiffres.length === 2) {
-                        adjustment = (j === 0 ? -0.12 : 0.12);
-                    } else {
-                        adjustment = 0.22 * (j - Math.floor(chiffres.length / 2));
-                    }
-                    let x_placement = chiffres.length === 1 ? i : i + (j === 0 ? -0.12 : 0.12);
-                    const point = {
-                        x: i + adjustment,  // Adjust point placement for scatter
-                        y: chiffre[1],
-                        name: chiffre[0]
-                    };
-                    const point2 = {
-                        x: i + adjustment,  // Adjust point placement for scatter
-                        y: chiffre[2],
-                        name: chiffre[0]
-                    };
-                    const point3 = {
-                        x: i + adjustment, // Adjust point placement for scatter
-                        y: chiffre[3],
-                        name: chiffre[0]
-                    };
-                    const point4 = {
-                        x: i + adjustment, // Adjust point placement for scatter
-                        y: chiffre[4],
-                        name: chiffre[0]
-                    };
-                    dataTreso.push(point);
-                    dataFR.push(point2);
-                    dataETPT.push(point3);
-                    dataCP.push(point4)
-                });
-            });
-
             const colors_treso = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--green-menthe-main-548)", "var(--purple-glycine-sun-319-moon-630)","var(--background-disabled-grey)"];
             const colors_emplois = ["var(--blue-ecume-850-200)","var(--blue-ecume-main-400)", "var(--pink-macaron-main-689)","var(--pink-macaron-sun-406-moon-833)","var(--background-disabled-grey)"];
             const colors_charges = ["var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active","var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active" ];
@@ -211,121 +169,6 @@ export default class extends Controller {
                     { name: 'Budgets non renseignés', y: data[4] }
                 ]
             }]
-        }
-        return options
-    }
-
-    syntheseBar(title, abscisses, title_y1, serie_name1,data1, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors){
-        const options = {
-            chart: {
-                height: 400,
-                style:{
-                    fontFamily: "Marianne",
-                },
-                type: 'column',
-            },
-            exporting:{enabled: true},
-            colors: colors,
-            title: {
-                text: title,
-
-                style: {
-                    fontSize: '13px',
-                    fontWeight: "900",
-                    color: 'var(--text-title-grey)',
-                },
-            },
-            legend:{
-                itemStyle: {
-                    color: 'var(--text-title-grey)',
-                },
-            },
-            tooltip: {
-                borderColor: 'transparent',
-                borderRadius: 16,
-                backgroundColor: "rgba(245, 245, 245, 1)",
-            },
-            xAxis: {
-                categories: abscisses,
-                labels: {
-                    style: {
-                        color: 'var(--text-title-grey)',
-                    },
-                },
-            },
-            yAxis: [
-                {
-                    title: {
-                        text: title_y1,
-                        style: {
-                            color: colors[0],
-                        },
-                    },
-                    labels: {
-                        style: {
-                            color: colors[0],
-                        },
-                    },
-                    opposite: false,
-                }, {
-                    title: {
-                        text: title_y2,
-                        style: {
-                            color: colors[1],
-                        },
-                    },
-                    labels: {
-                        style: {
-                            color: colors[1],
-                        },
-                    },
-                    opposite: true,
-                    }],
-            plotOptions: {
-                column: {
-                    grouping: false,
-                    shadow: false,
-                    borderWidth: 0,
-                    maxPointWidth: 40,
-                }
-            },
-            series: [{
-                name: serie_name1,
-                type: 'column',
-                tooltip: {
-                    valueSuffix: value_tooltip1
-                },
-                pointPadding: 0.2,
-                data: data1,
-
-            }, {
-                name: serie_name2,
-                type: 'spline',
-                data: data2,
-                pointPadding: 0.2,
-                tooltip: {
-                    valueSuffix: value_tooltip2
-                },
-                yAxis: 1 // Placer sur le deuxième axe Y
-            }]
-            ,
-            responsive: {
-                rules: [{
-                    condition: {
-                        maxWidth: 500
-                    },
-                    chartOptions: {
-                        legend: {
-                            floating: false,
-                            layout: 'horizontal',
-                            align: 'center',
-                            verticalAlign: 'bottom',
-                            x: 0,
-                            y: 0
-                        },
-                    }
-                }],
-            }
         }
         return options
     }
@@ -559,7 +402,13 @@ export default class extends Controller {
                 data: data1,
                 dataLabels: {
                     enabled: true,           // Active les dataLabels
-                    format: 'BI',            // Met le format des labels à 'BI'
+                    crop: false,
+                    overflow: 'none',
+                    formatter: function() {
+                        let value = this.y;
+                        let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value;
+                        return `BI : ${formattedNumber}`;
+                    }
                 }
 
             }, {
@@ -571,7 +420,13 @@ export default class extends Controller {
                 data: data2,
                 dataLabels: {
                     enabled: true,           // Active les dataLabels
-                    format: 'CF',            // Met le format des labels à 'BI'
+                    crop: false,
+                    overflow: 'none',
+                    formatter: function() {
+                        let value = this.y;
+                        let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value;
+                        return `CF : ${formattedNumber}`;
+                    }
                 }
             }]
             ,
@@ -674,6 +529,13 @@ export default class extends Controller {
                     },
                     stackLabels: {
                         enabled: true,
+                        crop: false,
+                        overflow: 'none',
+                        formatter: function() {
+                            let value = this.total;
+                            let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value;
+                            return `${formattedNumber}`;
+                        }
                     }
                 }],
             plotOptions: {
@@ -703,5 +565,7 @@ export default class extends Controller {
         }
         return options
     }
+
+
 
 }
