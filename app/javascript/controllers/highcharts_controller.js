@@ -11,7 +11,7 @@ nodata(Highcharts)
 
 export default class extends Controller {
     static get targets() {
-        return ['canvasBI','canvasCF', 'canvasTreso', 'canvasEmplois', 'canvasCharges'
+        return ['canvasBI','canvasCF', 'canvasTreso', 'canvasEmplois', 'canvasCharges', 'canvasEmploisBis'
         ];
     }
     connect() {
@@ -87,6 +87,13 @@ export default class extends Controller {
 
             const options_charges = this.syntheseBarStacked("Évolution des charges", abscisses, "Montant (€)",' €', dataChargesBI,dataChargesCF, colors_charges );
             this.chart = Highcharts.chart(this.canvasChargesTarget, options_charges);
+            this.chart.reflow();
+
+            const abscisses_bis = JSON.parse(this.data.get("abscissesbis"));
+            const emplois = JSON.parse(this.data.get("emplois"));
+            const emploiscout = JSON.parse(this.data.get("emploiscout"));
+            const options_emplois_bis = this.syntheseColSpline(emploiscout, "Évolution de la masse salariale et des emplois", abscisses_bis, "Masse salariale (€)",'Masse salariale', " €", "Emplois totaux (ETPT)", "Emplois totaux", emplois, "" );
+            this.chart = Highcharts.chart(this.canvasEmploisBisTarget, options_emplois_bis);
             this.chart.reflow();
         }
     }
@@ -545,6 +552,111 @@ export default class extends Controller {
             },
             series: series
             ,
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            floating: false,
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            x: 0,
+                            y: 0
+                        },
+                    }
+                }],
+            }
+        }
+        return options
+    }
+
+    syntheseColSpline(data, title, abscisses, title_y, serie_name,value_tooltip1, title_y2, serie_name2, data2, value_tooltip2){
+        const colors = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"]
+        const options = {
+            chart: {
+                height: 400,
+                style:{
+                    fontFamily: "Marianne",
+                },
+                type: 'column',
+            },
+            exporting:{enabled: true},
+            colors: colors,
+
+            title: {
+                text: title,
+
+                style: {
+                    fontSize: '13px',
+                    fontWeight: "900",
+                    color: 'var(--text-title-grey)',
+                },
+            },
+            legend:{
+                itemStyle: {
+                    color: 'var(--text-title-grey)',
+                },
+            },
+            tooltip: {
+                borderColor: 'transparent',
+                borderRadius: 16,
+                backgroundColor: "rgba(245, 245, 245, 1)",
+            },
+            xAxis: {
+                categories: abscisses,
+
+            },
+            yAxis: [{
+                title: {
+                    text: title_y,
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+                labels: {
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+            }, {
+                title: {
+                    text: title_y2,
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+                labels: {
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+                opposite: true,
+            }],
+            plotOptions: {
+                column: {
+                    maxPointWidth: 50,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: serie_name,
+                data: data,
+                type: 'column',
+                yAxis: 1,
+                tooltip: {
+                    valueSuffix: value_tooltip1
+                }
+            },{
+                name: serie_name2,
+                data: data2,
+                type: 'spline',
+                tooltip: {
+                    valueSuffix: value_tooltip2
+                }
+            }],
             responsive: {
                 rules: [{
                     condition: {
