@@ -1,15 +1,19 @@
-<% content_for :title do %>Restitutions graphiques de l'organisme <%= @organisme.nom %> | OPERA <% end %>
-<main role="main" data-controller="toggle" >
+<% content_for :title do %>Restitutions graphiques de l'organisme <%= @organisme.nom %> | OPERA
+<% end %>
+<main role="main" data-controller="toggle">
   <div class="fr-container">
     <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
-      <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+      <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane
+      </button>
       <div class="fr-collapse" id="breadcrumb-1">
         <ol class="fr-breadcrumb__list">
           <li>
-            <%= link_to root_path, class:"fr-breadcrumb__link" do %>Accueil<%end %>
+            <%= link_to root_path, class: "fr-breadcrumb__link" do %>Accueil
+            <% end %>
           </li>
           <li>
-            <%= link_to budgets_path, class:"fr-breadcrumb__link" do %>Liste des budgets<%end %>
+            <%= link_to budgets_path, class: "fr-breadcrumb__link" do %>Liste des budgets
+            <% end %>
           </li>
           <li>
             <a class="fr-breadcrumb__link" aria-current="page"><%= @organisme.nom %></a>
@@ -30,13 +34,19 @@
               <div class="fr-sidemenu__title" id="fr-sidemenu-title">Sections</div>
               <ul class="fr-sidemenu__list">
                 <li class="fr-sidemenu__item">
-                  <%= link_to organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>Fiche d'identité<%end %>
+                  <%= link_to organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>Fiche
+                    d'identité
+                  <% end %>
                 </li>
                 <li class="fr-sidemenu__item">
-                  <%= link_to organisme_chiffres_path(@organisme),class: "fr-sidemenu__link", target:"_self" do%>Données budgétaires et comptables<%end %>
+                  <%= link_to organisme_chiffres_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>
+                    Données budgétaires et comptables
+                  <% end %>
                 </li>
                 <li class="fr-sidemenu__item">
-                  <button class="fr-sidemenu__btn fr-btn--icon-right fr-icon-bar-chart-box-fill" aria-current="true">Restitutions graphiques </button>
+                  <button class="fr-sidemenu__btn fr-btn--icon-right fr-icon-bar-chart-box-fill" aria-current="true">Restitutions
+                    graphiques
+                  </button>
                 </li>
               </ul>
             </div>
@@ -44,22 +54,34 @@
         </nav>
       </div>
 
-      <div class="fr-col-12 fr-col-lg-8" >
+      <div class="fr-col-12 fr-col-lg-8">
         <% if @chiffres.empty? %>
           <div class="fr-highlight">
             <p>Il n'y a pas encore de budgets renseignés pour cet organisme.</p>
           </div>
         <% else %>
-          <div data-controller="highcharts" data-highcharts-abscisses="<%= @abscisses %>" data-highcharts-groupeddatas="<%= @grouped_chiffres_by_exercice.to_json %>" data-highcharts-abscissesbis="<%= @abscisses_bis %>" data-highcharts-emplois="<%=@emplois_total %>" data-highcharts-emploiscout="<%=@emplois_cout_total %>">
-            <div data-highcharts-target="canvasTreso"></div>
-            <br>
+          <div data-controller="highcharts" data-highcharts-abscisses="<%= @abscisses %>" data-highcharts-groupeddatas="<%= @grouped_chiffres_by_exercice.to_json %>" data-highcharts-abscissesbis="<%= @abscisses_bis %>" data-highcharts-emplois="<%= @emplois_total %>" data-highcharts-emploiscout="<%= @emplois_cout_total %>" data-highcharts-cb="<%= @organisme.comptabilite_budgetaire%>">
+
+            <h2>Emplois</h2>
+            <h3 class="fr-h4">Évolution de la masse salariale (BI/CF)</h3>
+            <div data-highcharts-target="canvasMS"></div>
+            <h3 class="fr-h4">Évolution des autorisations d'emplois (BI/CF)</h3>
             <div data-highcharts-target="canvasEmplois"></div>
-            <br>
+            <h3 class="fr-h4">Comparaison de l’évolution de la masse salariale et des emplois</h3>
             <div data-highcharts-target="canvasEmploisBis"></div>
-            <br>
+            <h2 class="fr-my-2w"><%= @organisme.comptabilite_budgetaire == "Non" ? 'Charges' : 'Dépenses et charges' %></h2>
+            <% if @organisme.comptabilite_budgetaire != "Non" %>
+              <h3 class="fr-h4">Évolution des dépenses (BI/CF)</h3>
+              <div data-highcharts-target="canvasDepenses"></div>
+            <% end %>
+            <h3 class="fr-h4">Évolution des charges (BI/CF)</h3>
             <div data-highcharts-target="canvasCharges"></div>
+            <h2 class="fr-my-2w">Trésorerie</h2>
+            <h3 class="fr-h4">Évolution de la trésorerie finale (BI/CF)</h3>
+            <div data-highcharts-target="canvasTreso"></div>
+
           </div>
-          <% end %>
+        <% end %>
       </div>
     </div>
   </div>

@@ -81,9 +81,12 @@ sheet_col = Array.new(157, 12)
         length_table = chiffres&.length + 3 || 3
 
         chiffres.where(statut: 'valide').each do |chiffre|
-            sheet.add_row [chiffre.organisme.nom," "+format_boolean(chiffre.organisme.siren),chiffre.organisme.famille,chiffre.organisme.nature,chiffre.organisme.bureau&.nom,
+            nom_complet = chiffre.organisme.acronyme.present? ? "#{chiffre.organisme.nom} - #{chiffre.organisme.acronyme}" : chiffre.organisme.nom
+            operateur = Operateur.find_by(organisme_id: chiffre.organisme_id)
+            numero_operateur = operateur ? "P#{operateur.programme.numero.to_s}" : ""
+            sheet.add_row [nom_complet," "+format_boolean(chiffre.organisme.siren),chiffre.organisme.famille,chiffre.organisme.nature,chiffre.organisme.bureau&.nom,
             chiffre.organisme.nature_controle, chiffre.organisme.autorite_controle,
-            chiffre.exercice_budgetaire, chiffre.type_budget == "Budget rectificatif" ? chiffre.type_budget.to_s + ' n°' + numero_br(chiffre).to_s : chiffre.type_budget, chiffre.comptabilite_budgetaire ? 'OCB' : 'OHCB', chiffre.operateur ? 'Op' : 'Non Op', chiffre.phase,
+            chiffre.exercice_budgetaire, chiffre.type_budget == "Budget rectificatif" ? chiffre.type_budget.to_s + ' n°' + numero_br(chiffre).to_s : chiffre.type_budget, chiffre.comptabilite_budgetaire ? 'OCB' : 'OHCB', chiffre.operateur ? "Op #{numero_operateur}" : 'Non Op', chiffre.phase,
             chiffre.emplois_total, chiffre.emplois_plafond, chiffre.emplois_hors_plafond, ratio_excel_percent(chiffre.ratio_hors_plafond,100.0,1),
             chiffre.emplois_plafond_rappel, chiffre.emplois_plafond_prenotifie,
             chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel, chiffre.cout_moyen_etpt,

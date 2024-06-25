@@ -1,15 +1,16 @@
-<% content_for :title do %>Accueil | OPERA <% end %>
+<% content_for :title do %>Accueil | OPERA
+<% end %>
 <main role="main" class="containtAll">
   <div class="fr-container">
     <h1 class="fr-my-6w"><%= current_user.nom %></h1>
-
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
       <div class="fr-col-12 fr-col-lg-4">
         <div class="fr-card fr-enlarge-link fr-card--shadow">
           <div class="fr-card__body">
             <div class="fr-card__content">
-              <h3 class="fr-card__title"><%= link_to organismes_path do %>Consulter les informations d'un organisme<%end %></h3>
-              <p class="fr-card__desc">Accéder aux fiches des organismes de mon périmètre.</p>
+              <h3 class="fr-card__title"><%= link_to organismes_path do %>Consulter les informations d'un organisme
+                <% end %></h3>
+              <p class="fr-card__desc">Accéder aux fiches d’identité de l’ensemble des organismes.</p>
             </div>
           </div>
         </div>
@@ -19,15 +20,18 @@
           <div class="fr-card__body">
             <div class="fr-card__content">
               <% if @statut_user == "2B2O" %>
-              <h3 class="fr-card__title"><%= link_to modifications_path do %>Gérer les demandes de modifications contrôleurs<%end %></h3>
-              <p class="fr-card__desc">Suivre l'historique des modifications effectuées par les contrôleurs.</p>
+                <h3 class="fr-card__title"><%= link_to budgets_path do %>Accéder aux budgets des organismes
+                  <% end %></h3>
+                <p class="fr-card__desc">Visualiser l’ensemble des budgets renseignés par les contrôleurs.</p>
               <% elsif @statut_user == "Controleur" %>
-                <h3 class="fr-card__title"><%= link_to modifications_path do %>Suivre mes modifications<%end %></h3>
-              <p class="fr-card__desc">Accéder à l'historique des modifications effectuées sur les organismes de mon périmètre.</p>
+                <h3 class="fr-card__title"><%= link_to budgets_path do %>Accéder aux budgets des organismes
+                  <% end %></h3>
+                <p class="fr-card__desc">Visualiser les budgets renseignés sur mon périmètre et les familles communes.</p>
               <% elsif @statut_user == "Bureau Sectoriel" %>
-                <h3 class="fr-card__title"><%= link_to budgets_historique_path do %>Suivre l'historique des budgets<%end %></h3>
-                <p class="fr-card__desc">Accéder à l'historique des budgets sur les organismes de mon périmètre.</p>
-              <%end %>
+                <h3 class="fr-card__title"><%= link_to suivi_remplissage_path do %>Suivre le remplissage des budgets
+                  <% end %></h3>
+                <p class="fr-card__desc">Suivre l’évolution du remplissage des budgets des organismes.</p>
+              <% end %>
             </div>
           </div>
         </div>
@@ -37,46 +41,63 @@
           <div class="fr-card__body">
             <div class="fr-card__content">
               <% if @statut_user == "2B2O" %>
-              <h3 class="fr-card__title"><%= link_to new_organisme_path do %>Créer la fiche d'un organisme<%end %></h3>
-              <p class="fr-card__desc">Créer la fiche d'un organisme directement au sein de l'outil.</p>
+                <h3 class="fr-card__title"><%= link_to new_organisme_path do %>Créer la fiche d'un organisme
+                  <% end %></h3>
+                <p class="fr-card__desc">Créer la fiche d'un organisme directement au sein de l'outil.</p>
               <% elsif @statut_user == "Controleur" %>
-              <h3 class="fr-card__title"><%= link_to new_chiffre_path do %>Renseigner un nouveau budget<%end %></h3>
-              <p class="fr-card__desc">Renseigner le budget d’un organisme de mon périmètre à chaque étape du cycle budgétaire.</p>
+                <h3 class="fr-card__title"><%= link_to new_chiffre_path do %>Renseigner un nouveau budget
+                  <% end %></h3>
+                <p class="fr-card__desc">Renseigner le budget d’un organisme de mon périmètre à chaque étape du cycle
+                  budgétaire.</p>
               <% elsif @statut_user == "Bureau Sectoriel" %>
-                <h3 class="fr-card__title"><%= link_to budgets_path do %>Suivre les budgets<%end %></h3>
-                <p class="fr-card__desc">Accéder et comparer l'ensemble des budgets sur les organismes de mon périmètre.</p>
-              <%end %>
+                <h3 class="fr-card__title"><%= link_to budgets_path do %>Consulter les budgets renseignés
+                  <% end %></h3>
+                <p class="fr-card__desc">Accéder à l’ensemble des données budgétaires renseignées par les
+                  contrôleurs.</p>
+              <% end %>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-
-    <h2>Rechercher un organisme</h2>
-    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
-      <div class="fr-col-12 fr-col-lg-12">
-    <%= render partial: 'organismes/form_search', locals: {organisms: @search_organismes} %>
+  <div class="fr-box--blue fr-mb-4w">
+    <div class="fr-container">
+      <h2>Rechercher un organisme</h2>
+      <% if @statut_user != "2B2O" %>
+      <div class="fr-alert fr-alert--info fr-mb-4w">
+        <p>La liste des organismes accessibles comprend ceux de mon périmètre et des familles communes.</p>
+      </div>
+      <% end  %>
+      <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+        <div class="fr-col-12 fr-col-lg-12">
+          <%= render partial: 'organismes/form_search', locals: { organisms: @search_organismes } %>
+        </div>
       </div>
     </div>
+  </div>
 
-
-
+  <div class="fr-container">
+    <h2>Informations sur les organismes<% if @statut_user != "2B2O" %> de mon périmètre<% end %></h2>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
       <div class="fr-col-12 fr-col-lg-4" data-controller="highcharts" data-highcharts-budgetsbi="<%= @chiffres_bi_2024 %>" data-highcharts-budgetscf="<%= @chiffres_cf_2023 %>">
-        <h2>Suivi des budgets</h2>
+        <h3>Suivi des budgets</h3>
         <div class="fr-card fr-card--shadow fr-card--auto">
           <div class="fr-card__body">
             <div class="fr-card__content">
               <div class="fr-card__desc">
 
                 <ul class="fr-badges-group">
-                  <li><p class="fr-badge "><%= @chiffres_bi_2024.take(4).sum %>/<%= @organismes_user_active&.length %> BI 2024</p></li>
+                  <li>
+                    <p class="fr-badge "><%= @chiffres_bi_2024.take(4).sum %>/<%= @organismes_user_active&.length %> BI
+                      2024</p></li>
                 </ul>
-
                 <div data-highcharts-target="canvasBI"></div>
                 <ul class="fr-badges-group">
-                  <li><p class="fr-badge "><%= @chiffres_cf_2023.take(4).sum %>/<%= @organismes_user_active&.length %> CF 2023</p></li>
+                  <li>
+                    <p class="fr-badge "><%= @chiffres_cf_2023.take(4).sum %>/<%= @organismes_user_active&.length %> CF
+                      2023</p></li>
                 </ul>
                 <div data-highcharts-target="canvasCF"></div>
 
@@ -86,7 +107,7 @@
         </div>
       </div>
       <div class="fr-col-12 fr-col-lg-8">
-        <h2>Derniers organismes modifiés</h2>
+        <h3>Derniers organismes mis à jour</h3>
         <div class="fr-grid-row fr-grid-row--gutters">
           <% badge_classes = {
             "Inactif" => "fr-badge",
@@ -99,23 +120,29 @@
               <div class="fr-card fr-enlarge-link">
                 <div class="fr-card__body">
                   <div class="fr-card__content">
-                    <h3 class="fr-card__title"><%= link_to organisme_path(organisme[0]) do %><%= organisme[1] %><% if organisme[2] && !organisme[2].blank? %> - <%= organisme[2] %><%end %><%end %></h3>
+                    <h3 class="fr-card__title"><%= link_to organisme_path(organisme[0]) do %><%= organisme[1] %>
+                        <% if organisme[2] && !organisme[2].blank? %> - <%= organisme[2] %>
+                        <% end %>
+                      <% end %></h3>
                     <p class="fr-card__desc">Nature juridique : <%= format_boolean(organisme[4]) %></p>
                     <p class="fr-card__desc">Famille : <%= format_boolean(organisme[5]) %></p>
                     <div class="fr-card__start">
                       <ul class="fr-tags-group">
                         <li>
                           <p class="<%= badge_class %>"><%= organisme[6] %></p>
-                          <% if organisme[7] != "valide" %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><%end %>
+                          <% if organisme[7] != "valide" %>
+                            <p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p>
+                          <% end %>
                         </li>
                       </ul>
-                      <p class="fr-card__detail fr-icon-arrow-right-line">Modifié le <%= format_date(organisme[3])%></p>
+                      <p class="fr-card__detail fr-icon-arrow-right-line">Modifié
+                        le <%= format_date(organisme[3]) %></p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          <%end %>
+          <% end %>
         </div>
       </div>
     </div>
@@ -128,10 +155,12 @@
           <div class="fr-follow__newsletter">
             <div>
               <h2 class="fr-h5">Une question concernant OPERA ?</h2>
-              <p class="fr-text--sm">Si vous rencontrez un problème dans l'utilisation de l'outil, vous pouvez nous envoyer un mail à l'adresse DB-2B2O@finances.gouv.fr ou en cliquant sur le bouton ci-contre.</p>
+              <p class="fr-text--sm">Si vous rencontrez un problème dans l'utilisation de l'outil, vous pouvez nous
+                envoyer un mail à l'adresse DB-2B2O@finances.gouv.fr ou en cliquant sur le bouton ci-contre.</p>
             </div>
             <div>
-              <a href="mailto:DB-2B2O@finances.gouv.fr?subject=Contact-OPERA" class="fr-btn" rel="noopener" target="_blank" title="Nous contacter - nouvelle fenêtre">Nous contacter</a>
+              <a href="mailto:DB-2B2O@finances.gouv.fr?subject=Contact-OPERA" class="fr-btn" rel="noopener" target="_blank" title="Nous contacter - nouvelle fenêtre">Nous
+                contacter</a>
             </div>
           </div>
         </div>

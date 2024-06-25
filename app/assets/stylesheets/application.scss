@@ -324,3 +324,11 @@ select:disabled {
 .fr-card--auto{
   height: auto !important;
 }
+
+.fr-box--blue{
+  padding: 2rem 0;
+  background-color: var(--background-alt-blue-france);
+}
+.fr-modal__body.fr-modal--body-search{
+  max-height: 30vh !important;
+}

@@ -232,21 +232,22 @@ class ChiffresController < ApplicationController
     @chiffres = @organisme.chiffres&.where(statut: 'valide', type_budget: ['Budget initial', 'Compte financier'])&.order(Arel.sql(" exercice_budgetaire ASC, CASE
       WHEN type_budget = 'Budget initial' THEN 1
       WHEN type_budget = 'Budget rectificatif' THEN 2
-      ELSE 3
+      ELSE 2
     END, created_at ASC"))
     @grouped_chiffres_by_exercice = @chiffres.group_by(&:exercice_budgetaire).transform_values do |chiffres|
-      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie.round, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel, chiffre.emplois_charges_personnel, chiffre.charges_fonctionnement, chiffre.charges_intervention] }.compact
+      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie.round, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel, chiffre.emplois_charges_personnel, chiffre.charges_fonctionnement, chiffre.charges_intervention, chiffre.credits_cp_fonctionnement, chiffre.credits_cp_intervention, chiffre.credits_cp_investissement] }.compact
     end
-    puts @grouped_chiffres_by_exercice
-    #@abscisses = @grouped_chiffres_by_exercice.keys.map(&:to_s)
+    @series = @grouped_chiffres_by_exercice.transform_values do |chiffres|
+      chiffres.last
+    end
     exercices = @chiffres.map(&:exercice_budgetaire)
     first_exercice = exercices.min && exercices.min < 2022 ? exercices.min : 2022
     last_exercice = exercices.max && exercices.max > 2024 ? exercices.max : 2024
 
     @abscisses = (first_exercice..last_exercice).map(&:to_s) if first_exercice && last_exercice
-    @abscisses_bis = @chiffres.map { |chiffre| "#{chiffre.type_budget} #{chiffre.exercice_budgetaire}" }
-    @emplois_total = @chiffres.map {|chiffre| chiffre.emplois_total }
-    @emplois_cout_total = @chiffres.map {|chiffre| chiffre.emplois_cout_total }
+    @abscisses_bis = @series.map { |k, v| "#{v.first} #{k}" }
+    @emplois_total = @series.map { |_, v| v[3] }
+    @emplois_cout_total = @series.map { |_, v| v[4] }
   end
 
   private
