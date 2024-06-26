@@ -107,7 +107,7 @@ class ChiffresController < ApplicationController
     redirect_unless_can_edit
     redirect_to organisme_chiffres_path(@organisme) unless @chiffre.statut != 'valide' || params[:step]
     @steps = @chiffre.comptabilite_budgetaire == true ? 6 : 5
-    @numero_br = @chiffre.type_budget == 'Budget rectificatif' ? @organisme.chiffres.where(exercice_budgetaire: @chiffre.exercice_budgetaire, type_budget: 'Budget rectificatif').order(created_at: :asc).pluck(:id).index(@chiffre.id)+1 : ""
+    @numero_br = @chiffre.type_budget == 'Budget rectificatif' ? @organisme.chiffres.where(exercice_budgetaire: @chiffre.exercice_budgetaire, type_budget: 'Budget rectificatif').order(created_at: :asc).pluck(:id).index(@chiffre.id) + 1 : ""
   end
 
   def update
@@ -165,9 +165,9 @@ class ChiffresController < ApplicationController
     @chiffres = @chiffres.select { |el| params[:phases].include?(el.phase) } if params[:phases] && params[:phases].length != 4
     @chiffres = @chiffres.select { |el| params[:exercices].include?(el.exercice_budgetaire.to_s) } if params[:exercices] && params[:exercices].length != @exercices.length
     if params[:risque_insolvabilites]&.include?('Brouillon')
-      @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) || el.statut != 'valide'}
+      @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) || el.statut != 'valide' }
     else
-      @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) && el.statut == 'valide'} if params[:risque_insolvabilites] && params[:risque_insolvabilites].length != 5
+      @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) && el.statut == 'valide' } if params[:risque_insolvabilites] && params[:risque_insolvabilites].length != 5
     end
     respond_to do |format|
       format.turbo_stream do
@@ -235,21 +235,15 @@ class ChiffresController < ApplicationController
       ELSE 2
     END, created_at ASC"))
     @grouped_chiffres_by_exercice = @chiffres.group_by(&:exercice_budgetaire).transform_values do |chiffres|
-      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie.round, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel, chiffre.emplois_charges_personnel, chiffre.charges_fonctionnement, chiffre.charges_intervention, chiffre.credits_cp_fonctionnement, chiffre.credits_cp_intervention, chiffre.credits_cp_investissement, chiffre.variation_bfr, chiffre.credits_restes_a_payer] }.compact
+      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie.round, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel, chiffre.emplois_charges_personnel, chiffre.charges_fonctionnement, chiffre.charges_intervention, chiffre.credits_cp_fonctionnement, chiffre.credits_cp_intervention, chiffre.credits_cp_investissement, chiffre.variation_bfr, chiffre.credits_restes_a_payer, chiffre.tresorerie_finale_flechee, chiffre.tresorerie_finale_non_flechee, chiffre.recettes_globalisees, chiffre.recettes_flechees ] }.compact
     end
-    @series = @grouped_chiffres_by_exercice.transform_values do |chiffres|
-      chiffres.last
-    end
+    @series = @grouped_chiffres_by_exercice.transform_values(&:last)
     exercices = @chiffres.map(&:exercice_budgetaire)
     first_exercice = exercices.min && exercices.min < 2022 ? exercices.min : 2022
     last_exercice = exercices.max && exercices.max > 2024 ? exercices.max : 2024
 
     @abscisses = (first_exercice..last_exercice).map(&:to_s) if first_exercice && last_exercice
     @abscisses_bis = @series.map { |k, v| "#{v.first} #{k}" }
-    @emplois_total = @series.map { |_, v| v[3] }
-    @emplois_cout_total = @series.map { |_, v| v[4] }
-    @tresorerie = @series.map { |_, v| v[1] }
-    @bfr = @series.map { |_, v| v[11] }
   end
 
   private
@@ -325,11 +319,11 @@ class ChiffresController < ApplicationController
     else
       @solde = nil
     end
-    chiffre.risque_insolvabilite = calculateRisque(@solde, chiffre.tresorerie_variation, chiffre.fonds_roulement_variation,chiffre.fonds_roulement_variation-chiffre.tresorerie_variation ) if chiffre.statut == 'valide'
+    chiffre.risque_insolvabilite = calculateRisque(@solde, chiffre.tresorerie_variation, chiffre.fonds_roulement_variation, chiffre.fonds_roulement_variation - chiffre.tresorerie_variation) if chiffre.statut == 'valide'
     chiffre.save
   end
 
-  def calculateRisque(solde_budgetaire, tresorerie_variation,fonds_roulement_variation, variation_besoin_fr)
+  def calculateRisque(solde_budgetaire, tresorerie_variation, fonds_roulement_variation, variation_besoin_fr)
     if !solde_budgetaire.nil?
       if (solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0) || (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_besoin_fr >= 0)
         'Situation saine'
@@ -361,7 +355,7 @@ class ChiffresController < ApplicationController
     # Itération sur les valeurs du hash
     grouped_hash.values.each do |subarrays|
       # Trier les sous-tableaux par la date en utilisant le dernier élément de chaque sous-tableau
-      sous_tableau_recent = subarrays.max_by { |subarray| subarray.last }
+      sous_tableau_recent = subarrays.max_by(&:last)
       # Ajouter le sous-tableau avec la date la plus récente au résultat
       resultat << sous_tableau_recent
     end
@@ -403,8 +397,8 @@ class ChiffresController < ApplicationController
   def q_params
     if params[:q].present?
       params.require(:q).permit(:organisme_nom_or_organisme_acronyme_contains, :user_nom_in_insensitive => [], :organisme_famille_in => [],
-                                :exercice_budgetaire_in => [],:type_budget_in => [], :phase_in => [],
-                                :comptabilite_budgetaire_in => [] ,:operateur_in => [], :risque_insolvabilite_in => [], :famille_in => [])
+                                :exercice_budgetaire_in => [], :type_budget_in => [], :phase_in => [],
+                                :comptabilite_budgetaire_in => [], :operateur_in => [], :risque_insolvabilite_in => [], :famille_in => [])
     else
       {}
     end
@@ -412,7 +406,7 @@ class ChiffresController < ApplicationController
 
   def calculate_chiffres_budget_exercice(chiffres, organismes, exercice_budgetaire, type_budget)
     chiffres_budget = []
-    risques = ["Situation saine","Situation saine a priori mais à surveiller",'Risque d’insoutenabilité à moyen terme','Risque d’insoutenabilité élevé']
+    risques = ["Situation saine", "Situation saine a priori mais à surveiller", 'Risque d’insoutenabilité à moyen terme', 'Risque d’insoutenabilité élevé']
     chiffres_selected = chiffres.where(exercice_budgetaire: exercice_budgetaire, type_budget: type_budget)
     risques.each do |risque|
       chiffres_budget << chiffres_selected.where(risque_insolvabilite: risque)&.length

@@ -11,7 +11,7 @@ nodata(Highcharts)
 
 export default class extends Controller {
     static get targets() {
-        return ['canvasBI','canvasCF', 'canvasTreso', 'canvasMS','canvasEmplois', 'canvasCharges', 'canvasEmploisBis', 'canvasDepenses', 'canvasTresoBFR'
+        return ['canvasBI','canvasCF', 'canvasTreso', 'canvasMS','canvasEmplois', 'canvasCharges', 'canvasEmploisBis', 'canvasDepenses','canvasDepensesRecettes', 'canvasTresoBFR', 'canvasTresoRAP'
         ];
     }
     connect() {
@@ -23,6 +23,8 @@ export default class extends Controller {
         const budgetscf = JSON.parse(this.data.get("budgetscf"));
         const abscisses = JSON.parse(this.data.get("abscisses"));
         const grouped_datas = JSON.parse(this.data.get("groupeddatas"));
+        const series = JSON.parse(this.data.get("series"));
+
         if (budgetsbi != null && budgetsbi.length > 0) {
             const options = this.syntheseBudget(budgetsbi, "Répartition des budgets initiaux 2024");
             this.chart = Highcharts.chart(this.canvasBITarget, options);
@@ -34,7 +36,7 @@ export default class extends Controller {
             this.chart.reflow();
         }
         if (grouped_datas != null ) {
-            const colors_treso = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--green-menthe-main-548)", "var(--purple-glycine-sun-319-moon-630)","var(--background-disabled-grey)"];
+
             const colors_ms = ["var(--green-menthe-950-100)","var(--green-menthe-850-200)"];
             const colors_emplois = ["var(--purple-glycine-925-125)", "var(--purple-glycine-main-494)"];
             const colors_charges = ["var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active","var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active" ];
@@ -85,7 +87,7 @@ export default class extends Controller {
             let dataCPBI = [data_bi.dataCPBI_personnel,data_bi.dataCPBI_fonctionnement, data_bi.dataCPBI_intervention, data_bi.dataCPBI_investissement]
             let dataCPCF = [data_cf.dataCPCF_personnel,data_cf.dataCPCF_fonctionnement, data_cf.dataCPCF_intervention, data_cf.dataCPCF_investissement]
 
-            // const options_treso = this.syntheseBarSimple("Évolution de la trésorerie finale", abscisses, "Trésorerie finale (€)",'Trésorerie finale BI', dataTresoBI, " €", "Trésorerie en jours de fonctionnement (Jours)", "Trésorerie finale CF", dataTresoCF, " Jours", colors_treso, "Trésorerie en jours de fonctionnement BI", dataTresojoursBI, "Trésorerie en jours de fonctionnement CF", dataTresojoursCF );
+            const colors_treso = ["var(--blue-france-925-125)","var(--blue-france-850-200)"];
             const options_treso = this.syntheseBarSimple("Évolution de la trésorerie finale", abscisses, "Trésorerie finale (€)",'Trésorerie finale BI', data_bi.dataTresoBI, " €",  "Trésorerie finale CF", data_cf.dataTresoCF,  colors_treso);
             this.chart = Highcharts.chart(this.canvasTresoTarget, options_treso);
             this.chart.reflow();
@@ -99,33 +101,60 @@ export default class extends Controller {
             this.chart = Highcharts.chart(this.canvasEmploisTarget, options_emplois);
             this.chart.reflow();
 
-            let serie_name1_charges = ["Charges de personnel BI", "Charges de fonctionnement BI", "Charges d'intervention BI"];
-            let serie_name2_charges = ["Charges de personnel CF", "Charges de fonctionnement CF", "Charges d'intervention CF"];
-            const options_charges = this.syntheseBarStacked("Évolution des charges", abscisses, "Montant (€)",' €', serie_name1_charges, dataChargesBI,serie_name2_charges, dataChargesCF, colors_charges );
-            this.chart = Highcharts.chart(this.canvasChargesTarget, options_charges);
-            this.chart.reflow();
 
-            const abscisses_bis = JSON.parse(this.data.get("abscissesbis"));
-
-            const colors_emplois_cout = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"]
-            const emplois = JSON.parse(this.data.get("emplois"));
-            const emploiscout = JSON.parse(this.data.get("emploiscout"));
-            const options_emplois_bis = this.syntheseColSpline(emploiscout, "Évolution de la masse salariale et des emplois", abscisses_bis, "Masse salariale (€)",'Masse salariale', " €", "Emplois totaux (ETPT)", "Emplois totaux", emplois, "" ,colors_emplois_cout);
-            this.chart = Highcharts.chart(this.canvasEmploisBisTarget, options_emplois_bis);
-            this.chart.reflow();
-
-            const colors_treso_bfr = ["var(--blue-ecume-850-200)", "var(--green-menthe-975-75-hover)"]
-            const treso = JSON.parse(this.data.get("treso"));
-            const bfr = JSON.parse(this.data.get("bfr"));
-            const options_treso_bfr = this.syntheseColSpline(treso, "Comparaison de la trésorerie et du besoin en fonds de roulement", abscisses_bis, "Trésorerie finale (€)",'Trésorerie finale', " €", "Besoin fonds de roulement ( €)", "Besoin fonds de roulement", bfr, "",colors_treso_bfr );
-            this.chart = Highcharts.chart(this.canvasTresoBFRTarget, options_treso_bfr);
-            this.chart.reflow();
-
-            if (this.data.get("cb") != "Non"){
+            if (this.data.get("cb") == "Non") {
+                let serie_name1_charges = ["Charges de personnel BI", "Charges de fonctionnement BI", "Charges d'intervention BI"];
+                let serie_name2_charges = ["Charges de personnel CF", "Charges de fonctionnement CF", "Charges d'intervention CF"];
+                const options_charges = this.syntheseBarStacked("Évolution des charges", abscisses, "Montant (€)",' €', serie_name1_charges, dataChargesBI,serie_name2_charges, dataChargesCF, colors_charges );
+                this.chart = Highcharts.chart(this.canvasChargesTarget, options_charges);
+                this.chart.reflow();
+            }else {
                 let serie_name1_depenses = ["Dépenses de personnel BI", "Dépenses de fonctionnement BI", "Dépenses d'intervention BI", "Dépenses d'investissement BI"];
                 let serie_name2_depenses = ["Dépenses de personnel CF", "Dépenses de fonctionnement CF", "Dépenses d'intervention CF", "Dépenses d'investissement CF"];
                 const options_depenses = this.syntheseBarStacked("Évolution des dépenses", abscisses, "Montant (€)",' €',serie_name1_depenses, dataCPBI,serie_name2_depenses,dataCPCF, colors_depenses );
                 this.chart = Highcharts.chart(this.canvasDepensesTarget, options_depenses);
+                this.chart.reflow();
+            }
+        }
+        if( series != null){
+            const abscisses_series = JSON.parse(this.data.get("abscissesbis"));
+
+            const colors_emplois_cout = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"]
+            const emplois_total = Object.values(series).map(values => values[3]);
+            const emplois_montant = Object.values(series).map(values => values[4]);
+            const options_emplois_bis = this.syntheseColSpline("Évolution de la masse salariale et des emplois", abscisses_series, "Masse salariale (€)",'Masse salariale', emplois_montant," €", "Emplois totaux (ETPT)", "Emplois totaux", emplois_total, " ETPT" ,colors_emplois_cout);
+            this.chart = Highcharts.chart(this.canvasEmploisBisTarget, options_emplois_bis);
+            this.chart.reflow();
+
+            const colors_treso_bfr = ["var(--blue-ecume-850-200)", "var(--green-menthe-850-200)"]
+            const treso = Object.values(series).map(values => values[1]);
+            const bfr = Object.values(series).map(values => values[11]);
+            const options_treso_bfr = this.syntheseColSpline( "Comparaison de la trésorerie et du besoin en fonds de roulement", abscisses_series, "Trésorerie finale (€)",'Trésorerie finale', treso, " €", "Besoin fonds de roulement ( €)", "Besoin fonds de roulement", bfr, " €",colors_treso_bfr );
+            this.chart = Highcharts.chart(this.canvasTresoBFRTarget, options_treso_bfr);
+            this.chart.reflow();
+
+            if (this.data.get("cb") != "Non"){
+                const colors_treso_rap = ["var(--yellow-tournesol-850-200)", "var(--blue-france-850-200)", "var(--pink-tuile-main-556)"]
+                const treso_flechee = Object.values(series).map(values => values[13]);
+                const treso_non_flechee = Object.values(series).map(values => values[14]);
+                const rap = Object.values(series).map(values => values[12]);
+                const options_treso_bfr = this.syntheseStackSpline( "Comparaison de la trésorerie et des RAP ", abscisses_series, "Trésorerie finale (€)",'Trésorerie fléchée', treso_flechee, "Trésorerie non fléchée", treso_non_flechee," €", "Restes à payer ( €)", "Restes à payer", rap, " €",colors_treso_rap );
+                this.chart = Highcharts.chart(this.canvasTresoRAPTarget, options_treso_bfr);
+                this.chart.reflow();
+
+                const recettes_flechees = Object.values(series).map(values => values[16]);
+                const recettes_globalisees = Object.values(series).map(values => values[15]);
+                const data_recettes = [recettes_flechees,recettes_globalisees]
+                const d_personnel = Object.values(series).map(values => values[4]);
+                const d_fonctionnel = Object.values(series).map(values => values[7]);
+                const d_intervention = Object.values(series).map(values => values[8]);
+                const d_investissement = Object.values(series).map(values => values[9]);
+                const data_depenses = [d_personnel, d_fonctionnel,d_intervention, d_investissement];
+                const colors_depenses = ["var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active","var(--green-emeraude-sun-425-moon-753-active)", "var(--yellow-tournesol-950-100-hover)", "var(--beige-gris-galet-925-125)" ];
+                const serie_name1_recettes = ["Recettes fléchées", "Recette globalisées",];
+                const serie_name2_depenses = ["Dépenses de personnel", "Dépenses de fonctionnement", "Dépenses d'intervention", "Dépenses d'investissement"];
+                const options_dr = this.syntheseBarStacked("Comparaison de l’évolution des dépenses et des recettes", abscisses_series, "Montant (€)",' €',serie_name2_depenses,data_depenses,serie_name1_recettes, data_recettes, colors_depenses );
+                this.chart = Highcharts.chart(this.canvasDepensesRecettesTarget, options_dr);
                 this.chart.reflow();
             }
         }
@@ -332,7 +361,6 @@ export default class extends Controller {
         let series = [];
 
         data1.forEach((data, i) => {
-
             let serie = { name: serie_name1[i],
                 tooltip: {
                 valueSuffix: value_tooltip
@@ -415,6 +443,7 @@ export default class extends Controller {
                 }],
             plotOptions: {
                 column: {
+                    maxPointWidth: 50,
                     stacking: 'normal',
                 }
             },
@@ -441,7 +470,7 @@ export default class extends Controller {
         return options
     }
 
-    syntheseColSpline(data, title, abscisses, title_y, serie_name,value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors){
+    syntheseColSpline(title, abscisses, title_y, serie_name,data, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors){
 
         const options = {
             chart: {
@@ -513,7 +542,6 @@ export default class extends Controller {
                 name: serie_name,
                 data: data,
                 type: 'column',
-                yAxis: 1,
                 tooltip: {
                     valueSuffix: value_tooltip1
                 },
@@ -531,6 +559,7 @@ export default class extends Controller {
                 name: serie_name2,
                 data: data2,
                 type: 'spline',
+                yAxis: 1,
                 tooltip: {
                     valueSuffix: value_tooltip2
                 }
@@ -556,6 +585,118 @@ export default class extends Controller {
         return options
     }
 
+    syntheseStackSpline(title, abscisses, title_y, serie_name,data,serie_name_bis, data_bis, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors){
+
+        const options = {
+            chart: {
+                height: 400,
+                style:{
+                    fontFamily: "Marianne",
+                },
+                type: 'column',
+            },
+            exporting:{enabled: true},
+            colors: colors,
+
+            title: {
+                text: '',
+
+                style: {
+                    fontSize: '13px',
+                    fontWeight: "900",
+                    color: 'var(--text-title-grey)',
+                },
+            },
+            legend:{
+                itemStyle: {
+                    color: 'var(--text-title-grey)',
+                },
+            },
+            tooltip: {
+                borderColor: 'transparent',
+                borderRadius: 16,
+                backgroundColor: "rgba(245, 245, 245, 1)",
+            },
+            xAxis: {
+                categories: abscisses,
+
+            },
+            yAxis: [{
+                title: {
+                    text: title_y,
+                    style: {
+                        color: colors[0],
+                    },
+                },
+                labels: {
+                    style: {
+                        color: colors[0],
+                    },
+                },
+            }, {
+                title: {
+                    text: title_y2,
+                    style: {
+                        color: colors[2],
+                    },
+                },
+                labels: {
+                    style: {
+                        color: colors[2],
+                    },
+                },
+                opposite: true,
+            }],
+            plotOptions: {
+                column: {
+                    maxPointWidth: 50,
+                    stacking: 'normal',
+                }
+            },
+            series: [{
+                name: serie_name,
+                data: data,
+                type: 'column',
+                stack: "tréso",
+                tooltip: {
+                    valueSuffix: value_tooltip1
+                },
+            },{ name: serie_name_bis,
+                tooltip: {
+                    valueSuffix: value_tooltip1
+                },
+                type: 'column',
+                stack: "tréso",
+                data: data_bis,
+            },{
+                name: serie_name2,
+                data: data2,
+                type: 'spline',
+                yAxis: 1,
+                tooltip: {
+                    valueSuffix: value_tooltip2
+                }
+            }],
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 500
+                    },
+                    chartOptions: {
+                        legend: {
+                            floating: false,
+                            layout: 'horizontal',
+                            align: 'center',
+                            verticalAlign: 'bottom',
+                            x: 0,
+                            y: 0
+                        },
+                    }
+                }],
+            }
+        }
+        return options
+    }
 
 
 }

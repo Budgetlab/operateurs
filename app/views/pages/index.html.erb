@@ -65,11 +65,9 @@
   <div class="fr-box--blue fr-mb-4w">
     <div class="fr-container">
       <h2>Rechercher un organisme</h2>
-      <% if @statut_user != "2B2O" %>
       <div class="fr-alert fr-alert--info fr-mb-4w">
         <p>La liste des organismes accessibles comprend ceux de mon périmètre et des familles communes.</p>
       </div>
-      <% end  %>
       <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
         <div class="fr-col-12 fr-col-lg-12">
           <%= render partial: 'organismes/form_search', locals: { organisms: @search_organismes } %>
