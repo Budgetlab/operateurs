@@ -60,7 +60,7 @@
             <p>Il n'y a pas encore de budgets renseignés pour cet organisme.</p>
           </div>
         <% else %>
-          <div data-controller="highcharts" data-highcharts-abscisses="<%= @abscisses %>" data-highcharts-groupeddatas="<%= @grouped_chiffres_by_exercice.to_json %>" data-highcharts-abscissesbis="<%= @abscisses_bis %>" data-highcharts-emplois="<%= @emplois_total %>" data-highcharts-emploiscout="<%= @emplois_cout_total %>" data-highcharts-cb="<%= @organisme.comptabilite_budgetaire%>">
+          <div data-controller="highcharts" data-highcharts-abscisses="<%= @abscisses %>" data-highcharts-groupeddatas="<%= @grouped_chiffres_by_exercice.to_json %>" data-highcharts-abscissesbis="<%= @abscisses_bis %>" data-highcharts-cb="<%= @organisme.comptabilite_budgetaire%>"  data-highcharts-emplois="<%= @emplois_total %>" data-highcharts-emploiscout="<%= @emplois_cout_total %>" data-highcharts-treso="<%= @tresorerie %>" data-highcharts-bfr="<%= @bfr %>">
 
             <h2>Emplois</h2>
             <h3 class="fr-h4">Évolution de la masse salariale (BI/CF)</h3>
@@ -79,6 +79,8 @@
             <h2 class="fr-my-2w">Trésorerie</h2>
             <h3 class="fr-h4">Évolution de la trésorerie finale (BI/CF)</h3>
             <div data-highcharts-target="canvasTreso"></div>
+            <h3 class="fr-h4">Comparaison de la trésorerie et du besoin en fonds de roulement</h3>
+            <div data-highcharts-target="canvasTresoBFR"></div>
 
           </div>
         <% end %>

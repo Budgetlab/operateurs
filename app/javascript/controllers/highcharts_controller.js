@@ -11,7 +11,7 @@ nodata(Highcharts)
 
 export default class extends Controller {
     static get targets() {
-        return ['canvasBI','canvasCF', 'canvasTreso', 'canvasMS','canvasEmplois', 'canvasCharges', 'canvasEmploisBis', 'canvasDepenses'
+        return ['canvasBI','canvasCF', 'canvasTreso', 'canvasMS','canvasEmplois', 'canvasCharges', 'canvasEmploisBis', 'canvasDepenses', 'canvasTresoBFR'
         ];
     }
     connect() {
@@ -106,10 +106,19 @@ export default class extends Controller {
             this.chart.reflow();
 
             const abscisses_bis = JSON.parse(this.data.get("abscissesbis"));
+
+            const colors_emplois_cout = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"]
             const emplois = JSON.parse(this.data.get("emplois"));
             const emploiscout = JSON.parse(this.data.get("emploiscout"));
-            const options_emplois_bis = this.syntheseColSpline(emploiscout, "Évolution de la masse salariale et des emplois", abscisses_bis, "Masse salariale (€)",'Masse salariale', " €", "Emplois totaux (ETPT)", "Emplois totaux", emplois, "" );
+            const options_emplois_bis = this.syntheseColSpline(emploiscout, "Évolution de la masse salariale et des emplois", abscisses_bis, "Masse salariale (€)",'Masse salariale', " €", "Emplois totaux (ETPT)", "Emplois totaux", emplois, "" ,colors_emplois_cout);
             this.chart = Highcharts.chart(this.canvasEmploisBisTarget, options_emplois_bis);
+            this.chart.reflow();
+
+            const colors_treso_bfr = ["var(--blue-ecume-850-200)", "var(--green-menthe-975-75-hover)"]
+            const treso = JSON.parse(this.data.get("treso"));
+            const bfr = JSON.parse(this.data.get("bfr"));
+            const options_treso_bfr = this.syntheseColSpline(treso, "Comparaison de la trésorerie et du besoin en fonds de roulement", abscisses_bis, "Trésorerie finale (€)",'Trésorerie finale', " €", "Besoin fonds de roulement ( €)", "Besoin fonds de roulement", bfr, "",colors_treso_bfr );
+            this.chart = Highcharts.chart(this.canvasTresoBFRTarget, options_treso_bfr);
             this.chart.reflow();
 
             if (this.data.get("cb") != "Non"){
@@ -432,8 +441,8 @@ export default class extends Controller {
         return options
     }
 
-    syntheseColSpline(data, title, abscisses, title_y, serie_name,value_tooltip1, title_y2, serie_name2, data2, value_tooltip2){
-        const colors = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"]
+    syntheseColSpline(data, title, abscisses, title_y, serie_name,value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors){
+
         const options = {
             chart: {
                 height: 400,

@@ -19,7 +19,7 @@ sheet_col = Array.new(157, 12)
         "CREDITS (Concerne uniquement organismes soumis à la comptabilité budgétaire)",nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,
         "COMPTABILITE GENERALE",nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,
         "TRESORERIE",nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,
-        "ANALYSE FINANCIERE",nil,nil,nil,nil,nil,nil,nil,nil,
+        "ANALYSE FINANCIERE",nil,nil,nil,nil,nil,nil,nil,nil,nil,
         "Analyse du budget",nil], style: header_style, height: 50
         sheet.merge_cells("B1:G1")
         sheet.merge_cells("H1:L1")
@@ -27,15 +27,15 @@ sheet_col = Array.new(157, 12)
         sheet.merge_cells("AG1:BV1")
         sheet.merge_cells("BW1:CZ1")
         sheet.merge_cells("DA1:DQ1")
-        sheet.merge_cells("DR1:DZ1")
-        sheet.merge_cells("EA1:EB1")
+        sheet.merge_cells("DR1:EA1")
+        sheet.merge_cells("EB1:EC1")
 
         sheet.add_row [nil,"Informations générales",nil,nil,nil,"Contrôle",nil,"Informations",nil,nil,nil,nil,
         "Plafonds",nil,nil,nil,"Rappel du plafond",nil,"Coût",nil,"SCHEMA d'emplois (concerne les opérateurs)", nil, "Autres emplois en fonction dans l’organisme", nil, nil, "Répartition des emplois et dépenses par statut", nil, nil,nil,nil,nil,nil,
         "Dépenses",nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil, "Recettes",nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,nil,
         "Charges", nil,nil,nil,nil,nil,nil, "Produits",nil,nil,nil,nil,nil,"Décaissables/non décaissables",nil,nil,"CAF", "Emplois",nil, "Ressources",nil,nil,"Opérations non budgétaires",nil,nil,nil,nil,nil,nil,nil,
         "Niveaux de trésorerie", nil,nil,nil,nil,nil,nil,nil,"Variation",nil,nil,"Point haut / Point bas",nil,nil,nil,nil,nil,
-        "Fonds de roulement",nil,nil,"Besoin en fonds de roulement",nil,nil,"Solde budgétaire","Trésorerie","Examen","Commentaires",nil], style: sub_header_style, height: 40
+        "Fonds de roulement",nil,nil,nil,"Besoin en fonds de roulement",nil,nil,"Solde budgétaire","Trésorerie","Examen","Commentaires",nil], style: sub_header_style, height: 40
         sheet.merge_cells("B2:E2")
         sheet.merge_cells("F2:G2")
         sheet.merge_cells("H2:L2")
@@ -56,9 +56,9 @@ sheet_col = Array.new(157, 12)
         sheet.merge_cells("DA2:DH2")
         sheet.merge_cells("DI2:DK2")
         sheet.merge_cells("DL2:DQ2")
-        sheet.merge_cells("DR2:DT2")
-        sheet.merge_cells("DU2:DW2")
-        sheet.merge_cells("EA2:EB2")
+        sheet.merge_cells("DR2:DU2")
+        sheet.merge_cells("DV2:DX2")
+        sheet.merge_cells("EB2:EC2")
 
         sheet.add_row ["Organisme","Siren", "Famille", "Nature Juridique", "Bureau DB","Nature Contrôle", "Autorité de contrôle",
         "Exercice Budgetaire", "Type de Budget", "OCB/OHCB", "Op/Non Op", "Phase",
@@ -71,12 +71,12 @@ sheet_col = Array.new(157, 12)
         "Total des recettes","Total des recettes globalisées","Dont Subvention pour charges de service public", "Dont Subvention pour charges d'investissement globalisée", "Dont Autres financements de l'Etat", "Dont Fiscalité affectée", "Dont Autres financements publics", "Dont Recettes propres globalisées", "Total des recettes fléchées", "Poids des recettes non fléchées", "Dont Subvention pour charges d'investissement fléchée", "Dont Autres financements de l'Etat fléchés", "Dont Autres financements publics fléchés", "Dont Recettes propres fléchées", "Total des subventions de l'Etat", "Poids des financements de l'Etat", "Taux de couverture des dépenses de personnel et de fonctionnement par la SCSP", "Total des recettes propres", "Taux de recettes propres", "Poids de la SCSP sur recettes totales", "Solde budgétaire", "Solde budgétaire résultant des opérations fléchées", "Niveau final des restes à payer", "Variation des restes à payer", "Poids des restes à payer",
         "Total des charges", "Dont charges de personnel", "poids relatif des charges de Personnel", "Dont Charges de fonctionnement (autre que les charges de personnel)", "poids relatif des charges de fonctionnement", "Dont Charges d'intervention", "poids relatif des charges d'intervention", "Total des produits", "Dont subventions de l'Etat", "Dont fiscalité affectée", "Dont Autres subventions", "Dont Autres produits", "Résultat", "Charges non décaissables", "Charges décaissables", "Produits non encaissables", "Capacité d'autofinancement", "Total des emplois", "Dont Investissements", "Total des ressources", "Dont financement de l'actif par l'Etat", "Dont autres ressources", "Décaissements non budgétaires", "dont Opérations au nom et pour le compte de tiers (besoins) pour OCB ou dont Opérations au nom et pour le compte de tiers (débits) pour OHCB", "dont Emprunts, Prêts, Dépôts et cautionnements (besoins)","dont Autres décaissements non budgétaires", "Encaissements non budgétaires", "dont Opérations au nom et pour le compte de tiers (financements)pour OCB ou dont Opérations au nom et pour le compte de tiers (crédits) pour OHCB", "dont Emprunts, Prêts, Dépôts et cautionnements (financements)", "dont Autres encaissements non budgétaires",
         "Niveau initial de la trésorerie", "Niveau final de la trésorerie",  "Dont trésorerie fléchée", "Dont trésorerie non fléchée", "Trésorerie en jours de fonctionnement", "Taux de couverture des restes à payer par la trésorerie", "Poids de la trésorerie non fléchée", "Trésorerie non fléchée en jours de fonctionnement", "Variation de trésorerie", "Variation de trésorerie fléchée", "Variation de trésorerie non fléchée", "Point le plus bas dans le plan de trésorerie", "Mois", "Niveau le plus de trésorerie en jours de fonctionnement", "Point le plus haut dans le plan de trésorerie", "Mois", "Niveau le plus bas de trésorerie en jours de fonctionnement",
-        "Niveau initial du fonds de roulement","Variation du fonds de roulement","Niveau final du fonds de roulement","Niveau initial du besoin en fonds de roulement","Variation du besoin en fonds de roulement", "Niveau final du besoin en fonds de roulement", "Solde budgétaire", "Variation de trésorerie", "Degré de risque d'insolvabilité", "Commentaires sur le budget", "Autres points de vigilance"], style: col_header_style, height: 90
+        "Niveau initial du fonds de roulement","Variation du fonds de roulement","Niveau final du fonds de roulement","Niveau final du fonds de roulement en jours de fonctionnement","Niveau initial du besoin en fonds de roulement","Variation du besoin en fonds de roulement", "Niveau final du besoin en fonds de roulement", "Solde budgétaire", "Variation de trésorerie", "Degré de risque d'insolvabilité", "Commentaires sur le budget", "Autres points de vigilance"], style: col_header_style, height: 90
 
-        sheet.add_border "A3:EB3", { edges: [:bottom], style: :thick }
+        sheet.add_border "A3:EC3", { edges: [:bottom], style: :thick }
 
         # Appliquer les filtres sur la dernière ligne d'en-tête
-        sheet.auto_filter = "A3:EB3"
+        sheet.auto_filter = "A3:EC3"
 
         length_table = @chiffres&.length + 3 || 3
 
@@ -97,22 +97,22 @@ sheet_col = Array.new(157, 12)
             chiffre.recettes_total, chiffre.recettes_globalisees, chiffre.credits_subvention_sp, chiffre.credits_subvention_investissement_globalisee, chiffre.credits_financements_etat_autres, chiffre.credits_fiscalite_affectee, chiffre.credits_financements_publics_autres, chiffre.credits_recettes_propres_globalisees, chiffre.recettes_flechees,ratio_excel_percent(chiffre.poids_recettes_globalisees,100.0,1), chiffre.credits_subvention_investissement_flechee, chiffre.credits_financements_etat_fleches, chiffre.credits_financements_publics_fleches, chiffre.credits_recettes_propres_flechees, chiffre.subv_etat, ratio_excel_percent(chiffre.poids_financements_etat,100.0,1), ratio_excel_percent(chiffre.taux_couverture_scsp,100.0,1), chiffre.total_recettes_propres, ratio_excel_percent(chiffre.taux_recettes_propres,100.0,1), ratio_excel_percent(chiffre.poids_scsp,100.0,1), chiffre.solde_budgetaire, chiffre.solde_budgetaire_fleche, chiffre.credits_restes_a_payer, chiffre.var_restes_a_payer, ratio_excel_percent(chiffre.poids_restes_a_payer,100.0,1),
             chiffre.total_charges, chiffre.emplois_charges_personnel,ratio_excel_percent(chiffre.poids_charges_personnel,100.0,1), chiffre.charges_fonctionnement,ratio_excel_percent(chiffre.poids_charges_fonctionnement,100.0,1), chiffre.charges_intervention, ratio_excel_percent(chiffre.poids_charges_intervention,100.0,1), chiffre.total_produits, chiffre.produits_subventions_etat, chiffre.produits_fiscalite_affectee, chiffre.produits_subventions_autres, chiffre.produits_autres, chiffre.resultat, chiffre.charges_non_decaissables, chiffre.charges_decaissables, chiffre.produits_non_encaissables, chiffre.capacite_autofinancement, chiffre.emplois_cout_total,chiffre.emplois_cout_investissements,chiffre.ressources_total,chiffre.ressources_financement_etat,chiffre.ressources_autres,chiffre.decaissements_non_budgetaires, chiffre.decaissements_operations,chiffre.decaissements_emprunts,chiffre.decaissements_autres, chiffre.encaissements_non_budgetaires, chiffre.encaissements_operations, chiffre.encaissements_emprunts, chiffre.encaissements_autres,
             chiffre.tresorerie_initiale, chiffre.tresorerie_finale, chiffre.tresorerie_finale_flechee, chiffre.tresorerie_finale_non_flechee, chiffre.jours_fonctionnement_tresorerie,ratio_excel_percent(chiffre.taux_couverture_rap,100.0,1), ratio_excel_percent(chiffre.poids_tresorerie_non_flechee,100.0,1), chiffre.jours_fonctionnement_tresorerie_non_flechee, chiffre.tresorerie_variation, chiffre.tresorerie_variation_flechee, chiffre.tresorerie_variation_non_flechee, chiffre.tresorerie_min, chiffre.tresorerie_min_date ? chiffre.tresorerie_min_date.strftime('%m/%Y') : nil, chiffre.jours_fonctionnement_tresorerie_min, chiffre.tresorerie_max, chiffre.tresorerie_max_date ? chiffre.tresorerie_max_date.strftime('%m/%Y') : nil, chiffre.jours_fonctionnement_tresorerie_max,
-            chiffre.fonds_roulement_initial, chiffre.fonds_roulement_variation, chiffre.fonds_roulement_final,  chiffre.fonds_roulement_initial, chiffre.variation_bfr, chiffre.fonds_roulement_besoin_final, chiffre.solde_budgetaire, chiffre.tresorerie_variation, chiffre.risque_insolvabilite, chiffre.commentaire, chiffre.commentaire_annexe],
+            chiffre.fonds_roulement_initial, chiffre.fonds_roulement_variation, chiffre.fonds_roulement_final, chiffre.jours_fonctionnement_fr_final, chiffre.fonds_roulement_initial, chiffre.variation_bfr, chiffre.fonds_roulement_besoin_final, chiffre.solde_budgetaire, chiffre.tresorerie_variation, chiffre.risque_insolvabilite, chiffre.commentaire, chiffre.commentaire_annexe],
             style: cell_style
             sheet.column_widths(*sheet_col)
         end
-        sheet.add_border ["A3:A#{length_table}","E3:E#{length_table}","G3:G#{length_table}","L3:L#{length_table}","P3:P#{length_table}","R3:R#{length_table}", "T3:T#{length_table}", "V3:V#{length_table}","Y3:Y#{length_table}", "AF3:AF#{length_table}", "AW3:AW#{length_table}", "BV3:BV#{length_table}", "CC3:CC#{length_table}", "CH3:CH#{length_table}", "CI3:CI#{length_table}", "CL3:CL#{length_table}", "CM3:CM#{length_table}", "CO3:CO#{length_table}", "CR3:CR#{length_table}", "CZ3:CZ#{length_table}", "DH3:DH#{length_table}", "DK3:DK#{length_table}", "DQ3:DQ#{length_table}","DT3:DT#{length_table}","DW3:DW#{length_table}","DX3:DX#{length_table}","DY3:DY#{length_table}", "DZ3:DZ#{length_table}", "EB3:EB#{length_table}"], { edges: [:right], style: :thick }
-        sheet.add_style ["M3:M#{length_table}","U3:U#{length_table}", "AG3:AG#{length_table}","AL3:AL#{length_table}", "AX3:AX#{length_table}", "AY3:AY#{length_table}", "BF3:BF#{length_table}", "BL3:BL#{length_table}", "BO3:BO#{length_table}", "BR3:BR#{length_table}", "BT3:BT#{length_table}","BW3:BW#{length_table}","CD3:CD#{length_table}","CI3:CI#{length_table}", "CM3:CN#{length_table}","CP3:CP#{length_table}","CS3:CS#{length_table}","CW3:CW#{length_table}","DA3:DA#{length_table}", "DB3:DB#{length_table}", "DI3:DI#{length_table}", "DS3:DS#{length_table}", "DV3:DV#{length_table}", "DX3:DY#{length_table}"], bg_color: 'FFDFDEDF'
+        sheet.add_border ["A3:A#{length_table}","E3:E#{length_table}","G3:G#{length_table}","L3:L#{length_table}","P3:P#{length_table}","R3:R#{length_table}", "T3:T#{length_table}", "V3:V#{length_table}","Y3:Y#{length_table}", "AF3:AF#{length_table}", "AW3:AW#{length_table}", "BV3:BV#{length_table}", "CC3:CC#{length_table}", "CH3:CH#{length_table}", "CI3:CI#{length_table}", "CL3:CL#{length_table}", "CM3:CM#{length_table}", "CO3:CO#{length_table}", "CR3:CR#{length_table}", "CZ3:CZ#{length_table}", "DH3:DH#{length_table}", "DK3:DK#{length_table}", "DQ3:DQ#{length_table}","DU3:DU#{length_table}","DX3:DX#{length_table}","DY3:DY#{length_table}","DZ3:DZ#{length_table}", "EA3:EA#{length_table}", "EC3:EC#{length_table}"], { edges: [:right], style: :thick }
+        sheet.add_style ["M3:M#{length_table}","U3:U#{length_table}", "AG3:AG#{length_table}","AL3:AL#{length_table}", "AX3:AX#{length_table}", "AY3:AY#{length_table}", "BF3:BF#{length_table}", "BL3:BL#{length_table}", "BO3:BO#{length_table}", "BR3:BR#{length_table}", "BT3:BT#{length_table}","BW3:BW#{length_table}","CD3:CD#{length_table}","CI3:CI#{length_table}", "CM3:CN#{length_table}","CP3:CP#{length_table}","CS3:CS#{length_table}","CW3:CW#{length_table}","DA3:DA#{length_table}", "DB3:DB#{length_table}", "DI3:DI#{length_table}", "DS3:DS#{length_table}", "DW3:DW#{length_table}", "DY3:DZ#{length_table}"], bg_color: 'FFDFDEDF'
         sheet.add_style ["S3:S#{length_table}","AC3:DY#{length_table}"], num_fmt: 3
 
         sheet.add_style ["P3:P#{length_table}","Y3:Y#{length_table}","AB3:AB#{length_table}", "AN3:AN#{length_table}", "AP3:AP#{length_table}", "AR3:AR#{length_table}", "AT3:AT#{length_table}", "AW3:AW#{length_table}", "BG3:BG#{length_table}", "BM3:BM#{length_table}", "BN3:BN#{length_table}", "BP3:BP#{length_table}", "BQ3:BQ#{length_table}", "BV3:BV#{length_table}","BY3:BY#{length_table}","CA3:CA#{length_table}", "CC3:CC#{length_table}","DF3:DF#{length_table}"], num_fmt: 9, bg_color: 'bdd7ee'
         sheet.add_style ["T3:T#{length_table}","AD3:AD#{length_table}","AF3:AF#{length_table}", "BS3:BS#{length_table}", "DC3:DC#{length_table}", "DG3:DH#{length_table}", "DN3:DN#{length_table}", "DQ3:DQ#{length_table}"], num_fmt: 3, bg_color: 'bdd7ee'
 
         sheet.add_style ["M3:O#{length_table}","Q3:R#{length_table}", "U3:X#{length_table}", "Z3:AA#{length_table}"], num_fmt: 4
-        sheet.add_border "A{length_table}:EB#{length_table}", { edges: [:bottom], style: :thick }
+        sheet.add_border "A{length_table}:EC#{length_table}", { edges: [:bottom], style: :thick }
 
 
-              sheet["DZ4:DZ#{length_table}"].each do |cell|
+              sheet["EA4:EA#{length_table}"].each do |cell|
                 if cell.value == "Situation saine"
                   cell.add_style bg_color: "E5FBFD"
                 elsif cell.value == "Situation saine a priori mais à surveiller"

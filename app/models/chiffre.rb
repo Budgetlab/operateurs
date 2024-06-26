@@ -220,6 +220,11 @@ class Chiffre < ApplicationRecord
     ratio(tresorerie_max,denominateur,1)
   end
 
+  def jours_fonctionnement_fr_final
+    denominateur = comptabilite_budgetaire ? ((credits_cp_total || 0) - (credits_cp_investissement || 0)) / 360 : charges_decaissables / 360
+    ratio(fonds_roulement_final,denominateur,1)
+  end
+
   def variation_bfr
     (fonds_roulement_variation || 0) - (tresorerie_variation || 0)
   end

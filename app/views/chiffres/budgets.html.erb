@@ -23,7 +23,7 @@
 
               <%= render_select_group("Famille", :organisme_famille_in, @liste_familles) %>
 
-              <%= render_tag_group 'Exercice budgétaire', :exercice_budgetaire_in, ['2022', '2023', '2024'] %>
+              <%= render_tag_group 'Exercice budgétaire', :exercice_budgetaire_in, ['2024','2023','2022','2021', '2020', '2019'] %>
               <%= render_tag_group 'Type de budget', :type_budget_in, ["Budget initial", "Budget rectificatif", "Compte financier"] %>
               <%= render_tag_group 'Phase', :phase_in, ["pré-CA", "CA", "Budget voté","CF arrêté"] %>
               <%= render_tag_group 'Comptabilité budgétaire', :comptabilite_budgetaire_in, ['true', 'false'] %>

@@ -24,9 +24,9 @@ export default class extends Controller {
 
   changeNav(event){
     this.navTargets.forEach((nav) => {
-      nav.removeAttribute("aria-current");
+      nav.setAttribute("aria-pressed", 'false');
     });
-    event.currentTarget.setAttribute("aria-current", "page");
+    event.currentTarget.setAttribute("aria-pressed", 'true');
   }
   changeMenuSection(event){
     const sectionId = event.target.getAttribute("data-toggle-id");

@@ -235,7 +235,7 @@ class ChiffresController < ApplicationController
       ELSE 2
     END, created_at ASC"))
     @grouped_chiffres_by_exercice = @chiffres.group_by(&:exercice_budgetaire).transform_values do |chiffres|
-      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie.round, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel, chiffre.emplois_charges_personnel, chiffre.charges_fonctionnement, chiffre.charges_intervention, chiffre.credits_cp_fonctionnement, chiffre.credits_cp_intervention, chiffre.credits_cp_investissement] }.compact
+      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie.round, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel, chiffre.emplois_charges_personnel, chiffre.charges_fonctionnement, chiffre.charges_intervention, chiffre.credits_cp_fonctionnement, chiffre.credits_cp_intervention, chiffre.credits_cp_investissement, chiffre.variation_bfr, chiffre.credits_restes_a_payer] }.compact
     end
     @series = @grouped_chiffres_by_exercice.transform_values do |chiffres|
       chiffres.last
@@ -248,6 +248,8 @@ class ChiffresController < ApplicationController
     @abscisses_bis = @series.map { |k, v| "#{v.first} #{k}" }
     @emplois_total = @series.map { |_, v| v[3] }
     @emplois_cout_total = @series.map { |_, v| v[4] }
+    @tresorerie = @series.map { |_, v| v[1] }
+    @bfr = @series.map { |_, v| v[11] }
   end
 
   private
