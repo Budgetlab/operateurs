@@ -682,6 +682,16 @@ export default class extends Controller {
                         color: colors[0],
                     },
                 },
+                stackLabels: {
+                    enabled: true,
+                    crop: false,
+                    overflow: 'none',
+                    formatter: function() {
+                        let value = this.total;
+                        let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value;
+                        return `${formattedNumber}`;
+                    }
+                }
             }, {
                 title: {
                     text: title_y2,
