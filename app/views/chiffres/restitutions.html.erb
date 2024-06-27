@@ -44,9 +44,23 @@
                   <% end %>
                 </li>
                 <li class="fr-sidemenu__item">
-                  <button class="fr-sidemenu__btn fr-btn--icon-right fr-icon-bar-chart-box-fill" aria-current="true">Restitutions
+                  <button class="fr-sidemenu__btn " aria-expanded="false" aria-controls="fr-sidemenu-item-0" aria-current="true">Restitutions
                     graphiques
                   </button>
+
+                  <div class="fr-collapse" id="fr-sidemenu-item-0">
+                    <ul class="fr-sidemenu__list">
+                      <li class="fr-sidemenu__item">
+                        <button class="fr-sidemenu__link" data-toggle-id="emplois" data-action="click->toggle#changeMenuSection">Emplois</button>
+                      </li>
+                      <li class="fr-sidemenu__item">
+                        <button class="fr-sidemenu__link" data-toggle-id="comptabilite" data-action="click->toggle#changeMenuSection"><%= @organisme.comptabilite_budgetaire == "Non" ? "Comptabilité générale" : "Crédits"%> </button>
+                      </li>
+                      <li class="fr-sidemenu__item">
+                        <button class="fr-sidemenu__link" data-toggle-id="tresorerie" data-action="click->toggle#changeMenuSection">Trésorerie</button>
+                      </li>
+                    </ul>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -61,34 +75,44 @@
           </div>
         <% else %>
           <div data-controller="highcharts" data-highcharts-abscisses="<%= @abscisses %>" data-highcharts-groupeddatas="<%= @grouped_chiffres_by_exercice.to_json %>" data-highcharts-abscissesbis="<%= @abscisses_bis %>" data-highcharts-series="<%= @series.to_json %>" data-highcharts-cb="<%= @organisme.comptabilite_budgetaire %>">
-
-            <h2>Emplois</h2>
-            <h3 class="fr-h4">Évolution de la masse salariale (BI/CF)</h3>
-            <div class="fr-mb-6w" data-highcharts-target="canvasMS"></div>
-            <h3 class="fr-h4">Évolution des autorisations d'emplois (BI/CF)</h3>
-            <div class="fr-mb-6w" data-highcharts-target="canvasEmplois"></div>
-            <h3 class="fr-h4">Comparaison de l’évolution de la masse salariale et des emplois</h3>
-            <div class="fr-mb-6w" data-highcharts-target="canvasEmploisBis"></div>
-            <h2 class="fr-my-2w"><%= @organisme.comptabilite_budgetaire == "Non" ? 'Charges et Produits' : 'Dépenses et recettes' %></h2>
-            <% if @organisme.comptabilite_budgetaire == "Non" %>
-              <h3 class="fr-h4">Évolution des charges (BI/CF)</h3>
-              <div class="fr-mb-6w" data-highcharts-target="canvasCharges"></div>
-            <% else %>
-              <h3 class="fr-h4">Évolution des dépenses (BI/CF)</h3>
-              <div class="fr-mb-6w" data-highcharts-target="canvasDepenses"></div>
-              <h3 class="fr-h4">Comparaison de l’évolution des dépenses et des recettes</h3>
-              <div class="fr-mb-6w" data-highcharts-target="canvasDepensesRecettes"></div>
-            <% end %>
-
-            <h2 class="fr-my-2w">Trésorerie</h2>
-            <h3 class="fr-h4">Évolution de la trésorerie finale (BI/CF)</h3>
-            <div class="fr-mb-6w" data-highcharts-target="canvasTreso"></div>
-            <h3 class="fr-h4">Comparaison de la trésorerie et du besoin en fonds de roulement</h3>
-            <div class="fr-mb-6w" data-highcharts-target="canvasTresoBFR"></div>
-            <% if @organisme.comptabilite_budgetaire != "Non" %>
-              <h3 class="fr-h4">Comparaison de la trésorerie et des restes à payer</h3>
-              <div class="fr-mb-6w" data-highcharts-target="canvasTresoRAP"></div>
-            <% end %>
+            <div id="emplois">
+              <h2>Emplois</h2>
+              <h3 class="fr-h4">Évolution de la masse salariale (BI/CF)</h3>
+              <div class="fr-mb-6w" data-highcharts-target="canvasMS"></div>
+              <h3 class="fr-h4">Évolution des emplois (BI/CF)</h3>
+              <div class="fr-mb-6w" data-highcharts-target="canvasEmplois"></div>
+              <h3 class="fr-h4">Comparaison de l’évolution de la masse salariale et des emplois</h3>
+              <div class="fr-mb-6w" data-highcharts-target="canvasEmploisBis"></div>
+            </div>
+            <div id="comptabilite">
+              <h2 class="fr-my-2w"><%= @organisme.comptabilite_budgetaire == "Non" ? 'Comptabilité générale' : 'Crédits' %></h2>
+              <% if @organisme.comptabilite_budgetaire == "Non" %>
+                <h3 class="fr-h4">Évolution des charges (BI/CF)</h3>
+                <div class="fr-mb-6w" data-highcharts-target="canvasCharges"></div>
+                <h3 class="fr-h4">Évolution des produits (BI/CF)</h3>
+                <div class="fr-mb-6w" data-highcharts-target="canvasProduits"></div>
+                <h3 class="fr-h4">Comparaison de l’évolution des charges et des produits</h3>
+                <div class="fr-mb-6w" data-highcharts-target="canvasChargesProduits"></div>
+              <% else %>
+                <h3 class="fr-h4">Évolution des dépenses (BI/CF)</h3>
+                <div class="fr-mb-6w" data-highcharts-target="canvasDepenses"></div>
+                <h3 class="fr-h4">Évolution des recettes (BI/CF)</h3>
+                <div class="fr-mb-6w" data-highcharts-target="canvasRecettes"></div>
+                <h3 class="fr-h4">Comparaison de l’évolution des dépenses et des recettes</h3>
+                <div class="fr-mb-6w" data-highcharts-target="canvasDepensesRecettes"></div>
+              <% end %>
+            </div>
+            <div id="tresorerie">
+              <h2 class="fr-my-2w">Trésorerie</h2>
+              <h3 class="fr-h4">Évolution de la trésorerie finale (BI/CF)</h3>
+              <div class="fr-mb-6w" data-highcharts-target="canvasTreso"></div>
+              <h3 class="fr-h4">Comparaison de l’évolution de la trésorerie et du besoin en fonds de roulement</h3>
+              <div class="fr-mb-6w" data-highcharts-target="canvasTresoBFR"></div>
+              <% if @organisme.comptabilite_budgetaire != "Non" %>
+                <h3 class="fr-h4">Comparaison de l’évolution de la trésorerie et des restes à payer</h3>
+                <div class="fr-mb-6w" data-highcharts-target="canvasTresoRAP"></div>
+              <% end %>
+            </div>
 
           </div>
         <% end %>

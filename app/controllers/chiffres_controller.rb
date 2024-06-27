@@ -235,7 +235,7 @@ class ChiffresController < ApplicationController
       ELSE 2
     END, created_at ASC"))
     @grouped_chiffres_by_exercice = @chiffres.group_by(&:exercice_budgetaire).transform_values do |chiffres|
-      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie.round, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel, chiffre.emplois_charges_personnel, chiffre.charges_fonctionnement, chiffre.charges_intervention, chiffre.credits_cp_fonctionnement, chiffre.credits_cp_intervention, chiffre.credits_cp_investissement, chiffre.variation_bfr, chiffre.credits_restes_a_payer, chiffre.tresorerie_finale_flechee, chiffre.tresorerie_finale_non_flechee, chiffre.recettes_globalisees, chiffre.recettes_flechees ] }.compact
+      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie.round, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel, chiffre.emplois_charges_personnel, chiffre.charges_fonctionnement, chiffre.charges_intervention, chiffre.credits_cp_fonctionnement, chiffre.credits_cp_intervention, chiffre.credits_cp_investissement, chiffre.recettes_globalisees, chiffre.recettes_flechees, chiffre.produits_subventions_etat, chiffre.produits_fiscalite_affectee, chiffre.produits_subventions_autres, chiffre.produits_autres, chiffre.variation_bfr, chiffre.credits_restes_a_payer, chiffre.tresorerie_finale_flechee, chiffre.tresorerie_finale_non_flechee ] }.compact
     end
     @series = @grouped_chiffres_by_exercice.transform_values(&:last)
     exercices = @chiffres.map(&:exercice_budgetaire)
