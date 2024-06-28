@@ -39,6 +39,7 @@ export default class extends Controller {
 
             const colors_ms = ["var(--green-menthe-950-100)","var(--green-menthe-850-200)"];
             const colors_emplois = ["var(--purple-glycine-925-125)", "var(--purple-glycine-main-494)"];
+            let stack_type_budget = ["BI","CF"]
 
             let data_bi = {
                 dataTresoBI: [],
@@ -114,37 +115,36 @@ export default class extends Controller {
             this.chart = Highcharts.chart(this.canvasMSTarget, options_ms);
             this.chart.reflow();
 
-            const options_emplois = this.syntheseBarSimple("Évolution des emplois", abscisses, "Masse salariale (€)","Emplois BI", data_bi.dataETPTBI," ETPT", "Emplois CF", data_cf.dataETPTCF, colors_emplois);
+            const options_emplois = this.syntheseBarSimple("Évolution des emplois", abscisses, "Emplois (ETPT)","Emplois BI", data_bi.dataETPTBI," ETPT", "Emplois CF", data_cf.dataETPTCF, colors_emplois);
             this.chart = Highcharts.chart(this.canvasEmploisTarget, options_emplois);
             this.chart.reflow();
-
 
             if (this.data.get("cb") == "Non") {
                 const colors_charges = ["var(--brown-caramel-850-200)","var(--green-archipel-850-200)","var(--beige-gris-galet-main-702) " ];
                 let serie_name1_charges = ["Charges de personnel BI", "Charges de fonctionnement BI", "Charges d'intervention BI"];
                 let serie_name2_charges = ["Charges de personnel CF", "Charges de fonctionnement CF", "Charges d'intervention CF"];
-                const options_charges = this.syntheseBarStacked("Évolution des charges", abscisses, "Montant (€)",' €', serie_name1_charges, dataChargesBI,serie_name2_charges, dataChargesCF, colors_charges );
+                const options_charges = this.syntheseBarStacked("Évolution des charges", abscisses, "Montant (€)",' €', serie_name1_charges, dataChargesBI,serie_name2_charges, dataChargesCF, colors_charges, stack_type_budget );
                 this.chart = Highcharts.chart(this.canvasChargesTarget, options_charges);
                 this.chart.reflow();
 
                 const colors_produits = ["var(--beige-gris-galet-sun-407-moon-821-active)","var(--yellow-tournesol-950-100-hover)", "var(--beige-gris-galet-925-125)","var(--green-menthe-850-200)" ];
                 let serie_name1_produits = ["Subventions de l’Etat BI", "Fiscalité affectée BI", "Autres subventions BI", "Autres produits BI"];
                 let serie_name2_produits = ["Subventions de l’Etat CF", "Fiscalité affectée CF", "Autres subventions CF", "Autres produits CF"];
-                const options_produits = this.syntheseBarStacked("Évolution des produits", abscisses, "Montant (€)",' €', serie_name1_produits, dataProduitsBI,serie_name2_produits, dataProduitsCF, colors_produits );
+                const options_produits = this.syntheseBarStacked("Évolution des produits", abscisses, "Montant (€)",' €', serie_name1_produits, dataProduitsBI,serie_name2_produits, dataProduitsCF, colors_produits, stack_type_budget );
                 this.chart = Highcharts.chart(this.canvasProduitsTarget, options_produits);
                 this.chart.reflow();
             }else {
                 const colors_depenses = ["var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active","var(--green-emeraude-sun-425-moon-753-active)" ];
                 let serie_name1_depenses = ["Dépenses de personnel BI", "Dépenses de fonctionnement BI", "Dépenses d'intervention BI", "Dépenses d'investissement BI"];
                 let serie_name2_depenses = ["Dépenses de personnel CF", "Dépenses de fonctionnement CF", "Dépenses d'intervention CF", "Dépenses d'investissement CF"];
-                const options_depenses = this.syntheseBarStacked("Évolution des dépenses", abscisses, "Montant (€)",' €',serie_name1_depenses, dataCPBI,serie_name2_depenses,dataCPCF, colors_depenses );
+                const options_depenses = this.syntheseBarStacked("Évolution des dépenses", abscisses, "Montant (€)",' €',serie_name1_depenses, dataCPBI,serie_name2_depenses,dataCPCF, colors_depenses, stack_type_budget );
                 this.chart = Highcharts.chart(this.canvasDepensesTarget, options_depenses);
                 this.chart.reflow();
 
                 const colors_recettes = ["var(--yellow-tournesol-950-100-hover)", "var(--beige-gris-galet-925-125)"];
                 let serie_name1_recettes = ["Recettes globalisées BI", "Recettes fléchées BI"];
-                let serie_name2_recettes = ["Recettes globalisées CF", "Recettes globalisées CF"];
-                const options_recettes = this.syntheseBarStacked("Évolution des recettes", abscisses, "Montant (€)",' €',serie_name1_recettes, dataRecettesBI,serie_name2_recettes,dataRecettesCF, colors_recettes );
+                let serie_name2_recettes = ["Recettes globalisées CF", "Recettes fléchées CF"];
+                const options_recettes = this.syntheseBarStacked("Évolution des recettes", abscisses, "Montant (€)",' €',serie_name1_recettes, dataRecettesBI,serie_name2_recettes,dataRecettesCF, colors_recettes, stack_type_budget );
                 this.chart = Highcharts.chart(this.canvasRecettesTarget, options_recettes);
                 this.chart.reflow();
             }
@@ -162,7 +162,7 @@ export default class extends Controller {
             const colors_treso_bfr = ["var(--blue-ecume-850-200)", "var(--green-menthe-850-200)"]
             const treso = Object.values(series).map(values => values[1]);
             const bfr = Object.values(series).map(values => values[17]);
-            const options_treso_bfr = this.syntheseColSpline( "Comparaison de la trésorerie et du besoin en fonds de roulement", abscisses_series, "Trésorerie finale (€)",'Trésorerie finale', treso, " €", "Besoin fonds de roulement (€)", "Besoin fonds de roulement", bfr, " €",colors_treso_bfr );
+            const options_treso_bfr = this.syntheseColSpline( "Comparaison de la trésorerie et du besoin en fonds de roulement", abscisses_series, "Montant (€)",'Trésorerie finale', treso, " €", "", "Besoin fonds de roulement", bfr, " €",colors_treso_bfr );
             this.chart = Highcharts.chart(this.canvasTresoBFRTarget, options_treso_bfr);
             this.chart.reflow();
 
@@ -179,7 +179,8 @@ export default class extends Controller {
                 const colors_charges_produits = [ "var(--brown-caramel-850-200)","var(--green-archipel-850-200)","var(--beige-gris-galet-main-702) ","var(--beige-gris-galet-sun-407-moon-821-active)","var(--yellow-tournesol-950-100-hover)", "var(--beige-gris-galet-925-125)","var(--green-menthe-850-200)" ];
                 const serie_name1_produits = ["Subventions de l’Etat", "Fiscalité affectée", "Autres subventions", "Autres produits"];
                 const serie_name2_charges = ["Charges de personnel", "Charges de fonctionnement", "Charges d'intervention"];
-                const options_dr = this.syntheseBarStacked("Comparaison de l’évolution des dépenses et des recettes", abscisses_series, "Montant (€)",' €',serie_name2_charges,data_charges,serie_name1_produits, data_produits, colors_charges_produits );
+                const stack_produits = ["Charges", "Produits"];
+                const options_dr = this.syntheseBarStacked("Comparaison de l’évolution des charges et des produits", abscisses_series, "Montant (€)",' €',serie_name2_charges,data_charges,serie_name1_produits, data_produits, colors_charges_produits, stack_produits );
                 this.chart = Highcharts.chart(this.canvasChargesProduitsTarget, options_dr);
                 this.chart.reflow();
             }else{
@@ -187,7 +188,8 @@ export default class extends Controller {
                 const treso_flechee = Object.values(series).map(values => values[19]);
                 const treso_non_flechee = Object.values(series).map(values => values[20]);
                 const rap = Object.values(series).map(values => values[18]);
-                const options_treso_bfr = this.syntheseStackSpline( "Comparaison de la trésorerie et des RAP ", abscisses_series, "Trésorerie finale (€)",'Trésorerie fléchée', treso_flechee, "Trésorerie non fléchée", treso_non_flechee," €", "Restes à payer ( €)", "Restes à payer", rap, " €",colors_treso_rap );
+                const stack_treso = ["Trésorerie"]
+                const options_treso_bfr = this.syntheseStackSpline( "Comparaison de la trésorerie et des RAP ", abscisses_series, "Montant (€)",'Trésorerie fléchée', treso_flechee, "Trésorerie non fléchée", treso_non_flechee," €", "Restes à payer", rap, " €",colors_treso_rap, stack_treso );
                 this.chart = Highcharts.chart(this.canvasTresoRAPTarget, options_treso_bfr);
                 this.chart.reflow();
 
@@ -202,7 +204,8 @@ export default class extends Controller {
                 const colors_depenses = ["var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active","var(--green-emeraude-sun-425-moon-753-active)", "var(--yellow-tournesol-950-100-hover)", "var(--beige-gris-galet-925-125)" ];
                 const serie_name1_recettes = ["Recettes fléchées", "Recette globalisées"];
                 const serie_name2_depenses = ["Dépenses de personnel", "Dépenses de fonctionnement", "Dépenses d'intervention", "Dépenses d'investissement"];
-                const options_dr = this.syntheseBarStacked("Comparaison de l’évolution des dépenses et des recettes", abscisses_series, "Montant (€)",' €',serie_name2_depenses,data_depenses,serie_name1_recettes, data_recettes, colors_depenses );
+                const stack_depenses = ["Dépenses", "Recettes"];
+                const options_dr = this.syntheseBarStacked("Comparaison de l’évolution des dépenses et des recettes", abscisses_series, "Montant (€)",' €',serie_name2_depenses,data_depenses,serie_name1_recettes, data_recettes, colors_depenses, stack_depenses );
                 this.chart = Highcharts.chart(this.canvasDepensesRecettesTarget, options_dr);
                 this.chart.reflow();
             }
@@ -361,7 +364,7 @@ export default class extends Controller {
                     overflow: 'none',
                     formatter: function() {
                         let value = this.y;
-                        let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value;
+                        let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value.toFixed(0);
                         return `BI : ${formattedNumber}`;
                     }
                 }
@@ -379,7 +382,7 @@ export default class extends Controller {
                     overflow: 'none',
                     formatter: function() {
                         let value = this.y;
-                        let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value;
+                        let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value.toFixed(0);
                         return `CF : ${formattedNumber}`;
                     }
                 }
@@ -406,7 +409,7 @@ export default class extends Controller {
         return options
     }
 
-    syntheseBarStacked(title, abscisses, title_y, value_tooltip, serie_name1, data1, serie_name2, data2, colors){
+    syntheseBarStacked(title, abscisses, title_y, value_tooltip, serie_name1, data1, serie_name2, data2, colors, stack){
         let series = [];
 
         data1.forEach((data, i) => {
@@ -414,7 +417,7 @@ export default class extends Controller {
                 tooltip: {
                 valueSuffix: value_tooltip
                 },
-                stack: "BI",
+                stack: stack[0],
                 data: data,
             };
             series.push(serie);
@@ -424,7 +427,7 @@ export default class extends Controller {
                 tooltip: {
                     valueSuffix: value_tooltip
                 },
-                stack: "CF",
+                stack: stack[1],
                 data: data};
             series.push(serie);
         });
@@ -485,8 +488,9 @@ export default class extends Controller {
                         overflow: 'none',
                         formatter: function() {
                             let value = this.total;
-                            let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value;
-                            return `${formattedNumber}`;
+                            let stackName = this.stack;
+                            let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value.toFixed(0);
+                            return `${stackName} : ${formattedNumber}`;
                         }
                     }
                 }],
@@ -520,7 +524,51 @@ export default class extends Controller {
     }
 
     syntheseColSpline(title, abscisses, title_y, serie_name,data, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors){
-
+        let y_Axis = []
+        let y_Axis_value = 0
+        if (title_y2 == ''){
+            y_Axis = [{
+                title: {
+                    text: title_y,
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+                labels: {
+                    style: {
+                        color: 'var(--text-title-grey)',
+                    },
+                },
+            }]
+        }else{
+            y_Axis_value = 1;
+            y_Axis = [{
+                title: {
+                    text: title_y,
+                    style: {
+                        color: colors[0],
+                    },
+                },
+                labels: {
+                    style: {
+                        color: colors[0],
+                    },
+                },
+            }, {
+                title: {
+                    text: title_y2,
+                    style: {
+                        color: colors[1],
+                    },
+                },
+                labels: {
+                    style: {
+                        color: colors[1],
+                    },
+                },
+                opposite: true,
+            }]
+        }
         const options = {
             chart: {
                 height: 400,
@@ -555,32 +603,7 @@ export default class extends Controller {
                 categories: abscisses,
 
             },
-            yAxis: [{
-                title: {
-                    text: title_y,
-                    style: {
-                        color: colors[0],
-                    },
-                },
-                labels: {
-                    style: {
-                        color: colors[0],
-                    },
-                },
-            }, {
-                title: {
-                    text: title_y2,
-                    style: {
-                        color: colors[1],
-                    },
-                },
-                labels: {
-                    style: {
-                        color: colors[1],
-                    },
-                },
-                opposite: true,
-            }],
+            yAxis: y_Axis,
             plotOptions: {
                 column: {
                     maxPointWidth: 50,
@@ -600,7 +623,7 @@ export default class extends Controller {
                     overflow: 'none',
                     formatter: function() {
                         let value = this.y;
-                        let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value;
+                        let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value.toFixed(0);
                         return `${formattedNumber}`;
                     }
                 }
@@ -608,7 +631,7 @@ export default class extends Controller {
                 name: serie_name2,
                 data: data2,
                 type: 'spline',
-                yAxis: 1,
+                yAxis: y_Axis_value,
                 tooltip: {
                     valueSuffix: value_tooltip2
                 }
@@ -634,7 +657,7 @@ export default class extends Controller {
         return options
     }
 
-    syntheseStackSpline(title, abscisses, title_y, serie_name,data,serie_name_bis, data_bis, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors){
+    syntheseStackSpline(title, abscisses, title_y, serie_name,data,serie_name_bis, data_bis, value_tooltip1, serie_name2, data2, value_tooltip2, colors, stack){
 
         const options = {
             chart: {
@@ -674,12 +697,12 @@ export default class extends Controller {
                 title: {
                     text: title_y,
                     style: {
-                        color: colors[0],
+                        color: 'var(--text-title-grey)',
                     },
                 },
                 labels: {
                     style: {
-                        color: colors[0],
+                        color: 'var(--text-title-grey)',
                     },
                 },
                 stackLabels: {
@@ -688,23 +711,11 @@ export default class extends Controller {
                     overflow: 'none',
                     formatter: function() {
                         let value = this.total;
-                        let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value;
-                        return `${formattedNumber}`;
+                        let stackName = this.stack;
+                        let formattedNumber = (value >= 1000000) ? (value / 1000000).toFixed(1) + 'M' : (value >= 1000) ? (value / 1000).toFixed(1) + 'K' : value.toFixed(0);
+                        return `${stackName} : ${formattedNumber}`;
                     }
                 }
-            }, {
-                title: {
-                    text: title_y2,
-                    style: {
-                        color: colors[2],
-                    },
-                },
-                labels: {
-                    style: {
-                        color: colors[2],
-                    },
-                },
-                opposite: true,
             }],
             plotOptions: {
                 column: {
@@ -716,7 +727,7 @@ export default class extends Controller {
                 name: serie_name,
                 data: data,
                 type: 'column',
-                stack: "tréso",
+                stack: stack[0],
                 tooltip: {
                     valueSuffix: value_tooltip1
                 },
@@ -725,13 +736,12 @@ export default class extends Controller {
                     valueSuffix: value_tooltip1
                 },
                 type: 'column',
-                stack: "tréso",
+                stack: stack[0],
                 data: data_bis,
             },{
                 name: serie_name2,
                 data: data2,
                 type: 'spline',
-                yAxis: 1,
                 tooltip: {
                     valueSuffix: value_tooltip2
                 }

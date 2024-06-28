@@ -36,7 +36,7 @@ class ChiffresController < ApplicationController
   def show_dates
     @est_editeur = current_user == @organisme.controleur
     @chiffres = @organisme.chiffres
-    @exercice_budgetaire = params[:exercice_budgetaire] && [2022, 2023, 2024].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
+    @exercice_budgetaire = params[:exercice_budgetaire] && [2019, 2020, 2021, 2022, 2023, 2024].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
     @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire).order(created_at: :asc) || []
     @chiffre_default = set_default_chiffre(nil, @exercice_budgetaire, @chiffres)
     respond_to do |format|
@@ -371,7 +371,7 @@ class ChiffresController < ApplicationController
   def set_exercice_budgetaire_chiffres(params_id, params_exercice_budgetaire, chiffres)
     if params_id
       Chiffre.find(params_id.to_i)&.exercice_budgetaire
-    elsif params_exercice_budgetaire && [2022, 2023, 2024].include?(params_exercice_budgetaire.to_i)
+    elsif params_exercice_budgetaire && [2019, 2020, 2021, 2022, 2023, 2024].include?(params_exercice_budgetaire.to_i)
       params_exercice_budgetaire.to_i
     else
       chiffres&.first&.exercice_budgetaire || Date.today.year

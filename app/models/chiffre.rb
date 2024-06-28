@@ -66,17 +66,17 @@ class Chiffre < ApplicationRecord
 
   # Total des subventions de l’Etat
   def subv_etat
-    (credits_financements_etat_autres || 0) + (credits_financements_etat_fleches || 0) + (credits_subvention_sp || 0) + (credits_subvention_investissement_globalisee || 0) + (credits_subvention_investissement_flechee || 0)
+    ((credits_financements_etat_autres || 0) + (credits_financements_etat_fleches || 0) + (credits_subvention_sp || 0) + (credits_subvention_investissement_globalisee || 0) + (credits_subvention_investissement_flechee || 0)).round
   end
 
   # Total des recettes globalisées
   def recettes_globalisees
-    (credits_financements_etat_autres || 0) + (credits_fiscalite_affectee || 0) + (credits_financements_publics_autres || 0) + (credits_recettes_propres_globalisees || 0) + (credits_subvention_sp || 0) + (credits_subvention_investissement_globalisee || 0)
+    ((credits_financements_etat_autres || 0) + (credits_fiscalite_affectee || 0) + (credits_financements_publics_autres || 0) + (credits_recettes_propres_globalisees || 0) + (credits_subvention_sp || 0) + (credits_subvention_investissement_globalisee || 0)).round
   end
 
   # Total des recettes fléchées
   def recettes_flechees
-    (credits_financements_etat_fleches || 0) + (credits_financements_publics_fleches || 0) + (credits_recettes_propres_flechees || 0) + (credits_subvention_investissement_flechee || 0)
+    ((credits_financements_etat_fleches || 0) + (credits_financements_publics_fleches || 0) + (credits_recettes_propres_flechees || 0) + (credits_subvention_investissement_flechee || 0)).round
   end
 
   # Total des recettes
@@ -107,7 +107,7 @@ class Chiffre < ApplicationRecord
 
   # Total des recettes propres
   def total_recettes_propres
-    (credits_recettes_propres_globalisees || 0) + (credits_recettes_propres_flechees || 0)
+    ((credits_recettes_propres_globalisees || 0) + (credits_recettes_propres_flechees || 0)).round
   end
 
   # Taux de recettes propres
@@ -117,17 +117,17 @@ class Chiffre < ApplicationRecord
 
   # Solde budgétaire = total_recettes - credits_cp_total
   def solde_budgetaire
-    recettes_total - (credits_cp_total || 0)
+    (recettes_total - (credits_cp_total || 0)).round
   end
 
   # Solde budgétaire résultant des opérations fléchées = total_recettes_flechees-credits_cp_recettes_flechees
   def solde_budgetaire_fleche
-    credits_cp_recettes_flechees ? recettes_flechees - (credits_cp_recettes_flechees || 0) : nil
+    credits_cp_recettes_flechees ? (recettes_flechees - (credits_cp_recettes_flechees || 0)).round : nil
   end
 
   # Variations des restes à payer
   def var_restes_a_payer
-    (credits_ae_total || 0) - (credits_cp_total || 0)
+    ((credits_ae_total || 0) - (credits_cp_total || 0)).round
   end
 
   # Poids des restes à payer
@@ -138,12 +138,12 @@ class Chiffre < ApplicationRecord
 
   # Total des charges
   def total_charges
-    (emplois_charges_personnel || 0) + (charges_fonctionnement || 0) + (charges_intervention || 0)
+    ((emplois_charges_personnel || 0) + (charges_fonctionnement || 0) + (charges_intervention || 0)).round
   end
 
   # Total des produits
   def total_produits
-    (produits_subventions_etat || 0) + (produits_fiscalite_affectee || 0) + (produits_subventions_autres || 0) + (produits_autres || 0)
+    ((produits_subventions_etat || 0) + (produits_fiscalite_affectee || 0) + (produits_subventions_autres || 0) + (produits_autres || 0)).round
   end
 
   # résultat
@@ -197,7 +197,7 @@ class Chiffre < ApplicationRecord
 
   # Niveau initial de trésorerie
   def tresorerie_initiale
-    (tresorerie_finale || 0) - (tresorerie_variation || 0)
+    ((tresorerie_finale || 0) - (tresorerie_variation || 0)).round
   end
 
   def jours_fonctionnement_tresorerie_non_flechee
@@ -226,17 +226,17 @@ class Chiffre < ApplicationRecord
   end
 
   def variation_bfr
-    (fonds_roulement_variation || 0) - (tresorerie_variation || 0)
+    ((fonds_roulement_variation || 0) - (tresorerie_variation || 0)).round
   end
 
   # Niveau initial du besoin en fonds de roulement
   def fonds_roulement_besoin_initial
-    fonds_roulement_besoin_final ? fonds_roulement_besoin_final - variation_bfr : nil
+    fonds_roulement_besoin_final ? (fonds_roulement_besoin_final - variation_bfr).round : nil
   end
 
   # Niveau initial du fonds de roulement
   def fonds_roulement_initial
-    (fonds_roulement_final || 0) - (fonds_roulement_variation || 0)
+    ((fonds_roulement_final || 0) - (fonds_roulement_variation || 0)).round
   end
 
   def texte_analyse

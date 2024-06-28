@@ -8,7 +8,11 @@ class UsersController < ApplicationController
     @noms_users = User.all.pluck(:nom)
     @familles = Organisme.all.pluck(:famille).uniq
     @natures = Organisme.all.pluck(:nature).uniq
-    AdminUser.create!(email: 'admin@opera.com', password: 'Admin*ope', password_confirmation: 'Admin*ope')
+    # AdminUser.create!(email: 'admin@opera.com', password: 'Admin*ope', password_confirmation: 'Admin*ope')
+    Chiffre.update_all('emplois_total = ROUND(emplois_total::numeric,2)')
+    Chiffre.update_all('tresorerie_finale = ROUND(tresorerie_finale::numeric,2)')
+    Chiffre.update_all('tresorerie_variation = ROUND(tresorerie_variation::numeric,2)')
+    Chiffre.update_all('fonds_roulement_variation = ROUND(fonds_roulement_variation::numeric,2)')
   end
 
   def import
