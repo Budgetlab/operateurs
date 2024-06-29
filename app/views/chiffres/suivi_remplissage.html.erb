@@ -1,83 +1,132 @@
-<% content_for :title do %>Suivi du remplissage des budgets | OPERA <% end %>
+<% content_for :title do %>Suivi du remplissage des budgets | OPERA
+<% end %>
 <main role="main" class="containtAll">
   <div class="fr-container">
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-12">
         <h1 class="fr-my-4w">Suivi du remplissage des budgets</h1>
-        <% if @statut_user == 'Controleur' || @statut_user == "Bureau Sectoriel"%>
+      </div>
+    </div>
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-3">
+        <nav role="navigation" class="fr-sidemenu fr-sidemenu--sticky-full-height fr-mb-0-5v">
+          <div class="fr-sidemenu__inner">
+            <div class="fr-sidemenu__title">Affiner la recherche</div>
+            <% if @familles&.length > 0 %>
+              <div data-controller="request">
+                <%= search_form_for @q, url: suivi_remplissage_path, data: { 'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance' } do |f| %>
+                  <div class="fr-mb-2w">
+                    <%= render_select_group("Filtrer par famille d'organismes", :famille_in, @familles) %>
+                  </div>
+                  <div class="fr-mb-2w">
+                    <%= render_select_group("Filtrer par exercice budgétaire", :exercice_budgetaire_in, ['2024', '2023', '2022', '2021', '2020', '2019']) %>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        </nav>
+      </div>
+      <div class="fr-col-12 fr-col-lg-9">
+        <% if @statut_user == 'Controleur' || @statut_user == "Bureau Sectoriel" %>
           <div class="fr-highlight">
-            <p>Les résultats incluent les budgets de votre périmètre et ceux des familles auxquelles vous avez accès.</p>
+            <p>Les résultats incluent les budgets de votre périmètre et ceux des familles auxquelles vous avez
+              accès.</p>
+          </div>
+        <% end %>
+        <%= turbo_frame_tag :results, target: "_top" do %>
+          <div class="fr-grid-row fr-grid-row--gutters" data-controller="highcharts" data-highcharts-budgetsbi="<%= @chiffres_bi_2024 %>" data-highcharts-budgetscf="<%= @chiffres_cf_2023 %>">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div data-highcharts-target="canvasBI"></div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div data-highcharts-target="canvasCF"></div>
+            </div>
+          </div>
+
+          <div class="fr-table--lg fr-table fr-table--bordered fr-table--no-caption fr-mb-6w">
+            <div class="fr-table__header">
+              <p class="fr-table__detail"></p>
+              <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-md fr-btns-group--icon-left">
+                <li>
+                  <button class="fr-btn fr-icon-download-line fr-btn--icon-left fr-btn--secondary">
+                    <% path_params = params[:q].present? ? { q: @q_params, format: 'xlsx' } : { format: 'xlsx' } %>
+                    <%= link_to suivi_remplissage_path(path_params), class: "fr-download__link" do %>
+                      Télécharger le tableau
+                    <% end %>
+                  </button>
+                </li>
+              </ul>
+            </div>
+            <div class="fr-table__wrapper">
+              <div class="fr-table__container">
+                <div class="fr-table__content">
+                  <table class="fr-cell--multiline">
+                    <caption></caption>
+                    <thead>
+                    <tr>
+                      <th scope="col">Contrôleur</th>
+                      <th scope="col">Organismes actifs</th>
+                      <th scope="col">BI 2024 renseignés</th>
+                      <th scope="col">Taux BI 2024 renseignés (%)</th>
+                      <th scope="col">BR 2024 renseignés</th>
+                      <th scope="col">CF 2023 renseignés</th>
+                      <th scope="col">Taux CF 2023 renseignés (%)</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="fr-table--total">
+                      <th class="fr-cell--fixed">Total</th>
+                      <td class="fr-cell--right"><%= @controleurs.sum { |c| c.total_organisms(@organisms_id) } %></td>
+                      <td class="fr-cell--right"><%= @controleurs.sum { |c| c.total_bi(2024, @organisms_id) } %></td>
+                      <td class="fr-cell--right"><%= ratio(@controleurs.sum { |c| c.total_bi(2024, @organisms_id) }, @controleurs.sum { |c| c.total_organisms(@organisms_id) }, 100) %>
+                        %
+                      </td>
+                      <td class="fr-cell--right"><%= @controleurs.sum { |c| c.total_br(2024, @organisms_id) } %></td>
+                      <td class="fr-cell--right"><%= @controleurs.sum { |c| c.total_cf(2023, @organisms_id) } %></td>
+                      <td class="fr-cell--right"><%= ratio(@controleurs.sum { |c| c.total_cf(2023, @organisms_id) }, @controleurs.sum { |c| c.total_organisms(@organisms_id) }, 100) %>
+                        %
+                      </td>
+                    </tr>
+                    <% @controleurs_page.each do |controleur| %>
+                      <% if controleur.total_organisms(@organisms_id) > 0 %>
+                        <tr>
+                          <th class="fr-cell--fixed"><%= controleur.nom %></th>
+                          <td class="fr-cell--right"><%= controleur.total_organisms(@organisms_id) %></td>
+                          <td class="fr-cell--right"><%= controleur.total_bi(2024, @organisms_id) %></td>
+                          <td class="fr-cell--right"><%= ratio(controleur.total_bi(2024, @organisms_id), controleur.total_organisms(@organisms_id), 100) || 100 %>
+                            %
+                          </td>
+                          <td class="fr-cell--right"><%= controleur.total_br(2024, @organisms_id) %></td>
+                          <td class="fr-cell--right"><%= controleur.total_cf(2023, @organisms_id) %></td>
+                          <td class="fr-cell--right"><%= ratio(controleur.total_cf(2023, @organisms_id), controleur.total_organisms(@organisms_id), 100) || 100 %>
+                            %
+                          </td>
+                        </tr>
+                      <% end %>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="fr-table__footer">
+              <div class="fr-table__footer--start">
+                <p class="fr-table__detail">10 lignes / page</p>
+                <div class="fr-select-group">
+                  <label class="fr-sr-only fr-label" for="table-footer-select-7847">
+                    Nombre de lignes par page
+                  </label>
+                  <div class="fr-messages-group" id="table-footer-select-7847-messages" aria-live="polite"></div>
+                </div>
+              </div>
+              <div class="fr-table__footer--middle">
+                <%== pagy_nav_custom(@pagy) %>
+              </div>
+            </div>
           </div>
         <% end %>
       </div>
     </div>
-    <% if @familles&.length > 0 %>
-    <div data-controller="request">
-    <%= search_form_for @q, url: suivi_remplissage_path, data: {'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance'} do |f| %>
-      <div class="fr-mb-2w" role="search">
-        <%= render_select_group("Filtrer par famille d'organismes", :famille_in, @familles) %>
-      </div>
-    <% end %>
-    </div>
-    <% end  %>
-
-    <%= turbo_frame_tag :results, target: "_top" do %>
-      <div class="fr-grid-row fr-grid-row--gutters" data-controller="highcharts" data-highcharts-budgetsbi="<%= @chiffres_bi_2024 %>" data-highcharts-budgetscf="<%= @chiffres_cf_2023 %>">
-        <div class="fr-col-12 fr-col-lg-4 fr-col-offset-2">
-          <div data-highcharts-target="canvasBI"></div>
-        </div>
-        <div class="fr-col-12 fr-col-lg-4">
-          <div data-highcharts-target="canvasCF"></div>
-        </div>
-      </div>
-
-      <div class="fr-download">
-        <% path_params = params[:q].present? ? {q: @q_params, format: 'xlsx'} : {format: 'xlsx'} %>
-        <p><%= link_to suivi_remplissage_path(path_params), class: "fr-download__link" do %> Télécharger le suivi du remplissage
-            <span class="fr-download__detail">Format .xlsx</span>
-          <%end %></p>
-      </div>
-      <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll fr-table--min-height">
-        <table>
-          <caption></caption>
-          <thead>
-            <tr>
-              <th scope="col">Contrôleur</th>
-              <th scope="col">Nombre d'organismes actifs</th>
-              <th scope="col">Somme de budgets renseignés</th>
-              <th scope="col">BI 2024 renseignés</th>
-              <th scope="col">Taux BI 2024 renseignés (%)</th>
-              <th scope="col">CF 2023 renseignés</th>
-              <th scope="col">Taux CF 2023 renseignés (%)</th>
-            </tr>
-          </thead>
-          <tbody>
-          <tr class="total">
-            <td>Total</td>
-            <td><%= @controleurs.sum {|c| c.total_organisms(@organisms_id) }%></td>
-            <td><%= @controleurs.sum {|c| c.total_chiffres(@organisms_id) }%></td>
-            <td><%= @controleurs.sum {|c| c.total_bi(2024, @organisms_id) } %></td>
-            <td><%= ratio(@controleurs.sum {|c| c.total_bi(2024, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 100)%>%</td>
-            <td><%= @controleurs.sum {|c| c.total_cf(2023, @organisms_id) } %></td>
-            <td><%= ratio(@controleurs.sum {|c| c.total_cf(2023, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 100)%>%</td>
-          </tr>
-          <% @controleurs.each do |controleur| %>
-            <% if controleur.total_organisms(@organisms_id) > 0 %>
-              <tr>
-                <td><%= controleur.nom %></td>
-                <td><%= controleur.total_organisms(@organisms_id)%></td>
-                <td><%= controleur.total_chiffres(@organisms_id) %></td>
-                <td><%= controleur.total_bi(2024,@organisms_id) %></td>
-                <td><%= ratio(controleur.total_bi(2024,@organisms_id),controleur.total_organisms(@organisms_id), 100) || 100%>%</td>
-                <td><%= controleur.total_cf(2023,@organisms_id) %></td>
-                <td><%= ratio(controleur.total_cf(2023,@organisms_id),controleur.total_organisms(@organisms_id), 100) || 100%>%</td>
-              </tr>
-            <% end %>
-          <% end %>
-          </tbody>
-        </table>
-      </div>
-
-    <% end %>
   </div>
 </main>

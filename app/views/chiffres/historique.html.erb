@@ -1,115 +1,124 @@
-<% content_for :title do %>Historique des budgets | OPERA <% end %>
+<% content_for :title do %>Historique des budgets | OPERA
+<% end %>
 <main role="main" class="containtAll">
-  <div class="fr-container " data-controller="filter">
+  <div class="fr-container ">
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-12">
         <h1 class="fr-my-4w">Historique des budgets</h1>
-      </div>
-    </div>
-    <div class="fr-download">
-      <p><%= link_to budgets_historique_path(format: :xlsx), class: "fr-download__link" do %> Télécharger l'historique des budgets
-          <span class="fr-download__detail">Format .xlsx</span>
-        <%end %></p>
-    </div>
-    <div class="fr-table fr-table--bordered fr-table--layout-fixed--lg fr-table--vscroll fr-mb-6w">
-      <%= form_with(url: filter_chiffres_path, method: :post, data: { 'filter-target': "form"}) do |f|%>
-      <table>
-        <caption>Liste des résultats <span id="total_table"><%= render partial: "chiffres/table_historique_total", locals: {total: @chiffres.length} %></span></caption>
-        <thead>
-          <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Organisme</th>
-            <th scope="col">Exercice
-              <% if !@exercices.empty? %>
-              <div class="fr-translate fr-nav fr-nav-filter">
-                <button class="filter-table--btn" aria-controls="exercice" aria-expanded="false" title="Filtrer par exercice" data-action="click->filter#Dropdown">
-                </button>
-                <div class="fr-collapse fr-menu" id="exercice">
-                  <ul class="fr-menu__list filter-table--list">
-                    <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-exercice">
-                      <div class="fr-fieldset__element">
-                        <% @exercices.each_with_index do |exercice,i| %>
-                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
-                            <%= f.check_box "exercices[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-exercice-#{i}"}, exercice%>
-                            <label class="fr-label" for="checkboxes-exercice-<%= i %>"><%= exercice %></label>
-                          </div>
-                        <%end %>
-                      </div>
-                    </fieldset></li>
-                  </ul>
-                </div>
-              </div>
-              <% end %>
-            </th>
-            <th scope="col">Budget
-              <div class="fr-translate fr-nav fr-nav-filter">
-                <button class="filter-table--btn" aria-controls="budget" aria-expanded="false" title="Filtrer par budget" data-action="click->filter#Dropdown">
-                </button>
-                <div class="fr-collapse fr-menu" id="budget">
-                  <ul class="fr-menu__list filter-table--list">
-                    <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-budget">
-                      <div class="fr-fieldset__element">
-                        <% ["Budget initial","Budget rectificatif","Compte financier"].each_with_index do |budget,i| %>
-                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
-                            <%= f.check_box "budgets[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-budget-#{i}"}, budget%>
-                            <label class="fr-label" for="checkboxes-budget-<%= i %>"><%= budget %></label>
-                          </div>
-                        <%end %>
-                      </div>
-                    </fieldset></li>
-                  </ul>
-                </div>
-              </div>
-            </th>
-            <th scope="col">Phase
-              <div class="fr-translate fr-nav fr-nav-filter">
-                <button class="filter-table--btn" aria-controls="phase" aria-expanded="false" title="Filtrer par phase" data-action="click->filter#Dropdown">
-                </button>
-                <div class="fr-collapse fr-menu" id="phase">
-                  <ul class="fr-menu__list filter-table--list">
-                    <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-phase">
-                      <div class="fr-fieldset__element">
-                        <% ["pré-CA","CA","Budget voté", "CF arrêté"].each_with_index do |phase,i| %>
-                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
-                            <%= f.check_box "phases[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-phase-#{i}"}, phase%>
-                            <label class="fr-label" for="checkboxes-phase-<%= i %>"><%= phase %></label>
-                          </div>
-                        <%end %>
-                      </div>
-                    </fieldset></li>
-                  </ul>
-                </div>
-              </div>
-            </th>
-            <th scope="col">Examen
-              <div class="fr-translate fr-nav fr-nav-filter">
-                <button class="filter-table--btn" aria-controls="examen" aria-expanded="false" title="Filtrer par examen" data-action="click->filter#Dropdown">
-                </button>
-                <div class="fr-collapse fr-menu" id="examen">
-                  <ul class="fr-menu__list filter-table--list">
-                    <li><fieldset class="fr-fieldset fr-mt-1w" id="checkboxes-examen">
-                      <div class="fr-fieldset__element">
-                        <% ["Situation saine","Situation saine a priori mais à surveiller","Risque d’insoutenabilité à moyen terme","Risque d’insoutenabilité élevé", "Brouillon"].each_with_index do |examen,i| %>
-                          <div class="fr-checkbox-group fr-checkbox-group--sm fr-mb-1w">
-                            <%= f.check_box "risque_insolvabilites[]", {data: {action: "change->filter#submitFilter"}, id: "checkboxes-examen-#{i}"}, examen%>
-                            <label class="fr-label" for="checkboxes-examen-<%= i %>"><%= examen %></label>
-                          </div>
-                        <%end %>
-                      </div>
-                    </fieldset></li>
-                  </ul>
-                </div>
-              </div>
-            </th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody id="table_historique">
-          <%= render partial: 'chiffres/table_historique', locals: {chiffres: @chiffres} %>
-        </tbody>
-      </table>
 
-      <% end  %>
+        <div class="fr-table--lg fr-table fr-mb-6w">
+          <div class="fr-table__header">
+            <p class="fr-table__detail"></p>
+            <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-md fr-btns-group--icon-left">
+              <li>
+                <button class="fr-btn fr-icon-settings-5-line fr-btn--icon-left fr-btn--secondary">Filtrer les
+                  résultats
+                </button>
+              </li>
+              <li>
+                <button class="fr-btn fr-icon-download-line fr-btn--icon-left fr-btn--secondary"><%= link_to budgets_historique_path(format: :xlsx) do %>
+                    Télécharger les budgets
+                  <% end %></button>
+              </li>
+            </ul>
+          </div>
+          <div data-controller="request">
+            <%= search_form_for @q, url: budgets_historique_path, data: { 'request-target': 'form', turbo_frame: 'table', turbo_action: 'advance' } do |f| %>
+              <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-12 fr-col-lg-12">
+                  <div class="fr-search-bar" role="search">
+                    <label class="fr-label" for="search-input">Recherche</label>
+                    <%= f.search_field :organisme_nom_or_organisme_acronyme_contains, class: 'fr-input', id: "search-input", placeholder: "Rechercher un organisme", oninput: 'this.form.requestSubmit()' %>
+                    <button class="fr-btn" title="Rechercher"><%= f.submit "Rechercher" %></button>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-12 fr-col-lg-3">
+                  <%= render_tag_group 'Type de budget', :type_budget_in, ["Budget initial", "Budget rectificatif", "Compte financier"] %>
+                </div>
+                <div class="fr-col-12 fr-col-lg-3">
+                  <%= render_tag_group 'Exercice budgétaire', :exercice_budgetaire_in, ['2024', '2023', '2022', '2021', '2020', '2019'] %>
+                </div>
+                <div class="fr-col-12 fr-col-lg-2">
+                  <%= render_tag_group 'Phase', :phase_in, ["pré-CA", "CA", "Budget voté", "CF arrêté"] %>
+                </div>
+                <div class="fr-col-12 fr-col-lg-4">
+                  <%= render_tag_group 'Examen', :risque_insolvabilite_in, ["Situation saine", "Situation saine a priori mais à surveiller", "Risque d’insoutenabilité à moyen terme", "Risque d’insoutenabilité élevé"] %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <%= turbo_frame_tag :table do %>
+            <div class="fr-table__wrapper">
+              <div class="fr-table__container">
+                <div class="fr-table__content">
+                  <table class="fr-cell--multiline">
+                    <caption>Liste des résultats [<%= @chiffres.length %>]</caption>
+                    <thead>
+                    <tr>
+                      <th scope="col">Date <%= sort_link(@q, :created_at, '', default_order: :desc, class: 'fr-btn--sort fr-btn fr-btn--sm') %></th>
+                      <th scope="col">Organisme</th>
+                      <th scope="col">Budget</th>
+                      <th scope="col">Phase</th>
+                      <th scope="col">Examen</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="table_historique">
+                    <% @chiffres_page.each do |chiffre| %>
+                      <tr>
+                        <td><%= l(chiffre.created_at, format: "%e/%m/%y") %></td>
+                        <td><%= chiffre.organisme.nom %></td>
+
+                        <td><%= chiffre.type_budget %>
+                          <% if chiffre.type_budget == 'Budget rectificatif' %> n°<%= numero_br(chiffre) %>
+                          <% end %> <%= chiffre.exercice_budgetaire %></td>
+                        <td><%= chiffre.phase %></td>
+                        <td><%= render partial: "chiffres/badge_examen", locals: { examen: chiffre.statut != "valide" ? "Brouillon" : chiffre.risque_insolvabilite } %></td>
+                        <td>
+                          <% if chiffre.statut != "valide" %>
+                            <% if current_user == chiffre.user %>
+                              <%= link_to edit_chiffre_path(chiffre), class: "fr-btn fr-btn--sm fr-btn--secondary" do %>
+                                Reprendre
+                              <% end %>
+                            <% else %>
+                              <%= link_to organisme_chiffres_path(chiffre.organisme, paramId: chiffre.id), class: "fr-btn fr-btn--sm fr-btn--secondary" do %>
+                                Consulter
+                              <% end %>
+                            <% end %>
+                          <% else %>
+                            <%= link_to organisme_chiffres_path(chiffre.organisme, paramId: chiffre.id), class: "fr-btn fr-btn--sm fr-btn--secondary" do %>
+                              Consulter
+                            <% end %>
+                          <% end %>
+                        </td>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+
+
+                </div>
+              </div>
+            </div>
+            <div class="fr-table__footer">
+              <div class="fr-table__footer--start">
+                <p class="fr-table__detail">10 lignes / page</p>
+                <div class="fr-select-group">
+                  <label class="fr-sr-only fr-label" for="table-footer-select-7847">
+                    Nombre de lignes par page
+                  </label>
+                  <div class="fr-messages-group" id="table-footer-select-7847-messages" aria-live="polite"></div>
+                </div>
+              </div>
+              <div class="fr-table__footer--middle">
+                <%== pagy_nav_custom(@pagy) %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
     </div>
   </div>
 </main>

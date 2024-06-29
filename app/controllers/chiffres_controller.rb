@@ -150,32 +150,13 @@ class ChiffresController < ApplicationController
   end
 
   def historique
-    @chiffres = select_chiffres
-    @exercices = @chiffres.pluck(:exercice_budgetaire).uniq.sort
+    chiffres_all = select_chiffres
+    @q = chiffres_all.ransack(params[:q])
+    @chiffres = @q.result.includes(:organisme, :user)
+    @pagy, @chiffres_page = pagy(@chiffres)
     respond_to do |format|
       format.html
       format.xlsx
-    end
-  end
-
-  def filtre_chiffres
-    @chiffres = select_chiffres
-    @exercices = @chiffres.pluck(:exercice_budgetaire).uniq.sort
-    @chiffres = @chiffres.select { |el| params[:budgets].include?(el.type_budget) } if params[:budgets] && params[:budgets].length != 3
-    @chiffres = @chiffres.select { |el| params[:phases].include?(el.phase) } if params[:phases] && params[:phases].length != 4
-    @chiffres = @chiffres.select { |el| params[:exercices].include?(el.exercice_budgetaire.to_s) } if params[:exercices] && params[:exercices].length != @exercices.length
-    if params[:risque_insolvabilites]&.include?('Brouillon')
-      @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) || el.statut != 'valide' }
-    else
-      @chiffres = @chiffres.select { |el| params[:risque_insolvabilites].include?(el.risque_insolvabilite) && el.statut == 'valide' } if params[:risque_insolvabilites] && params[:risque_insolvabilites].length != 5
-    end
-    respond_to do |format|
-      format.turbo_stream do
-        render turbo_stream: [
-          turbo_stream.update('table_historique', partial: 'chiffres/table_historique', locals: { chiffres: @chiffres }),
-          turbo_stream.update('total_table', partial: 'chiffres/table_historique_total', locals: { total: @chiffres.length })
-        ]
-      end
     end
   end
 
@@ -222,6 +203,7 @@ class ChiffresController < ApplicationController
     @chiffres = Chiffre.where(statut: 'valide').where(organisme_id: @organisms_id)
     @chiffres_bi_2024 = calculate_chiffres_budget_exercice(@chiffres, @organisms_id, 2024, 'Budget initial')
     @chiffres_cf_2023 = calculate_chiffres_budget_exercice(@chiffres, @organisms_id, 2023, 'Compte financier')
+    @pagy, @controleurs_page = pagy(@controleurs)
     respond_to do |format|
       format.html
       format.xlsx

@@ -63,4 +63,8 @@ class User < ApplicationRecord
   def total_cf(exercice_budgetaire, organisms_id)
     chiffres.select { |chiffre| organisms_id.include?(chiffre.organisme_id) && chiffre.statut == 'valide' && chiffre.type_budget == "Compte financier" && chiffre.exercice_budgetaire == exercice_budgetaire.to_i }.size
   end
+
+  def total_br(exercice_budgetaire, organisms_id)
+    chiffres.select { |chiffre| organisms_id.include?(chiffre.organisme_id) && chiffre.statut == 'valide' && chiffre.type_budget == "Budget rectificatif" && chiffre.exercice_budgetaire == exercice_budgetaire.to_i }.size
+  end
 end

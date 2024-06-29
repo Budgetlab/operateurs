@@ -22,7 +22,6 @@ Rails.application.routes.draw do
     post '/select_comptabilite' => 'chiffres#select_comptabilite'
     post '/select_exercice' => 'chiffres#select_exercice'
     get '/budgets-historique' => 'chiffres#historique'
-    post '/filter_chiffres' => 'chiffres#filtre_chiffres'
     post '/update_phase' => 'chiffres#update_phase'
     get '/budgets' => 'chiffres#budgets'
     post '/open_phase' => 'chiffres#open_phase'
