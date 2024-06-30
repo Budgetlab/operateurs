@@ -26,12 +26,12 @@ export default class extends Controller {
         const series = JSON.parse(this.data.get("series"));
 
         if (budgetsbi != null && budgetsbi.length > 0) {
-            const options = this.syntheseBudget(budgetsbi, "Répartition des budgets initiaux 2024");
+            const options = this.syntheseBudget(budgetsbi, "");
             this.chart = Highcharts.chart(this.canvasBITarget, options);
             this.chart.reflow();
         }
         if (budgetscf != null && budgetscf.length > 0) {
-            const options2 = this.syntheseBudget(budgetscf, "Répartition des comptes financiers 2023");
+            const options2 = this.syntheseBudget(budgetscf, "");
             this.chart = Highcharts.chart(this.canvasCFTarget, options2);
             this.chart.reflow();
         }

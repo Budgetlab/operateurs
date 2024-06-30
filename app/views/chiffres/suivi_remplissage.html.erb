@@ -16,10 +16,17 @@
               <div data-controller="request">
                 <%= search_form_for @q, url: suivi_remplissage_path, data: { 'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance' } do |f| %>
                   <div class="fr-mb-2w">
-                    <%= render_select_group("Filtrer par famille d'organismes", :famille_in, @familles) %>
+
+                    <div class="fr-select-group">
+                      <label for="famille" class="fr-label">Filtrer par famille d'organisme</label>
+                      <%= f.select :organisme_famille_eq, options_for_select([["Toutes les familles", ""]] + @liste_familles.map { |famille| [famille, famille] }),{}, {id:"famille",class:"fr-select", onchange: 'this.form.requestSubmit()'}%>
+                    </div>
                   </div>
                   <div class="fr-mb-2w">
-                    <%= render_select_group("Filtrer par exercice budgétaire", :exercice_budgetaire_in, ['2024', '2023', '2022', '2021', '2020', '2019']) %>
+                    <div class="fr-select-group">
+                      <label for="exercice" class="fr-label">Filtrer par exercice budgétaire</label>
+                      <%= f.select :exercice_budgetaire_eq,[['2024',2024], ['2023',2023], ['2022',2022], ['2021',2021], ['2020',2020], ['2019',2019]],{}, {id:"exercice",class:"fr-select", onchange: 'this.form.requestSubmit()'}%>
+                    </div>
                   </div>
                 <% end %>
               </div>
@@ -34,12 +41,18 @@
               accès.</p>
           </div>
         <% end %>
-        <%= turbo_frame_tag :results, target: "_top" do %>
-          <div class="fr-grid-row fr-grid-row--gutters" data-controller="highcharts" data-highcharts-budgetsbi="<%= @chiffres_bi_2024 %>" data-highcharts-budgetscf="<%= @chiffres_cf_2023 %>">
+        <%= turbo_frame_tag :results do %>
+          <div class="fr-mb-2w">
+            <p class="fr-badge fr-badge--info fr-badge--no-icon"><%= @exercice %></p>
+            <% if @famille && !@famille.empty? %><p class="fr-badge fr-badge--info fr-badge--no-icon"><%= @famille %></p><% end %>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters" data-controller="highcharts" data-highcharts-budgetsbi="<%= @chiffres_bi %>" data-highcharts-budgetscf="<%= @chiffres_cf %>">
             <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-text--bold fr-text--center">Répartition des BI <%= @exercice %></div>
               <div data-highcharts-target="canvasBI"></div>
             </div>
             <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-text--bold fr-text--center">Répartition des CF <%= @exercice %></div>
               <div data-highcharts-target="canvasCF"></div>
             </div>
           </div>
@@ -61,47 +74,43 @@
             <div class="fr-table__wrapper">
               <div class="fr-table__container">
                 <div class="fr-table__content">
-                  <table class="fr-cell--multiline">
+                  <table>
                     <caption></caption>
                     <thead>
                     <tr>
-                      <th scope="col">Contrôleur</th>
-                      <th scope="col">Organismes actifs</th>
-                      <th scope="col">BI 2024 renseignés</th>
-                      <th scope="col">Taux BI 2024 renseignés (%)</th>
-                      <th scope="col">BR 2024 renseignés</th>
-                      <th scope="col">CF 2023 renseignés</th>
-                      <th scope="col">Taux CF 2023 renseignés (%)</th>
+                      <th scope="col" class="fr-cell--fixed"><span class="fr-cell__title">Contrôleur</span></th>
+                      <th scope="col">
+                        <span class="fr-cell__title">Organismes</span>
+                        <button id="table-default-button-7810" aria-describedby="table-miscellaneous-thead-tooltip" class="fr-ml-2v fr-btn--tooltip fr-btn fr-btn--sm">Organismes</button>
+                        <span class="fr-tooltip fr-placement" id="table-miscellaneous-thead-tooltip" role="tooltip">Nombre d'organismes actifs en présence de contrôle et soumis à la GBCP.</span>
+                      </th>
+                      <th scope="col" class="fr-cell--multiline"><span class="fr-cell__title">BI <%= @exercice %> renseignés</span></th>
+                      <th scope="col" class="fr-cell--multiline"><span class="fr-cell__title">Taux BI <%= @exercice %> (%)</span></th>
+                      <th scope="col" class="fr-cell--multiline"><span class="fr-cell__title">BR <%= @exercice %> renseignés</span></th>
+                      <th scope="col" class="fr-cell--multiline"><span class="fr-cell__title">CF <%= @exercice %> renseignés</span></th>
+                      <th scope="col" class="fr-cell--multiline"><span class="fr-cell__title">Taux CF <%= @exercice %> (%)</span></th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr class="fr-table--total">
                       <th class="fr-cell--fixed">Total</th>
                       <td class="fr-cell--right"><%= @controleurs.sum { |c| c.total_organisms(@organisms_id) } %></td>
-                      <td class="fr-cell--right"><%= @controleurs.sum { |c| c.total_bi(2024, @organisms_id) } %></td>
-                      <td class="fr-cell--right"><%= ratio(@controleurs.sum { |c| c.total_bi(2024, @organisms_id) }, @controleurs.sum { |c| c.total_organisms(@organisms_id) }, 100) %>
-                        %
-                      </td>
-                      <td class="fr-cell--right"><%= @controleurs.sum { |c| c.total_br(2024, @organisms_id) } %></td>
-                      <td class="fr-cell--right"><%= @controleurs.sum { |c| c.total_cf(2023, @organisms_id) } %></td>
-                      <td class="fr-cell--right"><%= ratio(@controleurs.sum { |c| c.total_cf(2023, @organisms_id) }, @controleurs.sum { |c| c.total_organisms(@organisms_id) }, 100) %>
-                        %
-                      </td>
+                      <td class="fr-cell--right"><%= @controleurs.sum { |c| c.total_bi(@exercice, @organisms_id) } %></td>
+                      <td class="fr-cell--right"><%= ratio(@controleurs.sum { |c| c.total_bi(@exercice, @organisms_id) }, @controleurs.sum { |c| c.total_organisms(@organisms_id) }, 100) %>%</td>
+                      <td class="fr-cell--right"><%= @controleurs.sum { |c| c.total_br(@exercice, @organisms_id) } %></td>
+                      <td class="fr-cell--right"><%= @controleurs.sum { |c| c.total_cf(@exercice, @organisms_id) } %></td>
+                      <td class="fr-cell--right"><%= ratio(@controleurs.sum { |c| c.total_cf(@exercice, @organisms_id) }, @controleurs.sum { |c| c.total_organisms(@organisms_id) }, 100) %>%</td>
                     </tr>
                     <% @controleurs_page.each do |controleur| %>
                       <% if controleur.total_organisms(@organisms_id) > 0 %>
-                        <tr>
+                        <tr class="fr-cell--multiline">
                           <th class="fr-cell--fixed"><%= controleur.nom %></th>
                           <td class="fr-cell--right"><%= controleur.total_organisms(@organisms_id) %></td>
-                          <td class="fr-cell--right"><%= controleur.total_bi(2024, @organisms_id) %></td>
-                          <td class="fr-cell--right"><%= ratio(controleur.total_bi(2024, @organisms_id), controleur.total_organisms(@organisms_id), 100) || 100 %>
-                            %
-                          </td>
-                          <td class="fr-cell--right"><%= controleur.total_br(2024, @organisms_id) %></td>
-                          <td class="fr-cell--right"><%= controleur.total_cf(2023, @organisms_id) %></td>
-                          <td class="fr-cell--right"><%= ratio(controleur.total_cf(2023, @organisms_id), controleur.total_organisms(@organisms_id), 100) || 100 %>
-                            %
-                          </td>
+                          <td class="fr-cell--right"><%= controleur.total_bi(@exercice, @organisms_id) %></td>
+                          <td class="fr-cell--right"><%= ratio(controleur.total_bi(@exercice, @organisms_id), controleur.total_organisms(@organisms_id), 100) || 100 %>%</td>
+                          <td class="fr-cell--right"><%= controleur.total_br(@exercice, @organisms_id) %></td>
+                          <td class="fr-cell--right"><%= controleur.total_cf(@exercice, @organisms_id) %></td>
+                          <td class="fr-cell--right"><%= ratio(controleur.total_cf(@exercice, @organisms_id), controleur.total_organisms(@organisms_id), 100) || 100 %>%</td>
                         </tr>
                       <% end %>
                     <% end %>

@@ -11,7 +11,7 @@
             <p class="fr-table__detail"></p>
             <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-md fr-btns-group--icon-left">
               <li>
-                <button class="fr-btn fr-icon-settings-5-line fr-btn--icon-left fr-btn--secondary">Filtrer les
+                <button class="fr-btn fr-icon-settings-5-line fr-btn--icon-left fr-btn--secondary" aria-controls="filtres" aria-expanded="false">Filtrer les
                   résultats
                 </button>
               </li>
@@ -22,7 +22,8 @@
               </li>
             </ul>
           </div>
-          <div data-controller="request">
+          <div class="fr-collapse fr-card--grey fr-p-2w" id="filtres" data-controller="request">
+            <div class="fr-h4 fr-mb-4w">Filtrer les résultats</div>
             <%= search_form_for @q, url: budgets_historique_path, data: { 'request-target': 'form', turbo_frame: 'table', turbo_action: 'advance' } do |f| %>
               <div class="fr-grid-row fr-grid-row--gutters">
                 <div class="fr-col-12 fr-col-lg-12">
@@ -34,22 +35,24 @@
                 </div>
               </div>
               <div class="fr-grid-row fr-grid-row--gutters">
-                <div class="fr-col-12 fr-col-lg-3">
+                <div class="fr-col-12 fr-col-lg-6">
                   <%= render_tag_group 'Type de budget', :type_budget_in, ["Budget initial", "Budget rectificatif", "Compte financier"] %>
                 </div>
-                <div class="fr-col-12 fr-col-lg-3">
+                <div class="fr-col-12 fr-col-lg-6">
                   <%= render_tag_group 'Exercice budgétaire', :exercice_budgetaire_in, ['2024', '2023', '2022', '2021', '2020', '2019'] %>
                 </div>
-                <div class="fr-col-12 fr-col-lg-2">
+              </div>
+              <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-12 fr-col-lg-6">
                   <%= render_tag_group 'Phase', :phase_in, ["pré-CA", "CA", "Budget voté", "CF arrêté"] %>
                 </div>
-                <div class="fr-col-12 fr-col-lg-4">
+                <div class="fr-col-12 fr-col-lg-6">
                   <%= render_tag_group 'Examen', :risque_insolvabilite_in, ["Situation saine", "Situation saine a priori mais à surveiller", "Risque d’insoutenabilité à moyen terme", "Risque d’insoutenabilité élevé"] %>
                 </div>
               </div>
             <% end %>
           </div>
-          <%= turbo_frame_tag :table do %>
+          <%= turbo_frame_tag :table, data: {turbo_action: 'advance'} do %>
             <div class="fr-table__wrapper">
               <div class="fr-table__container">
                 <div class="fr-table__content">
@@ -57,7 +60,12 @@
                     <caption>Liste des résultats [<%= @chiffres.length %>]</caption>
                     <thead>
                     <tr>
-                      <th scope="col">Date <%= sort_link(@q, :created_at, '', default_order: :desc, class: 'fr-btn--sort fr-btn fr-btn--sm') %></th>
+                      <th scope="col">
+                        <div class="fr-cell--sort">
+                          <span class="fr-cell__title">Date</span>
+                          <%= sort_link(@q, :created_at, '', default_order: :desc, class: 'fr-btn--sort fr-btn fr-btn--sm') %>
+                        </div>
+                      </th>
                       <th scope="col">Organisme</th>
                       <th scope="col">Budget</th>
                       <th scope="col">Phase</th>
@@ -79,16 +87,16 @@
                         <td>
                           <% if chiffre.statut != "valide" %>
                             <% if current_user == chiffre.user %>
-                              <%= link_to edit_chiffre_path(chiffre), class: "fr-btn fr-btn--sm fr-btn--secondary" do %>
+                              <%= link_to edit_chiffre_path(chiffre), class: "fr-btn fr-btn--sm fr-btn--secondary", data: {turbo_frame: '_top'} do %>
                                 Reprendre
                               <% end %>
                             <% else %>
-                              <%= link_to organisme_chiffres_path(chiffre.organisme, paramId: chiffre.id), class: "fr-btn fr-btn--sm fr-btn--secondary" do %>
+                              <%= link_to organisme_chiffres_path(chiffre.organisme, paramId: chiffre.id), class: "fr-btn fr-btn--sm fr-btn--secondary", data: {turbo_frame: '_top'} do %>
                                 Consulter
                               <% end %>
                             <% end %>
                           <% else %>
-                            <%= link_to organisme_chiffres_path(chiffre.organisme, paramId: chiffre.id), class: "fr-btn fr-btn--sm fr-btn--secondary" do %>
+                            <%= link_to organisme_chiffres_path(chiffre.organisme, paramId: chiffre.id), class: "fr-btn fr-btn--sm fr-btn--secondary", data: {turbo_frame: '_top'} do %>
                               Consulter
                             <% end %>
                           <% end %>

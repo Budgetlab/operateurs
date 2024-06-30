@@ -195,14 +195,19 @@ class ChiffresController < ApplicationController
 
   def suivi_remplissage
     @q_params = q_params
-    extended_family_organisms = fetch_extended_family_organisms
-    @q = extended_family_organisms.ransack(params[:q])
-    @organisms = @q.result.includes(:controleur)
-    @organisms_id = @statut_user == "2B2O" ? @organisms.where(etat: "Actif", presence_controle: true, gbcp_1: true).where.not(controleur_id: current_user.id).pluck(:id) : @organisms.where(etat: "Actif", presence_controle: true, gbcp_1: true).pluck(:id)
-    @controleurs = User.where(statut: ['Controleur']).includes(:chiffres, :controleur_organismes).order(nom: :asc)
-    @chiffres = Chiffre.where(statut: 'valide').where(organisme_id: @organisms_id)
-    @chiffres_bi_2024 = calculate_chiffres_budget_exercice(@chiffres, @organisms_id, 2024, 'Budget initial')
-    @chiffres_cf_2023 = calculate_chiffres_budget_exercice(@chiffres, @organisms_id, 2023, 'Compte financier')
+    @db_id = User.first.id
+    extended_family_organisms = fetch_extended_family_organisms.where(etat: "Actif", presence_controle: true, gbcp_1: true).where.not(controleur_id: @db_id)
+    @famille = params[:q][:organisme_famille_eq] if params[:q] && params[:q][:organisme_famille_eq]
+    extended_family_organisms = extended_family_organisms.where(famille: @famille) if @famille && !@famille.empty?
+    @organisms_id = extended_family_organisms.pluck(:id)
+    controleurs_id = extended_family_organisms.pluck(:controleur_id) # gets a list of controleur_id
+    @controleurs = User.where(id: controleurs_id, statut: ['Controleur']).includes(:chiffres, :controleur_organismes).order(nom: :asc)
+    chiffres = Chiffre.where(statut: 'valide').where(organisme_id: @organisms_id)
+    @q = chiffres.ransack(params[:q])
+    @chiffres = @q.result.includes(:user)
+    @exercice = params[:q] && params[:q][:exercice_budgetaire_eq] ? params[:q][:exercice_budgetaire_eq].to_i : 2024
+    @chiffres_bi = calculate_chiffres_budget_exercice(@chiffres, @organisms_id, @exercice, 'Budget initial')
+    @chiffres_cf = calculate_chiffres_budget_exercice(@chiffres, @organisms_id, @exercice, 'Compte financier')
     @pagy, @controleurs_page = pagy(@controleurs)
     respond_to do |format|
       format.html
