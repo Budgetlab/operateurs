@@ -8,7 +8,7 @@ class ChiffresController < ApplicationController
   before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy open_phase]
   before_action :redirect_unless_access, only: %i[index restitutions]
   before_action :redirect_unless_controleur, only: :new
-  # before_action :redirect_unless_admin, only: :suivi_remplissage
+
   # page des chiffres clés de l'organisme
   def index
     # Check if the logged-in user is the "controller" of the organism, and store the result in @est_editeur
@@ -194,18 +194,24 @@ class ChiffresController < ApplicationController
   end
 
   def suivi_remplissage
+    # filtres
     @q_params = q_params
-    @db_id = User.first.id
-    extended_family_organisms = fetch_extended_family_organisms.where(etat: "Actif", presence_controle: true, gbcp_1: true).where.not(controleur_id: @db_id)
-    @famille = params[:q][:organisme_famille_eq] if params[:q] && params[:q][:organisme_famille_eq]
+    @famille = params.dig(:q, :organisme_famille_eq)
+    @exercice = params.dig(:q, :exercice_budgetaire_eq) || 2024
+    # Récupérer les organismes des familles communes hors controle 2B2O
+    extended_family_organisms = fetch_extended_family_organisms.where(presence_controle: true, gbcp_1: true)
+                                                               .where.not(controleur_id: User.first.id)
+    # filtrer sur famille sélectionnée
     extended_family_organisms = extended_family_organisms.where(famille: @famille) if @famille && !@famille.empty?
+    # récupérer la liste des controleurs de ces organismes
+    controleurs_id = extended_family_organisms.pluck(:controleur_id)
+    @controleurs = User.includes(:chiffres, :controleur_organismes).where(id: controleurs_id, statut: ['Controleur'])
+                       .order(nom: :asc)
+    # récupérer les chiffres des organismes possibles et affiner en fonction des filtres choisis
     @organisms_id = extended_family_organisms.pluck(:id)
-    controleurs_id = extended_family_organisms.pluck(:controleur_id) # gets a list of controleur_id
-    @controleurs = User.where(id: controleurs_id, statut: ['Controleur']).includes(:chiffres, :controleur_organismes).order(nom: :asc)
-    chiffres = Chiffre.where(statut: 'valide').where(organisme_id: @organisms_id)
-    @q = chiffres.ransack(params[:q])
+    @q = Chiffre.where(statut: 'valide', organisme_id: @organisms_id).ransack(params[:q])
     @chiffres = @q.result.includes(:user)
-    @exercice = params[:q] && params[:q][:exercice_budgetaire_eq] ? params[:q][:exercice_budgetaire_eq].to_i : 2024
+    # afficher les graphes avec répartitions des examens sur les chiffres
     @chiffres_bi = calculate_chiffres_budget_exercice(@chiffres, @organisms_id, @exercice, 'Budget initial')
     @chiffres_cf = calculate_chiffres_budget_exercice(@chiffres, @organisms_id, @exercice, 'Compte financier')
     @pagy, @controleurs_page = pagy(@controleurs)
@@ -383,7 +389,7 @@ class ChiffresController < ApplicationController
 
   def q_params
     if params[:q].present?
-      params.require(:q).permit(:organisme_nom_or_organisme_acronyme_contains, :user_nom_in_insensitive => [], :organisme_famille_in => [],
+      params.require(:q).permit(:organisme_nom_or_organisme_acronyme_contains, :organisme_famille_eq, :exercice_budgetaire_eq, :user_nom_in_insensitive => [], :organisme_famille_in => [],
                                 :exercice_budgetaire_in => [], :type_budget_in => [], :phase_in => [],
                                 :comptabilite_budgetaire_in => [], :operateur_in => [], :risque_insolvabilite_in => [], :famille_in => [])
     else

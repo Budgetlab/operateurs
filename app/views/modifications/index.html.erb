@@ -1,21 +1,22 @@
-<% content_for :title do %>Historique des modifications | OPERA <% end %>
+<% content_for :title do %>Historique des modifications | OPERA
+<% end %>
 <main role="main" class="containtAll">
   <div class="fr-container ">
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-12">
         <h1 class="fr-my-4w">Gestion des modifications</h1>
-        <%= render 'modifications/success'%>
+        <%= render 'modifications/success' %>
       </div>
     </div>
 
     <div class="fr-mb-2w" data-controller="search">
-      <%= form_with(url: filter_modifications_path, method: :post, data: {'search-target': "form"}) do |f|%>
+      <%= form_with(url: filter_modifications_path, method: :post, data: { 'search-target': "form" }) do |f| %>
         <div class="fr-grid-row fr-grid-row--gutters">
           <div class="fr-col-12 fr-col-lg-6">
             <div id="formSearch">
               <div class="fr-search-bar" id="header-search" role="search">
                 <label class="fr-label" for="search-organismes-input">Filtrer les résultats sur un organisme</label>
-                <%= f.text_field :search, class:"fr-input", id: "search-organismes-input", placeholder: "Rechercher les modifications sur un organisme", data: {'search-target': "input", action: "keyup->search#updateSearch"}%>
+                <%= f.text_field :search, class: "fr-input", id: "search-organismes-input", placeholder: "Rechercher les modifications sur un organisme", data: { 'search-target': "input", action: "keyup->search#updateSearch" } %>
                 <button class="fr-btn" title="Rechercher" aria-controls="modal-autocomplete" aria-expanded="false" data-search-target="button" data-action="search#Dropdown">
                   Rechercher les modifications sur un organisme
                 </button>
@@ -26,13 +27,15 @@
                     <div class="fr-col-12">
                       <div class="fr-modal__body fr-mb-4w">
                         <ul class="fr-sidemenu__list fr-p-0">
-                          <p id="resultats" class="fr-p-2w fr-hidden" >Aucun résultat</p>
-                          <%= f.hidden_field :organisme, id: 'organisme_field'%>
+                          <p id="resultats" class="fr-p-2w fr-hidden">Aucun résultat</p>
+                          <%= f.hidden_field :organisme, id: 'organisme_field' %>
                           <% @organismes.each do |organisme| %>
                             <li class="fr-sidemenu__item" data-search-target="listeDeroulante">
-                              <button class="fr-sidemenu__link element fr-text--regular" data-search-value="<%= organisme[0] %>" data-action="click->search#submitSearch"><%= organisme[1] %><% if organisme[2] && !organisme[2].blank? %> - <%= organisme[2]%><% end %></button>
+                              <button class="fr-sidemenu__link element fr-text--regular" data-search-value="<%= organisme[0] %>" data-action="click->search#submitSearch"><%= organisme[1] %>
+                                <% if organisme[2] && !organisme[2].blank? %> - <%= organisme[2] %>
+                                <% end %></button>
                             </li>
-                          <% end  %>
+                          <% end %>
                         </ul>
                       </div>
                     </div>
@@ -50,59 +53,76 @@
       <div class="fr-col-12 fr-col-lg-12">
         <div class="fr-tabs fr-mb-4w">
           <ul class="fr-tabs__list" role="tablist" aria-label="Onglets Organismes actifs">
-            <% ["en attente","validées","rejetées"].each_with_index do |texte, i| %>
+            <% ["en attente", "validées", "rejetées"].each_with_index do |texte, i| %>
               <li role="presentation">
-                <button id="tabpanel-<%= i %>" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= i == 0 ? 'true' : 'false' %>" aria-controls="tabpanel-<%= i %>-panel">Modifications <%= texte %> (<span id="total_modifications_<%=i %>"><%= @groupes_modifications[1][i] %></span>)</button>
+                <button id="tabpanel-<%= i %>" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= i == 0 ? 'true' : 'false' %>" aria-controls="tabpanel-<%= i %>-panel">Modifications <%= texte %>
+                  (<span id="total_modifications_<%= i %>"><%= @groupes_modifications[1][i] %></span>)
+                </button>
               </li>
-            <%end %>
+            <% end %>
 
-              <li role="presentation">
-                <button id="tabpanel-2B2O" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="false" aria-controls="tabpanel-2B2O-panel">Modifications 2B2O (<span id="total_modifications_admin"><%= @modifications_admin.length %></span>)</button>
-              </li>
+            <li role="presentation">
+              <button id="tabpanel-2B2O" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="false" aria-controls="tabpanel-2B2O-panel">Modifications
+                2B2O (<span id="total_modifications_admin"><%= @modifications_admin.length %></span>)
+              </button>
+            </li>
 
           </ul>
 
-          <% ["en attente","validées","rejetées"].each_with_index do |texte, i| %>
+          <% ["en attente", "validées", "rejetées"].each_with_index do |texte, i| %>
             <div id="tabpanel-<%= i %>-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-<%= i %>" tabindex="0">
-              <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll">
-                <table>
-                  <caption>Tableau des modifications <%= texte %></caption>
-                  <thead>
-                  <tr>
-                    <th scope="col">Date de saisie</th>
-                    <% if @statut_user == "2B2O" %><th scope="col">Contrôleur</th><%end %>
-                    <th scope="col">Organisme</th>
-                    <th scope="col">Nombre de demandes <%= texte %></th>
-                    <th></th>
-                  </tr>
-                  </thead>
-                  <tbody id="table_modifications_<%=i %>">
-                    <%= render partial: 'modifications/table_modifications_group', locals: {modifications: @groupes_modifications[0][i], i: i, user_names: @user_names, organismes: @organismes} %>
-                  </tbody>
-                </table>
-
+              <div class="fr-table--lg fr-table fr-table--no-caption">
+                <div class="fr-table__wrapper">
+                  <div class="fr-table__container">
+                    <div class="fr-table__content">
+                      <table>
+                        <caption>Tableau des modifications <%= texte %></caption>
+                        <thead>
+                        <tr>
+                          <th scope="col">Date de saisie</th>
+                          <% if @statut_user == "2B2O" %>
+                            <th scope="col">Contrôleur</th>
+                          <% end %>
+                          <th scope="col">Organisme</th>
+                          <th scope="col">Nombre de demandes <%= texte %></th>
+                          <th scope="col">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody id="table_modifications_<%= i %>">
+                        <%= render partial: 'modifications/table_modifications_group', locals: { modifications: @groupes_modifications[0][i], i: i, user_names: @user_names, organismes: @organismes } %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           <% end %>
 
-            <div id="tabpanel-2B2O-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-2B2O" tabindex="0">
-              <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet2-vscroll">
-                <table>
-                  <caption>Liste des résultats </caption>
-                  <thead>
-                  <tr>
-                    <th scope="col">Date de saisie </th>
-                    <th scope="col">Organisme </th>
-                    <th scope="col">Champ</th>
-                    <th scope="col">Valeur</th>
-                  </tr>
-                  </thead>
-                  <tbody id="table_modifications">
-                    <%= render partial: 'modifications/table_modifications_admin', locals: {modifications: @modifications_admin} %>
-                  </tbody>
-                </table>
+          <div id="tabpanel-2B2O-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-2B2O" tabindex="0">
+            <div class="fr-table--lg fr-table fr-table--no-caption">
+              <div class="fr-table__wrapper">
+                <div class="fr-table__container">
+                  <div class="fr-table__content">
+                    <table>
+                      <caption>Liste des résultats</caption>
+                      <thead>
+                      <tr>
+                        <th scope="col">Date de saisie</th>
+                        <th scope="col">Organisme</th>
+                        <th scope="col">Champ</th>
+                        <th scope="col">Valeur</th>
+                      </tr>
+                      </thead>
+                      <tbody id="table_modifications">
+                      <%= render partial: 'modifications/table_modifications_admin', locals: { modifications: @modifications_admin } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
             </div>
+          </div>
 
         </div>
       </div>

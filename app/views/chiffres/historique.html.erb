@@ -6,12 +6,12 @@
       <div class="fr-col-12 fr-col-lg-12">
         <h1 class="fr-my-4w">Historique des budgets</h1>
 
-        <div class="fr-table--lg fr-table fr-mb-6w">
+        <div class="fr-table--lg fr-table fr-table--no-caption fr-mb-6w">
           <div class="fr-table__header">
             <p class="fr-table__detail"></p>
             <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-md fr-btns-group--icon-left">
               <li>
-                <button class="fr-btn fr-icon-settings-5-line fr-btn--icon-left fr-btn--secondary" aria-controls="filtres" aria-expanded="false">Filtrer les
+                <button class="fr-btn fr-icon-settings-5-line fr-btn--icon-left " aria-controls="filtres" aria-expanded="false">Filtrer les
                   résultats
                 </button>
               </li>
@@ -22,31 +22,19 @@
               </li>
             </ul>
           </div>
-          <div class="fr-collapse fr-card--grey fr-p-2w" id="filtres" data-controller="request">
-            <div class="fr-h4 fr-mb-4w">Filtrer les résultats</div>
+          <div class="fr-collapse fr-collapse--grey fr-px-2w" id="filtres" data-controller="request">
+            <div class="fr-h4 fr-my-2w">Filtrer les résultats</div>
             <%= search_form_for @q, url: budgets_historique_path, data: { 'request-target': 'form', turbo_frame: 'table', turbo_action: 'advance' } do |f| %>
               <div class="fr-grid-row fr-grid-row--gutters">
-                <div class="fr-col-12 fr-col-lg-12">
-                  <div class="fr-search-bar" role="search">
-                    <label class="fr-label" for="search-input">Recherche</label>
+                <div class="fr-col-12 fr-col-lg-6">
+                  <div class="fr-mb-2w">
                     <%= f.search_field :organisme_nom_or_organisme_acronyme_contains, class: 'fr-input', id: "search-input", placeholder: "Rechercher un organisme", oninput: 'this.form.requestSubmit()' %>
-                    <button class="fr-btn" title="Rechercher"><%= f.submit "Rechercher" %></button>
                   </div>
-                </div>
-              </div>
-              <div class="fr-grid-row fr-grid-row--gutters">
-                <div class="fr-col-12 fr-col-lg-6">
                   <%= render_tag_group 'Type de budget', :type_budget_in, ["Budget initial", "Budget rectificatif", "Compte financier"] %>
-                </div>
-                <div class="fr-col-12 fr-col-lg-6">
-                  <%= render_tag_group 'Exercice budgétaire', :exercice_budgetaire_in, ['2024', '2023', '2022', '2021', '2020', '2019'] %>
-                </div>
-              </div>
-              <div class="fr-grid-row fr-grid-row--gutters">
-                <div class="fr-col-12 fr-col-lg-6">
                   <%= render_tag_group 'Phase', :phase_in, ["pré-CA", "CA", "Budget voté", "CF arrêté"] %>
                 </div>
                 <div class="fr-col-12 fr-col-lg-6">
+                  <%= render_tag_group 'Exercice budgétaire', :exercice_budgetaire_in, ['2024', '2023', '2022', '2021', '2020', '2019'] %>
                   <%= render_tag_group 'Examen', :risque_insolvabilite_in, ["Situation saine", "Situation saine a priori mais à surveiller", "Risque d’insoutenabilité à moyen terme", "Risque d’insoutenabilité élevé"] %>
                 </div>
               </div>
@@ -57,13 +45,19 @@
               <div class="fr-table__container">
                 <div class="fr-table__content">
                   <table class="fr-cell--multiline">
-                    <caption>Liste des résultats [<%= @chiffres.length %>]</caption>
+                    <caption>Historique des budgets</caption>
                     <thead>
                     <tr>
                       <th scope="col">
+                        <% sort_created_date = "" %>
+                        <% if params[:q] && params[:q][:s] == "created_at desc" %>
+                          <% sort_created_date = "asc" %>
+                        <% elsif params[:q] && params[:q][:s] == "created_at asc" %>
+                          <% sort_created_date = "desc" %>
+                        <% end %>
                         <div class="fr-cell--sort">
                           <span class="fr-cell__title">Date</span>
-                          <%= sort_link(@q, :created_at, '', default_order: :desc, class: 'fr-btn--sort fr-btn fr-btn--sm') %>
+                          <%= sort_link(@q, :created_at, '', default_order: :desc, class: 'fr-btn--sort fr-btn fr-btn--sm', aria: { sorting: sort_created_date }) %>
                         </div>
                       </th>
                       <th scope="col">Organisme</th>
@@ -112,7 +106,7 @@
             </div>
             <div class="fr-table__footer">
               <div class="fr-table__footer--start">
-                <p class="fr-table__detail">10 lignes / page</p>
+                <p class="fr-table__detail"><%= @chiffres.length %> résultats</p>
                 <div class="fr-select-group">
                   <label class="fr-sr-only fr-label" for="table-footer-select-7847">
                     Nombre de lignes par page

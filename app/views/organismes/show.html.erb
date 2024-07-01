@@ -1,15 +1,19 @@
-<% content_for :title do %>Affichage de l'organisme <%= @organisme.nom %> | OPERA <% end %>
+<% content_for :title do %>Affichage de l'organisme <%= @organisme.nom %> | OPERA
+<% end %>
 <main role="main">
-  <div class="fr-container" >
+  <div class="fr-container">
     <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
-      <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+      <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane
+      </button>
       <div class="fr-collapse" id="breadcrumb-1">
         <ol class="fr-breadcrumb__list">
           <li>
-            <%= link_to root_path, class:"fr-breadcrumb__link" do %>Accueil<%end %>
+            <%= link_to root_path, class: "fr-breadcrumb__link" do %>Accueil
+            <% end %>
           </li>
           <li>
-            <%= link_to organismes_path, class:"fr-breadcrumb__link" do %>Liste des organismes<%end %>
+            <%= link_to organismes_path, class: "fr-breadcrumb__link" do %>Liste des organismes
+            <% end %>
           </li>
           <li>
             <a class="fr-breadcrumb__link" aria-current="page"><%= @organisme.nom %></a>
@@ -17,17 +21,26 @@
         </ol>
       </div>
     </nav>
-    <% if !@est_valide %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p><% end %>
-    <h1 class="fr-mb-4w title-btn"><%= @organisme.nom %> <% if !@est_valide && @statut_user == '2B2O'%><%= link_to edit_organisme_path(@organisme.id), class: "fr-btn" do %>Reprendre le brouillon<%end %><%end %></h1>
+    <% if !@est_valide %><p class="fr-badge fr-badge--new fr-badge--no-icon">Brouillon</p>
+    <% end %>
+    <h1 class="fr-mb-4w title-btn"><%= @organisme.nom %>
+      <% if !@est_valide && @statut_user == '2B2O' %><%= link_to edit_organisme_path(@organisme.id), class: "fr-btn" do %>
+          Reprendre le brouillon
+          <% end %>
+      <% end %></h1>
 
-    <%= render 'modifications/success'%>
-    <% if @modifications_attente_organisme.length > 0  && @admin%>
+    <%= render 'modifications/success' %>
+    <% if @modifications_attente_organisme.length > 0 && @admin %>
       <div class="fr-grid-row fr-grid-row--gutters" id="modifications_attente">
         <div class="fr-col-12 fr-col-lg-12">
-          <h2><span class="fr-icon-alarm-warning-fill fr-icon--lg fr-label--warning" aria-hidden="true"></span> Modifications en attente de validation [<%= @modifications_attente_organisme.length%>]</h2>
-          <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--blue-ecume fr-table--layout-fixed--lg">
+          <h2><span class="fr-icon-alarm-warning-fill fr-icon--lg fr-label--warning" aria-hidden="true"></span>
+            Modifications en attente de validation [<%= @modifications_attente_organisme.length %>]</h2>
+          <div class="fr-table--lg fr-table fr-table--no-caption">
+            <div class="fr-table__wrapper">
+              <div class="fr-table__container">
+                <div class="fr-table__content">
             <table>
-              <caption>Tableau des modifications </caption>
+              <caption>Tableau des modifications</caption>
               <thead>
               <tr>
                 <th scope="col">Date de saisie</th>
@@ -38,34 +51,43 @@
               </thead>
               <tbody>
               <% @modifications_attente_organisme.each do |modification| %>
-                <tr>
+                <tr class="fr-table--total">
                   <td><%= format_date(modification.created_at) %></td>
                   <td><%= modification.nom %></td>
-                  <td class="fr-td--overflow"><%= render partial: 'modifications/table_nom', locals: {modification: modification}  %></td>
+                  <td class="fr-td--overflow"><%= render partial: 'modifications/table_nom', locals: { modification: modification } %></td>
                   <td>
                     <% if @statut_user == "2B2O" %>
-                    <ul class="fr-btns-group fr-btns-group--inline">
-                      <li><%= link_to modification_path(modification, params: { modification: { statut: "validée" } }), data: { "turbo-method": :patch}, class:"fr-btn fr-my-0" do %>Valider<%end %></li>
-                      <li><%= link_to open_modal_path(id: modification.id), class:"fr-btn fr-btn--secondary fr-my-0","data-fr-opened": false,"aria-controls":"modal-1",data: { "turbo_method": :post} do %>Refuser<%end %></li>
-                    </ul>
-                    <%else %>
-                      <%= link_to modification_path(modification), data: { "turbo-method": :delete}, class: "fr-btn" do %>Annuler demande<%end %>
-                    <%end %>
+                      <ul class="fr-btns-group fr-btns-group--inline">
+                        <li><%= link_to modification_path(modification, params: { modification: { statut: "validée" } }), data: { "turbo-method": :patch }, class: "fr-btn fr-my-0" do %>
+                            Valider
+                          <% end %></li>
+                        <li><%= link_to open_modal_path(id: modification.id), class: "fr-btn fr-btn--secondary fr-my-0", "data-fr-opened": false, "aria-controls": "modal-1", data: { "turbo_method": :post } do %>
+                            Refuser
+                          <% end %></li>
+                      </ul>
+                    <% else %>
+                      <%= link_to modification_path(modification), data: { "turbo-method": :delete }, class: "fr-btn" do %>
+                        Annuler demande
+                      <% end %>
+                    <% end %>
                   </td>
 
                 </tr>
-              <%end %>
+              <% end %>
               </tbody>
             </table>
+                </div>
+              </div>
+            </div>
             <dialog id="modal-1" class="fr-modal" aria-labelledby="modal-1-title">
               <div id="modal_refus">
-                <%= render partial: 'modifications/motif_refus',locals: {modification: nil} %>
+                <%= render partial: 'modifications/motif_refus', locals: { modification: nil } %>
               </div>
             </dialog>
           </div>
         </div>
       </div>
-    <%end %>
+    <% end %>
 
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-4" data-controller="toggle">
@@ -84,41 +106,57 @@
                   <div class="fr-collapse" id="fr-sidemenu-item-0">
                     <ul class="fr-sidemenu__list">
                       <li class="fr-sidemenu__item">
-                        <button class="fr-sidemenu__link" data-toggle-id="fiche_identite" data-action="click->toggle#changeMenuSection">Informations générales</button>
+                        <button class="fr-sidemenu__link" data-toggle-id="fiche_identite" data-action="click->toggle#changeMenuSection">Informations
+                          générales
+                        </button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <button class="fr-sidemenu__link" data-toggle-id="synthese" data-action="click->toggle#changeMenuSection">Indicateurs budgétaires et financiers</button>
+                        <button class="fr-sidemenu__link" data-toggle-id="synthese" data-action="click->toggle#changeMenuSection">Indicateurs
+                          budgétaires et financiers
+                        </button>
                       </li>
                       <li class="fr-sidemenu__item">
                         <button class="fr-sidemenu__link" data-toggle-id="operateur" data-action="click->toggle#changeMenuSection">Opérateur</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <button class="fr-sidemenu__link" data-toggle-id="regime_budgetaire" data-action="click->toggle#changeMenuSection">Régime budgétaire et comptable</button>
+                        <button class="fr-sidemenu__link" data-toggle-id="regime_budgetaire" data-action="click->toggle#changeMenuSection">Régime
+                          budgétaire et comptable
+                        </button>
                       </li>
                       <li class="fr-sidemenu__item">
                         <button class="fr-sidemenu__link" data-toggle-id="controle" data-action="click->toggle#changeMenuSection">Contrôle</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <button class="fr-sidemenu__link" data-toggle-id="tutelles" data-action="click->toggle#changeMenuSection">Tutelles financière et technique</button>
+                        <button class="fr-sidemenu__link" data-toggle-id="tutelles" data-action="click->toggle#changeMenuSection">Tutelles
+                          financière et technique
+                        </button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <button class="fr-sidemenu__link" data-toggle-id="gouvernance" data-action="click->toggle#changeMenuSection">Gouvernance DB</button>
+                        <button class="fr-sidemenu__link" data-toggle-id="gouvernance" data-action="click->toggle#changeMenuSection">Gouvernance
+                          DB
+                        </button>
                       </li>
                       <li class="fr-sidemenu__item">
                         <button class="fr-sidemenu__link" data-toggle-id="categories" data-action="click->toggle#changeMenuSection">Catégories</button>
                       </li>
                       <li class="fr-sidemenu__item fr-sidemenu__item--active">
-                        <button class="fr-sidemenu__link" data-toggle-id="modifications" data-action="click->toggle#changeMenuSection">Historique des modifications</button>
+                        <button class="fr-sidemenu__link" data-toggle-id="modifications" data-action="click->toggle#changeMenuSection">Historique
+                          des modifications
+                        </button>
                       </li>
                     </ul>
                   </div>
                 </li>
                 <% if @est_valide %>
                   <li class="fr-sidemenu__item">
-                    <%= link_to organisme_chiffres_path(@organisme),class: "fr-sidemenu__link", target:"_self" do%>Données budgétaires et comptables<%end %>
+                    <%= link_to organisme_chiffres_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>
+                      Données budgétaires et comptables
+                    <% end %>
                   </li>
                   <li class="fr-sidemenu__item">
-                    <%= link_to organisme_restitutions_path(organisme_id: @organisme), class: "fr-sidemenu__link fr-icon-bar-chart-box-fill fr-link--icon-right", target: "_self" do %>Restitutions graphiques<%end %>
+                    <%= link_to organisme_restitutions_path(organisme_id: @organisme), class: "fr-sidemenu__link fr-icon-bar-chart-box-fill fr-link--icon-right", target: "_self" do %>
+                      Restitutions graphiques
+                    <% end %>
                   </li>
                 <% end %>
               </ul>
@@ -130,66 +168,98 @@
 
       <div class="fr-col-12 fr-col-lg-8">
         <% if @est_valide %>
-        <div class="fr-download">
-          <p><%= link_to "/opera/organismes/#{@organisme.id}.xlsx", format: :xslx, class: "fr-download__link" do %>Télécharger la fiche d'identité de l'organisme<span class="fr-download__detail">Format .xlsx</span><%end %></p>
-        </div>
+          <div class="fr-download">
+            <p><%= link_to "/opera/organismes/#{@organisme.id}.xlsx", format: :xslx, class: "fr-download__link" do %>
+                Télécharger la fiche d'identité de l'organisme<span class="fr-download__detail">Format .xlsx</span>
+              <% end %></p>
+          </div>
         <% end %>
         <div id="fiche_identite" class="fr-mb-4w">
-          <h2 class="title-btn">Informations générales <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <h2 class="title-btn">Informations générales
+            <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>
+                Modifier
+                <% end %>
+            <% end %></h2>
 
           <div class="fr-card">
             <div class="fr-card__body">
-            <div class="fr-card__content">
-              <h3 class="fr-card__title">
-                <%= @organisme.nom %><% if @organisme.acronyme && !@organisme.acronyme.blank? %> - <%= @organisme.acronyme %><%end %>
-              </h3>
-              <p class="fr-card__desc">Date de création : <b><%= format_boolean(format_date(@organisme.date_creation)) %></b></p>
-              <p class="fr-card__desc">Siren : <b><%= format_boolean(@organisme.siren) %></b></p>
-              <p class="fr-card__desc">Famille : <b><%= format_boolean(@organisme.famille) %></b></p>
-              <p class="fr-card__desc">Nature juridique : <b><%= format_boolean(@organisme.nature) %></b></p>
-              <% if @organisme.date_previsionnelle_dissolution %><p class="fr-card__desc">Date prévisionnelle de dissolution : <b><%= format_boolean(format_date(@organisme.date_previsionnelle_dissolution))%></b></p><%end %>
-              <% if @organisme.etat == "Inactif" %>
-                <p class="fr-card__desc">Date de dissolution : <b><%= format_boolean(format_date(@organisme.date_dissolution))%></b></p>
-                <p class="fr-card__desc">Effet de dissolution : <b><%= format_boolean(@organisme.effet_dissolution) %></b></p>
-                <% if @organisme.effet_dissolution == "Rattachement" || @organisme.effet_dissolution == "Création" %>
-                  <p class="fr-card__desc">Organisme•s de rattachement : <b><% if @organisme.organisme_rattachements.length > 0 %><% @organisme.organisme_rattachements.each do |orga|%><%= link_to organisme_path(orga.organisme_destination) do%><%= orga.organisme_destination.nom %><%end %> - <%end %><%else %>Aucun parmi les organismes soumis au GBCP<%end %></b></p>
-                <%end %>
-              <%end %>
-
-              <p class="fr-card__desc">Bureau DB de rattachement : <b><% if @organisme.bureau %><%= @organisme.bureau.nom %><%else %>Non renseigné<%end %></b></p>
-              <p class="fr-card__desc">Textes institutifs : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_institutif),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-              <% if @organisme_destinations && @organisme_destinations.count > 0 %>
-                <p class="fr-card__desc">Organisme hérité de <% @organisme_destinations.each do |el| %><b><%= link_to organisme_path(el.organisme) do%><%= el.organisme.nom%><%end %></b> dissous le <%= format_boolean(format_date(el.organisme.date_dissolution))%> -<%end %></p>
-              <% end %>
-              <% if @organisme.commentaire && !@organisme.commentaire.blank?  %>
-              <div class="fr-card__desc">
-              <section class="fr-accordion">
-                <h3 class="fr-accordion__title">
-                  <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-106">Commentaires</button>
+              <div class="fr-card__content">
+                <h3 class="fr-card__title">
+                  <%= @organisme.nom %>
+                  <% if @organisme.acronyme && !@organisme.acronyme.blank? %> - <%= @organisme.acronyme %>
+                  <% end %>
                 </h3>
-                <div class="fr-collapse" id="accordion-106">
-                  <%= auto_link(simple_format(format_boolean(@organisme.commentaire),{}, wrapper_tag: "span"), :html => { :target => '_blank' })%>
-                </div>
-              </section>
-              </div>
-              <%end %>
+                <p class="fr-card__desc">Date de création :
+                  <b><%= format_boolean(format_date(@organisme.date_creation)) %></b></p>
+                <p class="fr-card__desc">Siren : <b><%= format_boolean(@organisme.siren) %></b></p>
+                <p class="fr-card__desc">Famille : <b><%= format_boolean(@organisme.famille) %></b></p>
+                <p class="fr-card__desc">Nature juridique : <b><%= format_boolean(@organisme.nature) %></b></p>
+                <% if @organisme.date_previsionnelle_dissolution %>
+                  <p class="fr-card__desc">Date prévisionnelle de dissolution :
+                    <b><%= format_boolean(format_date(@organisme.date_previsionnelle_dissolution)) %></b></p>
+                <% end %>
+                <% if @organisme.etat == "Inactif" %>
+                  <p class="fr-card__desc">Date de dissolution :
+                    <b><%= format_boolean(format_date(@organisme.date_dissolution)) %></b></p>
+                  <p class="fr-card__desc">Effet de dissolution :
+                    <b><%= format_boolean(@organisme.effet_dissolution) %></b></p>
+                  <% if @organisme.effet_dissolution == "Rattachement" || @organisme.effet_dissolution == "Création" %>
+                    <p class="fr-card__desc">Organisme•s de rattachement : <b>
+                      <% if @organisme.organisme_rattachements.length > 0 %>
+                        <% @organisme.organisme_rattachements.each do |orga| %><%= link_to organisme_path(orga.organisme_destination) do %><%= orga.organisme_destination.nom %>
+                          <% end %> -
+                          <% end %>
+                      <% else %>Aucun parmi les organismes soumis au GBCP
+                      <% end %></b></p>
+                  <% end %>
+                <% end %>
+
+                <p class="fr-card__desc">Bureau DB de rattachement : <b>
+                  <% if @organisme.bureau %><%= @organisme.bureau.nom %>
+                  <% else %>Non renseigné
+                  <% end %></b></p>
+                <p class="fr-card__desc">Textes institutifs :
+                  <b><%= auto_link(simple_format(format_boolean(@organisme.texte_institutif), {}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b>
+                </p>
+                <% if @organisme_destinations && @organisme_destinations.count > 0 %>
+                  <p class="fr-card__desc">Organisme hérité de
+                    <% @organisme_destinations.each do |el| %>
+                      <b><%= link_to organisme_path(el.organisme) do %><%= el.organisme.nom %>
+                        <% end %></b> dissous le <%= format_boolean(format_date(el.organisme.date_dissolution)) %> -
+                    <% end %></p>
+                <% end %>
+                <% if @organisme.commentaire && !@organisme.commentaire.blank? %>
+                  <div class="fr-card__desc">
+                    <section class="fr-accordion">
+                      <h3 class="fr-accordion__title">
+                        <button class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-106">Commentaires</button>
+                      </h3>
+                      <div class="fr-collapse" id="accordion-106">
+                        <%= auto_link(simple_format(format_boolean(@organisme.commentaire), {}, wrapper_tag: "span"), :html => { :target => '_blank' }) %>
+                      </div>
+                    </section>
+                  </div>
+                <% end %>
 
                 <div class="fr-card__start">
                   <ul class="fr-tags-group">
                     <li>
-                      <% if @organisme.etat == "Inactif" %><p class="fr-badge"><%elsif @organisme.etat == "Actif" %><p class="fr-badge fr-badge--green-menthe"><%else %><p class="fr-badge fr-badge--warning fr-badge--no-icon"><%end %><%= @organisme.etat %></p>
+                      <% if @organisme.etat == "Inactif" %><p class="fr-badge">
+                      <% elsif @organisme.etat == "Actif" %><p class="fr-badge fr-badge--green-menthe">
+                      <% else %><p class="fr-badge fr-badge--warning fr-badge--no-icon">
+                      <% end %><%= @organisme.etat %></p>
                     </li>
                   </ul>
                 </div>
+              </div>
             </div>
-          </div>
           </div>
         </div>
         <div id="synthese" class="fr-mb-4w">
           <h2 class="title-btn">Indicateurs budgétaires et financiers</h2>
-          <% if @chiffre && @chiffre.statut == "valide"%>
-            <%= render partial: "organismes/synthese_chiffres", locals: {chiffre: @chiffre} %>
-          <% else  %>
+          <% if @chiffre && @chiffre.statut == "valide" %>
+            <%= render partial: "organismes/synthese_chiffres", locals: { chiffre: @chiffre } %>
+          <% else %>
             <div class="fr-card">
               <div class="fr-card__body">
                 <div class="fr-card__content">
@@ -202,11 +272,16 @@
           <% end %>
         </div>
         <div id="operateur" class="fr-mb-4w">
-          <h2 class="title-btn">Opérateur <% if @est_valide && @statut_user == "2B2O" %>
-              <% if @operateur.nil? %><%= link_to new_operateur_path(organisme_id: @organisme.id), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %>
-                <%else %><%= link_to edit_operateur_path(id: @operateur, organisme_id: @organisme.id), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %>
-              <%end %>
-            <%end %></h2>
+          <h2 class="title-btn">Opérateur
+            <% if @est_valide && @statut_user == "2B2O" %>
+              <% if @operateur.nil? %><%= link_to new_operateur_path(organisme_id: @organisme.id), class: "fr-btn fr-btn--secondary" do %>
+                  Modifier
+                <% end %>
+                <% else %><%= link_to edit_operateur_path(id: @operateur, organisme_id: @organisme.id), class: "fr-btn fr-btn--secondary" do %>
+                  Modifier
+                <% end %>
+              <% end %>
+            <% end %></h2>
 
           <div class="fr-card">
             <div class="fr-card__body">
@@ -214,227 +289,347 @@
                 <h3 class="fr-card__title">
                   Opérateur année
                   <% if Date.today < Date.new(Date.today.year, 9, 30) %>
-                    <%= Date.today.year %> : <% if @operateur %><%= format_boolean(@operateur.operateur_n) %><%else %>Non<%end %>
+                    <%= Date.today.year %> :
+                    <% if @operateur %><%= format_boolean(@operateur.operateur_n) %>
+                    <% else %>Non
+                    <% end %>
                   <% else %>
-                    <%= Date.today.year+1 %> : <% if @operateur %><%= format_boolean(@operateur.operateur_nf) %><%else %>Non<%end %>
-                  <% end  %>
+                    <%= Date.today.year + 1 %> :
+                    <% if @operateur %><%= format_boolean(@operateur.operateur_nf) %>
+                    <% else %>Non
+                    <% end %>
+                  <% end %>
                 </h3>
                 <% if Date.today >= Date.new(Date.today.year, 9, 30) %>
-                <p class="fr-card__desc">Opérateur année <%= Date.today.year %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n) %><%else %>Non<%end %></b></p>
-                <% end  %>
-                <p class="fr-card__desc">Opérateur année <%= Date.today.year-1 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n1) %><%else %>Non<%end %></b></p>
-                <p class="fr-card__desc">Opérateur année <%= Date.today.year-2 %> : <b><% if @operateur %><%= format_boolean(@operateur.operateur_n2) %><%else %>Non<%end %></b></p>
+                  <p class="fr-card__desc">Opérateur année <%= Date.today.year %> : <b>
+                    <% if @operateur %><%= format_boolean(@operateur.operateur_n) %>
+                    <% else %>Non
+                    <% end %></b></p>
+                <% end %>
+                <p class="fr-card__desc">Opérateur année <%= Date.today.year - 1 %> : <b>
+                  <% if @operateur %><%= format_boolean(@operateur.operateur_n1) %>
+                  <% else %>Non
+                  <% end %></b></p>
+                <p class="fr-card__desc">Opérateur année <%= Date.today.year - 2 %> : <b>
+                  <% if @operateur %><%= format_boolean(@operateur.operateur_n2) %>
+                  <% else %>Non
+                  <% end %></b></p>
                 <% if @operateur %>
-                  <p class="fr-card__desc">Appartenance catégorie d'opérateur : <b><%= format_boolean(@operateur.presence_categorie) %></b></p>
-                  <% if @operateur.presence_categorie  %>
-                    <p class="fr-card__desc">Catégorie d'opérateur : <b><%= format_boolean(@operateur.nom_categorie) %></b></p>
-                  <%end %>
-                  <p class="fr-card__desc">Mission programme chef de file : <b><% if @operateur.mission %><%= format_boolean(@operateur.mission.nom) %><%end %></b></p>
-                  <p class="fr-card__desc">Programme chef de file : <b><% if @operateur.programme %><%= @operateur.programme.numero %> - <%= @operateur.programme.nom %><%end %></b></p>
-                  <p class="fr-card__desc">Programmes annexes : <b><% if @operateur_programmes && !@operateur_programmes.empty? %><% @operateur_programmes.each do |el|%><%= el.programme.numero %> - <%end %><%else %>Aucun<%end %></b></p>
-                <%end %>
+                  <p class="fr-card__desc">Appartenance catégorie d'opérateur :
+                    <b><%= format_boolean(@operateur.presence_categorie) %></b></p>
+                  <% if @operateur.presence_categorie %>
+                    <p class="fr-card__desc">Catégorie d'opérateur :
+                      <b><%= format_boolean(@operateur.nom_categorie) %></b></p>
+                  <% end %>
+                  <p class="fr-card__desc">Mission programme chef de file : <b>
+                    <% if @operateur.mission %><%= format_boolean(@operateur.mission.nom) %>
+                    <% end %></b></p>
+                  <p class="fr-card__desc">Programme chef de file : <b>
+                    <% if @operateur.programme %><%= @operateur.programme.numero %> - <%= @operateur.programme.nom %>
+                    <% end %></b></p>
+                  <p class="fr-card__desc">Programmes annexes : <b>
+                    <% if @operateur_programmes && !@operateur_programmes.empty? %>
+                      <% @operateur_programmes.each do |el| %><%= el.programme.numero %> -
+                        <% end %>
+                    <% else %>Aucun
+                    <% end %></b></p>
+                <% end %>
               </div>
             </div>
           </div>
         </div>
 
         <div id="regime_budgetaire" class="fr-mb-4w">
-          <h2 class="title-btn">Régime budgétaire et comptable <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 2), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
-          <% if @organisme.statut.to_i > 1 || @est_valide%>
+          <h2 class="title-btn">Régime budgétaire et comptable
+            <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 2), class: "fr-btn fr-btn--secondary" do %>
+                Modifier
+                <% end %>
+            <% end %></h2>
+          <% if @organisme.statut.to_i > 1 || @est_valide %>
             <div class="fr-card">
-            <div class="fr-card__body">
-              <div class="fr-card__content">
-                <h3 class="fr-card__title">
-                  Parties GBCP
-                </h3>
-                <p class="fr-card__desc">Partie I GBCP <%= render partial: "organismes/tooltip", locals: {num_id: "gbcp_1"} %> : <b><%= format_boolean(@organisme.gbcp_1) %></b></p>
-                <p class="fr-card__desc">Présence d’un agent comptable : <b><%= format_boolean(@organisme.agent_comptable_present) %></b></p>
-                <p class="fr-card__desc">Champ d'application du décret GBCP <%= render partial: "organismes/tooltip", locals: {num_id: "degre_gbcp"} %> : <b><%= format_boolean(@organisme.degre_gbcp) %></b></p>
-                <p class="fr-card__desc">Partie III GBCP : <b><%= format_boolean(@organisme.gbcp_3) %></b></p>
-                <p class="fr-card__desc">Comptabilité budgétaire <%= render partial: "organismes/tooltip", locals: {num_id: "comptabilite_budgetaire"} %> : <b><%= format_boolean(@organisme.comptabilite_budgetaire) %></b></p>
+              <div class="fr-card__body">
+                <div class="fr-card__content">
+                  <h3 class="fr-card__title">
+                    Parties GBCP
+                  </h3>
+                  <p class="fr-card__desc">Partie I
+                    GBCP <%= render partial: "organismes/tooltip", locals: { num_id: "gbcp_1" } %> :
+                    <b><%= format_boolean(@organisme.gbcp_1) %></b></p>
+                  <p class="fr-card__desc">Présence d’un agent comptable :
+                    <b><%= format_boolean(@organisme.agent_comptable_present) %></b></p>
+                  <p class="fr-card__desc">Champ d'application du décret
+                    GBCP <%= render partial: "organismes/tooltip", locals: { num_id: "degre_gbcp" } %> :
+                    <b><%= format_boolean(@organisme.degre_gbcp) %></b></p>
+                  <p class="fr-card__desc">Partie III GBCP : <b><%= format_boolean(@organisme.gbcp_3) %></b></p>
+                  <p class="fr-card__desc">Comptabilité
+                    budgétaire <%= render partial: "organismes/tooltip", locals: { num_id: "comptabilite_budgetaire" } %>
+                    : <b><%= format_boolean(@organisme.comptabilite_budgetaire) %></b></p>
+                </div>
               </div>
             </div>
-          </div>
-          <%else  %>
+          <% else %>
             <p class="fr-badge fr-badge--warning">Non complété</p>
-          <%end %>
+          <% end %>
         </div>
 
         <div id="controle" class="fr-mb-4w">
-          <h2 class="title-btn">Contrôle <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 3), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
-          <% if @organisme.statut.to_i > 2 || @est_valide%>
-          <div class="fr-card">
-            <div class="fr-card__body">
-              <div class="fr-card__content">
-                <h3 class="fr-card__title">
-                  Présence contrôle : <%= format_boolean(@organisme.presence_controle) %>
-                </h3>
-                <p class="fr-card__desc">Contrôleur référent <%= render partial: "organismes/tooltip", locals: {num_id: "controleur"} %> : <b><%= @organisme.controleur.nom %></b></p>
-                <%  if @organisme.presence_controle %>
-                  <p class="fr-card__desc">Nature contrôle : <b><%= format_boolean(@organisme.nature_controle) %></b></p>
-                  <p class="fr-card__desc">Référence du texte de soumission au contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_soumission_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-                  <p class="fr-card__desc">Autorité de contrôle : <b><%= format_boolean(@organisme.autorite_controle) %></b></p>
-                  <p class="fr-card__desc">Texte réglementaire de désignation de l'autorité de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.texte_reglementaire_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-                  <p class="fr-card__desc">Référence de l’arrêté de contrôle : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_controle),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
-                  <p class="fr-card__desc"><% if @organisme.nature_controle == "Contrôle Économique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) %>Protocole de Contrôle Economique et Financier<%else %>Document de contrôle<%end %> : <b><%= format_boolean(@organisme.document_controle_present) %></b></p>
-                  <% if @organisme.document_controle_present %>
-                  <div class="fr-card__desc fr-my-0" id="control_document">
-                      <%= render partial: 'control_documents/control_document', locals: {organisme: @organisme} %>
-                  </div>
-                  <% end  %>
+          <h2 class="title-btn">Contrôle
+            <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 3), class: "fr-btn fr-btn--secondary" do %>
+                Modifier
                 <% end %>
-                <p class="fr-card__desc">Référence de l’arrêté de nomination du commissaire du gouvernement : <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_nomination),{}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b></p>
+            <% end %></h2>
+          <% if @organisme.statut.to_i > 2 || @est_valide %>
+            <div class="fr-card">
+              <div class="fr-card__body">
+                <div class="fr-card__content">
+                  <h3 class="fr-card__title">
+                    Présence contrôle : <%= format_boolean(@organisme.presence_controle) %>
+                  </h3>
+                  <p class="fr-card__desc">Contrôleur
+                    référent <%= render partial: "organismes/tooltip", locals: { num_id: "controleur" } %> :
+                    <b><%= @organisme.controleur.nom %></b></p>
+                  <% if @organisme.presence_controle %>
+                    <p class="fr-card__desc">Nature contrôle : <b><%= format_boolean(@organisme.nature_controle) %></b>
+                    </p>
+                    <p class="fr-card__desc">Référence du texte de soumission au contrôle :
+                      <b><%= auto_link(simple_format(format_boolean(@organisme.texte_soumission_controle), {}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b>
+                    </p>
+                    <p class="fr-card__desc">Autorité de contrôle :
+                      <b><%= format_boolean(@organisme.autorite_controle) %></b></p>
+                    <p class="fr-card__desc">Texte réglementaire de désignation de l'autorité de contrôle :
+                      <b><%= auto_link(simple_format(format_boolean(@organisme.texte_reglementaire_controle), {}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b>
+                    </p>
+                    <p class="fr-card__desc">Référence de l’arrêté de contrôle :
+                      <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_controle), {}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b>
+                    </p>
+                    <p class="fr-card__desc">
+                      <% if @organisme.nature_controle == "Contrôle Économique et Financier" && (@organisme.arrete_controle.nil? || @organisme.arrete_controle.blank?) %>
+                        Protocole de Contrôle Economique et Financier
+                      <% else %>Document de contrôle
+                      <% end %> : <b><%= format_boolean(@organisme.document_controle_present) %></b></p>
+                    <% if @organisme.document_controle_present %>
+                      <div class="fr-card__desc fr-my-0" id="control_document">
+                        <%= render partial: 'control_documents/control_document', locals: { organisme: @organisme } %>
+                      </div>
+                    <% end %>
+                  <% end %>
+                  <p class="fr-card__desc">Référence de l’arrêté de nomination du commissaire du gouvernement :
+                    <b><%= auto_link(simple_format(format_boolean(@organisme.arrete_nomination), {}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></b>
+                  </p>
 
+                </div>
               </div>
             </div>
-          </div>
 
 
-                <%= render partial: 'organismes/modal_ajout_dc'%>
+            <%= render partial: 'organismes/modal_ajout_dc' %>
 
 
-          <%else  %>
+          <% else %>
             <p class="fr-badge fr-badge--warning">Non complété</p>
           <% end %>
         </div>
 
         <div id="tutelles" class="fr-mb-4w">
-          <h2 class="title-btn">Tutelles financière et technique <% if @est_valide && @admin && @organisme.nature != 'GIP'%><%= link_to edit_organisme_path(@organisme, step: 4), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
-          <% if @organisme.statut.to_i > 3 || @est_valide%>
-          <div class="fr-card">
-            <div class="fr-card__body">
-              <div class="fr-card__content">
-                <h3 class="fr-card__title">
-                  Tutelle financière MCP <%= render partial: "organismes/tooltip", locals: {num_id: "tutelle_financiere"} %> : <%= format_boolean(@organisme.tutelle_financiere) %>
-                </h3>
-                <% if @organisme.tutelle_financiere %>
-                  <p class="fr-card__desc">Délégation de l'approbation des BI / BR / comptes financiers <%= render partial: "organismes/tooltip", locals: {num_id: "delegation_approbation"} %> : <b><%= format_boolean(@organisme.delegation_approbation) %></b></p>
-                <%end %>
-                <p class="fr-card__desc">Autorité chargée de l’approbation : <b><%= format_texte(@organisme.autorite_approbation) %></b></p>
-                <p class="fr-card__desc">Ministère de tutelle principale : <b><% if @organisme.ministere %><%= @organisme.ministere.nom %><%else %>Aucun<%end %></b></p>
-                <p class="fr-card__desc">Ministère•s de co-tutelle : <b><% if @organisme_ministeres && !@organisme_ministeres.empty? %><% @organisme_ministeres.each do |orga|%><%= orga.ministere.nom %> - <%end %><%else %>Aucun<%end %></b></p>
+          <h2 class="title-btn">Tutelles financière et technique
+            <% if @est_valide && @admin && @organisme.nature != 'GIP' %><%= link_to edit_organisme_path(@organisme, step: 4), class: "fr-btn fr-btn--secondary" do %>
+                Modifier
+                <% end %>
+            <% end %></h2>
+          <% if @organisme.statut.to_i > 3 || @est_valide %>
+            <div class="fr-card">
+              <div class="fr-card__body">
+                <div class="fr-card__content">
+                  <h3 class="fr-card__title">
+                    Tutelle financière
+                    MCP <%= render partial: "organismes/tooltip", locals: { num_id: "tutelle_financiere" } %>
+                    : <%= format_boolean(@organisme.tutelle_financiere) %>
+                  </h3>
+                  <% if @organisme.tutelle_financiere %>
+                    <p class="fr-card__desc">Délégation de l'approbation des BI / BR / comptes
+                      financiers <%= render partial: "organismes/tooltip", locals: { num_id: "delegation_approbation" } %>
+                      : <b><%= format_boolean(@organisme.delegation_approbation) %></b></p>
+                  <% end %>
+                  <p class="fr-card__desc">Autorité chargée de l’approbation :
+                    <b><%= format_texte(@organisme.autorite_approbation) %></b></p>
+                  <p class="fr-card__desc">Ministère de tutelle principale : <b>
+                    <% if @organisme.ministere %><%= @organisme.ministere.nom %>
+                    <% else %>Aucun
+                    <% end %></b></p>
+                  <p class="fr-card__desc">Ministère•s de co-tutelle : <b>
+                    <% if @organisme_ministeres && !@organisme_ministeres.empty? %>
+                      <% @organisme_ministeres.each do |orga| %><%= orga.ministere.nom %> -
+                        <% end %>
+                    <% else %>Aucun
+                    <% end %></b></p>
 
-               </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <%else  %>
+          <% else %>
             <p class="fr-badge fr-badge--warning">Non complété</p>
-          <%end %>
+          <% end %>
         </div>
 
         <div id="gouvernance" class="fr-mb-4w">
-          <h2 class="title-btn">Gouvernance DB <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 5), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
-          <% if @organisme.statut.to_i > 4 || @est_valide%>
-          <div class="fr-card">
-            <div class="fr-card__body">
-              <div class="fr-card__content">
-                <h3 class="fr-card__title">
-                  Administrateur DB au sein de l'organe de gouvernance <%= render partial: "organismes/tooltip", locals: {num_id: "admin_db_present"} %> : <%= format_boolean(@organisme.admin_db_present) %>
-                </h3>
-                <% if @organisme.admin_db_present %>
-                  <p class="fr-card__desc">Fonction administrateur DB : <b><%= format_boolean(@organisme.admin_db_fonction) %></b></p>
+          <h2 class="title-btn">Gouvernance DB
+            <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 5), class: "fr-btn fr-btn--secondary" do %>
+                Modifier
                 <% end %>
-                <p class="fr-card__desc">Présence DB au pré-CA <%= render partial: "organismes/tooltip", locals: {num_id: "admin_preca"} %> : <b><%= format_boolean(@organisme.admin_preca) %></b></p>
-                <p class="fr-card__desc">Présence contrôleur au pré-CA <%= render partial: "organismes/tooltip", locals: {num_id: "controleur_preca"} %> : <b><%= format_boolean(@organisme.controleur_preca) %></b></p>
-                <p class="fr-card__desc">Présence contrôleur au CA <%= render partial: "organismes/tooltip", locals: {num_id: "controleur_ca"} %> : <b><%= format_boolean(@organisme.controleur_ca) %></b></p>
-                <p class="fr-card__desc">Comité d’audit et des risques : <b><%= format_boolean(@organisme.comite_audit) %></b></p>
+            <% end %></h2>
+          <% if @organisme.statut.to_i > 4 || @est_valide %>
+            <div class="fr-card">
+              <div class="fr-card__body">
+                <div class="fr-card__content">
+                  <h3 class="fr-card__title">
+                    Administrateur DB au sein de l'organe de
+                    gouvernance <%= render partial: "organismes/tooltip", locals: { num_id: "admin_db_present" } %>
+                    : <%= format_boolean(@organisme.admin_db_present) %>
+                  </h3>
+                  <% if @organisme.admin_db_present %>
+                    <p class="fr-card__desc">Fonction administrateur DB :
+                      <b><%= format_boolean(@organisme.admin_db_fonction) %></b></p>
+                  <% end %>
+                  <p class="fr-card__desc">Présence DB au
+                    pré-CA <%= render partial: "organismes/tooltip", locals: { num_id: "admin_preca" } %> :
+                    <b><%= format_boolean(@organisme.admin_preca) %></b></p>
+                  <p class="fr-card__desc">Présence contrôleur au
+                    pré-CA <%= render partial: "organismes/tooltip", locals: { num_id: "controleur_preca" } %> :
+                    <b><%= format_boolean(@organisme.controleur_preca) %></b></p>
+                  <p class="fr-card__desc">Présence contrôleur au
+                    CA <%= render partial: "organismes/tooltip", locals: { num_id: "controleur_ca" } %> :
+                    <b><%= format_boolean(@organisme.controleur_ca) %></b></p>
+                  <p class="fr-card__desc">Comité d’audit et des risques :
+                    <b><%= format_boolean(@organisme.comite_audit) %></b></p>
+                </div>
               </div>
             </div>
-          </div>
-          <%else  %>
+          <% else %>
             <p class="fr-badge fr-badge--warning">Non complété</p>
-          <%end %>
+          <% end %>
         </div>
 
         <div id="categories" class="fr-mb-4w">
-          <h2 class="title-btn">Catégories <% if @est_valide && @statut_user == "2B2O" %><%= link_to edit_organisme_path(@organisme, step: 6), class: "fr-btn fr-btn--secondary" do %>Modifier<%end %><%end %></h2>
+          <h2 class="title-btn">Catégories
+            <% if @est_valide && @statut_user == "2B2O" %><%= link_to edit_organisme_path(@organisme, step: 6), class: "fr-btn fr-btn--secondary" do %>
+                Modifier
+                <% end %>
+            <% end %></h2>
           <% if @est_valide %>
-          <div class="fr-card">
-            <div class="fr-card__body">
-              <div class="fr-card__content">
-                <h3 class="fr-card__title">
-                  APU : <b><%= format_boolean(@organisme.apu) %></b>
-                </h3>
-                <p class="fr-card__desc">ODAC Liste INSEE année <%= Date.today.year-2 %> : <b><%= format_boolean(@organisme.odac_n) %></b></p>
-                <p class="fr-card__desc">ODAC Liste INSEE année <%= Date.today.year-3 %> : <b><%= format_boolean(@organisme.odac_n1) %></b></p>
-                <p class="fr-card__desc">Arrêté interdiction ODAC emprunt ≥ 12 mois : <b><%= format_boolean(@organisme.arrete_interdiction_odac) %></b></p>
-                <p class="fr-card__desc">ODAL Liste INSEE année <%= Date.today.year-2 %> : <b><%= format_boolean(@organisme.odal_n) %></b></p>
-                <p class="fr-card__desc">ODAL Liste INSEE année <%= Date.today.year-3 %> : <b><%= format_boolean(@organisme.odal_n1) %></b></p>
-                <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year %> : <b><%= format_boolean(@organisme.ciassp_n) %></b></p>
-                <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year - 1 %> : <b><%= format_boolean(@organisme.ciassp_n1) %></b></p>
+            <div class="fr-card">
+              <div class="fr-card__body">
+                <div class="fr-card__content">
+                  <h3 class="fr-card__title">
+                    APU : <b><%= format_boolean(@organisme.apu) %></b>
+                  </h3>
+                  <p class="fr-card__desc">ODAC Liste INSEE année <%= Date.today.year - 2 %> :
+                    <b><%= format_boolean(@organisme.odac_n) %></b></p>
+                  <p class="fr-card__desc">ODAC Liste INSEE année <%= Date.today.year - 3 %> :
+                    <b><%= format_boolean(@organisme.odac_n1) %></b></p>
+                  <p class="fr-card__desc">Arrêté interdiction ODAC emprunt ≥ 12 mois :
+                    <b><%= format_boolean(@organisme.arrete_interdiction_odac) %></b></p>
+                  <p class="fr-card__desc">ODAL Liste INSEE année <%= Date.today.year - 2 %> :
+                    <b><%= format_boolean(@organisme.odal_n) %></b></p>
+                  <p class="fr-card__desc">ODAL Liste INSEE année <%= Date.today.year - 3 %> :
+                    <b><%= format_boolean(@organisme.odal_n1) %></b></p>
+                  <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year %> :
+                    <b><%= format_boolean(@organisme.ciassp_n) %></b></p>
+                  <p class="fr-card__desc">Soumission à la CIASSP année <%= Date.today.year - 1 %> :
+                    <b><%= format_boolean(@organisme.ciassp_n1) %></b></p>
+                </div>
               </div>
             </div>
-          </div>
-          <%else  %>
+          <% else %>
             <p class="fr-badge fr-badge--warning">Non complété</p>
-          <%end %>
+          <% end %>
         </div>
 
         <div id="modifications" class="fr-mb-4w">
-          <h2>Historique des modifications [<%= @modifications_valides_organisme.length + @modifications_rejetees_organisme.length %>]</h2>
+          <h2>Historique des modifications
+            [<%= @modifications_valides_organisme.length + @modifications_rejetees_organisme.length %>]</h2>
           <div class="fr-tabs fr-mb-2w">
             <ul class="fr-tabs__list" role="tablist" aria-label="Onglets Organismes actifs">
               <li role="presentation">
-                <button id="tabpanel-1177" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-1177-panel">Modifications validées (<%= @modifications_valides_organisme.length %>)</button>
+                <button id="tabpanel-1177" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="0" role="tab" aria-selected="true" aria-controls="tabpanel-1177-panel">Modifications
+                  validées (<%= @modifications_valides_organisme.length %>)
+                </button>
               </li>
               <li role="presentation">
-                <button id="tabpanel-1178" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-1178-panel">Modifications rejetées (<%= @modifications_rejetees_organisme.length %>)</button>
+                <button id="tabpanel-1178" class="fr-tabs__tab fr-tabs__tab--icon-left" tabindex="-1" role="tab" aria-selected="false" aria-controls="tabpanel-1178-panel">Modifications
+                  rejetées (<%= @modifications_rejetees_organisme.length %>)
+                </button>
               </li>
             </ul>
             <div id="tabpanel-1177-panel" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel" aria-labelledby="tabpanel-1177" tabindex="0">
-              <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet-vscroll">
-                <table>
-                  <caption>Tableau des modifications </caption>
-                  <thead>
-                  <tr>
-                    <th scope="col">Date de saisie</th>
-                    <th scope="col">Auteur</th>
-                    <th scope="col">Champ</th>
-                    <th scope="col">Valeur</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <% @modifications_valides_organisme.each do |modification| %>
-                  <tr>
-                    <td><%= format_date(modification.created_at) %></td>
-                    <td><%= modification.user.nom %></td>
-                    <td><%= modification.nom %></td>
-                    <td class="fr-td--overflow"><%= render partial: 'modifications/table_nom', locals: {modification: modification}  %></td>
-                  </tr>
-                    <%end %>
-                  </tbody>
-                </table>
+              <div class="fr-table--lg fr-table fr-table--no-caption">
+                <div class="fr-table__wrapper">
+                  <div class="fr-table__container">
+                    <div class="fr-table__content">
+                      <table class="fr-cell--multiline">
+                        <caption>Tableau des modifications</caption>
+                        <thead>
+                        <tr>
+                          <th scope="col">Date de saisie</th>
+                          <th scope="col">Auteur</th>
+                          <th scope="col">Champ</th>
+                          <th scope="col">Valeur</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% @modifications_valides_organisme.each do |modification| %>
+                          <tr>
+                            <td><%= format_date(modification.created_at) %></td>
+                            <td><%= modification.user.nom %></td>
+                            <td><%= modification.nom %></td>
+                            <td class="fr-td--overflow"><%= render partial: 'modifications/table_nom', locals: { modification: modification } %></td>
+                          </tr>
+                        <% end %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
             <div id="tabpanel-1178-panel" class="fr-tabs__panel" role="tabpanel" aria-labelledby="tabpanel-1178" tabindex="0">
-              <div class="fr-table fr-table--bordered fr-table--no-caption fr-table--layout-fixed--lg fr-table--onglet-vscroll">
-                <table>
-                  <caption>Tableau des modifications </caption>
-                  <thead>
-                  <tr>
-                    <th scope="col">Date de saisie</th>
-                    <th scope="col">Auteur</th>
-                    <th scope="col">Champ</th>
-                    <th scope="col">Valeur</th>
-                    <th scope="col">Commentaire</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <% @modifications_rejetees_organisme.each do |modification| %>
-                    <tr>
-                      <td><%= format_date(modification.created_at) %></td>
-                      <td><%= modification.user.nom %></td>
-                      <td><%= modification.nom %></td>
-                      <td class="fr-td--overflow"><%= render partial: 'modifications/table_nom', locals: {modification: modification}  %></td>
+              <div class="fr-table--lg fr-table fr-table--no-caption">
+                <div class="fr-table__wrapper">
+                  <div class="fr-table__container">
+                    <div class="fr-table__content">
+                      <table class="fr-cell--multiline">
+                        <caption>Tableau des modifications</caption>
+                        <thead>
+                        <tr>
+                          <th scope="col">Date de saisie</th>
+                          <th scope="col">Auteur</th>
+                          <th scope="col">Champ</th>
+                          <th scope="col">Valeur</th>
+                          <th scope="col">Commentaire</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% @modifications_rejetees_organisme.each do |modification| %>
+                          <tr>
+                            <td><%= format_date(modification.created_at) %></td>
+                            <td><%= modification.user.nom %></td>
+                            <td><%= modification.nom %></td>
+                            <td class="fr-td--overflow"><%= render partial: 'modifications/table_nom', locals: { modification: modification } %></td>
 
-                      <td><div data-controller="toggle">
-                        <span data-toggle-target="commentaireCourt"><%= truncate(modification.commentaire, length: 20) %><% if modification.commentaire && modification.commentaire.length > 20 %><button class="fr-btn--tertiary fr-btn--sm" data-action="click->toggle#afficherPlus">Voir plus</button><% end %></span>
-                        <span data-toggle-target="commentaireLong" style="display: none;"><%= modification.commentaire %><button class="fr-btn--tertiary fr-btn--sm" data-action="click->toggle#afficherMoins">Voir moins</button></span>
-                      </div></td>
-                    </tr>
-                  <%end %>
-                  </tbody>
-                </table>
+                            <td>
+                              <div data-controller="toggle">
+                                <span data-toggle-target="commentaireCourt"><%= truncate(modification.commentaire, length: 20) %>
+                                  <% if modification.commentaire && modification.commentaire.length > 20 %><button class="fr-btn--tertiary fr-btn--sm" data-action="click->toggle#afficherPlus">Voir plus</button><% end %></span>
+                                <span data-toggle-target="commentaireLong" style="display: none;"><%= modification.commentaire %>
+                                  <button class="fr-btn--tertiary fr-btn--sm" data-action="click->toggle#afficherMoins">Voir moins</button></span>
+                              </div>
+                            </td>
+                          </tr>
+                        <% end %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

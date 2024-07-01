@@ -6,8 +6,8 @@
     <% if @statut_user == "2B2O" %>
       <td><%= user_names[modification.user_id] %></td>
     <%end %>
-    <td><%= link_to organisme_path(modification.organisme_id) do %><%= organismes.find { |org| org[0] == modification.organisme_id }[1] %><%end %></td>
+    <td class="fr-cell--multiline"><%= link_to organisme_path(modification.organisme_id) do %><%= organismes.find { |org| org[0] == modification.organisme_id }[1] %><%end %></td>
     <td><p class="fr-badge <%=badges[i] %> fr-badge--no-icon"><%= modification.modification_count %></p></td>
-    <td><%= link_to organisme_path(modification.organisme_id, anchor: anchor_id), class:'fr-btn' do %>Consulter<%end %></td>
+    <td><%= link_to organisme_path(modification.organisme_id, anchor: anchor_id), class:'fr-btn fr-btn--sm fr-btn--secondary' do %>Consulter<%end %></td>
   </tr>
 <%end %>

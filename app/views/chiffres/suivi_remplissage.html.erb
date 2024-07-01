@@ -16,7 +16,6 @@
               <div data-controller="request">
                 <%= search_form_for @q, url: suivi_remplissage_path, data: { 'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance' } do |f| %>
                   <div class="fr-mb-2w">
-
                     <div class="fr-select-group">
                       <label for="famille" class="fr-label">Filtrer par famille d'organisme</label>
                       <%= f.select :organisme_famille_eq, options_for_select([["Toutes les familles", ""]] + @liste_familles.map { |famille| [famille, famille] }),{}, {id:"famille",class:"fr-select", onchange: 'this.form.requestSubmit()'}%>
@@ -59,7 +58,7 @@
 
           <div class="fr-table--lg fr-table fr-table--bordered fr-table--no-caption fr-mb-6w">
             <div class="fr-table__header">
-              <p class="fr-table__detail"></p>
+              <p class="fr-table__detail">*Nombre d'organismes actifs, en présence de contrôle et soumis à la GBCP.</p>
               <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-md fr-btns-group--icon-left">
                 <li>
                   <button class="fr-btn fr-icon-download-line fr-btn--icon-left fr-btn--secondary">
@@ -74,21 +73,19 @@
             <div class="fr-table__wrapper">
               <div class="fr-table__container">
                 <div class="fr-table__content">
-                  <table>
+                  <table class="fr-cell--multiline">
                     <caption></caption>
                     <thead>
                     <tr>
                       <th scope="col" class="fr-cell--fixed"><span class="fr-cell__title">Contrôleur</span></th>
                       <th scope="col">
-                        <span class="fr-cell__title">Organismes</span>
-                        <button id="table-default-button-7810" aria-describedby="table-miscellaneous-thead-tooltip" class="fr-ml-2v fr-btn--tooltip fr-btn fr-btn--sm">Organismes</button>
-                        <span class="fr-tooltip fr-placement" id="table-miscellaneous-thead-tooltip" role="tooltip">Nombre d'organismes actifs en présence de contrôle et soumis à la GBCP.</span>
+                        <span class="fr-cell__title">Organismes*</span>
                       </th>
-                      <th scope="col" class="fr-cell--multiline"><span class="fr-cell__title">BI <%= @exercice %> renseignés</span></th>
-                      <th scope="col" class="fr-cell--multiline"><span class="fr-cell__title">Taux BI <%= @exercice %> (%)</span></th>
-                      <th scope="col" class="fr-cell--multiline"><span class="fr-cell__title">BR <%= @exercice %> renseignés</span></th>
-                      <th scope="col" class="fr-cell--multiline"><span class="fr-cell__title">CF <%= @exercice %> renseignés</span></th>
-                      <th scope="col" class="fr-cell--multiline"><span class="fr-cell__title">Taux CF <%= @exercice %> (%)</span></th>
+                      <th scope="col"><span class="fr-cell__title">BI <%= @exercice %> renseignés</span></th>
+                      <th scope="col"><span class="fr-cell__title">Taux BI <%= @exercice %> (%)</span></th>
+                      <th scope="col"><span class="fr-cell__title">BR <%= @exercice %> renseignés</span></th>
+                      <th scope="col"><span class="fr-cell__title">CF <%= @exercice %> renseignés</span></th>
+                      <th scope="col"><span class="fr-cell__title">Taux CF <%= @exercice %> (%)</span></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -103,7 +100,7 @@
                     </tr>
                     <% @controleurs_page.each do |controleur| %>
                       <% if controleur.total_organisms(@organisms_id) > 0 %>
-                        <tr class="fr-cell--multiline">
+                        <tr>
                           <th class="fr-cell--fixed"><%= controleur.nom %></th>
                           <td class="fr-cell--right"><%= controleur.total_organisms(@organisms_id) %></td>
                           <td class="fr-cell--right"><%= controleur.total_bi(@exercice, @organisms_id) %></td>
@@ -121,7 +118,7 @@
             </div>
             <div class="fr-table__footer">
               <div class="fr-table__footer--start">
-                <p class="fr-table__detail">10 lignes / page</p>
+                <p class="fr-table__detail">Maximum 10 lignes / page</p>
                 <div class="fr-select-group">
                   <label class="fr-sr-only fr-label" for="table-footer-select-7847">
                     Nombre de lignes par page

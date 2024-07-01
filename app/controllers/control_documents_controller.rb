@@ -9,6 +9,7 @@ class ControlDocumentsController < ApplicationController
     control_documents = fetch_extended_family_documents
     @q = control_documents.ransack(params[:q])
     @control_documents = @q.result.includes(organisme: :controleur)
+    @pagy, @control_documents_page = pagy(@control_documents)
   end
 
   def new

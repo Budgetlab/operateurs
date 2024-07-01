@@ -1,5 +1,5 @@
 <% modifications.each do |modification| %>
-  <tr>
+  <tr class="fr-cell--multiline">
     <td><%= format_date(modification.created_at) %></td>
     <td><%= link_to organisme_path(modification.organisme_id) do %><%= modification.organisme.nom %><%end %></td>
     <td><%= modification.nom %></td>

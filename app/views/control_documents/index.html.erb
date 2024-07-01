@@ -1,4 +1,5 @@
-<% content_for :title do %>Liste des documents de contrôle | OPERA <% end %>
+<% content_for :title do %>Liste des documents de contrôle | OPERA
+<% end %>
 <main role="main" class="containtAll">
   <div class="fr-container ">
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
@@ -6,60 +7,123 @@
         <h1 class="fr-my-4w">Liste des documents de contrôle </h1>
 
         <div class="fr-alert fr-alert--info fr-mb-4w">
-          <h3 class="fr-alert__title">Document de contrôle <p class="fr-badge fr-badge--new fr-badge--sm">Nouveau</p></h3>
-          <p>L'import des documents de contrôle est désormais possible depuis la page d'identité des organismes. Vous retrouvez sur cette page l'ensemble des documents de contrôle ouverts sur votre périmètre.</p>
+          <h3 class="fr-alert__title">Document de contrôle
+          </h3>
+          <p>L'import des documents de contrôle est possible depuis la page d'identité des organismes. Vous
+            retrouvez sur cette page l'ensemble des documents de contrôle ouverts sur votre périmètre.</p>
         </div>
-        <%= render 'control_documents/flash'%>
 
-        <div class="fr-my-2w">
-        <%= search_form_for @q, data: {turbo_frame: 'table', turbo_action: 'advance'} do |f| %>
-          <div class="fr-search-bar fr-search-bar--lg" role="search">
-            <%= f.search_field :organisme_nom_or_organisme_acronyme_or_organisme_controleur_nom_contains, class: 'fr-input', placeholder: "Filtrer les résultats sur un organisme ou un contrôleur" %>
-            <%= f.submit "Rechercher", class:"fr-btn" %>
+        <%= render 'control_documents/flash' %>
+
+        <div class="fr-table--lg fr-table fr-table--no-caption" data-controller="request">
+          <div class="fr-table__header">
+            <p class="fr-table__detail"></p>
+            <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-md fr-btns-group--icon-left">
+              <li>
+                <button class="fr-btn fr-icon-settings-5-line fr-btn--icon-left fr-btn--secondary" aria-controls="filtres" aria-expanded="false">Filtrer les
+                  résultats
+                </button>
+              </li>
+            </ul>
           </div>
-        <% end %>
-        </div>
+          <div class="fr-collapse" id="filtres" data-controller="request">
+            <div class="fr-mb-2w">
+            <%= search_form_for @q, data: { turbo_frame: 'table' } do |f| %>
+              <%= f.search_field :organisme_nom_or_organisme_acronyme_or_organisme_controleur_nom_contains, class: 'fr-input', placeholder: "Rechercher les documents d'un organisme ou d'un contrôleur", oninput: 'this.form.requestSubmit()' %>
+            <% end %>
+            </div>
+          </div>
+          <%= turbo_frame_tag :table do %>
+            <div class="fr-table__wrapper">
+              <div class="fr-table__container">
+                <div class="fr-table__content">
+                  <table>
+                    <caption>Tableau des documents de contrôle</caption>
+                    <thead>
+                    <tr>
+                      <th scope="col">
+                        <% sort_signature_date = "" %>
+                        <% if params[:q] && params[:q][:s] == "signature_date desc" %>
+                          <% sort_signature_date = "asc" %>
+                        <% elsif params[:q] && params[:q][:s] == "signature_date asc" %>
+                          <% sort_signature_date = "desc" %>
+                        <% end %>
+                        <div class="fr-cell--sort">Date signature
+                          <%= sort_link(@q, :signature_date, '', default_order: :desc, class: 'fr-btn--sort fr-btn fr-btn--sm', aria: { sorting: sort_signature_date }) %>
+                        </div>
+                      </th>
+                      <th scope="col">Type</th>
+                      <th scope="col">
+                        <% sort_created_date = "" %>
+                        <% if params[:q] && params[:q][:s] == "created_at desc" %>
+                          <% sort_created_date = "asc" %>
+                        <% elsif params[:q] && params[:q][:s] == "created_at asc" %>
+                          <% sort_created_date = "desc" %>
+                        <% end %>
+                        <div class="fr-cell--sort">Ajouté le
+                          <%= sort_link(@q, :created_at, '', class: 'fr-btn--sort fr-btn fr-btn--sm', aria: { sorting: sort_created_date }) %>
+                        </div>
+                      </th>
+                      <th scope="col">Organisme</th>
+                      <th scope="col">Contrôleur référent</th>
+                      <th scope="col">Action</th>
+                      <% if @statut_user == "2B2O" %>
+                        <th scope="col">Action 2B2O</th>
+                      <% end %>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @control_documents_page.each do |control_document| %>
+                      <tr>
+                        <td><%= format_boolean(format_date(control_document.signature_date)) %></td>
+                        <td class="fr-cell--multiline fr-capitalize"><%= control_document.name %></td>
+                        <td><%= format_boolean(format_date(control_document.created_at)) %></td>
+                        <td class="fr-cell--multiline">
+                          <%= link_to organisme_path(control_document.organisme), data: { turbo_frame: "_top" } do %>
+                            <%= control_document.organisme.nom %>
+                          <% end %>
+                        </td>
+                        <td class="fr-cell--multiline"><%= control_document.organisme.controleur.nom %></td>
+                        <td>
+                          <% if control_document.document.attached? %>
+                            <%= link_to control_document.document.url(disposition: "attachment"), data: { turbo_frame: "_top" }, class: 'fr-link fr-link--download' do %>
+                              Télécharger <span class="fr-link__detail">PDF</span>
+                            <% end %>
+                          <% end %>
+                        </td>
+                        <% if @statut_user == "2B2O" %>
+                          <td>
+                            <%= link_to edit_control_document_path(control_document), class: 'fr-btn fr-btn--sm fr-btn--tertiary fr-icon-delete-fill', 'aria-controls': "modal-document-control", data: { turbo_frame: :form_control_document, fr_opened: false } do %>
+                              Supprimer
+                            <% end %>
+                          </td>
+                        <% end %>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
 
-        <%= turbo_frame_tag :table do %>
-          <% if params[:q].present? %>
-            <div class="fr-mb-1w"><%= link_to control_documents_path, data: {turbo_frame: "_top"}, class:"fr-btn fr-btn--sm fr-btn--tertiary fr-btn--icon-right fr-icon-refresh-line" do %>Réinitialiser la recherche<%end %></div>
+            <div class="fr-table__footer">
+              <div class="fr-table__footer--start">
+                <p class="fr-table__detail"><%= pluralize(@control_documents&.count, 'résultat', plural: 'résultats') %></p>
+                <div class="fr-select-group">
+                  <label class="fr-sr-only fr-label" for="table-footer-select-7847">
+                    Nombre de lignes par page
+                  </label>
+                  <div class="fr-messages-group" id="table-footer-select-7847-messages" aria-live="polite"></div>
+                </div>
+              </div>
+              <div class="fr-table__footer--middle">
+                <%== pagy_nav_custom(@pagy) %>
+              </div>
+            </div>
           <% end %>
-          <div class="fr-table fr-table--layout-fixed">
-            <table>
-              <caption><%= pluralize(@control_documents&.count, 'résultat', plural: 'résultats') %> </caption>
-              <thead>
-              <tr>
-                <th scope="col">Date signature <%= sort_link(@q, :signature_date, '', default_order: :desc, class: 'fr-btn fr-btn--sm fr-btn--tertiary-no-outline') %> </th>
-                <th scope="col">Type</th>
-                <th scope="col">Date ajout <%= sort_link(@q, :created_at, '', class: 'fr-btn fr-btn--sm fr-btn--tertiary-no-outline') %> </th>
-                <th scope="col">Organisme</th>
-                <th scope="col">Contrôleur référent</th>
-                <th scope="col">Action</th>
-              </tr>
-              </thead>
-              <tbody>
-              <% @control_documents.each do |control_document| %>
-                <tr>
-                  <td><%= format_boolean(format_date(control_document.signature_date)) %></td>
-                  <td class="fr-capitalize"><%= control_document.name %></td>
-                  <td><%= format_boolean(format_date(control_document.created_at)) %></td>
-                  <td><%= link_to organisme_path(control_document.organisme), data: {turbo_frame: "_top"} do %><%= control_document.organisme.nom %><% if control_document.organisme.acronyme.present? %>- <%= control_document.organisme.acronyme %><%end %><% end %></td>
-                  <td><%= control_document.organisme.controleur.nom %></td>
-                  <td>
-                    <% if control_document.document.attached? %>
-                        <%= link_to control_document.document.url(disposition: "attachment"),data: {turbo_frame: "_top"},  class: 'fr-icon-download-line fr-link--icon-right' do %>Télécharger<% end %>
-                    <% end %>
-                    <% if @statut_user == "2B2O" %>
-                      <%= link_to edit_control_document_path(control_document), class: 'fr-btn fr-btn--sm fr-btn--tertiary fr-icon-delete-fill', 'aria-controls': "modal-document-control", data: {turbo_frame: :form_control_document, fr_opened: false} do %>Supprimer<% end %>
-                    <% end %>
-                  </td>
+        </div>
 
-                </tr>
-              <% end %>
-              </tbody>
-            </table>
-          </div>
-
+        <% if @statut_user == "2B2O" %>
           <dialog id="modal-document-control" class="fr-modal" aria-labelledby="modal-document-control--title">
             <div class="fr-container fr-container--fluid fr-container-md">
               <div class="fr-grid-row fr-grid-row--center">
@@ -83,6 +147,7 @@
             </div>
           </dialog>
         <% end %>
+
 
       </div>
     </div>

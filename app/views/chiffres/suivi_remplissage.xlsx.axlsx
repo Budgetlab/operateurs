@@ -1,24 +1,41 @@
 wb = xlsx_package.workbook
 s = wb.styles
-col_header_blue = s.add_style bg_color: 'FFDFDEDF', sz: 13, b: true
-cell_grey = s.add_style bg_color: 'dae1f2'
-cell_grey_percent = s.add_style bg_color: 'dae1f2', num_fmt: 9
+col_header = s.add_style bg_color: 'f6f6f6', sz: 13, b: true
+cell_blue = s.add_style bg_color: 'ececfe', b: true
+cell_blue_percent = s.add_style bg_color: 'ececfe', num_fmt: 9, b: true
 percent = s.add_style num_fmt: 9
 sheet_col = Array.new(8, 25)
   	wb.add_worksheet(name: "Suivi du remplissage") do |sheet|
-        sheet.add_row %W{ Controleur Organismes\ Actifs BI\ 2024\ renseignés Taux\ BI\ 2024\ renseignés BR\ 2024\ renseignés CF\ 2023\ renseignés Taux\ CF\ 2023\ renseignés }, style: col_header_blue
+  	    length_table = @controleurs&.length + 2 || 2
+        sheet.add_row ["Contrôleur","Organismes","BI #{@exercice} renseignés","Taux BI #{@exercice} (%)","BR #{@exercice} renseignés","CF #{@exercice} renseignés","Taux CF #{@exercice} (%)"], style: col_header, height: 40
         sheet.auto_filter = "A1:G1"
-        sheet.add_row ['Total', @controleurs.sum {|c| c.total_organisms(@organisms_id) }, @controleurs.sum {|c| c.total_bi(2024, @organisms_id) },ratio_excel_percent(@controleurs.sum {|c| c.total_bi(2024, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 1),@controleurs.sum {|c| c.total_br(2024,@organisms_id) }, @controleurs.sum {|c| c.total_cf(2023, @organisms_id) },ratio_excel_percent(@controleurs.sum {|c| c.total_cf(2023, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 1) ], style: [cell_grey, cell_grey, cell_grey, cell_grey, cell_grey_percent, cell_grey, cell_grey_percent]
+
+        sheet.add_row ['Total',
+        @controleurs.sum {|c| c.total_organisms(@organisms_id) },
+        @controleurs.sum {|c| c.total_bi(@exercice, @organisms_id) },
+        ratio_excel_percent(@controleurs.sum {|c| c.total_bi(@exercice, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 1),
+        @controleurs.sum {|c| c.total_br(@exercice,@organisms_id) },
+        @controleurs.sum {|c| c.total_cf(@exercice, @organisms_id) },
+        ratio_excel_percent(@controleurs.sum {|c| c.total_cf(@exercice, @organisms_id) }, @controleurs.sum {|c| c.total_organisms(@organisms_id) }, 1) ], style: [cell_blue, cell_blue, cell_blue, cell_blue_percent,cell_blue, cell_blue, cell_blue_percent], height: 40
+
         @controleurs.each do |controleur|
-          if controleur.total_organisms(@organisms_id) > 0
-            sheet.add_row [controleur.nom, controleur.total_organisms(@organisms_id), controleur.total_bi(2024,@organisms_id), ratio_excel_percent(controleur.total_bi(2024,@organisms_id),controleur.total_organisms(@organisms_id), 1) || 1, controleur.total_br(2024,@organisms_id), controleur.total_cf(2023,@organisms_id), ratio_excel_percent(controleur.total_cf(2023,@organisms_id),controleur.total_organisms(@organisms_id), 1) || 1], style: [nil, nil, nil, nil, percent, nil, percent]
-          end
+            sheet.add_row [controleur.nom,
+            controleur.total_organisms(@organisms_id),
+            controleur.total_bi(@exercice,@organisms_id),
+            ratio_excel_percent(controleur.total_bi(@exercice,@organisms_id),controleur.total_organisms(@organisms_id), 1),
+            controleur.total_br(@exercice,@organisms_id),
+            controleur.total_cf(@exercice,@organisms_id),
+            ratio_excel_percent(controleur.total_cf(@exercice,@organisms_id),controleur.total_organisms(@organisms_id), 1)], style: [col_header, nil, nil, percent, nil, nil, percent], height: 40
         end
 
         sheet.rows.each do |row|
             row.cells.each do |cell|
-                cell.add_style font_name: 'Calibri', sz: 13, alignment:{ :vertical => :center ,:wrap_text => true}
+                cell.add_style font_name: 'Calibri', sz: 13, alignment:{ :vertical => :center ,:wrap_text => true}, border: { style: :medium, color: "000000", edges: [:bottom] }
             end
         end
+        ("A".."G").each do |letter|
+          sheet.add_border "#{letter}1:#{letter}#{length_table}", { edges: [:right], style: :medium }
+        end
         sheet.column_widths(*sheet_col)
+
   	end
