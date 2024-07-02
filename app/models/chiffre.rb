@@ -5,6 +5,30 @@ class Chiffre < ApplicationRecord
   include ApplicationHelper
   belongs_to :organisme
   belongs_to :user
+  FLOAT_COLUMNS = [:emplois_plafond, :emplois_hors_plafond, :emplois_total, :emplois_plafond_rappel,
+                   :emplois_plafond_prenotifie, :emplois_schema, :emplois_schema_prenotifie, :emplois_non_remuneres,
+                   :emplois_titulaires, :emplois_titulaires_montant, :emplois_contractuels,
+                   :emplois_contractuels_montant, :emplois_autre_entite, :emplois_depenses_personnel, :emplois_charges_personnel,
+                   :credits_ae_total, :credits_ae_fonctionnement, :credits_ae_intervention, :credits_ae_investissement,
+                   :credits_cp_total, :credits_cp_fonctionnement, :credits_cp_intervention,
+                   :credits_cp_investissement, :credits_cp_operations, :credits_cp_recettes_flechees,
+                   :credits_subvention_sp, :credits_subvention_investissement_globalisee,
+                   :credits_subvention_investissement_flechee, :credits_financements_etat_autres,
+                   :credits_financements_etat_fleches, :credits_fiscalite_affectee,
+                   :credits_financements_publics_autres, :credits_financements_publics_fleches,
+                   :credits_recettes_propres_globalisees, :credits_recettes_propres_flechees,
+                   :credits_restes_a_payer, :tresorerie_finale_flechee, :tresorerie_finale_non_flechee,
+                   :tresorerie_finale, :tresorerie_variation, :tresorerie_variation_flechee,
+                   :tresorerie_variation_non_flechee, :tresorerie_min, :tresorerie_max,
+                   :capacite_autofinancement, :fonds_roulement_final, :fonds_roulement_variation,
+                   :fonds_roulement_besoin_final, :charges_fonctionnement,
+                   :charges_intervention, :charges_non_decaissables, :produits_subventions_etat,
+                   :produits_fiscalite_affectee, :produits_subventions_autres, :produits_autres,
+                   :produits_non_encaissables, :emplois_cout_total, :emplois_cout_investissements,
+                   :ressources_financement_etat, :ressources_autres, :decaissements_emprunts,
+                   :encaissements_emprunts, :decaissements_operations, :encaissements_operations,
+                   :decaissements_autres, :encaissements_autres, :ressources_total]
+  before_save :round_floats
 
   # Part des personnels exerçant leurs missions dans l'organisme dans le total des emplois rémunérés directement par l'organisme
   def indicateur_part_personnel_organisme
@@ -86,7 +110,7 @@ class Chiffre < ApplicationRecord
 
   # Poids des recettes non fléchées
   def poids_recettes_globalisees
-    ratio(recettes_globalisees,recettes_total,100)
+    ratio(recettes_globalisees, recettes_total, 100)
   end
 
   # Poids des financements de l’Etat suvb etat / total recettes
@@ -112,7 +136,7 @@ class Chiffre < ApplicationRecord
 
   # Taux de recettes propres
   def taux_recettes_propres
-    ratio(total_recettes_propres,recettes_total,100)
+    ratio(total_recettes_propres, recettes_total, 100)
   end
 
   # Solde budgétaire = total_recettes - credits_cp_total
@@ -133,7 +157,7 @@ class Chiffre < ApplicationRecord
   # Poids des restes à payer
   def poids_restes_a_payer
     denominateur = (credits_cp_total || 0) - (emplois_depenses_personnel || 0)
-    ratio(credits_restes_a_payer,denominateur,100)
+    ratio(credits_restes_a_payer, denominateur, 100)
   end
 
   # Total des charges
@@ -187,7 +211,7 @@ class Chiffre < ApplicationRecord
 
   def jours_fonctionnement_tresorerie
     denominateur = comptabilite_budgetaire ? ((credits_cp_total || 0) - (credits_cp_investissement || 0)) / 360 : charges_decaissables / 360
-    ratio(tresorerie_finale,denominateur,1)
+    ratio(tresorerie_finale, denominateur, 1)
   end
 
   # Taux de couverture des restes à payer par la trésorerie
@@ -202,7 +226,7 @@ class Chiffre < ApplicationRecord
 
   def jours_fonctionnement_tresorerie_non_flechee
     denominateur = comptabilite_budgetaire ? ((credits_cp_total || 0) - (credits_cp_investissement || 0)) / 360 : charges_decaissables / 360
-    ratio(tresorerie_finale_non_flechee,denominateur,1)
+    ratio(tresorerie_finale_non_flechee, denominateur, 1)
   end
 
   # Poids de la trésorerie non fléchée
@@ -212,17 +236,17 @@ class Chiffre < ApplicationRecord
 
   def jours_fonctionnement_tresorerie_min
     denominateur = comptabilite_budgetaire ? ((credits_cp_total || 0) - (credits_cp_investissement || 0)) / 360 : charges_decaissables / 360
-    ratio(tresorerie_min,denominateur,1)
+    ratio(tresorerie_min, denominateur, 1)
   end
 
   def jours_fonctionnement_tresorerie_max
     denominateur = comptabilite_budgetaire ? ((credits_cp_total || 0) - (credits_cp_investissement || 0)) / 360 : charges_decaissables / 360
-    ratio(tresorerie_max,denominateur,1)
+    ratio(tresorerie_max, denominateur, 1)
   end
 
   def jours_fonctionnement_fr_final
     denominateur = comptabilite_budgetaire ? ((credits_cp_total || 0) - (credits_cp_investissement || 0)) / 360 : charges_decaissables / 360
-    ratio(fonds_roulement_final,denominateur,1)
+    ratio(fonds_roulement_final, denominateur, 1)
   end
 
   def variation_bfr
@@ -285,6 +309,14 @@ class Chiffre < ApplicationRecord
 
   def self.ransackable_associations(auth_object = nil)
     ["organisme", "user"]
+  end
+
+  private
+
+  def round_floats
+    FLOAT_COLUMNS.each do |column|
+      self[column] = self[column].round(2) if self[column]
+    end
   end
 
 end
