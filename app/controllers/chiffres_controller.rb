@@ -8,6 +8,7 @@ class ChiffresController < ApplicationController
   before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy open_phase]
   before_action :redirect_unless_access, only: %i[index restitutions]
   before_action :redirect_unless_controleur, only: :new
+  before_action :redirect_unless_can_edit, only: %i[edit update destroy]
 
   # page des chiffres clés de l'organisme
   def index
@@ -29,7 +30,7 @@ class ChiffresController < ApplicationController
     filename = "Budgets #{@organisme.nom}.xlsx"
     respond_to do |format|
       format.html
-      format.any { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
+      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"#{filename}\"" }
     end
   end
 
@@ -104,14 +105,11 @@ class ChiffresController < ApplicationController
   end
 
   def edit
-    redirect_unless_can_edit
     redirect_to organisme_chiffres_path(@organisme) unless @chiffre.statut != 'valide' || params[:step]
     @steps = @chiffre.comptabilite_budgetaire == true ? 6 : 5
-    @numero_br = @chiffre.type_budget == 'Budget rectificatif' ? @organisme.chiffres.where(exercice_budgetaire: @chiffre.exercice_budgetaire, type_budget: 'Budget rectificatif').order(created_at: :asc).pluck(:id).index(@chiffre.id) + 1 : ""
   end
 
   def update
-    redirect_unless_can_edit
     @steps = @chiffre.comptabilite_budgetaire == true ? 6 : 5
     @message = @chiffre.statut == 'valide' ? 'maj chiffres' : 'creation chiffres'
     if params[:chiffre][:statut] && params[:chiffre][:statut] != 'valide'
@@ -174,12 +172,9 @@ class ChiffresController < ApplicationController
   end
 
   def destroy
-    redirect_unless_can_edit
-
     exercice = @chiffre.exercice_budgetaire
     @chiffre&.destroy
-    message = 'suppression'
-    redirect_to organisme_chiffres_path(@organisme, exercice_budgetaire: exercice), flash: { notice: message }
+    redirect_to organisme_chiffres_path(@organisme, exercice_budgetaire: exercice), flash: { notice: 'suppression' }
   end
 
   def open_phase
@@ -198,17 +193,14 @@ class ChiffresController < ApplicationController
     @q_params = q_params
     @famille = params.dig(:q, :organisme_famille_eq)
     @exercice = params.dig(:q, :exercice_budgetaire_eq) || 2024
-    # Récupérer les organismes des familles communes hors controle 2B2O
-    extended_family_organisms = fetch_extended_family_organisms.where(presence_controle: true, gbcp_1: true)
-                                                               .where.not(controleur_id: User.first.id)
-    # filtrer sur famille sélectionnée
-    extended_family_organisms = extended_family_organisms.where(famille: @famille) if @famille && !@famille.empty?
-    # récupérer la liste des controleurs de ces organismes
-    controleurs_id = extended_family_organisms.pluck(:controleur_id)
+    # Récupérer les organismes qui peuvent avoir des budgets pour l'année sélectionnée et la famille sélectionnée
+    organisms_actifs = fetch_organisms_actifs(@exercice.to_i, @famille)
+    # Récupérer la liste des contrôleurs de ces organismes
+    controleurs_id = organisms_actifs.pluck(:controleur_id)
     @controleurs = User.includes(:chiffres, :controleur_organismes).where(id: controleurs_id, statut: ['Controleur'])
                        .order(nom: :asc)
     # récupérer les chiffres des organismes possibles et affiner en fonction des filtres choisis
-    @organisms_id = extended_family_organisms.pluck(:id)
+    @organisms_id = organisms_actifs.pluck(:id)
     @q = Chiffre.where(statut: 'valide', organisme_id: @organisms_id).ransack(params[:q])
     @chiffres = @q.result.includes(:user)
     # afficher les graphes avec répartitions des examens sur les chiffres
@@ -283,18 +275,13 @@ class ChiffresController < ApplicationController
     end
   end
 
-  def normalize_name(name)
-    # Supprime les accents et met le texte en minuscules
-    I18n.transliterate(name).downcase
-  end
-
   def find_chiffre_and_organisme
     @chiffre = Chiffre.find(params[:id])
     @organisme = @chiffre.organisme
   end
 
   def redirect_unless_can_edit
-    return redirect_to(root_path) unless @organisme && current_user == @organisme.controleur
+    redirect_to root_path unless @organisme && current_user == @organisme.controleur
   end
 
   def fetch_extended_family_organisms
@@ -302,6 +289,17 @@ class ChiffresController < ApplicationController
     if @statut_user == 'Controleur'
       organisms = organisms.where('controleur_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)
     end
+    organisms
+  end
+
+  def fetch_organisms_actifs(exercice, famille)
+    organisms = Organisme.where(statut: 'valide', presence_controle: true, gbcp_1: true)
+                         .where('etat = ? AND (date_creation IS NULL OR date_creation <= ?) OR (etat = ? AND date_dissolution > ?)', 'Actif', Date.new(exercice,12,31), 'Inactif', Date.new(exercice,1,1))
+                         .where.not(controleur_id: User.first.id)
+    if @statut_user == 'Controleur'
+      organisms = organisms.where('controleur_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)
+    end
+    organisms = organisms.where(famille: famille) if famille && !famille.empty?
     organisms
   end
 
@@ -400,11 +398,11 @@ class ChiffresController < ApplicationController
   def calculate_chiffres_budget_exercice(chiffres, organismes, exercice_budgetaire, type_budget)
     chiffres_budget = []
     risques = ["Situation saine", "Situation saine a priori mais à surveiller", 'Risque d’insoutenabilité à moyen terme', 'Risque d’insoutenabilité élevé']
-    chiffres_selected = chiffres.where(exercice_budgetaire: exercice_budgetaire, type_budget: type_budget)
+    chiffres_selected = chiffres.where(exercice_budgetaire: exercice_budgetaire, type_budget: type_budget).group_by(&:risque_insolvabilite)
     risques.each do |risque|
-      chiffres_budget << chiffres_selected.where(risque_insolvabilite: risque)&.length
+      chiffres_budget << (chiffres_selected[risque] || []).count
     end
-    chiffres_empty = organismes&.length - chiffres_selected&.length
+    chiffres_empty = organismes.count - chiffres_selected.values.flatten.count
     chiffres_budget << chiffres_empty
     chiffres_budget
   end
