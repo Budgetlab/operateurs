@@ -118,7 +118,6 @@ class ChiffresController < ApplicationController
       params[:chiffre][:statut] = @chiffre.statut.to_i > params[:chiffre][:statut].to_i ? @chiffre.statut : params[:chiffre][:statut]
     end
     @chiffre.update(chiffre_params)
-    updateRisque(@chiffre)
 
     @message = ' ' if @chiffre.statut != 'valide'
     redirect_path = @chiffre.statut == 'valide' ? organisme_chiffres_path(@organisme, paramId: @chiffre.id) : edit_chiffre_path(@chiffre, step: @step)
@@ -301,56 +300,6 @@ class ChiffresController < ApplicationController
     end
     organisms = organisms.where(famille: famille) if famille && !famille.empty?
     organisms
-  end
-
-  def updateRisque(chiffre)
-    if chiffre.comptabilite_budgetaire == true && chiffre.statut == 'valide'
-      @solde = chiffre.credits_financements_etat_autres + chiffre.credits_fiscalite_affectee + chiffre.credits_financements_publics_autres + chiffre.credits_recettes_propres_globalisees + chiffre.credits_financements_etat_fleches + chiffre.credits_financements_publics_fleches + chiffre.credits_recettes_propres_flechees - chiffre.credits_cp_total
-      @solde = chiffre.operateur == true ? @solde + chiffre.credits_subvention_sp + chiffre.credits_subvention_investissement_globalisee + chiffre.credits_subvention_investissement_flechee : @solde
-    else
-      @solde = nil
-    end
-    chiffre.risque_insolvabilite = calculateRisque(@solde, chiffre.tresorerie_variation, chiffre.fonds_roulement_variation, chiffre.fonds_roulement_variation - chiffre.tresorerie_variation) if chiffre.statut == 'valide'
-    chiffre.save
-  end
-
-  def calculateRisque(solde_budgetaire, tresorerie_variation, fonds_roulement_variation, variation_besoin_fr)
-    if !solde_budgetaire.nil?
-      if (solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0) || (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_besoin_fr >= 0)
-        'Situation saine'
-      elsif (solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0) || (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0) || (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0 && variation_besoin_fr >= 0) || (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_besoin_fr >= 0)
-        'Situation saine a priori mais à surveiller'
-      elsif (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr >= 0) || (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0 && variation_besoin_fr < 0)
-        "Risque d’insoutenabilité à moyen terme"
-      elsif (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0) || (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr >= 0) || (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_besoin_fr < 0)
-        "Risque d’insoutenabilité élevé"
-      end
-    else
-      if tresorerie_variation >= 0 && fonds_roulement_variation >= 0
-        'Situation saine'
-      elsif (tresorerie_variation < 0 && fonds_roulement_variation >= 0) || (tresorerie_variation >= 0 && fonds_roulement_variation < 0)
-        'Situation saine a priori mais à surveiller'
-      elsif tresorerie_variation < 0 && fonds_roulement_variation < 0
-        "Risque d’insoutenabilité élevé"
-      end
-    end
-  end
-
-  def liste_chiffres(liste_chiffres_organismes)
-    # Utilisation d'un hash pour regrouper les sous-tableaux par les deux premiers éléments
-    grouped_hash = liste_chiffres_organismes.group_by { |subarray| [subarray[0], subarray[1], subarray[2]] }
-
-    # Initialisation d'un nouveau tableau résultant
-    resultat = []
-
-    # Itération sur les valeurs du hash
-    grouped_hash.values.each do |subarrays|
-      # Trier les sous-tableaux par la date en utilisant le dernier élément de chaque sous-tableau
-      sous_tableau_recent = subarrays.max_by(&:last)
-      # Ajouter le sous-tableau avec la date la plus récente au résultat
-      resultat << sous_tableau_recent
-    end
-    resultat
   end
 
   def redirect_unless_access

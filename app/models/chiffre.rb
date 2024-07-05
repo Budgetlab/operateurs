@@ -5,6 +5,8 @@ class Chiffre < ApplicationRecord
   include ApplicationHelper
   belongs_to :organisme
   belongs_to :user
+  before_save :update_risque, if: :valide?
+
   FLOAT_COLUMNS = [:emplois_plafond, :emplois_hors_plafond, :emplois_total, :emplois_plafond_rappel,
                    :emplois_plafond_prenotifie, :emplois_schema, :emplois_schema_prenotifie, :emplois_non_remuneres,
                    :emplois_titulaires, :emplois_titulaires_montant, :emplois_contractuels,
@@ -268,23 +270,23 @@ class Chiffre < ApplicationRecord
       if solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0
         "La soutenabilité est atteinte à court et moyen termes, que la variation du besoin en fonds de roulement soit positive ou négative."
       elsif solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_bfr >= 0
-        "La soutenabilité est atteinte à court et moyen termes, dès lors que la variation du besoin en fonds de roulement est positive.<br>Il convient de vérifier si des décaissements liés à des opérations de trésorerie non budgétaires peuvent expliquer cette situation (opérations au nom et pour le compte de tiers par exemple)."
+        "La soutenabilité est atteinte à court et moyen termes, dès lors que la variation du besoin en fonds de roulement est positive.Il convient de vérifier si des décaissements liés à des opérations de trésorerie non budgétaires peuvent expliquer cette situation (opérations au nom et pour le compte de tiers par exemple)."
       elsif solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_bfr < 0
-        "La situation est viable à court terme notamment si le besoin en fonds est structurellement négatif.<br>Il conviendra de vérifier si la variation à la baisse du fonds de roulement est ponctuelle ou répétée."
+        "La situation est viable à court terme notamment si le besoin en fonds est structurellement négatif.Il conviendra de vérifier si la variation à la baisse du fonds de roulement est ponctuelle ou répétée."
       elsif solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr < 0
-        "La situation est viable si la variation du besoin en fonds de roulement est négative, en particulier si le niveau de besoin en fonds de roulement est structurellement négatif.<br> Il convient de vérifier si des décaissements liés à des opérations non budgétaires peuvent expliquer cette situation."
+        "La situation est viable si la variation du besoin en fonds de roulement est négative, en particulier si le niveau de besoin en fonds de roulement est structurellement négatif.Il convient de vérifier si des décaissements liés à des opérations non budgétaires peuvent expliquer cette situation."
       elsif solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0 && variation_bfr >= 0
-        "La situation est viable si la variation du besoin en fonds de roulement est positive.<br>Des décalages de flux d’encaissement peuvent expliquer que ponctuellement le solde budgétaire soit négatif. Il convient de vérifier si cela est dû à des opérations pluriannuelles."
+        "La situation est viable si la variation du besoin en fonds de roulement est positive.Des décalages de flux d’encaissement peuvent expliquer que ponctuellement le solde budgétaire soit négatif. Il convient de vérifier si cela est dû à des opérations pluriannuelles."
       elsif solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_bfr >= 0
-        "La situation est viable si la variation du besoin en fonds de roulement est positive.<br>Des décalages de flux d’encaissement peuvent expliquer que ponctuellement le solde budgétaire est négatif. Si le niveau du besoin est structurellement élevé, l’organisme doit disposer d’un niveau de trésorerie important."
+        "La situation est viable si la variation du besoin en fonds de roulement est positive.Des décalages de flux d’encaissement peuvent expliquer que ponctuellement le solde budgétaire est négatif. Si le niveau du besoin est structurellement élevé, l’organisme doit disposer d’un niveau de trésorerie important."
       elsif solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr >= 0
-        "Un risque d’insoutenabilité existe à moyen terme si la variation du besoin en fonds de roulement est positive. En effet, il existe un risque que le fonds de roulement ne se redresse pas pour couvrir le besoin en fonds de roulement.<br>Dans ce cas, il convient de vérifier si le solde budgétaire positif est dû à des opérations non budgétaires qui généreraient des décalage de flux de trésorerie important (exemple : remboursements d’emprunts)."
+        "Un risque d’insoutenabilité existe à moyen terme si la variation du besoin en fonds de roulement est positive. En effet, il existe un risque que le fonds de roulement ne se redresse pas pour couvrir le besoin en fonds de roulement.Dans ce cas, il convient de vérifier si le solde budgétaire positif est dû à des opérations non budgétaires qui généreraient des décalage de flux de trésorerie important (exemple : remboursements d’emprunts)."
       elsif solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0 && variation_bfr < 0
-        "Il y a un risque d’insoutenabilité à moyen terme si la variation du besoin en fonds de roulement est négative.<br> Une variation du besoin en fonds de roulement devrait, a priori, permettre de dégager un solde budgétaire positif. Il convient donc de vérifier si le solde budgétaire négatif est dû à des opérations pluriannuelles (fléchées ou non) qui généreraient des décalages de flux de trésorerie importants."
+        "Il y a un risque d’insoutenabilité à moyen terme si la variation du besoin en fonds de roulement est négative.Une variation du besoin en fonds de roulement devrait, a priori, permettre de dégager un solde budgétaire positif. Il convient donc de vérifier si le solde budgétaire négatif est dû à des opérations pluriannuelles (fléchées ou non) qui généreraient des décalages de flux de trésorerie importants."
       elsif solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_bfr < 0
         "Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs. Il convient de vérifier si des opérations de trésorerie non budgétaires peuvent expliquer la variation de trésorerie."
       elsif solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr >= 0
-        "Le risque d'insoutenabilité est élevé car le fonds de roulement ne finance pas le besoin en fonds de roulement et seule la trésorerie est mise à contribution.<br>Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs."
+        "Le risque d'insoutenabilité est élevé car le fonds de roulement ne finance pas le besoin en fonds de roulement et seule la trésorerie est mise à contribution.Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs."
       elsif solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr < 0
         "Le risque d'insoutenabilité est élevé car malgré la capacité d'encaisser avant de décaisser, le solde budgétaire est négatif. Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur le solde budgétaire sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs. ll convient de vérifier si des opérations de trésorerie non budgétaires peuvent expliquer la variation de trésorerie."
       end
@@ -294,7 +296,7 @@ class Chiffre < ApplicationRecord
       elsif tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_bfr >= 0
         "En présence  d’une variation de trésorerie négative mais d’une variation de fonds de roulement positive, la situation est viable a priori car des décalages de flux d'encaissement peuvent expliquer que ponctuellement la trésorerie soit négative. Si le niveau de besoin en fonds de roulement est structurellement élevé, l'organisme doit disposer d'un niveau de trésorerie important."
       elsif tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_bfr < 0
-        "La situation est viable à court terme notamment si le besoin en fonds est structurellement négatif.<br>Il conviendra de vérifier si la variation à la baisse du fonds de roulement est ponctuelle ou répétée."
+        "La situation est viable à court terme notamment si le besoin en fonds est structurellement négatif.Il conviendra de vérifier si la variation à la baisse du fonds de roulement est ponctuelle ou répétée."
       elsif tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr >= 0
         "En présence d’une variation de fonds de roulement et d’une variation de trésorerie négatifs et d’une variation du besoin en fonds de roulement positive, le risque d’insolvabilité est élevé car le fonds de roulement ne finance pas le besoin en fonds de roulement et seule la trésorerie est mise à contribution. Il peut arriver que des opérations pluriannuelles génèrent des impacts négatifs sur la trésorerie sur un ou plusieurs exercices. Il convient d'évaluer si cette situation est temporaire ou non et si la trésorerie s'était accrue au cours des exercices antérieurs ou si des encaissements sont prévus sur des exercices ultérieurs."
       elsif tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr < 0
@@ -311,12 +313,65 @@ class Chiffre < ApplicationRecord
     ["organisme", "user"]
   end
 
+  def self.import(file)
+    data = Roo::Spreadsheet.open(file.path)
+    headers = data.row(1) # get header row
+    data.each_with_index do |row, idx|
+      next if idx == 0 # skip header
+
+      row_data = Hash[[headers, row].transpose]
+      organisme_nom = row_data['Nom'] # keep organisme_nom before deleting it from the hash
+      row_data.delete('Nom')
+      organisme = Organisme.find_by(nom: organisme_nom)
+      chiffre = organisme&.chiffres&.where(type_budget: 'Compte financier', exercice_budgetaire: 2019)&.first_or_initialize
+      next unless chiffre
+
+      chiffre.assign_attributes(row_data) # assign new values
+      chiffre.emplois_total = (chiffre.emplois_plafond || 0) + (chiffre.emplois_hors_plafond || 0)
+      chiffre.credits_ae_total = chiffre.credits_cp_total
+      chiffre.emplois_cout_investissements = 0
+      chiffre.ressources_autres = 0
+      chiffre.credits_subvention_investissement_globalisee = 0 if chiffre.operateur
+      chiffre.credits_subvention_investissement_flechee = 0 if chiffre.operateur
+      chiffre.user_id = organisme.controleur_id
+      chiffre.phase = 'CF arrêté'
+      chiffre.statut = 'valide'
+      chiffre.save! # save the object
+    end
+  end
+
   private
 
   def round_floats
     FLOAT_COLUMNS.each do |column|
       self[column] = self[column].round(2) if self[column]
     end
+  end
+
+  def valide?
+    statut == "valide"
+  end
+
+  def update_risque
+    self.risque_insolvabilite = if comptabilite_budgetaire == true
+                                  if (solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0) || (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_bfr >= 0)
+                                    'Situation saine'
+                                  elsif (solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_bfr < 0) || (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr < 0) || (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0 && variation_bfr >= 0) || (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_bfr >= 0)
+                                    'Situation saine a priori mais à surveiller'
+                                  elsif (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr >= 0) || (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0 && variation_bfr < 0)
+                                    "Risque d’insoutenabilité à moyen terme"
+                                  elsif (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_bfr < 0) || (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr >= 0) || (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr < 0)
+                                    "Risque d’insoutenabilité élevé"
+                                  end
+                                else
+                                  if tresorerie_variation >= 0 && fonds_roulement_variation >= 0
+                                    'Situation saine'
+                                  elsif (tresorerie_variation < 0 && fonds_roulement_variation >= 0) || (tresorerie_variation >= 0 && fonds_roulement_variation < 0)
+                                    'Situation saine a priori mais à surveiller'
+                                  elsif tresorerie_variation < 0 && fonds_roulement_variation < 0
+                                    "Risque d’insoutenabilité élevé"
+                                  end
+                                end
   end
 
 end
