@@ -779,7 +779,11 @@ export default class extends Controller {
         const produits_autres = this.numberFormat(produits_autres_field.value) || 0;
         const produits_total = produits_subventions_etat + produits_fiscalite_affectee + produits_subventions_autres + produits_autres;
         const condition_vide = produits_subventions_etat_field.value == "" && produits_fiscalite_affectee_field.value == "" && produits_subventions_autres_field.value == "" && produits_autres_field.value == ""
+        const indicateur_produits_enc = document.getElementById("indicateur_produits_enc");
+        const produits_non_encaissables = this.numberFormat(document.getElementById("produits_non_encaissables").value) || 0;
+        const produits_enc = produits_total - produits_non_encaissables;
         this.updateValueIndicateur(condition_vide,indicateur_produits, produits_total);
+        this.updateValueIndicateur(condition_vide,indicateur_produits_enc, produits_enc);
         return produits_total
     }
     changeRessources(){

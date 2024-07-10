@@ -24,15 +24,7 @@
           <div id="tvar" data-form-tvar="<%= @chiffre.tresorerie_variation %>"></div>
           <div id="cb" data-form-cb="<%= @chiffre.comptabilite_budgetaire %>"></div>
           <% if @chiffre.comptabilite_budgetaire == true %>
-            <% @total_recettes_globalisees = @chiffre.credits_financements_etat_autres +  @chiffre.credits_fiscalite_affectee + @chiffre.credits_financements_publics_autres + @chiffre.credits_recettes_propres_globalisees%>
-            <% @total_recettes_flechees = @chiffre.credits_financements_etat_fleches + @chiffre.credits_financements_publics_fleches + @chiffre.credits_recettes_propres_flechees %>
-            <% if @chiffre.operateur == true %>
-              <% @total_recettes_globalisees = @total_recettes_globalisees + @chiffre.credits_subvention_sp + @chiffre.credits_subvention_investissement_globalisee %>
-              <% @total_recettes_flechees = @total_recettes_flechees + @chiffre.credits_subvention_investissement_flechee %>
-            <%end %>
-            <% @total_recettes = @total_recettes_globalisees + @total_recettes_flechees %>
-            <% @solde = @total_recettes - @chiffre.credits_cp_total %>
-            <div id="solde" data-form-solde="<%= @solde %>"></div>
+            <div id="solde" data-form-solde="<%= @chiffre.solde_budgetaire %>"></div>
           <%end %>
           <%= f.hidden_field :risque_insolvabilite, id: "risque_insolvabilite", value: @chiffre.risque_insolvabilite %>
           <div class="fr-grid-row fr-grid-row--gutters">
@@ -82,7 +74,7 @@
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
                     <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@solde) %> €</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.solde_budgetaire) %> €</p>
                   </div>
                 </div>
               </div>

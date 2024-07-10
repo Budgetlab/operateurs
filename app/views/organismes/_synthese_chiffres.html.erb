@@ -1,225 +1,236 @@
-<% if chiffre.comptabilite_budgetaire == true %>
-  <% @total_recettes_globalisees = chiffre.credits_financements_etat_autres + chiffre.credits_fiscalite_affectee + chiffre.credits_financements_publics_autres + chiffre.credits_recettes_propres_globalisees%>
-  <% @total_recettes_flechees = chiffre.credits_financements_etat_fleches + chiffre.credits_financements_publics_fleches + chiffre.credits_recettes_propres_flechees %>
-  <% @total_subv_etat = chiffre.credits_financements_etat_autres + chiffre.credits_financements_etat_fleches %>
-  <% if chiffre.operateur == true %>
-    <% @total_recettes_globalisees = @total_recettes_globalisees + chiffre.credits_subvention_sp + chiffre.credits_subvention_investissement_globalisee %>
-    <% @total_recettes_flechees = @total_recettes_flechees + chiffre.credits_subvention_investissement_flechee %>
-    <% @total_subv_etat = @total_subv_etat + chiffre.credits_subvention_sp + chiffre.credits_subvention_investissement_globalisee + chiffre.credits_subvention_investissement_flechee %>
-  <%end %>
-  <% @total_recettes = @total_recettes_globalisees + @total_recettes_flechees %>
-  <% @solde = @total_recettes - chiffre.credits_cp_total %>
-  <% @den = (chiffre.credits_cp_total - chiffre.credits_cp_investissement)/360 %>
-<% else  %>
-  <% @den = (chiffre.emplois_charges_personnel + chiffre.charges_fonctionnement + chiffre.charges_intervention - (chiffre.charges_non_decaissables || 0))/360 %>
-<% end  %>
-<% @total_charges = chiffre.emplois_charges_personnel + chiffre.charges_fonctionnement + chiffre.charges_intervention %>
-<% @total_produits = chiffre.produits_subventions_etat + chiffre.produits_fiscalite_affectee + chiffre.produits_subventions_autres + chiffre.produits_autres %>
-
-  <div class="fr-card">
-    <div class="fr-card__body">
-      <div class="fr-card__content">
-        <h3 class="fr-card__title">
-          Dernières données renseignées : <%= chiffre.type_budget %> <%= chiffre.exercice_budgetaire %>
-        </h3>
-        <div class="fr-card__desc">
-          <div class="fr-grid-row fr-grid-row--gutters fr-mt-3v">
-            <div class="fr-col-12">
-              <div class="fr-mb-2w">
-                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                  <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Total des <% if chiffre.comptabilite_budgetaire == true %>autorisations d'<%end %>emplois rémunérés par l'organisme</p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_decimal(chiffre.emplois_total) %> ETPT</p>
-                  </div>
+<div class="fr-card">
+  <div class="fr-card__body">
+    <div class="fr-card__content">
+      <h3 class="fr-card__title">
+        Dernières données renseignées : <%= chiffre.type_budget %> <%= chiffre.exercice_budgetaire %>
+      </h3>
+      <div class="fr-card__desc">
+        <div class="fr-grid-row fr-grid-row--gutters fr-mt-3v">
+          <div class="fr-col-12">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Total des
+                    <% if chiffre.comptabilite_budgetaire == true %>autorisations d'
+                    <% end %>emplois rémunérés par l'organisme</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_decimal(chiffre.emplois_total) %>
+                    ETPT</p>
                 </div>
               </div>
             </div>
           </div>
-          <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-6">
-              <div class="fr-mb-2w">
-                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
-                  <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Coût moyen par ETPT <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_cout_t", chiffre: chiffre} %></p>
-                    <% if chiffre.comptabilite_budgetaire == true %>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_depenses_personnel,chiffre.emplois_total,1)) %> €</p>
-                    <%else %>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_charges_personnel,chiffre.emplois_total,1)) %> €</p>
-                    <% end %>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="fr-col-12 fr-col-lg-6">
-              <div class="fr-mb-2w">
-                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
-                  <div class="fr-cart__body">
-                    <% if chiffre.comptabilite_budgetaire == true %>
-                      <p class="fr-mb-0 fr-text--center">Poids relatif des dépenses de personnel <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_poids_personnel_t", chiffre: chiffre} %></p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_depenses_personnel,chiffre.credits_cp_total-chiffre.credits_cp_investissement,100)) %> %</p>
-                    <% else %>
-                      <p class="fr-mb-0 fr-text--center">Poids relatif des charges de personnel <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_personnel_t", chiffre: chiffre} %></p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.emplois_charges_personnel,chiffre.emplois_charges_personnel + chiffre.charges_fonctionnement + chiffre.charges_intervention,100)) %> %</p>
-                    <% end %>
-                  </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Coût moyen par
+                    ETPT <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_cout_t", chiffre: chiffre } %></p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.cout_moyen_etpt) %>
+                    €</p>
                 </div>
               </div>
             </div>
           </div>
-          <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-6">
-              <div class="fr-mb-2w">
-                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                  <div class="fr-cart__body">
-                    <% if chiffre.comptabilite_budgetaire == true %>
+          <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <% if chiffre.comptabilite_budgetaire == true %>
+                    <p class="fr-mb-0 fr-text--center">Poids relatif des dépenses de
+                      personnel <%= render partial: "chiffres/tooltip", locals: { num_id: "credits_poids_personnel_t", chiffre: chiffre } %></p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.indicateur_poids_depenses_personnel) %>
+                      %</p>
+                  <% else %>
+                    <p class="fr-mb-0 fr-text--center">Poids relatif des charges de
+                      personnel <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_charges_personnel_t", chiffre: chiffre } %></p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_charges_personnel) %>
+                      %</p>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <% if chiffre.comptabilite_budgetaire == true %>
                     <p class="fr-mb-0 fr-text--center">Total des recettes </p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@total_recettes) %> €</p>
-                    <% else %>
-                      <p class="fr-mb-0 fr-text--center">Total des produits</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@total_produits) %> €</p>
-                    <% end %>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="fr-col-12 fr-col-lg-6">
-              <div class="fr-mb-2w">
-                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                  <div class="fr-cart__body">
-                    <% if chiffre.comptabilite_budgetaire == true %>
-                      <p class="fr-mb-0 fr-text--center">Total des crédits de paiement (CP) </p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.credits_cp_total) %> €</p>
-                    <% else %>
-                      <p class="fr-mb-0 fr-text--center">Total des charges</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@total_charges) %> €</p>
-                    <% end %>
-                  </div>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.recettes_total) %>
+                      €</p>
+                  <% else %>
+                    <p class="fr-mb-0 fr-text--center">Total des produits</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.total_produits) %>
+                      €</p>
+                  <% end %>
                 </div>
               </div>
             </div>
           </div>
-          <% if chiffre.comptabilite_budgetaire == true %>
-            <div class="fr-grid-row fr-grid-row--gutters">
-              <div class="fr-col-12 fr-col-lg-12">
-                <div class="fr-mb-2w">
-                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                    <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Solde budgétaire <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_solde_budgetaire_t", chiffre: chiffre} %></p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@solde)%> €</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="fr-grid-row fr-grid-row--gutters">
-              <div class="fr-col-12 fr-col-lg-6">
-                <div class="fr-mb-2w">
-                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
-                    <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Taux de recettes propres <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_taux_recettes_propres_t", chiffre: chiffre} %></p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_recettes_propres_globalisees+chiffre.credits_recettes_propres_flechees,@total_recettes,100)) %> %</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="fr-col-12 fr-col-lg-6">
-                <div class="fr-mb-2w">
-                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
-                    <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Poids des financements de l’Etat <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_financements_etat_t", chiffre: chiffre} %></p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(@total_subv_etat,@total_recettes,100)) %> %</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="fr-grid-row fr-grid-row--gutters">
-              <div class="fr-col-12 fr-col-lg-6">
-                <div class="fr-mb-2w">
-                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
-                    <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Poids des restes à payer <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_poids_rap_t", chiffre: chiffre} %></p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.credits_restes_a_payer,chiffre.credits_cp_total-chiffre.emplois_depenses_personnel,100)) %> %</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div class="fr-col-12 fr-col-lg-6">
-                <div class="fr-mb-2w">
-                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
-                    <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Taux de couverture des RAP par la trésorerie <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_rap_t", chiffre: chiffre} %></p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.tresorerie_finale,chiffre.credits_restes_a_payer,100)) %> %</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          <% else  %>
-            <div class="fr-grid-row fr-grid-row--gutters">
-              <div class="fr-col-12 fr-col-lg-12">
-                <div class="fr-mb-2w">
-                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                    <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Résultat</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@total_produits - @total_charges)%> €</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="fr-grid-row fr-grid-row--gutters">
-              <div class="fr-col-12 fr-col-lg-6">
-                <div class="fr-mb-2w">
-                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                    <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Total des ressources</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.ressources_total)%> €</p></div>
-                  </div>
-                </div>
-              </div>
-              <div class="fr-col-12 fr-col-lg-6">
-                <div class="fr-mb-2w">
-                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
-                    <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Taux de ressources propres <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_ressources_t", chiffre: chiffre} %></p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.produits_autres - (chiffre.produits_non_encaissables || 0) + chiffre.ressources_autres,chiffre.produits_subventions_etat + chiffre.produits_fiscalite_affectee + chiffre.produits_subventions_autres + chiffre.produits_autres - (chiffre.produits_non_encaissables || 0) + chiffre.ressources_total - chiffre.capacite_autofinancement,100)) %> %</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          <% end  %>
-          <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-6">
-              <div class="fr-mb-2w">
-                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
-                  <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_treso_jours_t", chiffre: chiffre} %></p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(ratio(chiffre.tresorerie_finale,@den,1)) %> Jours</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="fr-col-12 fr-col-lg-6">
-              <div class="fr-mb-2w">
-                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                  <div class="fr-cart__body">
-                      <p class="fr-mb-0 fr-text--center">Niveau final de trésorerie</p>
-                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.tresorerie_finale) %> €</p>
-                  </div>
+          <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <% if chiffre.comptabilite_budgetaire == true %>
+                    <p class="fr-mb-0 fr-text--center">Total des crédits de paiement (CP) </p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.credits_cp_total) %>
+                      €</p>
+                  <% else %>
+                    <p class="fr-mb-0 fr-text--center">Total des charges</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.total_charges) %>
+                      €</p>
+                  <% end %>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+        <% if chiffre.comptabilite_budgetaire == true %>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-12">
               <div class="fr-mb-2w">
-                <div class="fr-card <% if chiffre.risque_insolvabilite == 'Situation saine' %>fr-card--vert<%elsif chiffre.risque_insolvabilite == 'Situation saine a priori mais à surveiller'%>fr-card--jaune<%elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité à moyen terme'%>fr-card--orange<%elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité élevé'%>fr-card--rouge<%end %> fr-p-2w fr-card--no-border">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Examen à moyen-court termes</p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= chiffre.risque_insolvabilite %></p>
+                    <p class="fr-mb-0 fr-text--center">Solde
+                      budgétaire <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_solde_budgetaire_t", chiffre: chiffre } %></p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.solde_budgetaire) %>
+                      €</p>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Taux de recettes
+                      propres <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_taux_recettes_propres_t", chiffre: chiffre } %></p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.taux_recettes_propres) %>
+                      %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids des financements de
+                      l’Etat <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_poids_financements_etat_t", chiffre: chiffre } %></p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_financements_etat) %>
+                      %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids des restes à
+                      payer <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_poids_rap_t", chiffre: chiffre } %></p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_restes_a_payer) %>
+                      %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Taux de couverture des RAP par la
+                      trésorerie <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_treso_rap_t", chiffre: chiffre } %></p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.taux_couverture_rap) %>
+                      %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% else %>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-12">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Résultat</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.resultat) %> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Total des ressources</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.ressources_total) %>
+                      €</p></div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Taux de ressources
+                      propres <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_ressources_t", chiffre: chiffre } %></p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.taux_ressources_propres) %>
+                      %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Trésorerie en jours de
+                    fonctionnement <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_treso_jours_t", chiffre: chiffre } %></p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.jours_fonctionnement_tresorerie) %>
+                    Jours</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-col-12 fr-col-lg-6">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Niveau final de trésorerie</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.tresorerie_finale) %>
+                    €</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12 fr-col-lg-12">
+            <div class="fr-mb-2w">
+              <div class="fr-card
+                <% if chiffre.risque_insolvabilite == 'Situation saine' %>fr-card--vert
+                <% elsif chiffre.risque_insolvabilite == 'Situation saine a priori mais à surveiller' %>fr-card--jaune
+                <% elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité à moyen terme' %>fr-card--orange
+                <% elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité élevé' %>fr-card--rouge
+                <% end %> fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Examen à moyen-court termes</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= chiffre.risque_insolvabilite %></p>
                 </div>
               </div>
             </div>
@@ -228,3 +239,4 @@
       </div>
     </div>
   </div>
+</div>

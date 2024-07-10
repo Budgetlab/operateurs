@@ -181,6 +181,10 @@ class Chiffre < ApplicationRecord
     total_charges - (charges_non_decaissables || 0)
   end
 
+  def produits_encaissables
+    total_produits - (produits_non_encaissables || 0)
+  end
+
   # Poids relatif des charges de personnel
   def poids_charges_personnel
     ratio(emplois_charges_personnel, charges_decaissables, 100)

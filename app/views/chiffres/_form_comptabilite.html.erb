@@ -170,6 +170,14 @@
                   <%= f.text_field :produits_non_encaissables, data: {action: 'input->form#changeNumber'}.merge(@chiffre.comptabilite_budgetaire ? {} : {'form-target': 'fieldRequire'}), value: @chiffre.produits_non_encaissables, id:"produits_non_encaissables", class:"fr-input" %>
                 </div>
               </div>
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Produits encaissables</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_produits_enc">-</span> €</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">

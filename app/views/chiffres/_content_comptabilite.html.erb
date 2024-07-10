@@ -9,41 +9,50 @@
         </div>
       </div>
     </div>
-    <div class="fr-mt-1w">Dont charges de personnel <%= render partial: "chiffres/tooltip", locals: {num_id: "charges_personnel_t", chiffre: chiffre} %></div>
+    <div class="fr-mt-1w">Dont charges de
+      personnel <%= render partial: "chiffres/tooltip", locals: { num_id: "charges_personnel_t", chiffre: chiffre } %></div>
     <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.emplois_charges_personnel) %> €</div>
     <% if chiffre.comptabilite_budgetaire == false %>
-    <div class="fr-mb-2w">
-      <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
-        <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids relatif des charges de personnel <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_personnel_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_charges_personnel) %> %</p>
+      <div class="fr-mb-2w">
+        <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+          <div class="fr-cart__body">
+            <p class="fr-mb-0 fr-text--center">Poids relatif des charges de
+              personnel <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_charges_personnel_t", chiffre: chiffre } %></p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_charges_personnel) %>
+              %</p>
+          </div>
         </div>
       </div>
-    </div>
     <% end %>
-    <div class="fr-mt-1w">Dont charges de fonctionnement (hors charges de personnel) <%= render partial: "chiffres/tooltip", locals: {num_id: "charges_fonctionnement_t", chiffre: chiffre} %></div>
+    <div class="fr-mt-1w">Dont charges de fonctionnement (hors charges de
+      personnel) <%= render partial: "chiffres/tooltip", locals: { num_id: "charges_fonctionnement_t", chiffre: chiffre } %></div>
     <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.charges_fonctionnement) %> €</div>
     <% if chiffre.comptabilite_budgetaire == false %>
-    <div class="fr-mb-2w options fr-hidden">
-      <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
-        <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids des charges de fonctionnement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_fonctionnement_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_charges_fonctionnement) %> %</p>
+      <div class="fr-mb-2w options fr-hidden">
+        <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+          <div class="fr-cart__body">
+            <p class="fr-mb-0 fr-text--center">Poids des charges de
+              fonctionnement <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_charges_fonctionnement_t", chiffre: chiffre } %></p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_charges_fonctionnement) %>
+              %</p>
+          </div>
         </div>
       </div>
-    </div>
     <% end %>
-    <div class="fr-mt-1w">Dont charges d’intervention <%= render partial: "chiffres/tooltip", locals: {num_id: "charges_intervention_t", chiffre: chiffre} %></div>
+    <div class="fr-mt-1w">Dont charges
+      d’intervention <%= render partial: "chiffres/tooltip", locals: { num_id: "charges_intervention_t", chiffre: chiffre } %></div>
     <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.charges_intervention) %> €</div>
     <% if chiffre.comptabilite_budgetaire == false %>
-    <div class="fr-mb-2w options fr-hidden">
-      <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
-        <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Poids des charges d'intervention <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_charges_intervention_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_charges_intervention) %> %</p>
+      <div class="fr-mb-2w options fr-hidden">
+        <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+          <div class="fr-cart__body">
+            <p class="fr-mb-0 fr-text--center">Poids des charges
+              d'intervention <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_charges_intervention_t", chiffre: chiffre } %></p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.poids_charges_intervention) %>
+              %</p>
+          </div>
         </div>
       </div>
-    </div>
     <% end %>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
@@ -56,13 +65,19 @@
         </div>
       </div>
     </div>
-    <div class="fr-mt-1w">Dont subventions de l’Etat <%= render partial: "chiffres/tooltip", locals: {num_id: "produits_subventions_etat_t", chiffre: chiffre} %></div>
+    <div class="fr-mt-1w">Dont subventions de
+      l’Etat <%= render partial: "chiffres/tooltip", locals: { num_id: "produits_subventions_etat_t", chiffre: chiffre } %></div>
     <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.produits_subventions_etat) %> €</div>
-    <div class="fr-mt-1w">Dont fiscalité affectée <%= render partial: "chiffres/tooltip", locals: {num_id: "produits_fiscalite_affectee_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.produits_fiscalite_affectee) %> €</div>
-    <div class="fr-mt-1w">Dont autres subventions <%= render partial: "chiffres/tooltip", locals: {num_id: "produits_subventions_autres_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.produits_subventions_autres) %> €</div>
-    <div class="fr-mt-1w">Dont autres produits <%= render partial: "chiffres/tooltip", locals: {num_id: "produits_autres_t", chiffre: chiffre} %></div>
+    <div class="fr-mt-1w">Dont fiscalité
+      affectée <%= render partial: "chiffres/tooltip", locals: { num_id: "produits_fiscalite_affectee_t", chiffre: chiffre } %></div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.produits_fiscalite_affectee) %>€
+    </div>
+    <div class="fr-mt-1w">Dont autres
+      subventions <%= render partial: "chiffres/tooltip", locals: { num_id: "produits_subventions_autres_t", chiffre: chiffre } %></div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.produits_subventions_autres) %>€
+    </div>
+    <div class="fr-mt-1w">Dont autres
+      produits <%= render partial: "chiffres/tooltip", locals: { num_id: "produits_autres_t", chiffre: chiffre } %></div>
     <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.produits_autres) %> €</div>
   </div>
 </div>
@@ -72,7 +87,7 @@
     <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Résultat <%= render partial: "chiffres/tooltip", locals: {num_id: "resultat_t", chiffre: chiffre} %></p>
+          <p class="fr-mb-0 fr-text--center">Résultat <%= render partial: "chiffres/tooltip", locals: { num_id: "resultat_t", chiffre: chiffre } %></p>
           <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.resultat) %> €</p>
         </div>
       </div>
@@ -81,55 +96,77 @@
 </div>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Charges non décaissables <%= render partial: "chiffres/tooltip", locals: {num_id: "charges_non_decaissables_t", chiffre: chiffre} %></div>
+    <div>Charges non
+      décaissables <%= render partial: "chiffres/tooltip", locals: { num_id: "charges_non_decaissables_t", chiffre: chiffre } %></div>
     <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.charges_non_decaissables) %> €</div>
     <div>
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Charges décaissables</p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.charges_decaissables) %> €</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.charges_decaissables) %>
+            €</p>
         </div>
       </div>
     </div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Produits non encaissables <%= render partial: "chiffres/tooltip", locals: {num_id: "produits_non_encaissables_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.produits_non_encaissables) %> €</div>
+    <div>Produits non
+      encaissables <%= render partial: "chiffres/tooltip", locals: { num_id: "produits_non_encaissables_t", chiffre: chiffre } %></div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.produits_non_encaissables) %> €</div>
+    <div>
+      <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+        <div class="fr-cart__body">
+          <p class="fr-mb-0 fr-text--center">Produits encaissables</p>
+          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.produits_encaissables) %>
+            €</p>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 <h3 class="fr-h4 fr-mt-4w">Capacité d’autofinancement</h3>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Capacité d’autofinancement <%= render partial: "chiffres/tooltip", locals: {num_id: "capacite_autofinancement_t", chiffre: chiffre} %></div>
+    <div>Capacité
+      d’autofinancement <%= render partial: "chiffres/tooltip", locals: { num_id: "capacite_autofinancement_t", chiffre: chiffre } %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.capacite_autofinancement) %> €</div>
   </div>
 </div>
 <div class="fr-grid-row fr-grid-row--gutters">
   <div class="fr-col-12 fr-col-lg-6">
     <h3 class="fr-h4 fr-mt-4w">Emplois</h3>
-    <div>Total des emplois <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_cout_total_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.emplois_cout_total)%> €</div>
-    <div class="fr-mt-1w">Dont investissements <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_cout_investissements_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.emplois_cout_investissements)%> €</div>
+    <div>Total des
+      emplois <%= render partial: "chiffres/tooltip", locals: { num_id: "emplois_cout_total_t", chiffre: chiffre } %></div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.emplois_cout_total) %> €</div>
+    <div class="fr-mt-1w">Dont
+      investissements <%= render partial: "chiffres/tooltip", locals: { num_id: "emplois_cout_investissements_t", chiffre: chiffre } %></div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.emplois_cout_investissements) %>€
+    </div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
     <h3 class="fr-h4 fr-mt-4w">Ressources</h3>
-    <div>Total des ressources <%= render partial: "chiffres/tooltip", locals: {num_id: "ressources_total_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.ressources_total)%> €</div>
-    <div class="fr-mt-1w">Dont financement de l’actif par l’Etat <%= render partial: "chiffres/tooltip", locals: {num_id: "ressources_financement_etat_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.ressources_financement_etat)%> €</div>
-    <div class="fr-mt-1w">Dont autres ressources <%= render partial: "chiffres/tooltip", locals: {num_id: "ressources_autres_t", chiffre: chiffre} %></div>
-    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.ressources_autres)%> €</div>
+    <div>Total des
+      ressources <%= render partial: "chiffres/tooltip", locals: { num_id: "ressources_total_t", chiffre: chiffre } %></div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.ressources_total) %> €</div>
+    <div class="fr-mt-1w">Dont financement de l’actif par
+      l’Etat <%= render partial: "chiffres/tooltip", locals: { num_id: "ressources_financement_etat_t", chiffre: chiffre } %></div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.ressources_financement_etat) %>€
+    </div>
+    <div class="fr-mt-1w">Dont autres
+      ressources <%= render partial: "chiffres/tooltip", locals: { num_id: "ressources_autres_t", chiffre: chiffre } %></div>
+    <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(chiffre.ressources_autres) %> €</div>
     <% if chiffre.comptabilite_budgetaire == false %>
-    <div class="fr-mb-2w">
-      <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
-        <div class="fr-cart__body">
-          <p class="fr-mb-0 fr-text--center">Taux de ressources propres <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_ressources_t", chiffre: chiffre} %></p>
-          <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.taux_ressources_propres) %> %</p>
+      <div class="fr-mb-2w">
+        <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+          <div class="fr-cart__body">
+            <p class="fr-mb-0 fr-text--center">Taux de ressources
+              propres <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_ressources_t", chiffre: chiffre } %></p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.taux_ressources_propres) %>
+              %</p>
+          </div>
         </div>
       </div>
-    </div>
-    <% end  %>
+    <% end %>
   </div>
 </div>
 <div class="options fr-hidden">
@@ -137,33 +174,43 @@
 
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-12 fr-col-lg-6">
-      <div>Opérations au nom et pour le compte de tiers <% if chiffre.comptabilite_budgetaire == true %>(besoins)<%else %>(débits)<%end %> <%= render partial: "chiffres/tooltip", locals: {num_id: "decaissements_operations_t", chiffre: chiffre} %></div>
-      <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.decaissements_operations)%> €</div>
+      <div>Opérations au nom et pour le compte de tiers
+        <% if chiffre.comptabilite_budgetaire == true %>(besoins)
+        <% else %>(débits)
+        <% end %> <%= render partial: "chiffres/tooltip", locals: { num_id: "decaissements_operations_t", chiffre: chiffre } %></div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.decaissements_operations) %> €</div>
     </div>
     <div class="fr-col-12 fr-col-lg-6">
-      <div>Opérations au nom et pour le compte de tiers <% if chiffre.comptabilite_budgetaire == true %>(financements)<%else %>(crédits)<%end %> <%= render partial: "chiffres/tooltip", locals: {num_id: "encaissements_operations_t", chiffre: chiffre} %></div>
-      <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.encaissements_operations)%> €</div>
+      <div>Opérations au nom et pour le compte de tiers
+        <% if chiffre.comptabilite_budgetaire == true %>(financements)
+        <% else %>(crédits)
+        <% end %> <%= render partial: "chiffres/tooltip", locals: { num_id: "encaissements_operations_t", chiffre: chiffre } %></div>
+      <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.encaissements_operations) %> €</div>
     </div>
   </div>
   <% if chiffre.comptabilite_budgetaire == true %>
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-6">
-        <div>Emprunts, Prêts, Dépôts et cautionnements (besoins) <%= render partial: "chiffres/tooltip", locals: {num_id: "decaissements_emprunts_t", chiffre: chiffre} %></div>
-        <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.decaissements_emprunts)%> €</div>
+        <div>Emprunts, Prêts, Dépôts et cautionnements
+          (besoins) <%= render partial: "chiffres/tooltip", locals: { num_id: "decaissements_emprunts_t", chiffre: chiffre } %></div>
+        <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.decaissements_emprunts) %> €</div>
       </div>
       <div class="fr-col-12 fr-col-lg-6">
-        <div>Emprunts, Prêts, Dépôts et cautionnements (financements) <%= render partial: "chiffres/tooltip", locals: {num_id: "encaissements_emprunts_t", chiffre: chiffre} %></div>
-        <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.encaissements_emprunts)%> €</div>
+        <div>Emprunts, Prêts, Dépôts et cautionnements
+          (financements) <%= render partial: "chiffres/tooltip", locals: { num_id: "encaissements_emprunts_t", chiffre: chiffre } %></div>
+        <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.encaissements_emprunts) %> €</div>
       </div>
     </div>
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-6">
-        <div>Autres décaissements non budgétaires <%= render partial: "chiffres/tooltip", locals: {num_id: "decaissements_autres_t", chiffre: chiffre} %></div>
-        <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.decaissements_autres)%> €</div>
+        <div>Autres décaissements non
+          budgétaires <%= render partial: "chiffres/tooltip", locals: { num_id: "decaissements_autres_t", chiffre: chiffre } %></div>
+        <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.decaissements_autres) %> €</div>
       </div>
       <div class="fr-col-12 fr-col-lg-6">
-        <div>Autres encaissements non budgétaires <%= render partial: "chiffres/tooltip", locals: {num_id: "encaissements_autres_t", chiffre: chiffre} %></div>
-        <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.encaissements_autres)%> €</div>
+        <div>Autres encaissements non
+          budgétaires <%= render partial: "chiffres/tooltip", locals: { num_id: "encaissements_autres_t", chiffre: chiffre } %></div>
+        <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(chiffre.encaissements_autres) %> €</div>
       </div>
     </div>
     <div class="fr-grid-row fr-grid-row--gutters">
@@ -171,8 +218,10 @@
         <div class="fr-mb-2w">
           <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
             <div class="fr-cart__body">
-              <p class="fr-mb-0 fr-text--center">Décaissements non budgétaires <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_dec_t", chiffre: chiffre} %></p>
-              <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.decaissements_non_budgetaires) %> €</p>
+              <p class="fr-mb-0 fr-text--center">Décaissements non
+                budgétaires <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_dec_t", chiffre: chiffre } %></p>
+              <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.decaissements_non_budgetaires) %>
+                €</p>
             </div>
           </div>
         </div>
@@ -181,13 +230,15 @@
         <div class="fr-mb-2w">
           <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
             <div class="fr-cart__body">
-              <p class="fr-mb-0 fr-text--center">Encaissements non budgétaires <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_enc_t", chiffre: chiffre} %></p>
-              <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.encaissements_non_budgetaires) %> €</p>
+              <p class="fr-mb-0 fr-text--center">Encaissements non
+                budgétaires <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_enc_t", chiffre: chiffre } %></p>
+              <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(chiffre.encaissements_non_budgetaires) %>
+                €</p>
             </div>
           </div>
         </div>
       </div>
     </div>
-  <% end  %>
+  <% end %>
 
 </div>
