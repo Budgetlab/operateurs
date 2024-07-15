@@ -22,6 +22,8 @@
               <%= render_select_group("Contrôleur référent", :user_nom_in_insensitive, User.order(nom: :asc).where(statut: 'Controleur').map(&:nom)) %>
 
               <%= render_select_group("Famille", :organisme_famille_in, @liste_familles) %>
+              <% bs_name_list = User.order(nom: :asc).select { |user| ['Bureau Sectoriel'].include?(user.statut) }.map(&:nom) %>
+              <%= render_select_group("Bureau DB de rattachement", :organisme_bureau_nom_in, bs_name_list) %>
 
               <%= render_tag_group 'Exercice budgétaire', :exercice_budgetaire_in, ['2024','2023','2022','2021', '2020', '2019'] %>
               <%= render_tag_group 'Type de budget', :type_budget_in, ["Budget initial", "Budget rectificatif", "Compte financier"] %>
