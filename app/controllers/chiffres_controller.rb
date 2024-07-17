@@ -51,7 +51,7 @@ class ChiffresController < ApplicationController
 
   def new
     @chiffre = Chiffre.new
-    @organismes = current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif')
+    @organismes = current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif').order(nom: :asc)
   end
 
   def select_comptabilite
