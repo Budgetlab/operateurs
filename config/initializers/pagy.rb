@@ -6,5 +6,6 @@ Pagy::DEFAULT[:items_param] = :page
 # Better user experience handled automatically
 require 'pagy/extras/custom'
 require 'pagy/extras/overflow'
+require 'pagy/extras/size'
 Pagy::DEFAULT[:overflow] = :last_page
 Pagy::DEFAULT.freeze

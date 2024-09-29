@@ -43,7 +43,7 @@
 
                 <%= render_select_group("Bureau DB de rattachement", :bureau_nom_in, @bs_name_list) %>
 
-                <div class="fr-label fr-text--bold">Opérateur 2024</div>
+                <div class="fr-label fr-text--bold">Opérateur</div>
                 <ul class="fr-tags-group fr-my-1w">
                   <li>
                     <button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?('true') ? 'true' : 'false' %>">

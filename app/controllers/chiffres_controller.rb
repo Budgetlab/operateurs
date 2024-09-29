@@ -37,7 +37,7 @@ class ChiffresController < ApplicationController
   def show_dates
     @est_editeur = current_user == @organisme.controleur
     @chiffres = @organisme.chiffres
-    @exercice_budgetaire = params[:exercice_budgetaire] && [2019, 2020, 2021, 2022, 2023, 2024].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
+    @exercice_budgetaire = params[:exercice_budgetaire] && [2019, 2020, 2021, 2022, 2023, 2024, 2025].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
     @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire).order(created_at: :asc) || []
     @chiffre_default = set_default_chiffre(nil, @exercice_budgetaire, @chiffres)
     respond_to do |format|
@@ -191,7 +191,7 @@ class ChiffresController < ApplicationController
     # filtres
     @q_params = q_params
     @famille = params.dig(:q, :organisme_famille_eq)
-    @exercice = params.dig(:q, :exercice_budgetaire_eq) || 2024
+    @exercice = params.dig(:q, :exercice_budgetaire_eq) || 2025
     # Récupérer les organismes qui peuvent avoir des budgets pour l'année sélectionnée et la famille sélectionnée
     organisms_actifs = fetch_organisms_actifs(@exercice.to_i, @famille)
     # Récupérer la liste des contrôleurs de ces organismes
@@ -219,12 +219,12 @@ class ChiffresController < ApplicationController
       ELSE 2
     END, created_at ASC"))
     @grouped_chiffres_by_exercice = @chiffres.group_by(&:exercice_budgetaire).transform_values do |chiffres|
-      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie.round, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel, chiffre.emplois_charges_personnel, chiffre.charges_fonctionnement, chiffre.charges_intervention, chiffre.credits_cp_fonctionnement, chiffre.credits_cp_intervention, chiffre.credits_cp_investissement, chiffre.recettes_globalisees, chiffre.recettes_flechees, chiffre.produits_subventions_etat, chiffre.produits_fiscalite_affectee, chiffre.produits_subventions_autres, chiffre.produits_autres, chiffre.variation_bfr, chiffre.credits_restes_a_payer, chiffre.tresorerie_finale_flechee, chiffre.tresorerie_finale_non_flechee ] }.compact
+      chiffres.map { |chiffre| [chiffre.type_budget, chiffre.tresorerie_finale, chiffre.jours_fonctionnement_tresorerie, chiffre.emplois_total, chiffre.comptabilite_budgetaire ? chiffre.emplois_depenses_personnel : chiffre.emplois_charges_personnel, chiffre.emplois_charges_personnel, chiffre.charges_fonctionnement, chiffre.charges_intervention, chiffre.credits_cp_fonctionnement, chiffre.credits_cp_intervention, chiffre.credits_cp_investissement, chiffre.recettes_globalisees, chiffre.recettes_flechees, chiffre.produits_subventions_etat, chiffre.produits_fiscalite_affectee, chiffre.produits_subventions_autres, chiffre.produits_autres, chiffre.variation_bfr, chiffre.credits_restes_a_payer, chiffre.tresorerie_finale_flechee, chiffre.tresorerie_finale_non_flechee ] }.compact
     end
     @series = @grouped_chiffres_by_exercice.transform_values(&:last)
     exercices = @chiffres.map(&:exercice_budgetaire)
     first_exercice = exercices.min && exercices.min < 2022 ? exercices.min : 2022
-    last_exercice = exercices.max && exercices.max > 2024 ? exercices.max : 2024
+    last_exercice = exercices.max && exercices.max > 2025 ? exercices.max : 2025
 
     @abscisses = (first_exercice..last_exercice).map(&:to_s) if first_exercice && last_exercice
     @abscisses_bis = @series.map { |k, v| "#{v.first} #{k}" }
@@ -311,7 +311,7 @@ class ChiffresController < ApplicationController
   def set_exercice_budgetaire_chiffres(params_id, params_exercice_budgetaire, chiffres)
     if params_id
       Chiffre.find(params_id.to_i)&.exercice_budgetaire
-    elsif params_exercice_budgetaire && [2019, 2020, 2021, 2022, 2023, 2024].include?(params_exercice_budgetaire.to_i)
+    elsif params_exercice_budgetaire && [2019, 2020, 2021, 2022, 2023, 2024, 2025].include?(params_exercice_budgetaire.to_i)
       params_exercice_budgetaire.to_i
     else
       chiffres&.first&.exercice_budgetaire || Date.today.year
