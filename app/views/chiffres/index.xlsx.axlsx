@@ -337,16 +337,18 @@
       sheet.add_row(@tresorerie_max_jours)
 
       sheet.add_row
-      @colonnes_analyse = ["ANALYSE FINANCIERE","Fonds de roulement","Niveau initial du fonds de roulement","Variation du fonds de roulement","Niveau final du fonds de roulement","Besoin en fonds de roulement","Niveau initial du besoin en fonds de roulement","Variation du besoin en fonds de roulement","Niveau final du besoin en fonds de roulement","Degré de risque d'insolvabilité"]
+      @colonnes_analyse = ["ANALYSE FINANCIERE","Fonds de roulement","Niveau initial du fonds de roulement","Variation du fonds de roulement","Niveau final du fonds de roulement","Besoin en fonds de roulement","Niveau initial du besoin en fonds de roulement","Variation du besoin en fonds de roulement","Niveau final du besoin en fonds de roulement","Degré de risque d'insolvabilité", "Fonds de roulement en jours de fonctionnement"]
       sheet.add_row [@colonnes_analyse[0]], style: titre_header
       sheet.add_row [@colonnes_analyse[1]], style: titre_header
 
       @fonds_roulement_final = [@colonnes_analyse[4],nil] + @chiffres_export.pluck(:fonds_roulement_final)
       @fonds_roulement_variation = [@colonnes_analyse[3],nil] + @chiffres_export.pluck(:fonds_roulement_variation)
       @fonds_roulement_initial = [@colonnes_analyse[2],nil] +  @chiffres_export.pluck(:fonds_roulement_final, :fonds_roulement_variation).map{|a,b| (a || 0) - (b || 0)}
+      @fonds_roulement_jours = [@colonnes_analyse[10],nil] + @fonds_roulement_final[2..-1].zip(@den).map{ |x,y| format_nombre_entier(ratio(x,y,1))}
       sheet.add_row(@fonds_roulement_initial)
       sheet.add_row(@fonds_roulement_variation)
       sheet.add_row(@fonds_roulement_final)
+      sheet.add_row(@fonds_roulement_jours)
 
       sheet.add_row [@colonnes_analyse[5]], style: titre_header
       @fonds_roulement_besoin_final = [@colonnes_analyse[8],nil] + @chiffres_export.pluck(:fonds_roulement_besoin_final)
@@ -364,7 +366,7 @@
       sheet.add_row
       sheet.add_row(@risque_insolvabilite, style: titre_header)
 
-      row_d = sheet.rows[151]
+      row_d = sheet.rows[152]
       row_d.cells.each_with_index do |cell,i|
         if cell.value == "Situation saine"
           cell.add_style bg_color: "E5FBFD"
@@ -386,8 +388,8 @@
       sheet.add_row(@commentaire)
       sheet.add_row(@commentaire_annexe)
 
-      @array_border_blue = [10,16,23,27,29,31,42,44,46,48,51,62,69,70,72,73,76,80,85,87,89,121,122,125,126,133,136]
-      @array_border_grey = [7,18,35,40,53,54,61,68,71,75,78,83,90,95,101,103,105,109,113, 119,120,127,141,145,148,150]
+      @array_border_blue = [10,16,23,27,29,31,42,44,46,48,51,62,69,70,72,73,76,80,85,87,89,121,122,125,126,133,136, 143]
+      @array_border_grey = [7,18,35,40,53,54,61,68,71,75,78,83,90,95,101,103,105,109,113, 119,120,127,141,146,149,151]
       sheet.rows.each do |row|
         row.cells.each_with_index do |cell,i|
           if i > 1 && cell.value != ""
@@ -417,7 +419,7 @@
       end
       @array_euro = [15,16,28,29,30,31,35,36,37,38,39,40,41,43,45,47,49,50,53,54,55,56,57,58,59,60,61,63,64,65,66,68,71,
       75,76,78,79,83,84,86,88,90,91,92,93,94,95,97,98,99,101,103,104,105,106,107,109,110,111,112,113,114,115,116,119,
-      120,123,124,127,128,129,131,134,140,141,142,144,145,146,148,150]
+      120,123,124,127,128,129,131,134,140,141,142,145,146,147,149,151]
       @array_euro.each do |row_index|
         row = sheet.rows[row_index - 1]
         row.cells.each_with_index do |cell,i|

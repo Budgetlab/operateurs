@@ -8,7 +8,6 @@ class UsersController < ApplicationController
     @noms_users = User.all.pluck(:nom)
     @familles = Organisme.all.pluck(:famille).uniq
     @natures = Organisme.all.pluck(:nature).uniq
-    # AdminUser.create!(email: 'admin@opera.com', password: 'Admin*ope', password_confirmation: 'Admin*ope')
     # Chiffre.update_all('emplois_total = ROUND(emplois_total::numeric,2)')
   end
 

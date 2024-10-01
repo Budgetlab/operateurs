@@ -327,7 +327,7 @@ class Chiffre < ApplicationRecord
       organisme_nom = row_data['Nom'] # keep organisme_nom before deleting it from the hash
       row_data.delete('Nom')
       organisme = Organisme.find_by(nom: organisme_nom)
-      chiffre = organisme&.chiffres&.where(type_budget: 'Compte financier', exercice_budgetaire: 2019)&.first_or_initialize
+      chiffre = organisme&.chiffres&.where(type_budget: 'Compte financier', exercice_budgetaire: 2020)&.first_or_initialize
       next unless chiffre
 
       chiffre.assign_attributes(row_data) # assign new values
