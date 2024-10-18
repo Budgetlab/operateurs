@@ -2,8 +2,7 @@
 
 # Controller Pages Ministeres
 class MinisteresController < ApplicationController
-  before_action :authenticate_user!
-  before_action :redirect_admin
+  before_action :authenticate_admin!
   protect_from_forgery with: :null_session
   def index
     @ministeres = Ministere.all.order(nom: :asc)
@@ -26,8 +25,6 @@ class MinisteresController < ApplicationController
   end
 
   def import
-    redirect_to root_path and return unless @statut_user == '2B2O'
-
     Ministere.import(params[:file])
     respond_to do |format|
       format.turbo_stream { redirect_to ministeres_path }
@@ -38,9 +35,5 @@ class MinisteresController < ApplicationController
 
   def ministere_params
     params.require(:ministere).permit(:nom)
-  end
-
-  def redirect_admin
-    redirect_to root_path and return unless @statut_user == '2B2O'
   end
 end

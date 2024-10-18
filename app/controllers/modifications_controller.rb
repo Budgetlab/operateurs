@@ -4,6 +4,7 @@
 class ModificationsController < ApplicationController
   before_action :authenticate_user!
   before_action :redirect_unless_controleur
+  before_action :authenticate_admin!, only: :update
 
   # page gestion des modifications
   def index
@@ -62,7 +63,6 @@ class ModificationsController < ApplicationController
 
   # fonction pour mettre à jour le statut de la modification par 2B2O et l'organisme
   def update
-    redirect_unless_admin
     modification = Modification.find_by(id: params[:id])
     modification&.update(modification_params)
     message = modification ? modification.statut : 'supprimée'
@@ -86,10 +86,6 @@ class ModificationsController < ApplicationController
 
   def redirect_unless_controleur
     redirect_to root_path unless @statut_user == '2B2O' || @statut_user == 'Controleur'
-  end
-
-  def redirect_unless_admin
-    redirect_to root_path and return unless @statut_user == '2B2O'
   end
 
   def classification_modifications(organismes_ids)

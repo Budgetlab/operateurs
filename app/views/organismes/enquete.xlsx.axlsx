@@ -1,0 +1,20 @@
+wb = xlsx_package.workbook
+s = wb.styles
+calibri = s.add_style font_name: 'Calibri', sz: 13
+header = s.add_style b: true, border: { style: :thick, color: '000000', edges: [:bottom] }, font_name: 'Calibri', sz: 13
+
+        wb.add_worksheet(name: "Enquête #{@enquete_reponse.enquete.annee}") do |sheet|
+          # Ajouter une ligne d'en-tête
+          sheet.add_row ['Catégorie', 'Question', 'Réponse'], style: header
+
+          # Ajouter les données pour chaque catégorie et question
+          @questions_par_categorie.each do |categorie, questions|
+            questions.each do |question|
+              sheet.add_row [
+                categorie,               # Colonne A : Catégorie
+                question.nom,            # Colonne B : Nom de la question
+                @enquete_reponse.reponses[question.id.to_s] # Colonne C : Réponse
+              ], style: calibri
+            end
+          end
+        end

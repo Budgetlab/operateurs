@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_12_064412) do
+ActiveRecord::Schema[7.2].define(version: 2024_10_17_101736) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -165,6 +165,32 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_12_064412) do
     t.datetime "updated_at", null: false
     t.index ["organisme_id"], name: "index_control_documents_on_organisme_id"
     t.index ["user_id"], name: "index_control_documents_on_user_id"
+  end
+
+  create_table "enquete_questions", force: :cascade do |t|
+    t.text "nom"
+    t.text "categorie"
+    t.integer "numero"
+    t.bigint "enquete_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enquete_id"], name: "index_enquete_questions_on_enquete_id"
+  end
+
+  create_table "enquete_reponses", force: :cascade do |t|
+    t.bigint "organisme_id", null: false
+    t.bigint "enquete_id", null: false
+    t.jsonb "reponses", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enquete_id"], name: "index_enquete_reponses_on_enquete_id"
+    t.index ["organisme_id"], name: "index_enquete_reponses_on_organisme_id"
+  end
+
+  create_table "enquetes", force: :cascade do |t|
+    t.integer "annee", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "ministeres", force: :cascade do |t|
@@ -323,6 +349,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_12_064412) do
   add_foreign_key "chiffres", "users"
   add_foreign_key "control_documents", "organismes"
   add_foreign_key "control_documents", "users"
+  add_foreign_key "enquete_questions", "enquetes"
+  add_foreign_key "enquete_reponses", "enquetes"
+  add_foreign_key "enquete_reponses", "organismes"
   add_foreign_key "missions", "programmes"
   add_foreign_key "modifications", "organismes"
   add_foreign_key "modifications", "users"

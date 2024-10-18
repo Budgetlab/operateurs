@@ -6,9 +6,9 @@ require 'google/cloud/storage'
 class OrganismesController < ApplicationController
   include Authentication
   before_action :authenticate_user!
-  before_action :redirect_unless_admin, only: %i[new create destroy]
+  before_action :authenticate_admin!, only: %i[new create destroy]
   before_action :fetch_list_name_filter, only: :index
-  before_action :set_organisme, only: %i[show edit update destroy]
+  before_action :set_organisme, only: %i[show edit update destroy enquete]
   before_action :redirect_unless_access, only: :show
   before_action :redirect_unless_editor, only: %i[edit update]
   def index
@@ -139,6 +139,28 @@ class OrganismesController < ApplicationController
   def destroy
     @organisme&.destroy
     redirect_to organismes_path
+  end
+
+  def enquete
+    # Récupérer toutes les années des enquêtes disponibles pour cet organisme
+    @enquete_annees = @organisme.enquete_reponses.joins(:enquete).pluck('enquetes.annee').uniq.sort
+    # Récupérer l'enquête pour l'année spécifiée ou la plus récente
+    @enquete_reponse = if params[:annee].present?
+                         # Récupérer l'enquête pour l'année spécifiée
+                         @organisme.enquete_reponses.joins(:enquete).where(enquetes: { annee: params[:annee].to_i }).first
+                       else
+                         # Récupérer la dernière enquête si aucune année n'est fournie
+                         @organisme.enquete_reponses.joins(:enquete).order('enquetes.annee DESC').first
+                       end
+    return unless @enquete_reponse
+
+    @annee_a_afficher = @enquete_reponse.enquete.annee
+    # Récupérer les questions associées à cette enquête et les trier par numéro, puis les grouper par catégorie
+    @questions_par_categorie = @enquete_reponse.enquete.enquete_questions.order(:numero).group_by(&:categorie)
+    respond_to do |format|
+      format.html
+      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"Enquete.xlsx\"" }
+    end
   end
 
   private

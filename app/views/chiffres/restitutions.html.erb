@@ -54,7 +54,7 @@
                         <button class="fr-sidemenu__link" data-toggle-id="emplois" data-action="click->toggle#changeMenuSection">Emplois</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <button class="fr-sidemenu__link" data-toggle-id="comptabilite" data-action="click->toggle#changeMenuSection"><%= @organisme.comptabilite_budgetaire == "Non" ? "Comptabilité générale" : "Crédits"%> </button>
+                        <button class="fr-sidemenu__link" data-toggle-id="comptabilite" data-action="click->toggle#changeMenuSection"><%= @organisme.comptabilite_budgetaire == "Non" ? "Comptabilité générale" : "Crédits" %> </button>
                       </li>
                       <li class="fr-sidemenu__item">
                         <button class="fr-sidemenu__link" data-toggle-id="tresorerie" data-action="click->toggle#changeMenuSection">Trésorerie</button>
@@ -62,6 +62,14 @@
                     </ul>
                   </div>
                 </li>
+
+                <% unless @organisme.enquete_reponses.empty? %>
+                  <li class="fr-sidemenu__item">
+                    <%= link_to enquete_organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>
+                      Contrôle interne et financier
+                    <% end %>
+                  </li>
+                <% end %>
               </ul>
             </div>
           </div>

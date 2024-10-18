@@ -12,6 +12,7 @@ class Organisme < ApplicationRecord
   has_many :modifications, dependent: :destroy
   has_many :chiffres, dependent: :destroy
   has_many :control_documents, dependent: :destroy
+  has_many :enquete_reponses, dependent: :destroy
 
   def self.import(file)
     data = Roo::Spreadsheet.open(file.path)

@@ -1,0 +1,65 @@
+<main role="main" class="containtAll">
+  <div class="fr-container ">
+    <div class="fr-col-lg-12">
+      <h1 class="fr-my-7w">Questions</h1>
+      <div>
+        <%= form_tag import_questions_path, multipart: true do %>
+          <div class="fr-upload-group">
+            <label class="fr-label" for="file-upload">Ajouter des fichiers
+              <span class="fr-hint-text">Taille maximale : 50 Mo. Formats supportés : xlsx. </span>
+            </label>
+            <%= file_field_tag :file, accept: '.xlsx', class: "fr-upload", id: "file-upload" %>
+          </div>
+          <div class="fr-my-4w"><%= submit_tag "Transmettre", class: "fr-btn" %></div>
+        <% end %>
+      </div>
+      <div class="fr-table" id="table-md-component">
+        <div class="fr-table__wrapper">
+          <div class="fr-table__container">
+            <div class="fr-table__content">
+              <table id="table-md">
+                <caption>
+                  Questions [<%= @questions&.length %>]
+                </caption>
+                <thead>
+                <tr>
+                  <th scope="col">
+                    Année
+                  </th>
+                  <th scope="col">
+                    Catégorie
+                  </th>
+                  <th scope="col">
+                    Numéro
+                  </th>
+                  <th scope="col">
+                    Nom
+                  </th>
+                </tr>
+                </thead>
+                <tbody>
+                <% @questions.each do |question| %>
+                  <tr>
+                    <td>
+                      <%= question.enquete.annee %>
+                    </td>
+                    <td>
+                      <%= question.categorie %>
+                    </td>
+                    <td>
+                      <%= question.numero %>
+                    </td>
+                    <td class="fr-cell--multiline">
+                      <%= question.nom %>
+                    </td>
+                  </tr>
+                <% end %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

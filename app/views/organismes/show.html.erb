@@ -26,7 +26,7 @@
     <h1 class="fr-mb-4w title-btn"><%= @organisme.nom %>
       <% if !@est_valide && @statut_user == '2B2O' %><%= link_to edit_organisme_path(@organisme.id), class: "fr-btn" do %>
           Reprendre le brouillon
-          <% end %>
+        <% end %>
       <% end %></h1>
 
     <%= render 'modifications/success' %>
@@ -39,43 +39,43 @@
             <div class="fr-table__wrapper">
               <div class="fr-table__container">
                 <div class="fr-table__content">
-            <table>
-              <caption>Tableau des modifications</caption>
-              <thead>
-              <tr>
-                <th scope="col">Date de saisie</th>
-                <th scope="col">Champ</th>
-                <th scope="col">Valeur</th>
-                <th scope="col">Action</th>
-              </tr>
-              </thead>
-              <tbody>
-              <% @modifications_attente_organisme.each do |modification| %>
-                <tr class="fr-table--total">
-                  <td><%= format_date(modification.created_at) %></td>
-                  <td><%= modification.nom %></td>
-                  <td class="fr-td--overflow"><%= render partial: 'modifications/table_nom', locals: { modification: modification } %></td>
-                  <td>
-                    <% if @statut_user == "2B2O" %>
-                      <ul class="fr-btns-group fr-btns-group--inline">
-                        <li><%= link_to modification_path(modification, params: { modification: { statut: "validée" } }), data: { "turbo-method": :patch }, class: "fr-btn fr-my-0" do %>
-                            Valider
-                          <% end %></li>
-                        <li><%= link_to open_modal_path(id: modification.id), class: "fr-btn fr-btn--secondary fr-my-0", "data-fr-opened": false, "aria-controls": "modal-1", data: { "turbo_method": :post } do %>
-                            Refuser
-                          <% end %></li>
-                      </ul>
-                    <% else %>
-                      <%= link_to modification_path(modification), data: { "turbo-method": :delete }, class: "fr-btn" do %>
-                        Annuler demande
-                      <% end %>
-                    <% end %>
-                  </td>
+                  <table>
+                    <caption>Tableau des modifications</caption>
+                    <thead>
+                    <tr>
+                      <th scope="col">Date de saisie</th>
+                      <th scope="col">Champ</th>
+                      <th scope="col">Valeur</th>
+                      <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @modifications_attente_organisme.each do |modification| %>
+                      <tr class="fr-table--total">
+                        <td><%= format_date(modification.created_at) %></td>
+                        <td><%= modification.nom %></td>
+                        <td class="fr-td--overflow"><%= render partial: 'modifications/table_nom', locals: { modification: modification } %></td>
+                        <td>
+                          <% if @statut_user == "2B2O" %>
+                            <ul class="fr-btns-group fr-btns-group--inline">
+                              <li><%= link_to modification_path(modification, params: { modification: { statut: "validée" } }), data: { "turbo-method": :patch }, class: "fr-btn fr-my-0" do %>
+                                  Valider
+                                <% end %></li>
+                              <li><%= link_to open_modal_path(id: modification.id), class: "fr-btn fr-btn--secondary fr-my-0", "data-fr-opened": false, "aria-controls": "modal-1", data: { "turbo_method": :post } do %>
+                                  Refuser
+                                <% end %></li>
+                            </ul>
+                          <% else %>
+                            <%= link_to modification_path(modification), data: { "turbo-method": :delete }, class: "fr-btn" do %>
+                              Annuler demande
+                            <% end %>
+                          <% end %>
+                        </td>
 
-                </tr>
-              <% end %>
-              </tbody>
-            </table>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -158,6 +158,13 @@
                       Restitutions graphiques
                     <% end %>
                   </li>
+                  <% unless @organisme.enquete_reponses.empty? %>
+                    <li class="fr-sidemenu__item">
+                      <%= link_to enquete_organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>
+                        Contrôle interne et financier
+                      <% end %>
+                    </li>
+                  <% end %>
                 <% end %>
               </ul>
             </div>
@@ -178,7 +185,7 @@
           <h2 class="title-btn">Informations générales
             <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 1), class: "fr-btn fr-btn--secondary" do %>
                 Modifier
-                <% end %>
+              <% end %>
             <% end %></h2>
 
           <div class="fr-card">
@@ -208,7 +215,7 @@
                       <% if @organisme.organisme_rattachements.length > 0 %>
                         <% @organisme.organisme_rattachements.each do |orga| %><%= link_to organisme_path(orga.organisme_destination) do %><%= orga.organisme_destination.nom %>
                           <% end %> -
-                          <% end %>
+                        <% end %>
                       <% else %>Aucun parmi les organismes soumis au GBCP
                       <% end %></b></p>
                   <% end %>
@@ -330,7 +337,7 @@
                   <p class="fr-card__desc">Programmes annexes : <b>
                     <% if @operateur_programmes && !@operateur_programmes.empty? %>
                       <% @operateur_programmes.each do |el| %><%= el.programme.numero %> -
-                        <% end %>
+                      <% end %>
                     <% else %>Aucun
                     <% end %></b></p>
                 <% end %>
@@ -343,7 +350,7 @@
           <h2 class="title-btn">Régime budgétaire et comptable
             <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 2), class: "fr-btn fr-btn--secondary" do %>
                 Modifier
-                <% end %>
+              <% end %>
             <% end %></h2>
           <% if @organisme.statut.to_i > 1 || @est_valide %>
             <div class="fr-card">
@@ -376,7 +383,7 @@
           <h2 class="title-btn">Contrôle
             <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 3), class: "fr-btn fr-btn--secondary" do %>
                 Modifier
-                <% end %>
+              <% end %>
             <% end %></h2>
           <% if @organisme.statut.to_i > 2 || @est_valide %>
             <div class="fr-card">
@@ -434,7 +441,7 @@
           <h2 class="title-btn">Tutelles financière et technique
             <% if @est_valide && @admin && @organisme.nature != 'GIP' %><%= link_to edit_organisme_path(@organisme, step: 4), class: "fr-btn fr-btn--secondary" do %>
                 Modifier
-                <% end %>
+              <% end %>
             <% end %></h2>
           <% if @organisme.statut.to_i > 3 || @est_valide %>
             <div class="fr-card">
@@ -459,7 +466,7 @@
                   <p class="fr-card__desc">Ministère•s de co-tutelle : <b>
                     <% if @organisme_ministeres && !@organisme_ministeres.empty? %>
                       <% @organisme_ministeres.each do |orga| %><%= orga.ministere.nom %> -
-                        <% end %>
+                      <% end %>
                     <% else %>Aucun
                     <% end %></b></p>
 
@@ -475,7 +482,7 @@
           <h2 class="title-btn">Gouvernance DB
             <% if @est_valide && @admin %><%= link_to edit_organisme_path(@organisme, step: 5), class: "fr-btn fr-btn--secondary" do %>
                 Modifier
-                <% end %>
+              <% end %>
             <% end %></h2>
           <% if @organisme.statut.to_i > 4 || @est_valide %>
             <div class="fr-card">
@@ -513,7 +520,7 @@
           <h2 class="title-btn">Catégories
             <% if @est_valide && @statut_user == "2B2O" %><%= link_to edit_organisme_path(@organisme, step: 6), class: "fr-btn fr-btn--secondary" do %>
                 Modifier
-                <% end %>
+              <% end %>
             <% end %></h2>
           <% if @est_valide %>
             <div class="fr-card">

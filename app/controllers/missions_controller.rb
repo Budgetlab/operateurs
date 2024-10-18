@@ -2,16 +2,13 @@
 
 # Controller Pages Missions
 class MissionsController < ApplicationController
+  before_action :authenticate_admin!, only: %i[index import_missions]
   def index
-    redirect_to root_path and return unless @statut_user == '2B2O'
-
     @missions = Mission.all.pluck(:nom)
     @programmes = Programme.all.pluck(:nom)
   end
 
   def import_missions
-    redirect_to root_path and return unless @statut_user == '2B2O'
-
     Mission.import(params[:file])
     respond_to do |format|
       format.turbo_stream { redirect_to missions_path }

@@ -63,6 +63,14 @@
                 <li class="fr-sidemenu__item">
                   <%= link_to organisme_restitutions_path(organisme_id: @organisme), class: "fr-sidemenu__link fr-icon-bar-chart-box-fill fr-link--icon-right", target: "_self" do %>Restitutions graphiques<%end %>
                 </li>
+
+                <% unless @organisme.enquete_reponses.empty? %>
+                  <li class="fr-sidemenu__item">
+                    <%= link_to enquete_organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>
+                      Contrôle interne et financier
+                    <% end %>
+                  </li>
+                <% end %>
               </ul>
             </div>
           </div>

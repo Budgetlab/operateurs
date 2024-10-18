@@ -1,0 +1,143 @@
+<% content_for :title do %>Enquête <%= @organisme.nom %> | OPERA
+<% end %>
+<main role="main">
+  <div class="fr-container">
+    <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
+      <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane
+      </button>
+      <div class="fr-collapse" id="breadcrumb-1">
+        <ol class="fr-breadcrumb__list">
+          <li>
+            <%= link_to root_path, class: "fr-breadcrumb__link" do %>Accueil
+            <% end %>
+          </li>
+          <li>
+            <%= link_to organismes_path, class: "fr-breadcrumb__link" do %>Liste des organismes
+            <% end %>
+          </li>
+          <li>
+            <a class="fr-breadcrumb__link" aria-current="page"><%= @organisme.nom %></a>
+          </li>
+        </ol>
+      </div>
+    </nav>
+
+    <h1 class="fr-mb-4w title-btn"><%= @organisme.nom %></h1>
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-4">
+        <nav class="fr-sidemenu fr-sidemenu--sticky-full-height" aria-labelledby="fr-sidemenu-title">
+          <div class="fr-sidemenu__inner">
+            <button class="fr-sidemenu__btn" hidden aria-controls="fr-sidemenu-wrapper" aria-expanded="false">
+              Dans cette rubrique
+            </button>
+            <div class="fr-collapse" id="fr-sidemenu-wrapper">
+              <div class="fr-sidemenu__title" id="fr-sidemenu-title">Sections</div>
+              <ul class="fr-sidemenu__list">
+                <li class="fr-sidemenu__item">
+                  <%= link_to organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>Fiche
+                    d'identité
+                  <% end %>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <%= link_to organisme_chiffres_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>
+                    Données budgétaires et comptables
+                  <% end %>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <%= link_to organisme_restitutions_path(organisme_id: @organisme), class: "fr-sidemenu__link fr-icon-bar-chart-box-fill fr-link--icon-right", target: "_self" do %>
+                    Restitutions graphiques
+                  <% end %>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <button class="fr-sidemenu__btn " aria-expanded="false" aria-controls="fr-sidemenu-item-0" aria-current="true">Contrôle
+                    interne et financier
+                  </button>
+                  <div class="fr-collapse" id="fr-sidemenu-item-0">
+                    <ul class="fr-sidemenu__list">
+                      <li class="fr-sidemenu__item">
+                        <button class="fr-sidemenu__link" data-toggle-id="enquete" data-action="click->toggle#changeMenuSection">Enquête
+                          CIB-CIC
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <div class="fr-col-12 fr-col-lg-8">
+        <div id="enquete" class="fr-mb-4w">
+          <h2 class="title-btn">Enquête CIB-CIC</h2>
+          <% if @enquete_annees.present? %>
+            <div>
+              <ul class="fr-tags-group">
+                <% @enquete_annees.each do |annee| %>
+                  <li>
+                    <%= link_to annee, enquete_organisme_path(@organisme, annee: annee), class: "fr-tag", 'aria-pressed' => (@annee_a_afficher == annee ? 'true' : 'false') %>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+
+            <div class="fr-notice fr-notice--info">
+              <div class="fr-container">
+                <div class="fr-notice__body">
+                  <p>
+                    <span class="fr-notice__title">Information</span>
+                    <span class="fr-notice__desc">Les réponses ci-dessous sont issues de l'enquête CIC CIB menée auprès des organismes. Elles vous sont retranscrites ici brutes, sans vérification ni retraitement.</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="fr-my-2w fr-downloads-group fr-downloads-group--bordered">
+              <h4>Exporter les résultats de l’enquête <%= @annee_a_afficher %></h4>
+              <ul>
+                <% if @enquete_reponse.document_pdf.attached? %>
+                  <li>
+                    <%= link_to @enquete_reponse.document_pdf.url(disposition: "attachment"), class: "fr-link fr-link--download" do %>
+                      Télécharger les résultats au format PDF <span class="fr-link__detail">Format .pdf</span>
+                    <% end %>
+                  </li>
+                <% end %>
+                <li class="fr-my-1w">
+                  <%= link_to enquete_organisme_path(@organisme, format: :xlsx), class: "fr-link fr-link--download" do %>
+                    Télécharger les résultats au format XLSX
+                    <span class="fr-link__detail">Format .xlsx</span>
+                  <% end %>
+                </li>
+              </ul>
+            </div>
+            <% index = 0 %>
+            <% @questions_par_categorie&.each do |categorie, questions| %>
+              <% index += 1 %>
+              <h3><%= index %>. <%= categorie %></h3>
+              <% questions.each do |question| %>
+                <div class="fr-grid-row fr-grid-row--gutters">
+                  <div class="fr-col-12 fr-col-lg-8">
+                    <%= question.nom %>
+                  </div>
+                  <div class="fr-col-12 fr-col-lg-4">
+                    <p class="fr-text--bold">
+                      <%= !@enquete_reponse.reponses[question.id.to_s].blank? ? @enquete_reponse.reponses[question.id.to_s] : 'Pas de réponse' %>
+                    </p>
+                  </div>
+                </div>
+                <hr class="fr-mt-2w">
+              <% end %>
+            <% end %>
+            <div class="fr-grid-row fr-grid-row--right">
+              <a class="fr-link fr-icon-arrow-up-fill fr-link--icon-left" href="#top">
+                Haut de page
+              </a>
+            </div>
+          <% else %>
+            <p>Aucune enquête disponible pour cet organisme.</p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

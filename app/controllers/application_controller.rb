@@ -74,4 +74,9 @@ class ApplicationController < ActionController::Base
     devise_parameter_sanitizer.permit(:sign_in, keys: %i[statut password nom])
     devise_parameter_sanitizer.permit(:account_update, keys: %i[email password password_confirmation statut nom])
   end
+
+  def authenticate_admin!
+    authenticate_user!
+    redirect_to root_path unless current_user.statut == '2B2O'
+  end
 end
