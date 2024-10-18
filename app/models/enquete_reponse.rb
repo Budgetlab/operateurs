@@ -2,7 +2,6 @@ class EnqueteReponse < ApplicationRecord
   belongs_to :organisme
   belongs_to :enquete
 
-  has_one_attached :document_pdf
   def self.import(file)
     data = Roo::Spreadsheet.open(file.path)
     headers = data.row(1) # get header row

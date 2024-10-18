@@ -95,13 +95,10 @@
             <div class="fr-my-2w fr-downloads-group fr-downloads-group--bordered">
               <h4>Exporter les résultats de l’enquête <%= @annee_a_afficher %></h4>
               <ul>
-                <% if @enquete_reponse.document_pdf.attached? %>
-                  <li>
-                    <%= link_to @enquete_reponse.document_pdf.url(disposition: "attachment"), class: "fr-link fr-link--download" do %>
-                      Télécharger les résultats au format PDF <span class="fr-link__detail">Format .pdf</span>
-                    <% end %>
-                  </li>
-                <% end %>
+                <li><%= link_to enquete_reponse_path(@enquete_reponse, format: :pdf), target: "_blank", class: "fr-link fr-link--download" do %>
+                    Télécharger les résultats au format PDF <span class="fr-link__detail">Format .pdf</span>
+                  <% end %>
+                </li>
                 <li class="fr-my-1w">
                   <%= link_to enquete_organisme_path(@organisme, format: :xlsx), class: "fr-link fr-link--download" do %>
                     Télécharger les résultats au format XLSX
