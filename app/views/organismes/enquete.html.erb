@@ -100,7 +100,7 @@
                   <% end %>
                 </li>
                 <li class="fr-my-1w">
-                  <%= link_to enquete_organisme_path(@organisme, format: :xlsx), class: "fr-link fr-link--download" do %>
+                  <%= link_to enquete_organisme_path(@organisme, annee: @annee_a_afficher, format: :xlsx), class: "fr-link fr-link--download" do %>
                     Télécharger les résultats au format XLSX
                     <span class="fr-link__detail">Format .xlsx</span>
                   <% end %>
@@ -131,7 +131,9 @@
               </a>
             </div>
           <% else %>
-            <p>Aucune enquête disponible pour cet organisme.</p>
+            <div class="fr-highlight">
+              <p>Il n'y a pas d'enquête CIC-CIB renseignée pour cet organisme.</p>
+            </div>
           <% end %>
         </div>
       </div>

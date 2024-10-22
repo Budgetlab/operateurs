@@ -9,62 +9,9 @@
   <%= csrf_meta_tags %>
   <%= csp_meta_tag %>
 
-  <%= stylesheet_link_tag wicked_pdf_asset_base64("application"), media: 'all' %>
-  <%= stylesheet_link_tag wicked_pdf_asset_base64("dsfr"), media: 'all' %>
-  <%= stylesheet_link_tag wicked_pdf_asset_base64("utility"), media: 'all' %>
-  <%= javascript_include_tag wicked_pdf_asset_base64('application') %>
-  <%= javascript_include_tag wicked_pdf_asset_base64('custom/dsfr.module.min') %>
-  <%= javascript_include_tag wicked_pdf_asset_base64('custom/dsfr.nomodule.min') %>
-  <style>
-      .fr-notice--info {
-          background-color: #e8edff;
-          color: #0063cb;
-      }
-      .fr-badge {
-          display: inline-block; /* Utiliser inline-block pour le rendu */
-          padding: 5px 10px; /* Ajoute un peu d'espacement */
-          border-radius: 5px; /* Ajoute des coins arrondis, si nécessaire */
-          font-size: 14px; /* Taille de police, ajuste selon tes besoins */
-          margin-right: 5px; /* Espacement entre les badges, si plusieurs sont utilisés */
-          text-align: center; /* Centrer le texte si nécessaire */
-      }
-      .fr-badge--blue-ecume {
-          color: #2f4077;
-          background-color: #e9edfe;
-      }
-      hr {
-          border-top: 1px solid #ddd;
-          margin-bottom: 1rem !important;
-      }
-      .fr-grid-row {
-          display: -webkit-box; /* Ancien support WebKit */
-          display: -webkit-flex; /* Support pour les anciens navigateurs */
-          display: flex; /* Flexbox moderne */
-          -webkit-flex-wrap: wrap; /* Support ancien */
-          flex-wrap: wrap; /* Permet aux éléments de s'enrouler */
-          margin: 0;
-          padding: 0;
-      }
+  <%= wicked_pdf_stylesheet_link_tag "pdf" %>
 
-      .fr-col-8 {
-          -webkit-box-flex: 0; /* Flexibilité pour les anciens navigateurs */
-          -webkit-flex: 0 0 66.67%; /* Occupe 66.67% de l'espace */
-          flex: 0 0 66.67%; /* Occupe 66.67% de l'espace */
-          width: 66.67%;
-          max-width: 66.67%; /* Limite la largeur maximale */
-          box-sizing: border-box; /* Pour prendre en compte le padding et les bordures */
-      }
 
-      .fr-col-4 {
-          -webkit-box-flex: 0; /* Flexibilité pour les anciens navigateurs */
-          -webkit-flex: 0 0 33.33%; /* Occupe 33.33% de l'espace */
-          flex: 0 0 33.33%; /* Occupe 33.33% de l'espace */
-          width: 33.33%;
-          max-width: 33.33%; /* Limite la largeur maximale */
-          box-sizing: border-box; /* Pour prendre en compte le padding et les bordures */
-      }
-
-  </style>
 </head>
 <body>
 

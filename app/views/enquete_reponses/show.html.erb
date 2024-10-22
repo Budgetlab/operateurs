@@ -5,9 +5,8 @@
 
     <h1 class="fr-my-4w title-btn"><%= @organisme.nom %><% if @organisme.acronyme && !@organisme.acronyme.blank? %> - <%= @organisme.acronyme %><%end %></h1>
     <p class="fr-badge fr-badge--blue-ecume fr-mb-2w">Ministère : <%= @organisme.ministere.nom %></p>
-
     <% if @enquete_reponse.present? %>
-      <h2 class="title-btn">Enquête CIB-CIC <%= @enquete_reponse.enquete.annee %></h2>
+      <h2>Enquête CIB-CIC <%= @enquete_reponse.enquete.annee%></h2>
       <div class="fr-notice fr-notice--info fr-mb-2w">
         <div class="fr-container">
           <div class="fr-notice__body">
@@ -18,15 +17,15 @@
         </div>
       </div>
       <% index = 0 %>
-      <% @questions_par_categorie&.each do |categorie, questions| %>
+      <% @questions_par_categorie.each do |categorie, questions| %>
         <% index += 1 %>
         <h3><%= index %>. <%= categorie %></h3>
         <% questions.each do |question| %>
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-8">
-              <%= question.nom %>
+            <div class="fr-col-8">
+              <p class="fr-text--regular"><%= question.nom %></p>
             </div>
-            <div class="fr-col-12 fr-col-lg-4">
+            <div class="fr-col-4">
               <p class="fr-text--bold">
                 <%= !@enquete_reponse.reponses[question.id.to_s].blank? ? @enquete_reponse.reponses[question.id.to_s] : 'Pas de réponse' %>
               </p>
