@@ -192,13 +192,17 @@ hr {
   margin: 0;
   padding: 0;
 }
-.fr-col-8 {
+.fr-grid-row--gutters, .fr-grid-row-sm--gutters, .fr-grid-row-md--gutters{
+  margin: -0.75rem;
+}
+.fr-col-12 {
   -webkit-box-flex: 0; /* Flexibilité pour les anciens navigateurs */
   -webkit-flex: 0 0 100%; /* Occupe 66.67% de l'espace */
   flex: 0 0 100%; /* Occupe 66.67% de l'espace */
   width: 100%;
   max-width: 100%; /* Limite la largeur maximale */
   box-sizing: border-box; /* Pour prendre en compte le padding et les bordures */
+  padding: 0.75rem;
 }
 
 .fr-col-8 {
@@ -208,6 +212,7 @@ hr {
   width: 66.67%;
   max-width: 66.67%; /* Limite la largeur maximale */
   box-sizing: border-box; /* Pour prendre en compte le padding et les bordures */
+  padding: 0.75rem;
 }
 
 .fr-col-4 {
@@ -217,6 +222,7 @@ hr {
   width: 33.33%;
   max-width: 33.33%; /* Limite la largeur maximale */
   box-sizing: border-box; /* Pour prendre en compte le padding et les bordures */
+  padding: 0.75rem;
 }
 .fr-col-6 {
   -webkit-box-flex: 0; /* Flexibilité pour les anciens navigateurs */
