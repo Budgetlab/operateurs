@@ -285,3 +285,9 @@ hr {
 .fr-mb-0{
   margin-bottom: 0 !important;
 }
+.page_break {
+  page-break-after: always;
+}
+.fr-grid-row, .fr-card, p {
+  page-break-inside: avoid;
+}
