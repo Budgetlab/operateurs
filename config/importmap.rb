@@ -8,9 +8,9 @@ pin_all_from "app/javascript/controllers", under: "controllers"
 pin_all_from "app/javascript/custom", under: "custom"
 pin "flatpickr" # @4.6.13
 pin "flatpickr/dist/l10n/fr.js", to: "flatpickr--dist--l10n--fr.js.js" # @4.6.13
-pin "highcharts", to: "https://ga.jspm.io/npm:highcharts@11.4.1/highcharts.js" # @11.4.1
-pin "highcharts-more", to: "https://ga.jspm.io/npm:highcharts@11.4.1/highcharts-more.js"
-pin "exporting", to: "https://ga.jspm.io/npm:highcharts@11.4.1/modules/exporting.js"
-pin "accessibility", to: "https://ga.jspm.io/npm:highcharts@11.4.1/modules/accessibility.js"
-pin "data", to: "https://ga.jspm.io/npm:highcharts@11.4.1/modules/export-data.js"
-pin "nodata", to: "https://ga.jspm.io/npm:highcharts@11.4.1/modules/no-data-to-display.js"
+pin "highcharts", to: "https://ga.jspm.io/npm:highcharts@11.4.8/highcharts.js" # @11.4.8
+pin "highcharts-more", to: "https://ga.jspm.io/npm:highcharts@11.4.8/highcharts-more.js"
+pin "exporting", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/exporting.js"
+pin "accessibility", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/accessibility.js"
+pin "data", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/export-data.js"
+pin "nodata", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/no-data-to-display.js"
