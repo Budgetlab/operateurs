@@ -5,7 +5,7 @@ ActiveAdmin.register EnqueteQuestion do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :nom, :numero, :categorie, :enquete_id
+  permit_params :nom, :numero, :enquete_id
   #
   # or
   #

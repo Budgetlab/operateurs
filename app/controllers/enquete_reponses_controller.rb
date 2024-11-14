@@ -7,7 +7,7 @@ class EnqueteReponsesController < ApplicationController
   def show
     @enquete_reponse = EnqueteReponse.find(params[:id])
     @organisme = @enquete_reponse.organisme
-    @questions_par_categorie = @enquete_reponse.enquete.enquete_questions.order(:numero).group_by(&:categorie)
+    @questions = @enquete_reponse.enquete.enquete_questions.order(:numero)
     respond_to do |format|
       format.html
       format.pdf do

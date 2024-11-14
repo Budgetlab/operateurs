@@ -42,7 +42,6 @@ Rails.application.routes.draw do
     resources :enquete_reponses
     post '/import_reponses' => 'enquete_reponses#import'
     resources :enquete_questions
-    post '/import_questions' => 'enquete_questions#import'
   # routes statiques
     get '/mentions-legales', to: 'pages#mentions_legales'
     get '/donnees-personnelles', to: 'pages#donnees_personnelles'

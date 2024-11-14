@@ -28,7 +28,7 @@ class Organisme < ApplicationRecord
                         date_previsionnelle_dissolution effet_dissolution texte_institutif commentaire gbcp_1
                         agent_comptable_present degre_gbcp gbcp_3 comptabilite_budgetaire presence_controle
                         nature_controle texte_soumission_controle autorite_controle texte_reglementaire_controle
-                        arrete_controle document_controle_present document_controle_date
+                        arrete_controle document_controle_present
                         arrete_nomination tutelle_financiere delegation_approbation autorite_approbation
                         admin_db_present admin_db_fonction admin_preca controleur_preca controleur_ca comite_audit
                         apu ciassp_n ciassp_n1 odac_n odac_n1 odal_n odal_n1 arrete_interdiction_odac]
@@ -87,7 +87,7 @@ class Organisme < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["acronyme", "admin_db_fonction", "admin_db_present", "admin_preca", "agent_comptable_present", "apu", "arrete_controle", "arrete_interdiction_odac", "arrete_nomination", "autorite_approbation", "autorite_controle", "bureau_id", "ciassp_n", "ciassp_n1", "comite_audit", "commentaire", "comptabilite_budgetaire", "controleur_ca", "controleur_id", "controleur_preca", "created_at", "date_creation", "date_dissolution", "date_previsionnelle_dissolution", "degre_gbcp", "delegation_approbation", "document_controle_date", "document_controle_lien", "document_controle_present", "effet_dissolution", "etat", "famille", "gbcp_1", "gbcp_3", "id", "ministere_id", "nature", "nature_controle", "nom", "odac_n", "odac_n1", "odal_n", "odal_n1", "presence_controle", "siren", "statut", "texte_institutif", "texte_reglementaire_controle", "texte_soumission_controle", "tutelle_financiere", "updated_at"]
+    ["acronyme", "admin_db_fonction", "admin_db_present", "admin_preca", "agent_comptable_present", "apu", "arrete_controle", "arrete_interdiction_odac", "arrete_nomination", "autorite_approbation", "autorite_controle", "bureau_id", "ciassp_n", "ciassp_n1", "comite_audit", "commentaire", "comptabilite_budgetaire", "controleur_ca", "controleur_id", "controleur_preca", "created_at", "date_creation", "date_dissolution", "date_previsionnelle_dissolution", "degre_gbcp", "delegation_approbation", "document_controle_present", "effet_dissolution", "etat", "famille", "gbcp_1", "gbcp_3", "id", "ministere_id", "nature", "nature_controle", "nom", "odac_n", "odac_n1", "odal_n", "odal_n1", "presence_controle", "siren", "statut", "texte_institutif", "texte_reglementaire_controle", "texte_soumission_controle", "tutelle_financiere", "updated_at"]
   end
 
   def self.ransackable_associations(auth_object = nil)

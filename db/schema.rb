@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_08_144630) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_14_134820) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -169,7 +169,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_08_144630) do
 
   create_table "enquete_questions", force: :cascade do |t|
     t.text "nom"
-    t.text "categorie"
     t.integer "numero"
     t.bigint "enquete_id", null: false
     t.datetime "created_at", null: false
@@ -294,8 +293,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_08_144630) do
     t.string "texte_reglementaire_controle"
     t.string "arrete_controle"
     t.boolean "document_controle_present"
-    t.string "document_controle_lien"
-    t.date "document_controle_date"
     t.string "arrete_nomination"
     t.boolean "tutelle_financiere"
     t.boolean "delegation_approbation"

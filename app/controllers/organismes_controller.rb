@@ -112,7 +112,7 @@ class OrganismesController < ApplicationController
     organismes_to_link = params[:organisme].delete(:organismes)
     ministeres_to_link = params[:organisme].delete(:ministeres)
     reset_values(%i[date_dissolution effet_dissolution]) if params[:organisme][:etat]
-    reset_values(%i[nature_controle texte_soumission_controle autorite_controle texte_reglementaire_controle arrete_controle document_controle_present document_controle_lien document_controle_date arrete_nomination]) if params[:organisme][:presence_controle]
+    reset_values(%i[nature_controle texte_soumission_controle autorite_controle texte_reglementaire_controle arrete_controle document_controle_present arrete_nomination]) if params[:organisme][:presence_controle]
     reset_values([:admin_db_fonction]) if params[:organisme][:admin_db_present]
     reset_values([:delegation_approbation]) if params[:organisme][:tutelle_financiere]
     if @organisme.statut == 'valide'
@@ -155,8 +155,8 @@ class OrganismesController < ApplicationController
     return unless @enquete_reponse
 
     @annee_a_afficher = @enquete_reponse.enquete.annee
-    # Récupérer les questions associées à cette enquête et les trier par numéro, puis les grouper par catégorie
-    @questions_par_categorie = @enquete_reponse.enquete.enquete_questions.order(:numero).group_by(&:categorie)
+    # Récupérer les questions associées à cette enquête et les trier par numéro
+    @questions = @enquete_reponse.enquete.enquete_questions.order(:numero)
     respond_to do |format|
       format.html
       format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"Enquete.xlsx\"" }
@@ -172,8 +172,8 @@ class OrganismesController < ApplicationController
                                       :degre_gbcp, :gbcp_3, :comptabilite_budgetaire, :presence_controle, :controleur_id,
                                       :nature_controle, :texte_soumission_controle, :autorite_controle,
                                       :texte_reglementaire_controle, :arrete_controle, :document_controle_present,
-                                      :document_controle_lien, :document_controle_date, :arrete_nomination,
-                                      :tutelle_financiere, :delegation_approbation, :autorite_approbation, :ministere_id,
+                                      :arrete_nomination, :tutelle_financiere, :delegation_approbation,
+                                      :autorite_approbation, :ministere_id,
                                       :admin_db_present, :admin_db_fonction, :admin_preca, :controleur_preca,
                                       :controleur_ca, :comite_audit, :apu, :ciassp_n, :ciassp_n1, :odac_n, :odac_n1,
                                       :odal_n, :odal_n1, :arrete_interdiction_odac)
@@ -254,21 +254,21 @@ class OrganismesController < ApplicationController
     modifications = []
     champs_a_surveiller = %i[nom etat acronyme siren nature texte_institutif commentaire gbcp_1 gbcp_3
                            comptabilite_budgetaire nature_controle texte_soumission_controle autorite_controle
-                           texte_reglementaire_controle arrete_controle document_controle_date comite_audit
+                           texte_reglementaire_controle arrete_controle comite_audit
                            arrete_nomination ciassp_n ciassp_n1 odal_n odal_n1 odac_n odac_n1]
     champs_texte = ['Nom', 'État', 'Acronyme', 'Siren', 'Nature juridique', 'Texte institutif', 'Commentaire', 'Partie I GBCP',
                     'Partie III GBCP', 'Comptabilité budgétaire', 'Nature contrôle', 'Texte soumission au contrôle',
                     'Autorité de contrôle', "Texte réglementaire de désignation de l'autorité de contrôle",
-                    'Arrêté de contrôle', 'Date signature document contrôle ', 'Comité audit et risques',
+                    'Arrêté de contrôle', 'Comité audit et risques',
                     'Arrêté de nomination comissaire du gouvernement', "CIASSP #{(Date.today.year).to_s}",
                     "CIASSP #{(Date.today.year - 1).to_s}", "ODAL #{(Date.today.year - 2).to_s}",
                     "ODAL #{(Date.today.year - 3).to_s}", "ODAC #{(Date.today.year - 2).to_s}",
                     "ODAC #{(Date.today.year - 3).to_s}"]
     champs_supp_controleur = %i[date_creation date_previsionnelle_dissolution agent_comptable_present
-                              degre_gbcp document_controle_present document_controle_lien ministere_id
+                              degre_gbcp document_controle_present ministere_id
                               admin_db_present admin_db_fonction admin_preca controleur_preca controleur_ca]
     champs_supp_texte = ['Date création', 'Date prévisionnelle dissolution', 'Présence agent comptable', 'Degré GBCP',
-                         'Présence document contrôle', 'Lien document contrôle', 'Ministère', 'Présence Admin DB',
+                         'Présence document contrôle', 'Ministère', 'Présence Admin DB',
                          'Fonction Admin DB', 'Présence DB préCA', 'Présence contrôleur préCA', 'Présence contrôleur CA']
     champs_a_surveiller.each_with_index do |champ, i|
       if organisme_params[champ] && organisme_params[champ].to_s != check_format(@organisme[champ]) # réucpérer que ceux qui sont dans le formulaire
