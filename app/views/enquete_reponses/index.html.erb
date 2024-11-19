@@ -1,18 +1,19 @@
 <main role="main" class="containtAll">
   <div class="fr-container ">
     <div class="fr-col-lg-12">
-      <h1 class="fr-my-7w">Réponses [<%= @reponses&.length %>]</h1>
-      <div>
-        <%= form_tag import_reponses_path, multipart: true do %>
-          <div class="fr-upload-group">
-            <label class="fr-label" for="file-upload">Ajouter des fichiers
-              <span class="fr-hint-text">Taille maximale : 50 Mo. Formats supportés : xlsx. </span>
-            </label>
-            <%= file_field_tag :file, accept: '.xlsx', class: "fr-upload", id: "file-upload" %>
+      <h1 class="fr-my-7w">Enquêtes CIB-CIC [<%= @reponses&.length %>]</h1>
+
+      <% @resultats.each_with_index do  |(question, reponses), index| %>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-7">
+            <p class="fr-text--regular"><%= question %></p>
           </div>
-          <div class="fr-my-4w"><%= submit_tag "Transmettre", class: "fr-btn" %></div>
-        <% end %>
-      </div>
+          <div class="fr-col-5">
+            <div data-controller="highcharts" data-highcharts-datavalue="<%= reponses.to_json %>"></div>
+          </div>
+        </div>
+        <hr class="fr-mt-2w">
+      <% end %>
     </div>
   </div>
 </main>

@@ -16,6 +16,10 @@ export default class extends Controller {
     }
     connect() {
         this.showViz();
+        const data = JSON.parse(this.data.get("datavalue"))
+        if (data && Object.keys(data).length > 0) {
+            this.renderChart(data)
+        }
     }
 
     showViz(){
@@ -767,5 +771,60 @@ export default class extends Controller {
         return options
     }
 
+    renderChart() {
+        console.log(JSON.parse(this.data.get("datavalue")))
+        console.log(this.element)
+        const data = JSON.parse(this.data.get("datavalue"));
 
+        Highcharts.chart(this.element, {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'pie',
+
+            },
+            title: {
+                text: null
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y} ({point.percentage:.1f}%)</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false,
+                        format: '<b>{point.name}</b>:<br>{point.y} ({point.percentage:.1f}%)',
+                        style: {
+                            fontSize: '11px'
+                        }
+                    },
+                    showInLegend: true,
+                    size: 200,      // Taille relative du pie dans son conteneur
+                }
+            },
+            legend: {
+                enabled: true,
+                layout: 'horizontal',
+                align: 'center',
+                verticalAlign: 'bottom',
+                itemStyle: {
+                    fontSize: '12px'
+                }
+            },
+            exporting: {
+                enabled: false  // Désactive les options d'export
+            },
+            series: [{
+                name: 'Réponses',
+                colorByPoint: true,
+                data: Object.entries(data).map(([name, value]) => ({
+                    name,
+                    y: value,
+                }))
+            }]
+        })
+    }
 }
