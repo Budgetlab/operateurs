@@ -11,7 +11,8 @@ class EnqueteReponsesController < ApplicationController
                                .where(enquete_id: @enquete.id)
                                .group("reponses->>'#{question.id}'")
                                .count
-      end
+    end
+    @resultats = @resultats.transform_values { |reponses| reponses.sort.to_h }
   end
 
   def new

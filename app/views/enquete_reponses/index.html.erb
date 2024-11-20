@@ -5,10 +5,10 @@
 
       <% @resultats.each_with_index do  |(question, reponses), index| %>
         <div class="fr-grid-row fr-grid-row--gutters">
-          <div class="fr-col-7">
+          <div class="fr-col-4">
             <p class="fr-text--regular"><%= question %></p>
           </div>
-          <div class="fr-col-5">
+          <div class="fr-col-8">
             <div data-controller="highcharts" data-highcharts-datavalue="<%= reponses.to_json %>"></div>
           </div>
         </div>

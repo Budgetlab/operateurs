@@ -772,8 +772,6 @@ export default class extends Controller {
     }
 
     renderChart() {
-        console.log(JSON.parse(this.data.get("datavalue")))
-        console.log(this.element)
         const data = JSON.parse(this.data.get("datavalue"));
 
         Highcharts.chart(this.element, {
@@ -782,8 +780,12 @@ export default class extends Controller {
                 plotBorderWidth: null,
                 plotShadow: false,
                 type: 'pie',
-
+                height:200,
+                width: 660,
+                spacing: [0, 0, 0, 0], // Supprime tout l'espace autour
+                marginLeft: 0
             },
+            colors: ["var(--beige-gris-galet-925-125)", "var( --blue-ecume-850-200)", "var(--yellow-moutarde-850-200)", "var(--orange-terre-battue-925-125)", "var(--green-menthe-925-125)", "var(--purple-glycine-950-100)"],
             title: {
                 text: null
             },
@@ -803,16 +805,20 @@ export default class extends Controller {
                     },
                     showInLegend: true,
                     size: 200,      // Taille relative du pie dans son conteneur
+                    center: ['30%', '50%'],
                 }
             },
             legend: {
                 enabled: true,
                 layout: 'horizontal',
-                align: 'center',
-                verticalAlign: 'bottom',
+                align: 'right',
+                verticalAlign: 'middle',
+                width: 450,
                 itemStyle: {
-                    fontSize: '12px'
-                }
+                    fontSize: '12px',
+                    fontFamily: "Marianne",
+                },
+                x: -10, // Rapproche la légende de la pie
             },
             exporting: {
                 enabled: false  // Désactive les options d'export
