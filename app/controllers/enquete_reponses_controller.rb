@@ -4,8 +4,9 @@ class EnqueteReponsesController < ApplicationController
   def index
     @enquete_annees = Enquete.order(annee: :asc).pluck(:annee)
     unless @enquete_annees.empty?
-      @annee_a_afficher = params[:annee].to_i || @enquete_annees.last # prendre la plus récente
-      @enquete = Enquete.find_by(annee: @annee_a_afficher)
+      @annee_a_afficher = params[:annee] ? params[:annee].to_i : @enquete_annees.last # prendre la plus récente
+      @enquete = Enquete.find_by(annee: @annee_a_afficher.to_i)
+      redirect_to enquete_reponses_path and return unless @enquete
       @reponses = @enquete.enquete_reponses.count
       @questions = @enquete.enquete_questions.order(:numero)
       @resultats = @questions.each_with_object({}) do |question, result|
