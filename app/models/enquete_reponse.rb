@@ -3,13 +3,14 @@ class EnqueteReponse < ApplicationRecord
   belongs_to :enquete
 
   def self.import(file)
-    EnqueteReponse.destroy_all
-    EnqueteQuestion.destroy_all
     data = Roo::Spreadsheet.open(file.path)
     question_numbers = data.row(1)  # Row 1 for question numbers
     question_titles = data.row(2)   # Row 2 for question titles
     # Récupérer ou créer l'enquête pour l'année spécifiée
     enquete = Enquete.find_or_create_by(annee: question_titles[0].to_i) # premiere cellule
+
+    enquete.enquete_reponses.destroy_all # supp et mettre à jour
+    enquete.enquete_questions.destroy_all
     # First, process question headers to populate EnqueteQuestion
     enquete_questions_map = {} # Map question titles to question IDs
     question_titles.each_with_index do |title, idx|

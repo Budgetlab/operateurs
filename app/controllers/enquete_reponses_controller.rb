@@ -2,17 +2,20 @@ class EnqueteReponsesController < ApplicationController
   before_action :authenticate_user!
   before_action :authenticate_admin!, only: [:new, :import]
   def index
-    @reponses = EnqueteReponse.all
-    @annee = params[:annee] || 2024
-    @enquete = Enquete.find_by(annee: @annee)
-    @questions = @enquete.enquete_questions.order(:numero)
-    @resultats = @questions.each_with_object({}) do |question, result|
-      result[question.nom] = EnqueteReponse
-                               .where(enquete_id: @enquete.id)
-                               .group("reponses->>'#{question.id}'")
-                               .count
+    @enquete_annees = Enquete.order(annee: :asc).pluck(:annee)
+    unless @enquete_annees.empty?
+      @annee_a_afficher = params[:annee].to_i || @enquete_annees.last # prendre la plus récente
+      @enquete = Enquete.find_by(annee: @annee_a_afficher)
+      @reponses = @enquete.enquete_reponses.count
+      @questions = @enquete.enquete_questions.order(:numero)
+      @resultats = @questions.each_with_object({}) do |question, result|
+        result[question.nom] = EnqueteReponse
+                                 .where(enquete_id: @enquete.id)
+                                 .group("reponses->>'#{question.id}'")
+                                 .count
+      end
+      @resultats = @resultats.transform_values { |reponses| reponses.sort.to_h }
     end
-    @resultats = @resultats.transform_values { |reponses| reponses.sort.to_h }
   end
 
   def new
