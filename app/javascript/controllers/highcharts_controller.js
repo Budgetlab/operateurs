@@ -774,64 +774,96 @@ export default class extends Controller {
     renderChart() {
         const data = JSON.parse(this.data.get("datavalue"));
 
+        // Calculer le total des valeurs
+        const total = Object.values(data).reduce((sum, value) => sum + value, 0);
+        // Construire les séries dynamiquement
+        const series = Object.entries(data).map(([name, value]) => ({
+            name: `${name} (${((value / total) * 100).toFixed(1)}%)`, // Ajout du pourcentage
+            data: [value] // Valeur sous forme de tableau
+        }));
+
         this.chart = Highcharts.chart(this.element, {
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
                 plotShadow: false,
-                type: 'pie',
+                type: 'bar',
+                height: 300,         // Hauteur totale plus grande
 
-                width: 660,
-                spacing: [0, 0, 0, 0], // Supprime tout l'espace autour
-                marginLeft: 0
             },
             colors: ["var(--beige-gris-galet-925-125)", "var( --blue-ecume-850-200)", "var(--yellow-moutarde-850-200)", "var(--orange-terre-battue-925-125)", "var(--green-menthe-925-125)", "var(--purple-glycine-950-100)"],
             title: {
                 text: null
             },
+            xAxis: {
+                categories: ['Répartition'], // Une seule barre, donc une seule catégorie
+                title: {
+                    text: null,
+                },
+                labels: {
+                    style: {
+                        fontSize: '11px',
+                        fontFamily: "Marianne"
+                    }
+                },
+
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Total (%)',
+                    align: 'high',
+                    style: {
+                        fontSize: '11px',
+                        fontFamily: "Marianne"
+                    },
+                },
+                labels: {
+                    overflow: 'justify',
+                    style: {
+                        fontSize: '11px',
+                        fontFamily: "Marianne"
+                    }
+                },
+                gridLineWidth: 0, // Supprime les traits verticaux
+
+            },
             tooltip: {
-                pointFormat: '{series.name}: <b>{point.y} ({point.percentage:.1f}%)</b>'
+                pointFormat: '{series.name}: <b>{point.y} organismes</b><br>',
+                style: {
+                    fontSize: '11px',
+                    fontFamily: "Marianne"
+                }
             },
             plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
+                series: {
+                    stacking: 'percent', // Empilage en pourcentage
+                    pointWidth: 30,
                     dataLabels: {
                         enabled: true,
-                        format: '<b>{point.name}</b>:<br>{point.y} ({point.percentage:.1f}%)',
+                        format: '{point.y} ',
                         style: {
                             fontSize: '11px',
-                            fontFamily: "Marianne",
+                            fontFamily: "Marianne"
                         }
-                    },
-                    showInLegend: true,
-                    size: 200,      // Taille relative du pie dans son conteneur
-
+                    }
                 }
             },
             legend: {
-                enabled: false,
+                reversed: true,
+                enabled: true, // Activer la légende
                 layout: 'horizontal',
-                align: 'right',
-                verticalAlign: 'middle',
-                width: 450,
+                align: 'center',
+                verticalAlign: 'bottom',
                 itemStyle: {
-                    fontSize: '12px',
-                    fontFamily: "Marianne",
-                },
-                x: -10, // Rapproche la légende de la pie
+                    fontSize: '11px',
+                    fontFamily: "Marianne"
+                }
             },
             exporting: {
                 enabled: false  // Désactive les options d'export
             },
-            series: [{
-                name: 'Réponses',
-                colorByPoint: true,
-                data: Object.entries(data).map(([name, value]) => ({
-                    name,
-                    y: value,
-                }))
-            }]
+            series: series
         })
     }
 }

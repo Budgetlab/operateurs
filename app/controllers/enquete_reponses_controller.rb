@@ -9,7 +9,7 @@ class EnqueteReponsesController < ApplicationController
       @enquete = Enquete.find_by(annee: @annee_a_afficher.to_i)
       redirect_to enquete_reponses_path and return unless @enquete
       @reponses = @enquete.enquete_reponses.count
-      @questions = @enquete.enquete_questions.order(:numero)
+      @questions = @enquete.enquete_questions.where.not(numero: [15, 29, 31]).order(:numero)
       @resultats = @questions.each_with_object({}) do |question, result|
         result[question.nom] = EnqueteReponse
                                  .where(enquete_id: @enquete.id)
