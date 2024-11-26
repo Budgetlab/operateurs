@@ -62,6 +62,7 @@ gem 'roo', '~> 2.10.0'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem 'ostruct'
+gem 'ferrum'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

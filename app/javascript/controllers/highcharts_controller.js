@@ -774,13 +774,13 @@ export default class extends Controller {
     renderChart() {
         const data = JSON.parse(this.data.get("datavalue"));
 
-        Highcharts.chart(this.element, {
+        this.chart = Highcharts.chart(this.element, {
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
                 plotShadow: false,
                 type: 'pie',
-                height:200,
+
                 width: 660,
                 spacing: [0, 0, 0, 0], // Supprime tout l'espace autour
                 marginLeft: 0
@@ -797,19 +797,20 @@ export default class extends Controller {
                     allowPointSelect: true,
                     cursor: 'pointer',
                     dataLabels: {
-                        enabled: false,
+                        enabled: true,
                         format: '<b>{point.name}</b>:<br>{point.y} ({point.percentage:.1f}%)',
                         style: {
-                            fontSize: '11px'
+                            fontSize: '11px',
+                            fontFamily: "Marianne",
                         }
                     },
                     showInLegend: true,
                     size: 200,      // Taille relative du pie dans son conteneur
-                    center: ['30%', '50%'],
+
                 }
             },
             legend: {
-                enabled: true,
+                enabled: false,
                 layout: 'horizontal',
                 align: 'right',
                 verticalAlign: 'middle',
