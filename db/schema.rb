@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_27_085857) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_27_095940) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -221,6 +221,18 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_27_085857) do
     t.index ["user_id"], name: "index_modifications_on_user_id"
   end
 
+  create_table "objectifs_contrats", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "organisme_id", null: false
+    t.string "nom"
+    t.integer "debut"
+    t.integer "fin"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisme_id"], name: "index_objectifs_contrats_on_organisme_id"
+    t.index ["user_id"], name: "index_objectifs_contrats_on_user_id"
+  end
+
   create_table "operateur_programmes", force: :cascade do |t|
     t.bigint "operateur_id", null: false
     t.bigint "programme_id", null: false
@@ -359,6 +371,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_27_085857) do
   add_foreign_key "missions", "programmes"
   add_foreign_key "modifications", "organismes"
   add_foreign_key "modifications", "users"
+  add_foreign_key "objectifs_contrats", "organismes"
+  add_foreign_key "objectifs_contrats", "users"
   add_foreign_key "operateur_programmes", "operateurs"
   add_foreign_key "operateur_programmes", "programmes"
   add_foreign_key "operateurs", "missions"

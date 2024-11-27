@@ -1,0 +1,10 @@
+<%= turbo_frame_tag :form_objectifs_contrat do %>
+  <div class="fr-alert fr-alert--warning fr-mb-2w">
+    <h3 class="fr-alert__title">Vous êtes sur le point de supprimer le document.</h3>
+    <p>Attention, si vous validez, le document sera supprimé définitivement. Cliquez sur annuler pour revenir en arrière.</p>
+  </div>
+  <ul class="fr-btns-group fr-btns-group--inline-lg fr-btns-group--right">
+    <li><button class="fr-btn fr-btn--secondary" aria-controls="modal-objectifs-contrat">Annuler</button></li>
+    <li><%= link_to objectifs_contrat_path(@objectifs_contrat), data: {turbo_frame: "_top", "turbo-method": :delete}, class:"fr-btn" do %>Valider<% end %></li>
+  </ul>
+<% end %>

@@ -1146,6 +1146,24 @@ export default class extends Controller {
         this.validateForm(this.formTarget);
     }
 
+    // ajout document cop/com check fin > debut
+    updateFinOptions(){
+        const debut = document.getElementById("objectifs_contrat_debut")
+        const fin = document.getElementById("objectifs_contrat_fin")
+        const debutYear = parseInt(debut.value)
+        if (!debutYear) return
+
+        // Garder l'option "Sélectionner"
+        let options = `<option value="">- sélectionner -</option>`
+
+        // Ajouter les années à partir de l'année de début jusqu'à debut + 10
+        for (let year = debutYear; year <= debutYear + 10; year++) {
+            options += `<option value="${year}">${year}</option>`
+        }
+
+        fin.innerHTML = options
+    }
+
 
 }
 function getSelectedValues(event) {

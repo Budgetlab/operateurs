@@ -468,7 +468,9 @@
                       <% end %>
                     <% else %>Aucun
                     <% end %></b></p>
-
+                  <div class="fr-card__desc fr-my-0" id="objectifs_contrat">
+                    <%= render partial: 'objectifs_contrats/objectifs_contrat', locals: { organisme: @organisme } %>
+                  </div>
                 </div>
               </div>
             </div>

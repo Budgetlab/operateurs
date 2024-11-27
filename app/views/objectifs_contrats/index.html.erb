@@ -1,0 +1,149 @@
+<% content_for :title do %>Liste des contrats d'objectifs de contrôle | OPERA
+<% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container ">
+    <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
+      <div class="fr-col-12 fr-col-lg-12">
+        <h1 class="fr-my-4w">Liste des contrats d'objectifs COP/COM</h1>
+
+        <div class="fr-alert fr-alert--info fr-mb-4w">
+          <h3 class="fr-alert__title">Contrats d'objectifs COP/COM
+          </h3>
+          <p>L'import des documents de contrôle est possible depuis la page d'identité des organismes. Vous
+            retrouvez sur cette page l'ensemble des documents de contrôle ouverts sur votre périmètre.</p>
+        </div>
+
+        <%= render 'objectifs_contrats/flash' %>
+
+        <div class="fr-table--lg fr-table fr-table--no-caption" data-controller="request">
+          <div class="fr-table__header">
+            <p class="fr-table__detail"></p>
+            <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-md fr-btns-group--icon-left">
+              <li>
+                <button class="fr-btn fr-icon-settings-5-line fr-btn--icon-left fr-btn--secondary" aria-controls="filtres" aria-expanded="false">Filtrer
+                  les
+                  résultats
+                </button>
+              </li>
+            </ul>
+          </div>
+          <div class="fr-collapse" id="filtres" data-controller="request">
+            <div class="fr-mb-2w">
+              <%= search_form_for @q, data: { turbo_frame: 'table' } do |f| %>
+                <%= f.search_field :organisme_nom_or_organisme_acronyme_or_organisme_controleur_nom_contains, class: 'fr-input', placeholder: "Rechercher les contrats d'objectifs d'un organisme ou d'un contrôleur", oninput: 'this.form.requestSubmit()' %>
+              <% end %>
+            </div>
+          </div>
+          <%= turbo_frame_tag :table do %>
+            <div class="fr-table__wrapper">
+              <div class="fr-table__container">
+                <div class="fr-table__content">
+                  <table>
+                    <caption>Tableau des contrats d'objectifs</caption>
+                    <thead>
+                    <tr>
+
+                      <th scope="col">
+                        <% sort_created_date = "" %>
+                        <% if params[:q] && params[:q][:s] == "created_at desc" %>
+                          <% sort_created_date = "asc" %>
+                        <% elsif params[:q] && params[:q][:s] == "created_at asc" %>
+                          <% sort_created_date = "desc" %>
+                        <% end %>
+                        <div class="fr-cell--sort">Ajouté le
+                          <%= sort_link(@q, :created_at, '', class: 'fr-btn--sort fr-btn fr-btn--sm', aria: { sorting: sort_created_date }) %>
+                        </div>
+                      </th>
+                      <th scope="col">Type</th>
+                      <th scope="col">Début</th>
+                      <th scope="col">Fin</th>
+                      <th scope="col">Organisme</th>
+                      <th scope="col">Contrôleur référent</th>
+                      <th scope="col">Action</th>
+                      <th scope="col"></th>
+
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <% @objectifs_contrats_page.each do |objectifs_contrat| %>
+                      <tr>
+                        <td><%= format_boolean(format_date(objectifs_contrat.created_at)) %></td>
+                        <td class="fr-cell--multiline fr-capitalize"><%= objectifs_contrat.nom %></td>
+                        <td><%= format_boolean(objectifs_contrat.debut) %></td>
+                        <td><%= format_boolean(objectifs_contrat.fin) %></td>
+                        <td class="fr-cell--multiline">
+                          <%= link_to organisme_path(objectifs_contrat.organisme), data: { turbo_frame: "_top" } do %>
+                            <%= objectifs_contrat.organisme.nom %>
+                          <% end %>
+                        </td>
+                        <td class="fr-cell--multiline"><%= objectifs_contrat.organisme.controleur.nom %></td>
+                        <td>
+                          <% if objectifs_contrat.document.attached? %>
+                            <%= link_to url_for(objectifs_contrat.document), target: "_blank", data: { turbo_frame: "_top" }, class: 'fr-link fr-link--download' do %>
+                              Télécharger <span class="fr-link__detail">PDF</span>
+                            <% end %>
+                          <% end %>
+                        </td>
+                        <td>
+                          <% if @statut_user == "2B2O" || current_user == objectifs_contrat.user %>
+                            <%= link_to edit_objectifs_contrat_path(objectifs_contrat), class: 'fr-btn fr-btn--sm fr-btn--tertiary fr-icon-delete-fill', 'aria-controls': "modal-objectifs-contrat", data: { turbo_frame: :form_objectifs_contrat, fr_opened: false } do %>
+                              Supprimer
+                            <% end %>
+                          <% end %>
+                        </td>
+                      </tr>
+                    <% end %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div class="fr-table__footer">
+              <div class="fr-table__footer--start">
+                <p class="fr-table__detail"><%= pluralize(@objectifs_contrats&.count, 'résultat', plural: 'résultats') %></p>
+                <div class="fr-select-group">
+                  <label class="fr-sr-only fr-label" for="table-footer-select-7847">
+                    Nombre de lignes par page
+                  </label>
+                  <div class="fr-messages-group" id="table-footer-select-7847-messages" aria-live="polite"></div>
+                </div>
+              </div>
+              <div class="fr-table__footer--middle">
+                <%== pagy_nav_custom(@pagy) %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+        <% if @statut_user == "2B2O" %>
+          <dialog id="modal-objectifs-contrat" class="fr-modal" aria-labelledby="modal-objectifs-contrat--title">
+            <div class="fr-container fr-container--fluid fr-container-md">
+              <div class="fr-grid-row fr-grid-row--center">
+                <div class="fr-col-12 fr-col-md-10 fr-col-lg-9">
+                  <div class="fr-modal__body">
+                    <div class="fr-modal__header">
+                      <button class="fr-btn--close fr-btn" aria-controls="modal-objectifs-contrat" title="Fermer">
+                        Fermer
+                      </button>
+                    </div>
+                    <div class="fr-modal__content">
+                      <h1 id="modal-objectifs-contrat--title" class="fr-modal__title">
+                        <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true"></span>
+                        Supprimer un document
+                      </h1>
+                      <%= turbo_frame_tag :form_objectifs_contrat %>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </dialog>
+        <% end %>
+
+
+      </div>
+    </div>
+
+  </div>
+</main>

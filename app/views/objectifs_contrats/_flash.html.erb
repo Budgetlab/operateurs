@@ -1,0 +1,20 @@
+<% if flash.any? %>
+  <% flash.each do |type, msg| %>
+    <% if msg == "objectifs_contrat_success" %>
+      <div class="fr-alert fr-alert--success fr-alert--sm fr-mt-1w">
+        <p>Le document a été importé avec succès. Vous pouvez retrouver tous les contrats d'objectifs <%= link_to objectifs_contrats_path do%>ici<%end %></p>
+        <button class="fr-link--close fr-link" title="Masquer le message" onclick="const alert = this.parentNode; alert.parentNode.removeChild(alert)">Masquer le message</button>
+      </div>
+    <% elsif msg == "objectifs_contrat_failed" %>
+      <div class="fr-alert fr-alert--error fr-alert--sm fr-mt-1w">
+        <p>L'import du document a échoué.</p>
+        <button class="fr-link--close fr-link" title="Masquer le message" onclick="const alert = this.parentNode; alert.parentNode.removeChild(alert)">Masquer le message</button>
+      </div>
+    <% elsif msg == "objectifs_contrat_deleted" %>
+      <div class="fr-alert fr-alert--success fr-alert--sm fr-mt-1w">
+        <p>Le document a été supprimé avec succès.</p>
+        <button class="fr-link--close fr-link" title="Masquer le message" onclick="const alert = this.parentNode; alert.parentNode.removeChild(alert)">Masquer le message</button>
+      </div>
+    <% end %>
+  <% end %>
+<% end %>

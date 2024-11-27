@@ -15,6 +15,7 @@ class User < ApplicationRecord
            class_name: 'Organisme'
   has_many :chiffres
   has_many :control_documents
+  has_many :objectifs_contrats, dependent: :destroy
 
   def self.import(file)
     data = Roo::Spreadsheet.open(file.path)

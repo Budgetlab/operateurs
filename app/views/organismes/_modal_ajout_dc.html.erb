@@ -1,19 +1,15 @@
-<dialog id="modal-document-control" class="fr-modal" aria-labelledby="modal-document-control--title">
+<dialog id="modal-document" class="fr-modal" aria-labelledby="modal-document--title">
   <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
       <div class="fr-col-12 fr-col-md-10 fr-col-lg-9">
         <div class="fr-modal__body">
           <div class="fr-modal__header">
-            <button class="fr-btn--close fr-btn" aria-controls="modal-document-control" title="Fermer">
+            <button class="fr-btn--close fr-btn" aria-controls="modal-document" title="Fermer">
               Fermer
             </button>
           </div>
           <div class="fr-modal__content">
-            <h1 id="modal-document-control--title" class="fr-modal__title">
-              <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true"></span>
-              Ajouter un document
-            </h1>
-            <%= turbo_frame_tag :form_control_document %>
+            <%= turbo_frame_tag :form_document %>
           </div>
         </div>
       </div>

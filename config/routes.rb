@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       end
     end
     resources :control_documents
+    resources :objectifs_contrats
     resources :chiffres, except: [:index]
     post '/show_dates' => 'chiffres#show_dates'
     post '/select_comptabilite' => 'chiffres#select_comptabilite'
