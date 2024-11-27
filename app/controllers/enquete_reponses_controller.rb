@@ -8,15 +8,34 @@ class EnqueteReponsesController < ApplicationController
       @annee_a_afficher = params[:annee] ? params[:annee].to_i : @enquete_annees.last # prendre la plus récente
       @enquete = Enquete.find_by(annee: @annee_a_afficher.to_i)
       redirect_to enquete_reponses_path and return unless @enquete
+
       @reponses = @enquete.enquete_reponses.count
       @questions = @enquete.enquete_questions.where.not(numero: [15, 29, 31]).order(:numero)
       @resultats = @questions.each_with_object({}) do |question, result|
-        result[question.nom] = EnqueteReponse
-                                 .where(enquete_id: @enquete.id)
-                                 .group("reponses->>'#{question.id}'")
-                                 .count
+        all_responses = EnqueteReponse
+                          .where(enquete_id: @enquete.id)
+                          .group("reponses->>'#{question.id}'")
+                          .count
+
+        if current_user.statut == "Controleur"
+          cbr_responses = EnqueteReponse
+                            .where(enquete_id: @enquete.id)
+                            .where(organisme_id: current_user.controleur_organismes.pluck(:id))
+                            .group("reponses->>'#{question.id}'")
+                            .count
+
+          result[question.nom] = {
+            Total: all_responses.sort.to_h,
+            CBR: cbr_responses.sort.to_h
+          }
+        else
+          result[question.nom] = {
+            Total: all_responses.sort.to_h
+          }
+        end
       end
-      @resultats = @resultats.transform_values { |reponses| reponses.sort.to_h }
+      puts @resultats.to_json
+      # @resultats = @resultats.transform_values { |reponses| reponses.sort.to_h }
     end
     respond_to do |format|
       format.html

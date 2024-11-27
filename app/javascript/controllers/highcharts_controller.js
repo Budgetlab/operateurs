@@ -773,14 +773,36 @@ export default class extends Controller {
 
     renderChart() {
         const data = JSON.parse(this.data.get("datavalue"));
-
+        // Récupérer les catégories (total, cbr, etc.)
+        const categories = Object.keys(data);
         // Calculer le total des valeurs
-        const total = Object.values(data).reduce((sum, value) => sum + value, 0);
+        // const total = Object.values(data.total).reduce((sum, value) => sum + value, 0);
         // Construire les séries dynamiquement
-        const series = Object.entries(data).map(([name, value]) => ({
-            name: `${name} (${((value / total) * 100).toFixed(1)}%)`, // Ajout du pourcentage
-            data: [value] // Valeur sous forme de tableau
-        }));
+        // const series = Object.entries(data.total).map(([name, value]) => ({
+        //    name: `${name} (${((value / total) * 100).toFixed(1)}%)`, // Ajout du pourcentage
+                //    data: [value] // Valeur sous forme de tableau
+        // }));
+        // Préparer les séries
+        let series = [];
+        const allKeys = new Set(); // Pour collecter toutes les clés possibles
+
+        // Collecter toutes les clés uniques à travers tous les ensembles de données
+        categories.forEach(category => {
+            Object.keys(data[category]).forEach(key => allKeys.add(key));
+        });
+
+        // Convertir les données pour chaque clé unique
+        Array.from(allKeys).forEach(key => {
+            const seriesData = categories.map(category => ({
+                name: category,
+                y: data[category][key] || 0 // utilise 0 si la valeur n'existe pas
+            }));
+
+            series.push({
+                name: key,
+                data: seriesData
+            });
+        });
 
         this.chart = Highcharts.chart(this.element, {
             chart: {
@@ -796,7 +818,7 @@ export default class extends Controller {
                 text: null
             },
             xAxis: {
-                categories: ['Répartition'], // Une seule barre, donc une seule catégorie
+                categories: categories, // Une seule barre, donc une seule catégorie
                 title: {
                     text: null,
                 },
@@ -820,6 +842,7 @@ export default class extends Controller {
                 },
                 labels: {
                     overflow: 'justify',
+                    format: '{value}%',  // Ajoute le % après chaque valeur
                     style: {
                         fontSize: '11px',
                         fontFamily: "Marianne"

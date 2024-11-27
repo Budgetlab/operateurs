@@ -1,7 +1,8 @@
 <%  if organisme.objectifs_contrats&.count > 0 %>
   <% objectifs_contrat = organisme.objectifs_contrats.order(:fin).last %>
   <p class="fr-card__desc">
-    Contrat COP/COM : <b>Oui, <%= objectifs_contrat.nom %> <%= objectifs_contrat.debut %> - <%= objectifs_contrat.fin %> </b><% if objectifs_contrat.document.attached? %><br><%= link_to url_for(objectifs_contrat.document), target: "_blank", class: "fr-link fr-link--sm fr-icon-download-line fr-link--icon-right" do %>Télécharger le document <% end %><%end %>
+    Contrat COP/COM : <b>Oui, <%= objectifs_contrat.nom %> <%= objectifs_contrat.debut %> - <%= objectifs_contrat.fin %> </b>
+    <% if objectifs_contrat.document.attached? %><br><%= link_to rails_blob_url(objectifs_contrat.document, disposition: :attachment), class: "fr-link fr-link--sm fr-icon-download-line fr-link--icon-right" do %>Télécharger le document <% end %><%end %>
   </p>
 <% end %>
 <%= render 'objectifs_contrats/flash'%>
