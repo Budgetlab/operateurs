@@ -354,3 +354,12 @@ a.fr-tag[aria-pressed=true]:not(:disabled):active {
 a.fr-tag[aria-pressed=true]::after{
   color: var(--text-action-high-blue-france);
 }
+
+.fr-input-unit{
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-title-grey);
+  pointer-events: none;
+}

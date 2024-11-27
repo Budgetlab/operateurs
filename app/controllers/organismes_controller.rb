@@ -176,7 +176,7 @@ class OrganismesController < ApplicationController
                                       :autorite_approbation, :ministere_id,
                                       :admin_db_present, :admin_db_fonction, :admin_preca, :controleur_preca,
                                       :controleur_ca, :comite_audit, :apu, :ciassp_n, :ciassp_n1, :odac_n, :odac_n1,
-                                      :odal_n, :odal_n1, :arrete_interdiction_odac)
+                                      :odal_n, :odal_n1, :arrete_interdiction_odac, :taux_cadrage_n, :taux_cadrage_n1)
   end
 
   def reset_values(param_names)
