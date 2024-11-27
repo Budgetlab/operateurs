@@ -784,7 +784,7 @@ export default class extends Controller {
         // }));
         // Préparer les séries
         let series = [];
-        const allKeys = new Set(); // Pour collecter toutes les clés possibles
+        const allKeys = new Set(); // Pour collecter toutes les clés/réponses possibles
 
         // Collecter toutes les clés uniques à travers tous les ensembles de données
         categories.forEach(category => {
@@ -803,6 +803,7 @@ export default class extends Controller {
                 data: seriesData
             });
         });
+        console.log(series)
 
         this.chart = Highcharts.chart(this.element, {
             chart: {
@@ -852,7 +853,7 @@ export default class extends Controller {
 
             },
             tooltip: {
-                pointFormat: '{series.name}: <b>{point.y} organismes</b><br>',
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}% ({point.y} organismes)</b><br>',
                 style: {
                     fontSize: '11px',
                     fontFamily: "Marianne"
