@@ -24,12 +24,12 @@ class EnqueteReponsesController < ApplicationController
                             .group("reponses->>'#{question.id}'")
                             .count
 
-          result[question.nom] = {
-            Total: all_responses.sort.to_h,
-            CBR: cbr_responses.sort.to_h
+          result["#{question.numero}. #{question.nom}"] = {
+            'Total' => all_responses.sort.to_h,
+            'Mon périmètre' => cbr_responses.sort.to_h
           }
         else
-          result[question.nom] = {
+          result["#{question.numero}. #{question.nom}"] = {
             Total: all_responses.sort.to_h
           }
         end
