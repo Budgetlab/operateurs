@@ -9,7 +9,7 @@ class EnqueteReponsesController < ApplicationController
       @enquete = Enquete.find_by(annee: @annee_a_afficher.to_i)
       redirect_to enquete_reponses_path and return unless @enquete
 
-      @reponses = @enquete.enquete_reponses.count
+      @reponses = @enquete.enquete_reponses
       @questions = @enquete.enquete_questions.where.not(numero: [15, 29, 31]).order(:numero)
       @resultats = @questions.each_with_object({}) do |question, result|
         all_responses = EnqueteReponse
@@ -26,7 +26,7 @@ class EnqueteReponsesController < ApplicationController
 
           result["#{question.numero}. #{question.nom}"] = {
             'Total' => all_responses.sort.to_h,
-            'Mon périmètre' => cbr_responses.sort.to_h
+            'Contrôleur référent' => cbr_responses.sort.to_h
           }
         else
           result["#{question.numero}. #{question.nom}"] = {
@@ -55,6 +55,10 @@ class EnqueteReponsesController < ApplicationController
                     type: "application/pdf",
                     disposition: "attachment") # inline open in browser
         end
+      end
+      format.xlsx do
+        headers['Content-Disposition'] = 'attachment; filename="Enquete.xlsx"'
+        render xlsx: 'index', filename: 'Enquete.xlsx', disposition: 'attachment'
       end
     end
   end

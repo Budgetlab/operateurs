@@ -1,0 +1,11 @@
+wb = xlsx_package.workbook
+s = wb.styles
+calibri = s.add_style font_name: 'Calibri', sz: 13
+header = s.add_style b: true, border: { style: :thick, color: '000000', edges: [:bottom] }, font_name: 'Calibri', sz: 13
+headers = ["Organisme", 'SIREN']
+wb.add_worksheet(name: "Enquete") do |sheet|
+    sheet.add_row headers, style: header
+    @reponses.each do |reponse|
+        sheet.add_row [reponse.organisme.nom, reponse.organisme.siren]
+    end
+end

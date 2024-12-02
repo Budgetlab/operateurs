@@ -24,7 +24,7 @@
             </ul>
           </div>
 
-        <h2>Restitutions des <%= @reponses %> résultats d'enquête <%= @annee_a_afficher %></h2>
+        <h2>Restitutions des <%= @reponses.count %> résultats d'enquête <%= @annee_a_afficher %></h2>
         <% if @enquete.document.attached? %>
           <%= link_to @enquete.document.url(disposition: "attachment"), class: "fr-link fr-link--download" do %>
             Télécharger au format PDF <span class="fr-link__detail">Format .pdf</span>
