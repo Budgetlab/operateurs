@@ -1,17 +1,36 @@
 wb = xlsx_package.workbook
 s = wb.styles
-calibri = s.add_style font_name: 'Calibri', sz: 13
-header = s.add_style b: true, border: { style: :thick, color: '000000', edges: [:bottom] }, font_name: 'Calibri', sz: 13
-
-        wb.add_worksheet(name: "Enquête #{@enquete_reponse.enquete.annee}") do |sheet|
+calibri = s.add_style font_name: 'Calibri', sz: 13, border: { style: :thick, color: '000000', edges: [:right] }
+header = s.add_style b: true, border: { style: :thick, color: '000000' }, font_name: 'Calibri', sz: 13, :alignment => { :wrap_text => true}
+sheet_col = Array.new(4, 40)
+@enquete_last = @enquetes_reponses.first
+@questions_last = @enquete_last.enquete.enquete_questions.order(:numero)
+        wb.add_worksheet(name: "Enquêtes CIB-CIC") do |sheet|
           # Ajouter une ligne d'en-tête
-          sheet.add_row ['Question', 'Réponse'], style: header
+          headers = ['Question'] + @enquete_annees.reverse
+          sheet.add_row headers, style: header
 
-          # Ajouter les données pour chaque catégorie et question
-          @questions.each do |question|
-              sheet.add_row [
-                question.nom,            # Colonne B : Nom de la question
-                @enquete_reponse.reponses[question.id.to_s] # Colonne C : Réponse
-              ], style: calibri
+
+          # Créer le nouveau hash
+          id_to_numero = EnqueteQuestion.pluck(:id, :numero).to_h
+          values_by_question = {}
+          @enquetes_reponses.each do |enquete_reponse|
+           enquete_reponse.reponses.each do |question_id, value|
+             numero = id_to_numero[question_id.to_i]
+             values_by_question[numero] ||= {}
+             values_by_question[numero][enquete_reponse.enquete.annee] = value
+           end
           end
+          # Ajouter les données pour chaque question
+
+          @questions_last.each do |question|
+            row = ["#{question.numero}. #{question.nom}"]
+            # Pour chaque année dans l'ordre désiré
+            @enquete_annees.reverse.each do |annee|
+               row << (values_by_question[question.numero] ? values_by_question[question.numero][annee] : "Pas de réponse")
+            end
+           sheet.add_row row, style: calibri
+          end
+
+          sheet.column_widths(*sheet_col)
         end

@@ -111,7 +111,7 @@
             <% @questions&.each do |question| %>
                 <div class="fr-grid-row fr-grid-row--gutters">
                   <div class="fr-col-12 fr-col-lg-8">
-                    <%= question.numero %>. <%= question.nom %>
+                    <div><%= question.numero %>. <%= question.nom %></div>
                   </div>
                   <div class="fr-col-12 fr-col-lg-4">
                     <p class="fr-text--bold">
@@ -119,6 +119,7 @@
                     </p>
                   </div>
                 </div>
+              <div data-controller="highcharts" data-highcharts-datavalue="<%= @resultats[question.id].to_json %>"></div>
                 <hr class="fr-mt-2w">
             <% end %>
             <div class="fr-grid-row fr-grid-row--right">

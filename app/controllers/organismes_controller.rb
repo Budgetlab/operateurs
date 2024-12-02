@@ -142,21 +142,35 @@ class OrganismesController < ApplicationController
   end
 
   def enquete
+    # liste des enquetes et réponses
+    @enquetes_reponses = @organisme.enquete_reponses.joins(:enquete).order('enquetes.annee DESC')
     # Récupérer toutes les années des enquêtes disponibles pour cet organisme
-    @enquete_annees = @organisme.enquete_reponses.joins(:enquete).pluck('enquetes.annee').uniq.sort
+    @enquete_annees = @enquetes_reponses.pluck('enquetes.annee').uniq.sort
     # Récupérer l'enquête pour l'année spécifiée ou la plus récente
     @enquete_reponse = if params[:annee].present?
                          # Récupérer l'enquête pour l'année spécifiée
-                         @organisme.enquete_reponses.joins(:enquete).where(enquetes: { annee: params[:annee].to_i }).first
+                         @enquetes_reponses.where(enquetes: { annee: params[:annee].to_i }).first
                        else
                          # Récupérer la dernière enquête si aucune année n'est fournie
-                         @organisme.enquete_reponses.joins(:enquete).order('enquetes.annee DESC').first
+                         @enquetes_reponses.first
                        end
     return unless @enquete_reponse
 
     @annee_a_afficher = @enquete_reponse.enquete.annee
     # Récupérer les questions associées à cette enquête et les trier par numéro
     @questions = @enquete_reponse.enquete.enquete_questions.order(:numero)
+    # recupérer l'ensemble des réponses de tous les organismes
+    @resultats = @questions.where.not(numero: [15, 29, 31]).each_with_object({}) do |question, result|
+      all_responses = EnqueteReponse
+                        .where(enquete_id: @enquete_reponse.enquete.id)
+                        .group("reponses->>'#{question.id}'")
+                        .count
+      organisme_responses = EnqueteReponse.where(id:@enquete_reponse.id).group("reponses->>'#{question.id}'").count
+      result[question.id] = {
+        'Total' => all_responses.sort.to_h,
+        'Organisme' => organisme_responses.sort.to_h
+      }
+    end
     respond_to do |format|
       format.html
       format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"Enquete.xlsx\"" }

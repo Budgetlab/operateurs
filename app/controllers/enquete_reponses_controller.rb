@@ -34,8 +34,6 @@ class EnqueteReponsesController < ApplicationController
           }
         end
       end
-      puts @resultats.to_json
-      # @resultats = @resultats.transform_values { |reponses| reponses.sort.to_h }
     end
     respond_to do |format|
       format.html
