@@ -18,6 +18,7 @@ export default class extends Controller {
         this.showViz();
         const data = JSON.parse(this.data.get("datavalue"))
         if (data && Object.keys(data).length > 0) {
+            console.log('jj')
             this.renderChart(data)
         }
     }

@@ -33,24 +33,26 @@
         <div data-controller="request">
           <%= search_form_for @q, data: { turbo_frame: 'results' } do |f| %>
             <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-4">
-              <%= f.collection_select(
-                    :organisme_controleur_nom_in, # Ransack key
-                    User.where(statut: 'Controleur').order(:nom), # Collection for select
-                    :nom, # Value method
-                    :nom, # Display method
-                    { prompt: 'Sélectionner un contrôleur' }, # Options for the select
-                    { class: 'fr-select', oninput: 'this.form.requestSubmit()' } # HTML attributes
-                  ) %>
-            </div>
-            <div class="fr-col-4">
-              <%= f.select(
-                    :organisme_famille_in, # Ransack key
-                    @liste_familles, # Collection for select
-                    { prompt: 'Sélectionner une famille' }, # Options for the select
-                    { class: 'fr-select', oninput: 'this.form.requestSubmit()' } # HTML attributes
-                  ) %>
-            </div>
+              <% if @statut_user != "Controleur" %>
+                <div class="fr-col-4">
+                  <%= f.collection_select(
+                        :organisme_controleur_nom_in, # Ransack key
+                        User.where(statut: 'Controleur').order(:nom), # Collection for select
+                        :nom, # Value method
+                        :nom, # Display method
+                        { prompt: 'Sélectionner un contrôleur' }, # Options for the select
+                        { class: 'fr-select', oninput: 'this.form.requestSubmit()' } # HTML attributes
+                      ) %>
+                </div>
+              <% end %>
+              <div class="fr-col-4">
+                <%= f.select(
+                      :organisme_famille_in, # Ransack key
+                      @liste_familles, # Collection for select
+                      { prompt: 'Sélectionner une famille' }, # Options for the select
+                      { class: 'fr-select', oninput: 'this.form.requestSubmit()' } # HTML attributes
+                    ) %>
+              </div>
             </div>
           <% end %>
         </div>

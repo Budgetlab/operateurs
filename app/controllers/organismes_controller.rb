@@ -165,11 +165,24 @@ class OrganismesController < ApplicationController
                         .where(enquete_id: @enquete_reponse.enquete.id)
                         .group("reponses->>'#{question.id}'")
                         .count
-      organisme_responses = EnqueteReponse.where(id:@enquete_reponse.id).group("reponses->>'#{question.id}'").count
+      cbr_responses = EnqueteReponse
+                        .joins(organisme: :controleur)
+                        .where(enquete_id: @enquete_reponse.enquete.id)
+                        .where(controleur: {id: @organisme.controleur_id})
+                        .group("reponses->>'#{question.id}'")
+                        .count
+      famille_reponses = EnqueteReponse
+                           .joins(:organisme)
+                           .where(enquete_id: @enquete_reponse.enquete.id)
+                           .where(organismes: { famille: @organisme.famille})
+                           .group("reponses->>'#{question.id}'")
+                           .count
       result[question.id] = {
         'Total' => all_responses.sort.to_h,
-        'Organisme' => organisme_responses.sort.to_h
+        @organisme.controleur.nom => cbr_responses.sort.to_h,
+        @organisme.famille => famille_reponses.sort.to_h
       }
+      puts result
     end
     respond_to do |format|
       format.html
