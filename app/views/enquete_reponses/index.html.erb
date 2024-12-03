@@ -14,34 +14,59 @@
       </div>
       <% unless @enquete_annees.empty? %>
 
-          <div>
-            <ul class="fr-tags-group">
-              <% @enquete_annees.each do |annee| %>
-                <li>
-                  <%= link_to annee, enquete_reponses_path(annee: annee), class: "fr-tag", 'aria-pressed' => (@annee_a_afficher == annee ? 'true' : 'false') %>
-                </li>
-              <% end %>
-            </ul>
-          </div>
+        <div>
+          <ul class="fr-tags-group">
+            <% @enquete_annees.each do |annee| %>
+              <li>
+                <%= link_to annee, enquete_reponses_path(annee: annee), class: "fr-tag", 'aria-pressed' => (@annee_a_afficher == annee ? 'true' : 'false') %>
+              </li>
+            <% end %>
+          </ul>
+        </div>
 
-        <h2>Restitutions des <%= @reponses.count %> résultats d'enquête <%= @annee_a_afficher %></h2>
+        <h2>Restitutions des résultats d'enquête <%= @annee_a_afficher %></h2>
         <% if @enquete.document.attached? %>
           <%= link_to @enquete.document.url(disposition: "attachment"), class: "fr-link fr-link--download" do %>
             Télécharger au format PDF <span class="fr-link__detail">Format .pdf</span>
           <% end %>
         <% end %>
-        <% @resultats.each_with_index do |(question, reponses), index| %>
-          <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+        <div data-controller="request">
+          <%= search_form_for @q, data: { turbo_frame: 'results' } do |f| %>
+            <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-4">
-              <p class="fr-text--regular"><%= question %></p>
+              <%= f.collection_select(
+                    :organisme_controleur_nom_in, # Ransack key
+                    User.where(statut: 'Controleur').order(:nom), # Collection for select
+                    :nom, # Value method
+                    :nom, # Display method
+                    { prompt: 'Sélectionner un contrôleur' }, # Options for the select
+                    { class: 'fr-select', oninput: 'this.form.requestSubmit()' } # HTML attributes
+                  ) %>
             </div>
-            <div class="fr-col-8">
-              <div data-controller="highcharts" data-highcharts-datavalue="<%= reponses.to_json %>"></div>
+            <div class="fr-col-4">
+              <%= f.select(
+                    :organisme_famille_in, # Ransack key
+                    @liste_familles, # Collection for select
+                    { prompt: 'Sélectionner une famille' }, # Options for the select
+                    { class: 'fr-select', oninput: 'this.form.requestSubmit()' } # HTML attributes
+                  ) %>
             </div>
-          </div>
-          <hr class="fr-mt-2w">
+            </div>
+          <% end %>
+        </div>
+        <%= turbo_frame_tag :results do %>
+          <% @resultats.each_with_index do |(question, reponses), index| %>
+            <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+              <div class="fr-col-4">
+                <p class="fr-text--regular"><%= question %></p>
+              </div>
+              <div class="fr-col-8">
+                <div data-controller="highcharts" data-highcharts-datavalue="<%= reponses.to_json %>"></div>
+              </div>
+            </div>
+            <hr class="fr-mt-2w">
+          <% end %>
         <% end %>
-
       <% end %>
     </div>
   </div>

@@ -9,30 +9,50 @@ class EnqueteReponsesController < ApplicationController
       @enquete = Enquete.find_by(annee: @annee_a_afficher.to_i)
       redirect_to enquete_reponses_path and return unless @enquete
 
-      @reponses = @enquete.enquete_reponses
+      # filtrer les résultats
+      @q = @enquete.enquete_reponses.ransack(params[:q])
+      @reponses = @q.result.includes(organisme: :controleur)
       @questions = @enquete.enquete_questions.where.not(numero: [15, 29, 31]).order(:numero)
       @resultats = @questions.each_with_object({}) do |question, result|
         all_responses = EnqueteReponse
                           .where(enquete_id: @enquete.id)
                           .group("reponses->>'#{question.id}'")
                           .count
+        # Initialiser la structure de réponse avec le total
+        result["#{question.numero}. #{question.nom}"] = { 'Total' => all_responses.sort.to_h }
 
-        if current_user.statut == "Controleur"
+        # Calcul conditionnel des réponses CBR
+        cbr_responses = nil
+        if params.dig(:q, :organisme_controleur_nom_in).present?
+          cbr_responses = EnqueteReponse
+                            .joins(organisme: :controleur)
+                            .where(enquete_id: @enquete.id)
+                            .where(controleur: { nom: params[:q][:organisme_controleur_nom_in] })
+                            .group("reponses->>'#{question.id}'")
+                            .count
+          cbr_key = params[:q][:organisme_controleur_nom_in]
+        elsif current_user.statut == "Controleur"
           cbr_responses = EnqueteReponse
                             .where(enquete_id: @enquete.id)
                             .where(organisme_id: current_user.controleur_organismes.pluck(:id))
                             .group("reponses->>'#{question.id}'")
                             .count
-
-          result["#{question.numero}. #{question.nom}"] = {
-            'Total' => all_responses.sort.to_h,
-            'Contrôleur référent' => cbr_responses.sort.to_h
-          }
-        else
-          result["#{question.numero}. #{question.nom}"] = {
-            Total: all_responses.sort.to_h
-          }
+          cbr_key = current_user.nom
         end
+        
+        famille_reponses = nil
+        if params.dig(:q, :organisme_famille_in).present?
+          famille_reponses = EnqueteReponse
+                               .joins(:organisme)
+                               .where(enquete_id: @enquete.id)
+                               .where(organismes: { famille: params[:q][:organisme_famille_in] })
+                               .group("reponses->>'#{question.id}'")
+                               .count
+          famille_key = params[:q][:organisme_famille_in]
+        end
+        # Ajouter la série CBR si elle existe
+        result["#{question.numero}. #{question.nom}"][cbr_key] = cbr_responses.sort.to_h if cbr_responses
+        result["#{question.numero}. #{question.nom}"][famille_key] = famille_reponses.sort.to_h if famille_reponses
       end
     end
     respond_to do |format|
