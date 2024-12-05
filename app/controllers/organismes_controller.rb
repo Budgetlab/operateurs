@@ -141,6 +141,14 @@ class OrganismesController < ApplicationController
     redirect_to organismes_path
   end
 
+  def import_organismes
+    file = params[:file]
+    Organisme.import(file) if file.present?
+    respond_to do |format|
+      format.turbo_stream { redirect_to operateurs_path }
+    end
+  end
+
   def enquete
     # liste des enquetes et réponses
     @enquetes_reponses = @organisme.enquete_reponses.joins(:enquete).order('enquetes.annee DESC')

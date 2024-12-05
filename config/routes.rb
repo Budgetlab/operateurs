@@ -19,6 +19,7 @@ Rails.application.routes.draw do
         get 'enquete', to: 'organismes#enquete'
       end
     end
+    post 'import_organismes' => 'organismes#import_organismes'
     resources :control_documents
     resources :objectifs_contrats
     resources :chiffres, except: [:index]
