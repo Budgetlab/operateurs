@@ -108,6 +108,7 @@ class Organisme < ApplicationRecord
           programme_id: programme_id,
           mission_id: mission_id,
           )
+        operateur.save if operateur.changed?
         operateur.operateur_programmes&.destroy_all
         selected_programmes = row_data['Autres Programmes financeurs'].tr('[]', '').split(',').map(&:to_i) || []
         selected_programmes.each do |programme_numero|
