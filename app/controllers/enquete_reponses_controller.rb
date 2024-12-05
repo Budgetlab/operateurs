@@ -30,7 +30,7 @@ class EnqueteReponsesController < ApplicationController
                           .group("reponses->>'#{question.id}'")
                           .count
         cbr_key = params[:q][:organisme_controleur_nom_in]
-      elsif current_user.statut == "Controleur"
+      elsif @statut_user == "Controleur"
         cbr_responses = @enquete_reponses
                           .where(organisme_id: current_user.controleur_organismes.pluck(:id))
                           .group("reponses->>'#{question.id}'")

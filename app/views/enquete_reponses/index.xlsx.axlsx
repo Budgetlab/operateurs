@@ -8,7 +8,8 @@ sheet_col = Array.new(59, 13)
 wb.add_worksheet(name: "Enquete") do |sheet|
     sheet.add_row headers, style: header
     sheet.auto_filter = "C1:AI1"
-    @enquete.enquete_reponses.each do |reponse_organisme|
+    enquete_reponses = @statut_user == "Controleur" ? @enquete.enquete_reponses.where(organisme_id: current_user.controleur_organismes.pluck(:id)) : @enquete.enquete_reponses
+    enquete_reponses.each do |reponse_organisme|
         # Récupérer les réponses dans le champ JSON `reponses`
         answers = @questions.map do |question|
           reponse_organisme.reponses[question.id.to_s] || "N/A" # Utiliser "N/A" si aucune réponse n'est disponible
