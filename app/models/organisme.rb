@@ -52,7 +52,7 @@ class Organisme < ApplicationRecord
         agent_comptable_present: convert_to_boolean(row_data['Agent comptable']),
         degre_gbcp: convert_to_boolean(row_data['Champ application GBCP']),
         gbcp_3: convert_to_boolean(row_data['GBCP Titre III']),
-        comptabilite_budgetaire: convert_to_boolean(row_data['Comptabilité budgétaire']),
+        comptabilite_budgetaire: row_data['Comptabilité budgétaire'],
         presence_controle: convert_to_boolean(row_data['Présence contrôle']),
         controleur_id: User.find_by(nom: row_data['Contrôleur Référent OPERA'].to_s)&.id,
         nature_controle: convert_to_boolean(row_data['Nature contrôle']),
@@ -85,11 +85,11 @@ class Organisme < ApplicationRecord
       # Sauvegarder uniquement si des modifications ont été apportées
       organisme.save if organisme.changed?
 
-      ministere_array = row_data['Ministères co-tutelle'].tr("[]'", '').split(',') || []
+      ministere_array = row_data['Ministères co-tutelle'].tr("[]'", '').split(',').map { |item| item.strip.gsub('"', '') } || []
       organisme.organisme_ministeres&.destroy_all
       ministere_array.each do |ministere|
         ministere_id = Ministere.find_by(nom: ministere)&.id
-        organisme.organisme_ministeres.create(ministere_id: ministere_id) unless ministere_id.nil?
+        organisme.organisme_ministeres.create(ministere_id: ministere_id)
       end
 
       if row_data['Programme chef file'] == 'N/A'
@@ -119,7 +119,7 @@ class Organisme < ApplicationRecord
   end
 
   def self.convert_to_boolean(value)
-    case value.to_s.downcase
+    case value
     when 'Oui'
       true
     when 'Non'
