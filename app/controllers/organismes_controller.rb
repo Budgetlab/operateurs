@@ -179,10 +179,9 @@ class OrganismesController < ApplicationController
                            .count
       result[question.id] = {
         'Total' => all_responses.sort.to_h,
-        @organisme.controleur.nom => cbr_responses.sort.to_h,
-        @organisme.famille => famille_reponses.sort.to_h
+        @organisme.controleur.nom => cbr_responses.sort.to_h
       }
-      puts result
+      result[question.id][@organisme.famille] = famille_reponses.sort.to_h if @organisme.famille != 'Aucune'
     end
     respond_to do |format|
       format.html

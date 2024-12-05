@@ -18,7 +18,6 @@ export default class extends Controller {
         this.showViz();
         const data = JSON.parse(this.data.get("datavalue"))
         if (data && Object.keys(data).length > 0) {
-            console.log('jj')
             this.renderChart(data)
         }
     }
@@ -815,7 +814,7 @@ export default class extends Controller {
                 height: 300,         // Hauteur totale plus grande
 
             },
-            colors: ["var(--beige-gris-galet-925-125)", "var( --blue-ecume-850-200)", "var(--yellow-moutarde-850-200)", "var(--orange-terre-battue-925-125)", "var(--green-menthe-925-125)", "var(--purple-glycine-950-100)"],
+            colors: ["var(--beige-gris-galet-925-125)", "var( --blue-ecume-850-200)", "var(--yellow-moutarde-850-200)", "var(--orange-terre-battue-850-200)", "var(--green-menthe-925-125)", "var(--purple-glycine-950-100)"],
             title: {
                 text: null
             },
