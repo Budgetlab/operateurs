@@ -12,6 +12,7 @@ pin "highcharts", to: "https://ga.jspm.io/npm:highcharts@11.4.8/highcharts.js" #
 pin "highcharts-more", to: "https://ga.jspm.io/npm:highcharts@11.4.8/highcharts-more.js"
 pin "exporting", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/exporting.js"
 pin "export-data", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/export-data.js"
+pin "offline-exporting", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/offline-exporting.js"
 pin "accessibility", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/accessibility.js"
 pin "data", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/export-data.js"
 pin "nodata", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/no-data-to-display.js"

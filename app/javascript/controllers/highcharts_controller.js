@@ -2,11 +2,13 @@ import { Controller } from "@hotwired/stimulus"
 import Highcharts from "highcharts"
 import exporting from "exporting"
 import HighchartsExportData from 'export-data';
+import HighchartsOfflineExporting from 'offline-exporting';
 import data from "data"
 import accessibility from "accessibility"
 import nodata from "nodata"
 exporting(Highcharts)
 HighchartsExportData(Highcharts)
+HighchartsOfflineExporting(Highcharts)
 data(Highcharts)
 accessibility(Highcharts)
 nodata(Highcharts)
@@ -885,8 +887,33 @@ export default class extends Controller {
                     fontFamily: "Marianne"
                 }
             },
+            credits: {
+                enabled: false
+            },
             exporting: {
-                enabled: true  // Désactive les options d'export
+                enabled: true,
+                allowHTML: true,
+                chartOptions: {
+                    colors: ["#eee4d9", "#bfccfb", "#fcc63a", "#fcc0b0", "#8bf8e7", "#00a95f"],
+                    chart: {
+                        style: {
+                            fontFamily: "Marianne"
+                        }
+                    }
+                },
+                buttons: {
+                    contextButton: {
+                        menuItems: ["downloadPNG", "downloadJPEG", "downloadPDF", "downloadSVG", "downloadCSV", "downloadXLS"],
+                    }
+                },
+                menuItemDefinitions: {
+                    downloadPNG: { text: 'Télécharger en PNG' },
+                    downloadJPEG: { text: 'Télécharger en JPEG' },
+                    downloadPDF: { text: 'Télécharger en PDF' },
+                    downloadSVG: { text: 'Télécharger en SVG' },
+                    downloadCSV: { text: 'Télécharger en CSV' },
+                    downloadXLS: { text: 'Télécharger en XLS' }
+                }
             },
             series: series
         })
