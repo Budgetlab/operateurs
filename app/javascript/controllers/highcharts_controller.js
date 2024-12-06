@@ -1,10 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 import Highcharts from "highcharts"
 import exporting from "exporting"
+import HighchartsExportData from 'export-data';
 import data from "data"
 import accessibility from "accessibility"
 import nodata from "nodata"
 exporting(Highcharts)
+HighchartsExportData(Highcharts)
 data(Highcharts)
 accessibility(Highcharts)
 nodata(Highcharts)
@@ -803,7 +805,6 @@ export default class extends Controller {
                 data: seriesData
             });
         });
-        console.log(series)
 
         this.chart = Highcharts.chart(this.element, {
             chart: {
@@ -814,7 +815,7 @@ export default class extends Controller {
                 height: 300,         // Hauteur totale plus grande
 
             },
-            colors: ["var(--beige-gris-galet-925-125)", "var( --blue-ecume-850-200)", "var(--yellow-moutarde-850-200)", "var(--orange-terre-battue-850-200)", "var(--green-menthe-925-125)", "var(--purple-glycine-950-100)"],
+            colors: ["var(--beige-gris-galet-925-125)", "var( --blue-ecume-850-200)", "var(--yellow-moutarde-850-200)", "var(--orange-terre-battue-850-200)", "var(--green-menthe-925-125)", "var(--green-emeraude-main-632)"],
             title: {
                 text: null
             },
@@ -885,7 +886,7 @@ export default class extends Controller {
                 }
             },
             exporting: {
-                enabled: false  // Désactive les options d'export
+                enabled: true  // Désactive les options d'export
             },
             series: series
         })

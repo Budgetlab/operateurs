@@ -13,7 +13,16 @@ class OrganismesController < ApplicationController
   before_action :redirect_unless_editor, only: %i[edit update]
   def index
     # Fetch all organisms relevant to user's permissions, including those in extended families
-    extended_family_organisms = fetch_extended_family_organisms
+    extended_family_organisms = fetch_extended_family_organisms.includes(
+      :bureau,
+      :controleur,
+      :organisme_destinations,
+      :organisme_rattachements,
+      :ministere,
+      :control_documents,
+      operateur: [:mission, :programme, :operateur_programmes],
+      organisme_ministeres: [:ministere]
+    )
     @q_params = q_params
     q_params_send = params[:q]
     if q_params_send
@@ -28,7 +37,7 @@ class OrganismesController < ApplicationController
       end
     end
     @q = extended_family_organisms.ransack(q_params_send)
-    @organisms_for_results = @q.result.includes(:bureau, :controleur)
+    @organisms_for_results = @q.result
     if value_reset_all
       q_params_send[:operateur_operateur_n_null] = 'true'
       q_params_send[:operateur_operateur_n_in] = ["true"]
@@ -235,7 +244,7 @@ class OrganismesController < ApplicationController
   end
 
   def fetch_extended_family_organisms
-    organisms = Organisme.all.includes(:controleur, :bureau, :operateur)
+    organisms = Organisme.all
     case @statut_user
     when 'Controleur'
       organisms = organisms.where(statut: 'valide').where('controleur_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)

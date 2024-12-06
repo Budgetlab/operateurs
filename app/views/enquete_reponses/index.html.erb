@@ -1,19 +1,20 @@
 <main role="main" class="containtAll">
   <div class="fr-container ">
-    <div class="fr-col-lg-12">
-      <h1 class="fr-mt-7w fr-mb-4w">Enquêtes CIB-CIC</h1>
-      <div class="fr-notice fr-notice--info fr-mb-4w">
-        <div class="fr-container">
-          <div class="fr-notice__body">
-            <p>
-              <span class="fr-notice__title">Information</span>
-              <span class="fr-notice__desc">Il s'agit de la synthèse des résultats de l'ensemble des organismes soumis à l'enquête sur l'année sélectionnée. Les résultats de l’enquête d’un organisme spécifique se trouvent sur la page de l’organisme.</span>
-            </p>
-          </div>
+
+    <h1 class="fr-mt-7w fr-mb-4w">Enquêtes CIB-CIC</h1>
+    <div class="fr-notice fr-notice--info fr-mb-4w">
+      <div class="fr-container">
+        <div class="fr-notice__body">
+          <p>
+            <span class="fr-notice__title">Information</span>
+            <span class="fr-notice__desc">Il s'agit de la synthèse des résultats de l'ensemble des organismes soumis à l'enquête sur l'année sélectionnée. Les résultats de l’enquête d’un organisme spécifique se trouvent sur la page de l’organisme.</span>
+          </p>
         </div>
       </div>
-      <% unless @enquete_annees.empty? %>
+    </div>
 
+    <% unless @enquete_annees.empty? %>
+      <div class="no-print">
         <div>
           <ul class="fr-tags-group">
             <% @enquete_annees.each do |annee| %>
@@ -24,12 +25,42 @@
           </ul>
         </div>
 
-        <h2>Restitutions des résultats d'enquête <%= @annee_a_afficher %></h2>
-        <% if @enquete.document.attached? %>
-          <%= link_to @enquete.document.url(disposition: "attachment"), class: "fr-link fr-link--download" do %>
-            Télécharger au format PDF <span class="fr-link__detail">Format .pdf</span>
-          <% end %>
-        <% end %>
+        <h2 class="title-btn">Restitutions des résultats d'enquête <%= @annee_a_afficher %>
+          <button class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-download-line" aria-controls="modal-telechargement" data-fr-opened="false">
+            Télécharger
+          </button>
+        </h2>
+        <dialog aria-labelledby="modal-telechargement-title" id="modal-telechargement" class="fr-modal" role="dialog">
+          <div class="fr-container fr-container--fluid fr-container-md">
+            <div class="fr-grid-row fr-grid-row--center">
+              <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                <div class="fr-modal__body">
+                  <div class="fr-modal__header">
+                    <button class="fr-btn--close fr-btn" aria-controls="modal-telechargement">Fermer</button>
+                  </div>
+                  <div class="fr-modal__content">
+                    <h1 id="fr-modal-2-title" class="fr-modal__title">
+                      <span class="fr-icon-arrow-right-line fr-icon--lg"></span>
+                      Télécharger les résultats de l'enquête <%= @annee_a_afficher %>
+                    </h1>
+                    <p><%= link_to enquete_reponses_path(annee: @annee_a_afficher, format: :xlsx), class: "fr-link fr-link--download" do %>
+                        Télécharger l'enquête <%= @annee_a_afficher %> au format XLSX
+                        <span class="fr-link__detail">XLSX – 160 ko</span>
+                      <% end %>
+                    </p>
+                    <% if @enquete.document.attached? %>
+                      <p><%= link_to @enquete.document.url(disposition: "attachment"), class: "fr-link fr-link--download" do %>
+                          Télécharger l'enquête <%= @annee_a_afficher %> au format PDF
+                          <span class="fr-link__detail">Format .pdf</span>
+                        <% end %></p>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </dialog>
+
         <div data-controller="request">
           <%= search_form_for @q, data: { turbo_frame: 'results' } do |f| %>
             <div class="fr-grid-row fr-grid-row--gutters">
@@ -56,20 +87,21 @@
             </div>
           <% end %>
         </div>
-        <%= turbo_frame_tag :results do %>
-          <% @resultats.each_with_index do |(question, reponses), index| %>
-            <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
-              <div class="fr-col-4">
-                <p class="fr-text--regular"><%= question %></p>
-              </div>
-              <div class="fr-col-8">
-                <div data-controller="highcharts" data-highcharts-datavalue="<%= reponses.to_json %>"></div>
-              </div>
+      </div>
+      <%= turbo_frame_tag :results do %>
+        <% @resultats.each_with_index do |(question, reponses), index| %>
+          <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+            <div class="fr-col-4">
+              <p class="fr-text--regular"><%= question %></p>
             </div>
-            <hr class="fr-mt-2w">
-          <% end %>
+            <div class="fr-col-8">
+              <div data-controller="highcharts" data-highcharts-datavalue="<%= reponses.to_json %>"></div>
+            </div>
+          </div>
+          <hr class="fr-mt-2w">
         <% end %>
       <% end %>
-    </div>
+    <% end %>
+
   </div>
 </main>

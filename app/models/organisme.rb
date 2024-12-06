@@ -22,20 +22,23 @@ class Organisme < ApplicationRecord
       cell.to_s.strip.gsub(/\s+/, '') unless cell.nil?
     end
     sirens_in_file = data.column(5)[1..-1].map do |cell|
-      cell.to_s.strip.gsub(/\s+/, '') unless cell.nil?
-    end
+      value = cell.to_s.strip.gsub(/\s+/, '')
+      value unless cell.nil? || value == "Nonrenseigné"
+    end.compact
+    Organisme.where(siren: nil).destroy_all
     Organisme.where.not(siren: sirens_in_file)&.destroy_all
     data.each_with_index do |row, idx|
       next if idx == 0 # skip header
 
       row_data = Hash[[headers, row].transpose]
       # Nettoyage du SIREN (suppression des espaces)
-      siren = row_data['Siren'] != 'Non renseigné' ? row_data['Siren']&.strip&.gsub(/\s+/, '') : ''
-      next if siren.blank?
+      siren = row_data['Siren'] != ' Non renseigné' ? row_data['Siren']&.strip&.gsub(/\s+/, '') : nil
+
       # Trouver ou initialiser l'organisme
-      organisme = Organisme.find_or_initialize_by(siren: siren.to_s)
+      organisme = siren.nil? ? Organisme.find_or_initialize_by(nom: row_data['Nom']) : Organisme.find_or_initialize_by(siren: siren.to_s)
       # Mettre à jour les attributs
       organisme.assign_attributes(
+        siren: convert_to_boolean(siren),
         nom: row_data['Nom'],
         acronyme: convert_to_boolean(row_data['Acronyme']),
         etat: row_data['État'],

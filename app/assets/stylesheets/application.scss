@@ -363,3 +363,9 @@ a.fr-tag[aria-pressed=true]::after{
   color: var(--text-title-grey);
   pointer-events: none;
 }
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
