@@ -16,3 +16,10 @@ pin "offline-exporting", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/o
 pin "accessibility", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/accessibility.js"
 pin "data", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/export-data.js"
 pin "nodata", to: "https://ga.jspm.io/npm:highcharts@11.4.8/modules/no-data-to-display.js"
+pin "jspdf" # @2.5.2
+pin "@babel/runtime/helpers/asyncToGenerator", to: "@babel--runtime--helpers--asyncToGenerator.js" # @7.26.0
+pin "@babel/runtime/helpers/defineProperty", to: "@babel--runtime--helpers--defineProperty.js" # @7.26.0
+pin "@babel/runtime/helpers/typeof", to: "@babel--runtime--helpers--typeof.js" # @7.26.0
+pin "canvg" # @3.0.10
+pin "html2canvas", to: "https://ga.jspm.io/npm:html2canvas@1.4.1/dist/html2canvas.js"
+pin "fflate" # @0.8.2

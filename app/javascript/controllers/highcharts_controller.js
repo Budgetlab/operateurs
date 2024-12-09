@@ -904,6 +904,9 @@ export default class extends Controller {
                 buttons: {
                     contextButton: {
                         menuItems: ["downloadPNG", "downloadJPEG", "downloadPDF", "downloadSVG", "downloadCSV", "downloadXLS"],
+                        theme: {
+                            fill: 'transparent'
+                        }
                     }
                 },
                 menuItemDefinitions: {
