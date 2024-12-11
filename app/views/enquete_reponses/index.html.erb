@@ -54,13 +54,6 @@
                     Exporter les résultats <%= @annee_a_afficher %> au format XLSX
                   <% end %>
                 </p>
-
-                <% if @enquete.document.attached? %>
-                  <p><%= link_to @enquete.document.url(disposition: "attachment"), class: "fr-link fr-link--download" do %>
-                      Télécharger l'enquête <%= @annee_a_afficher %> au format PDF
-                      <span class="fr-link__detail">Format .pdf</span>
-                    <% end %></p>
-                <% end %>
               </div>
             </div>
           </div>

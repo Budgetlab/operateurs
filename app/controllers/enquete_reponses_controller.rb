@@ -53,23 +53,6 @@ class EnqueteReponsesController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.pdf do
-        if @enquete.document.attached? # vérifiez si un pdf est attaché
-          send_data(
-            @enquete.document.download, # envoyez le pdf attaché
-            filename: @enquete.document.filename.to_s,
-            type: "application/pdf",
-            disposition: "attachment"
-          )
-        else
-          url = enquete_reponses_url(annee: @annee_a_afficher)
-          pdf_data = UrlToPdfJob.perform_now(url)
-          send_data(pdf_data,
-                    filename: "enquete_#{@annee_a_afficher}.pdf",
-                    type: "application/pdf",
-                    disposition: "attachment") # inline open in browser
-        end
-      end
       format.xlsx do
         headers['Content-Disposition'] = 'attachment; filename="Enquete.xlsx"'
         render xlsx: 'index', filename: 'Enquete.xlsx', disposition: 'attachment'
