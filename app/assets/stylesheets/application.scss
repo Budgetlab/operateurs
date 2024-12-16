@@ -369,3 +369,7 @@ a.fr-tag[aria-pressed=true]::after{
     display: none !important;
   }
 }
+
+.fr-text--blue{
+  color: var(--blue-france-sun-113-625);
+}

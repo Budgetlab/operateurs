@@ -104,11 +104,11 @@
               <h2 class="fr-h2 fr-mt-6w print fr-hidden">Enquête CIC-CIB <%= @annee_a_afficher %> - <%= @organisme.nom %></h2>
               <% @questions&.each do |question| %>
                 <div class="fr-grid-row fr-grid-row--gutters">
-                  <div class="fr-col-12 fr-col-lg-8">
+                  <div class="fr-col-12 fr-col-lg-12">
                     <div><%= question.numero %>. <%= question.nom %></div>
                   </div>
-                  <div class="fr-col-12 fr-col-lg-4">
-                    <p class="fr-text--bold">
+                  <div class="fr-col-12 fr-col-lg-12">
+                    <p class="fr-text--bold fr-text--blue">
                       <%= !@enquete_reponse.reponses[question.id.to_s].blank? ? @enquete_reponse.reponses[question.id.to_s] : 'Pas de réponse' %>
                     </p>
                   </div>
