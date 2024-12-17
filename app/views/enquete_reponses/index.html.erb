@@ -65,7 +65,7 @@
       <%= search_form_for @q, data: { turbo_frame: 'results' } do |f| %>
         <div class="fr-grid-row fr-grid-row--gutters">
           <% if @statut_user != "Controleur" %>
-            <div class="fr-col-4">
+            <div class="fr-col-6 fr-col-lg-4">
               <%= f.collection_select(
                     :organisme_controleur_nom_in, # Ransack key
                     User.where(statut: 'Controleur').order(:nom), # Collection for select
@@ -76,7 +76,7 @@
                   ) %>
             </div>
           <% end %>
-          <div class="fr-col-4">
+          <div class="fr-col-6 fr-col-lg-4">
             <%= f.select(
                   :organisme_famille_in, # Ransack key
                   @liste_familles, # Collection for select
@@ -93,10 +93,10 @@
       <%= turbo_frame_tag :results do %>
         <% @resultats.each_with_index do |(question, reponses), index| %>
           <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
-            <div class="fr-col-4">
+            <div class="fr-col-12 fr-col-lg-4">
               <p class="fr-text--regular"><%= question %></p>
             </div>
-            <div class="fr-col-8">
+            <div class="fr-col-12 fr-col-lg-8">
               <div data-controller="highcharts" data-highcharts-datavalue="<%= reponses.to_json %>"></div>
             </div>
           </div>
