@@ -28,8 +28,6 @@ one:
   texte_reglementaire_controle: MyString
   arrete_controle: MyString
   document_controle_present: false
-  document_controle_lien: MyString
-  document_controle_date: 2023-06-29
   arrete_nomination: MyString
   tutelle_financiere: false
   delegation_approbation: false
@@ -77,8 +75,6 @@ two:
   texte_reglementaire_controle: MyString
   arrete_controle: MyString
   document_controle_present: false
-  document_controle_lien: MyString
-  document_controle_date: 2023-06-29
   arrete_nomination: MyString
   tutelle_financiere: false
   delegation_approbation: false

@@ -1,15 +1,1 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  user: one
-  organisme: one
-  nom: MyString
-  debut: 1
-  fin: 1
-
-two:
-  user: two
-  organisme: two
-  nom: MyString
-  debut: 1
-  fin: 1

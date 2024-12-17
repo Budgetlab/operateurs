@@ -1,11 +1,1 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  organisme: one
-  enquete_question: one
-  reponse: MyText
-
-two:
-  organisme: two
-  enquete_question: two
-  reponse: MyText
