@@ -2,24 +2,19 @@
 
 # Controller Pages operateurs
 class OperateursController < ApplicationController
+  before_action :authenticate_admin!
   def index
-    redirect_to root_path and return unless @statut_user == '2B2O'
-
     @operateurs = Operateur.all
   end
 
   def new
     @organisme = Organisme.find(params[:organisme_id])
-    redirect_to root_path and return unless @statut_user == '2B2O' && @organisme
-
     @operateur = Operateur.new
     @programmes = Programme.all.order(numero: :asc)
     @liste_operateur = @operateur.operateur_programmes.pluck(:programme_id)
   end
   def create
     @organisme = Organisme.find(params[:operateur][:organisme_id])
-    redirect_to root_path and return unless @statut_user == '2B2O' && @organisme
-
     programmes_to_link = params[:operateur].delete(:programmes)
     @operateur = Operateur.new(operateur_params)
     @operateur.save if @operateur.operateur_nf == true || @operateur.operateur_n == true || @operateur.operateur_n1 == true || @operateur.operateur_n2 == true
@@ -29,8 +24,6 @@ class OperateursController < ApplicationController
 
   def edit
     @organisme = Organisme.find(params[:organisme_id])
-    redirect_to root_path and return unless @statut_user == '2B2O' && @organisme
-
     @operateur = Operateur.find(params[:id])
     @programmes = Programme.all.order(numero: :asc)
     @liste_operateur = @operateur.operateur_programmes.pluck(:programme_id)
@@ -38,8 +31,6 @@ class OperateursController < ApplicationController
 
   def update
     @organisme = Organisme.find(params[:operateur][:organisme_id])
-    redirect_to root_path and return unless @statut_user == '2B2O' && @organisme
-
     @operateur = Operateur.find(params[:id])
     programmes_to_link = params[:operateur].delete(:programmes)
     params[:operateur][:nom_categorie] = params[:operateur][:nom_categorie]
@@ -50,8 +41,6 @@ class OperateursController < ApplicationController
   end
 
   def import
-    redirect_to root_path and return unless @statut_user == '2B2O'
-
     file = params[:file]
     Operateur.import(file) if file.present?
     respond_to do |format|

@@ -1,0 +1,21 @@
+wb = xlsx_package.workbook
+s = wb.styles
+calibri = s.add_style font_name: 'Calibri', sz: 13
+header = s.add_style b: true, border: { style: :thick, color: '000000', edges: [:bottom] }, font_name: 'Calibri', sz: 13
+questions_name = @questions.pluck(:nom)
+headers = ["Organisme", 'SIREN', 'Famille', 'Contrôleur référent'] + questions_name
+sheet_col = Array.new(59, 13)
+wb.add_worksheet(name: "Enquete") do |sheet|
+    sheet.add_row headers, style: header
+    sheet.auto_filter = "C1:AI1"
+    enquete_reponses = @statut_user == "Controleur" ? @enquete.enquete_reponses.where(organisme_id: current_user.controleur_organismes.pluck(:id)) : @enquete.enquete_reponses
+    enquete_reponses.each do |reponse_organisme|
+        # Récupérer les réponses dans le champ JSON `reponses`
+        answers = @questions.map do |question|
+          reponse_organisme.reponses[question.id.to_s] || "N/A" # Utiliser "N/A" si aucune réponse n'est disponible
+        end
+        sheet.add_row [reponse_organisme.organisme.nom, reponse_organisme.organisme.siren, reponse_organisme.organisme.famille, reponse_organisme.organisme.controleur.nom] + answers
+    end
+
+    sheet.column_widths(*sheet_col)
+end

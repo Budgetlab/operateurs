@@ -1,15 +1,19 @@
-<% content_for :title do %>Chiffres clés de l'organisme <%= @organisme.nom %> | OPERA <% end %>
-<main role="main" data-controller="toggle" >
+<% content_for :title do %>Chiffres clés de l'organisme <%= @organisme.nom %> | OPERA
+<% end %>
+<main role="main" data-controller="toggle">
   <div class="fr-container">
     <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
-      <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane</button>
+      <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane
+      </button>
       <div class="fr-collapse" id="breadcrumb-1">
         <ol class="fr-breadcrumb__list">
           <li>
-            <%= link_to root_path, class:"fr-breadcrumb__link" do %>Accueil<%end %>
+            <%= link_to root_path, class: "fr-breadcrumb__link" do %>Accueil
+            <% end %>
           </li>
           <li>
-            <%= link_to budgets_path, class:"fr-breadcrumb__link" do %>Liste des budgets<%end %>
+            <%= link_to budgets_path, class: "fr-breadcrumb__link" do %>Liste des budgets
+            <% end %>
           </li>
           <li>
             <a class="fr-breadcrumb__link" aria-current="page"><%= @organisme.nom %></a>
@@ -19,7 +23,7 @@
     </nav>
 
     <h1 class="fr-mb-4w title-btn"><%= @organisme.nom %></h1>
-    <%= render 'chiffres/success'%>
+    <%= render 'chiffres/success' %>
     <div class="fr-grid-row fr-grid-row--gutters">
       <div class="fr-col-12 fr-col-lg-4">
         <nav class="fr-sidemenu fr-sidemenu--sticky-full-height" aria-labelledby="fr-sidemenu-title">
@@ -31,7 +35,9 @@
               <div class="fr-sidemenu__title" id="fr-sidemenu-title">Sections</div>
               <ul class="fr-sidemenu__list">
                 <li class="fr-sidemenu__item">
-                  <%= link_to organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>Fiche d'identité<%end %>
+                  <%= link_to organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>Fiche
+                    d'identité
+                  <% end %>
                 </li>
                 <li class="fr-sidemenu__item">
                   <button class="fr-sidemenu__btn" aria-expanded="false" aria-controls="fr-sidemenu-item-0" aria-current="true">
@@ -46,13 +52,17 @@
                         <button class="fr-sidemenu__link" data-toggle-id="credits" data-action="click->toggle#changeMenuSection">Crédits</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <button class="fr-sidemenu__link" data-toggle-id="comptabilite" data-action="click->toggle#changeMenuSection">Comptabilité générale</button>
+                        <button class="fr-sidemenu__link" data-toggle-id="comptabilite" data-action="click->toggle#changeMenuSection">Comptabilité
+                          générale
+                        </button>
                       </li>
                       <li class="fr-sidemenu__item">
                         <button class="fr-sidemenu__link" data-toggle-id="tresorerie" data-action="click->toggle#changeMenuSection">Trésorerie</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <button class="fr-sidemenu__link" data-toggle-id="analyse" data-action="click->toggle#changeMenuSection">Analyse financière</button>
+                        <button class="fr-sidemenu__link" data-toggle-id="analyse" data-action="click->toggle#changeMenuSection">Analyse
+                          financière
+                        </button>
                       </li>
                       <li class="fr-sidemenu__item">
                         <button class="fr-sidemenu__link" data-toggle-id="commentaires" data-action="click->toggle#changeMenuSection">Commentaires</button>
@@ -61,35 +71,46 @@
                   </div>
                 </li>
                 <li class="fr-sidemenu__item">
-                  <%= link_to organisme_restitutions_path(organisme_id: @organisme), class: "fr-sidemenu__link fr-icon-bar-chart-box-fill fr-link--icon-right", target: "_self" do %>Restitutions graphiques<%end %>
+                  <%= link_to organisme_restitutions_path(organisme_id: @organisme), class: "fr-sidemenu__link fr-icon-bar-chart-box-fill fr-link--icon-right", target: "_self" do %>
+                    Restitutions graphiques
+                  <% end %>
                 </li>
+
+                <li class="fr-sidemenu__item">
+                  <%= link_to enquete_organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>
+                    Contrôle Interne Financier
+                  <% end %>
+                </li>
+
               </ul>
             </div>
           </div>
         </nav>
       </div>
 
-      <div class="fr-col-12 fr-col-lg-8" >
+      <div class="fr-col-12 fr-col-lg-8">
         <div class="title-btn">
           <div class="fr-download">
-            <p><%= link_to "/opera/organismes/#{@organisme.id}/chiffres.xlsx", format: :xslx, class: "fr-download__link" do %>Télécharger les données budgétaires et comptables<span class="fr-download__detail">Format .xlsx</span><%end %></p>
+            <p><%= link_to "/opera/organismes/#{@organisme.id}/chiffres.xlsx", format: :xslx, class: "fr-download__link" do %>
+                Télécharger les données budgétaires et comptables<span class="fr-download__detail">Format .xlsx</span>
+              <% end %></p>
           </div>
 
         </div>
         <div class="fr-mb-2w">
           <ul class="fr-tags-group">
             <% (2019..2025).to_a.each do |annee| %>
-            <li>
-              <% if @organisme.chiffres&.where(exercice_budgetaire: annee)&.size > 0 %>
-                <button class="fr-tag" data-toggle-target="nav" data-action="click->toggle#changeNav" aria-pressed="<%= @exercice_budgetaire == annee ? 'true' : 'false' %>">
-                  <%= link_to show_dates_path(exercice_budgetaire: annee, organisme_id: @organisme.id), data: {"turbo-method": :post} do %>
-                  <%= annee %>
-                  <%end %></button>
-              <% else %>
-                <p class="fr-tag"><%= annee %></p>
-              <% end %>
-            </li>
-            <% end  %>
+              <li>
+                <% if @organisme.chiffres&.where(exercice_budgetaire: annee)&.size > 0 %>
+                  <button class="fr-tag" data-toggle-target="nav" data-action="click->toggle#changeNav" aria-pressed="<%= @exercice_budgetaire == annee ? 'true' : 'false' %>">
+                    <%= link_to show_dates_path(exercice_budgetaire: annee, organisme_id: @organisme.id), data: { "turbo-method": :post } do %>
+                      <%= annee %>
+                    <% end %></button>
+                <% else %>
+                  <p class="fr-tag"><%= annee %></p>
+                <% end %>
+              </li>
+            <% end %>
           </ul>
         </div>
         <div id="tabs">

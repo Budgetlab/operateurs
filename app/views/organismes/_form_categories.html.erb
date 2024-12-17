@@ -267,6 +267,28 @@
               </fieldset>
             </div>
           </div>
+          <% if @organisme.nature == "EPIC"%>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-12 fr-col-lg-4">
+                <div class="fr-input-group">
+                  <label for="taux_cadrage_n" class="fr-label">Taux de cadrage <%= Date.today.year %></label>
+                  <div class="fr-input-wrap">
+                    <%= f.text_field :taux_cadrage_n, value: @organisme.taux_cadrage_n, id:"taux_cadrage_n", class:"fr-input",type: "number", step: "0.01", min: "0", max: "100" %>
+                    <span class="fr-input-unit">%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-col-12 fr-col-lg-4">
+                <div class="fr-input-group">
+                  <label for="taux_cadrage_n1" class="fr-label">Taux de cadrage <%= Date.today.year - 1 %></label>
+                  <div class="fr-input-wrap">
+                    <%= f.text_field :taux_cadrage_n1, value: @organisme.taux_cadrage_n1, id:"taux_cadrage_n1", class:"fr-input",type: "number", step: "0.01", min: "0", max: "100" %>
+                    <span class="fr-input-unit">%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
         <div class="fr-my-4w">
           <ul class="fr-btns-group fr-btns-group--icon-left fr-btns-group--inline fr-btns-group--right">
             <li>

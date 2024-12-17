@@ -1,0 +1,1056 @@
+<main role="main">
+  <div class="fr-container">
+    <h1 class="fr-my-4w title-btn"><%= @organisme.nom %>
+      <% if @organisme.acronyme && !@organisme.acronyme.blank? %> - <%= @organisme.acronyme %>
+      <% end %></h1>
+    <% if @chiffre.statut == "valide" %>
+      <div class="fr-mb-4w">
+        <p class="fr-badge fr-badge--pink-tuile"><%= @chiffre.type_budget %> <%= @chiffre.exercice_budgetaire %></p>
+        <p class="fr-badge
+          <% if @chiffre.phase == 'pré-CA' %>fr-badge--brown-caramel
+          <% elsif @chiffre.phase == 'CA' %>fr-badge--green-archipel
+          <% else %>fr-badge--blue-ecume
+          <% end %>"><%= @chiffre.phase %></p>
+        <% if @chiffre.operateur == true %><p class="fr-badge fr-badge--info fr-badge--no-icon">Opérateur</p>
+        <% else %><p class="fr-badge fr-badge--beige-gris-galet">Non opérateur</p>
+        <% end %>
+        <% if @chiffre.comptabilite_budgetaire == true %>
+          <p class="fr-badge fr-badge--success fr-badge--no-icon">Comptabilité budgétaire</p>
+        <% else %><p class="fr-badge fr-badge--purple-glycine">Hors comptabilité budgétaire</p>
+        <% end %>
+      </div>
+      <hr class="fr-my-2w">
+
+      <div data-tab-target="section" data-tab-value="emplois" class="fr-mb-4w">
+        <h2 class="title-btn">Emplois</h2>
+        <h3 class="fr-h4">Emplois rémunérés par l’organisme</h3>
+        <% title_emplois = @chiffre.comptabilite_budgetaire ? 'autorisation d’emplois' : 'emplois' %>
+        <% title_depenses_or_charges =  @chiffre.comptabilite_budgetaire ? 'dépenses' : 'charges'%>
+        <% if @chiffre.operateur == true %>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="fr-capitalize"><%= title_emplois %> sous plafond LFI</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(@chiffre.emplois_plafond) %> ETPT</div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="fr-capitalize"><%= title_emplois %> hors plafond LFI</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(@chiffre.emplois_hors_plafond) %> ETPT</div>
+            </div>
+            <div class="fr-col-6">
+              <div>
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Hors-plafond / total effectifs rémunérés par l'organisme</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.ratio_hors_plafond) %> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Total des <%= title_emplois %> rémunérés par l'organisme</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_decimal(@chiffre.emplois_total) %> ETPT</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <%else %>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div>Total des <%= title_emplois %> rémunérés par l'organisme</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(@chiffre.emplois_total) %> ETPT</div>
+            </div>
+          </div>
+        <% end %>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-6">
+            <% if @chiffre.comptabilite_budgetaire == true %>
+              <div>Total des dépenses de personnel</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.emplois_depenses_personnel) %> €</div>
+            <%else %>
+              <div>Total des charges de personnel</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.emplois_charges_personnel) %> €</div>
+            <%end %>
+          </div>
+          <div class="fr-col-6">
+            <div>
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Coût moyen par ETPT</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.cout_moyen_etpt) %> €</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <% if @chiffre.operateur == true %>
+          <h3 class="fr-h4 fr-mt-4w options ">Rappel du plafond </h3>
+          <div class="fr-grid-row fr-grid-row--gutters options">
+            <div class="fr-col-12">
+              <div>Rappel du plafond d'emplois inscrit en PLF / LFI</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(@chiffre.emplois_plafond_rappel) %> ETPT</div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters options">
+            <div class="fr-col-12">
+              <div>Plafond d'emplois pré-notifié à l'organisme par le RPROG</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(@chiffre.emplois_plafond_prenotifie) %> ETPT</div>
+            </div>
+          </div>
+          <h3 class="fr-h4 fr-mt-4w">Schéma d’emplois</h3>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12">
+              <div>Schéma d'emplois</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre(@chiffre.emplois_schema) %> ETP</div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters options">
+            <div class="fr-col-12">
+              <div>Schéma d'emplois pré-notifié à l'organisme par le RPROG</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre(@chiffre.emplois_schema_prenotifie) %> ETP</div>
+            </div>
+          </div>
+        <% end  %>
+        <h3 class="fr-h4 fr-mt-4w options">Répartition des emplois et <%= title_depenses_or_charges %> de personnel par statut</h3>
+        <div class="fr-grid-row fr-grid-row--gutters options">
+          <div class="fr-col-6">
+            <div>Total des emplois titulaires</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(@chiffre.emplois_titulaires) %> ETPT</div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters options">
+          <div class="fr-col-6">
+            <div class="fr-capitalize"><%= title_depenses_or_charges %> de personnel des emplois titulaires</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.emplois_titulaires_montant) %> €</div>
+          </div>
+          <div class="fr-col-6">
+            <div>
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Coût moyen des emplois titulaires</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.cout_moyen_titulaires) %> €</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters options">
+          <div class="fr-col-6">
+            <div>Total des emplois contractuels</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(@chiffre.emplois_contractuels) %> ETPT</div>
+          </div>
+          <div class="fr-col-6">
+            <div>
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Part des contractuels dans le total des emplois rémunérés par l’organisme</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.part_contractuels) %> %</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters options">
+          <div class="fr-col-6">
+            <div class="fr-capitalize"><%= title_depenses_or_charges %> de personnel des emplois contractuels</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.emplois_contractuels_montant) %> €</div>
+          </div>
+          <div class="fr-col-6">
+            <div>
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Coût moyen des emplois contractuels</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.cout_moyen_contractuels) %> €</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h3 class="fr-h4 fr-mt-4w">Autres emplois en fonction dans l’organisme</h3>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-6">
+            <div>Emplois en fonction dans l'organisme, non rémunérés par lui - emplois T2, MAD entrantes remboursées ou non</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(@chiffre.emplois_non_remuneres) %> ETPT</div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters options">
+          <div class="fr-col-6">
+            <div>Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisation d'emplois - MAD sortantes</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(@chiffre.emplois_autre_entite) %> ETPT</div>
+          </div>
+          <div class="fr-col-6">
+            <div>
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Part des personnels exerçant leurs missions dans l’organisme dans le total des emplois rémunérés directement par l’organisme</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.indicateur_part_personnel_organisme) %> %</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <% if @chiffre.comptabilite_budgetaire == true %>
+        <hr class="fr-my-2w page_break">
+        <div data-tab-target="section" data-tab-value="credits" class="fr-mb-4w">
+          <h2 class="title-btn">Crédits </h2>
+          <h3 class="fr-h4 fr-mt-4w">Dépenses</h3>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div>Total des autorisations d’engagement (AE)</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_ae_total) %> €</div>
+            </div>
+            <div class="fr-col-6">
+              <div>Total des crédits de paiement (CP)</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_cp_total) %> €</div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Dont total des dépenses de personnel (AE)</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.emplois_depenses_personnel) %> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Dont total des dépenses de personnel (CP)</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.emplois_depenses_personnel) %> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6 fr-col-offset-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids relatif des dépenses de personnel</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.indicateur_poids_depenses_personnel) %> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="options">
+                <div>Dont total des dépenses de fonctionnement (AE)</div>
+                <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_ae_fonctionnement) %> €</div>
+              </div>
+            </div>
+            <div class="fr-col-6">
+              <div>Dont total des dépenses de fonctionnement (CP)</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_cp_fonctionnement) %> €</div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters options ">
+            <div class="fr-col-6 fr-col-offset-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Part relative des dépenses de fonctionnement (CP) dans le total des dépenses (CP)</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.part_cp_fonctionnement) %> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="options">
+                <div>Dont total des dépenses d'intervention (AE)</div>
+                <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_ae_intervention) %> €</div>
+              </div>
+            </div>
+            <div class="fr-col-6">
+              <div>Dont total des dépenses d'intervention (CP)</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_cp_intervention) %> €</div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters options">
+            <div class="fr-col-6 fr-col-offset-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Part relative des dépenses d'intervention (CP) dans le total des dépenses (CP)</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.part_cp_intervention) %> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="options">
+                <div>Dont total des dépenses d'investissement (AE)</div>
+                <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_ae_investissement) %> €</div>
+              </div>
+            </div>
+            <div class="fr-col-6">
+              <div>Dont total des dépenses d'investissement (CP)</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_cp_investissement) %> €</div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters options">
+            <div class="fr-col-6 fr-col-offset-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Part relative des dépenses d'investissement (CP) dans le total des dépenses (CP)</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.part_cp_investissement) %> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters options">
+            <div class="fr-col-6">
+              <div>Total des crédits de paiement ouverts en N pour des opérations pluriannuelles</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_cp_operations) %> €</div>
+            </div>
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids des crédits de paiement au titre d'opérations pluriannuelles</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.poids_cp_operations) %> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters options">
+            <div class="fr-col-6">
+              <div>Total des dépenses sur recettes fléchées (en CP)</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_cp_recettes_flechees) %> €</div>
+            </div>
+          </div>
+
+          <h3 class="fr-h4 fr-mt-4w">Recettes</h3>
+          <% if @chiffre.operateur == true %>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-6">
+                <div>Subvention pour charges de service public</div>
+                <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_subvention_sp) %> €</div>
+              </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-6">
+                <div>Subvention pour charges d'investissement globalisée</div>
+                <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_subvention_investissement_globalisee) %> €</div>
+              </div>
+              <div class="fr-col-6">
+                <div>Subvention pour charges d'investissement fléchée</div>
+                <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_subvention_investissement_flechee) %> €</div>
+              </div>
+            </div>
+          <% end  %>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div>Autres financements de l’Etat</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_financements_etat_autres) %> €</div>
+            </div>
+            <div class="fr-col-6">
+              <div>Autres financements de l’Etat fléchés</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_financements_etat_fleches) %> €</div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div>Fiscalité affectée</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_fiscalite_affectee) %> €</div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div>Autres financements publics</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_financements_publics_autres) %> €</div>
+            </div>
+            <div class="fr-col-6">
+              <div>Autres financements publics fléchés</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_financements_publics_fleches) %> €</div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div>Recettes propres globalisées</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_recettes_propres_globalisees) %> €</div>
+            </div>
+            <div class="fr-col-6">
+              <div>Recettes propres fléchées</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_recettes_propres_flechees) %> €</div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Total des recettes globalisées</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.recettes_globalisees) %> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Total des recettes fléchées</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.recettes_flechees) %> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Total des recettes</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.recettes_total) %> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids des recettes non fléchées</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.poids_recettes_globalisees) %> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Total des subventions de l’Etat</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.subv_etat) %> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids des financements de l’Etat</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.poids_financements_etat) %> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <% if @chiffre.operateur == true %>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-6">
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Poids de la SCSP sur recettes totales</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.poids_scsp)%> %</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-col-6">
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Taux de couverture des dépenses de personnel et de fonctionnement par de la SCSP</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.taux_couverture_scsp)%> %</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Total des recettes propres</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.total_recettes_propres) %> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Taux de recettes propres</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.taux_recettes_propres) %> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h3 class="fr-h4 fr-mt-4w">Solde budgétaire</h3>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.solde_budgetaire)%> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-6 options">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Solde budgétaire résultant des opérations fléchées</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.solde_budgetaire_fleche) %> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="fr-h4 fr-mt-4w">Restes à payer</h3>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div>Niveau final des restes à payer</div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.credits_restes_a_payer) %> €</div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Variations des restes à payer</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.var_restes_a_payer) %> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids des restes à payer</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.poids_restes_a_payer) %> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <hr class="fr-my-2w page_break">
+      <div data-tab-target="section" data-tab-value="comptabilite" class="fr-mb-4w">
+        <h2 class="title-btn">Comptabilité générale</h2>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-6">
+            <h3 class="fr-h4">Charges</h3>
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Total des charges</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.total_charges) %> €</p>
+                </div>
+              </div>
+            </div>
+            <div class="fr-mt-1w">Dont charges de
+              personnel</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.emplois_charges_personnel) %> €</div>
+            <% if @chiffre.comptabilite_budgetaire == false %>
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids relatif des charges de
+                      personnel</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.poids_charges_personnel) %>
+                      %</p>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+            <div class="fr-mt-1w">Dont charges de fonctionnement (hors charges de
+              personnel)</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.charges_fonctionnement) %> €</div>
+            <% if @chiffre.comptabilite_budgetaire == false %>
+              <div class="fr-mb-2w options ">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids des charges de
+                      fonctionnement</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.poids_charges_fonctionnement) %>
+                      %</p>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+            <div class="fr-mt-1w">Dont charges
+              d’intervention</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.charges_intervention) %> €</div>
+            <% if @chiffre.comptabilite_budgetaire == false %>
+              <div class="fr-mb-2w options">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids des charges
+                      d'intervention</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.poids_charges_intervention) %>
+                      %</p>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="fr-col-6">
+            <h3 class="fr-h4">Produits</h3>
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Total des produits</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.total_produits) %> €</p>
+                </div>
+              </div>
+            </div>
+            <div class="fr-mt-1w">Dont subventions de
+              l’Etat </div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.produits_subventions_etat) %> €</div>
+            <div class="fr-mt-1w">Dont fiscalité
+              affectée</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.produits_fiscalite_affectee) %>€
+            </div>
+            <div class="fr-mt-1w">Dont autres
+              subventions</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.produits_subventions_autres) %>€
+            </div>
+            <div class="fr-mt-1w">Dont autres
+              produits</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.produits_autres) %> €</div>
+          </div>
+        </div>
+
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-12">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Résultat</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.resultat) %> €</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-6">
+            <div>Charges non
+              décaissables</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.charges_non_decaissables) %> €</div>
+            <div>
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Charges décaissables</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.charges_decaissables) %>
+                    €</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-col-6">
+            <div>Produits non
+              encaissables</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.produits_non_encaissables) %> €</div>
+            <div>
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Produits encaissables</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.produits_encaissables) %>
+                    €</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <h3 class="fr-h4 fr-mt-4w">Capacité d’autofinancement</h3>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-6">
+            <div>Capacité
+              d’autofinancement</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.capacite_autofinancement) %> €</div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-6">
+            <h3 class="fr-h4 fr-mt-4w">Emplois</h3>
+            <div>Total des
+              emplois</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.emplois_cout_total) %> €</div>
+            <div class="fr-mt-1w">Dont
+              investissements</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.emplois_cout_investissements) %>€
+            </div>
+          </div>
+          <div class="fr-col-6">
+            <h3 class="fr-h4 fr-mt-4w">Ressources</h3>
+            <div>Total des
+              ressources</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.ressources_total) %> €</div>
+            <div class="fr-mt-1w">Dont financement de l’actif par
+              l’Etat</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.ressources_financement_etat) %>€
+            </div>
+            <div class="fr-mt-1w">Dont autres
+              ressources</div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.ressources_autres) %> €</div>
+            <% if @chiffre.comptabilite_budgetaire == false %>
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Taux de ressources
+                      propres</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.taux_ressources_propres) %>
+                      %</p>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+        <div class="options">
+          <h3 class="fr-h4 fr-mt-4w">Opérations non budgétaires</h3>
+
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div>Opérations au nom et pour le compte de tiers
+                <% if @chiffre.comptabilite_budgetaire == true %>(besoins)
+                <% else %>(débits)
+                <% end %></div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.decaissements_operations) %> €</div>
+            </div>
+            <div class="fr-col-6">
+              <div>Opérations au nom et pour le compte de tiers
+                <% if @chiffre.comptabilite_budgetaire == true %>(financements)
+                <% else %>(crédits)
+                <% end %></div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.encaissements_operations) %> €</div>
+            </div>
+          </div>
+          <% if @chiffre.comptabilite_budgetaire == true %>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-6">
+                <div>Emprunts, Prêts, Dépôts et cautionnements
+                  (besoins) </div>
+                <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.decaissements_emprunts) %> €</div>
+              </div>
+              <div class="fr-col-6">
+                <div>Emprunts, Prêts, Dépôts et cautionnements
+                  (financements)</div>
+                <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.encaissements_emprunts) %> €</div>
+              </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-6">
+                <div>Autres décaissements non
+                  budgétaires</div>
+                <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.decaissements_autres) %> €</div>
+              </div>
+              <div class="fr-col-6">
+                <div>Autres encaissements non
+                  budgétaires</div>
+                <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.encaissements_autres) %> €</div>
+              </div>
+            </div>
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <div class="fr-col-6">
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Décaissements non
+                        budgétaires</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.decaissements_non_budgetaires) %>
+                        €</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-col-6">
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Encaissements non
+                        budgétaires</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.encaissements_non_budgetaires) %>
+                        €</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+        </div>
+
+      </div>
+      <hr class="fr-my-2w page_break">
+      <div data-tab-target="section" data-tab-value="tresorerie" class="fr-mb-4w">
+        <h2 class="title-btn">Trésorerie</h2>
+        <h3 class="fr-h4">Niveaux de trésorerie</h3>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-6">
+            <% if @chiffre.comptabilite_budgetaire == true  %>
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Niveau final de trésorerie</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.tresorerie_finale) %> €</p>
+                  </div>
+                </div>
+              </div>
+            <%else %>
+              <div>Niveau final de trésorerie</div>
+              <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.tresorerie_finale) %> €</div>
+            <%end %>
+          </div>
+          <div class="fr-col-6">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement </p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.jours_fonctionnement_tresorerie) %> Jours</p>
+                </div>
+              </div>
+            </div>
+            <% if @chiffre.comptabilite_budgetaire == true  %>
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Taux de couverture des restes à payer par la trésorerie</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.taux_couverture_rap) %> %</p>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <% if @chiffre.comptabilite_budgetaire == true  %>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div>Niveau final de la trésorerie non fléchée</div>
+              <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.tresorerie_finale_non_flechee) %> €</div>
+            </div>
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Poids de la trésorerie non fléchée</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.poids_tresorerie_non_flechee)%> %</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-6">
+              <div>Niveau final de la trésorerie fléchée </div>
+              <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.tresorerie_finale_flechee) %> €</div>
+            </div>
+            <div class="fr-col-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Trésorerie non fléchée en jours de fonctionnement</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.jours_fonctionnement_tresorerie_non_flechee) %> Jours</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end  %>
+        <div class="fr-grid-row fr-grid-row--gutters options">
+          <div class="fr-col-6">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Niveau initial de trésorerie </p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.tresorerie_initiale) %> €</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="fr-h4 fr-mt-4w">Variation</h3>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-6">
+            <div>Variation de la trésorerie </div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.tresorerie_variation) %> €</div>
+            <% if @chiffre.comptabilite_budgetaire == true  %>
+              <div class="options">
+                <div>Variation de la trésorerie fléchée</div>
+                <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.tresorerie_variation_flechee) %> €</div>
+                <div>Variation de la trésorerie non fléchée</div>
+                <div class="fr-text--bold fr-mt-1w fr-mb-3v"><%= format_nombre_entier(@chiffre.tresorerie_variation_non_flechee) %> €</div>
+              </div>
+            <% end  %>
+          </div>
+        </div>
+
+        <h3 class="fr-h4 fr-mt-4w options">Point haut / bas</h3>
+        <div class="fr-grid-row fr-grid-row--gutters options ">
+          <div class="fr-col-6">
+            <div>Point le plus haut dans le plan de trésorerie </div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.tresorerie_max) %> € au mois de <% if @chiffre.tresorerie_max_date %><%= I18n.localize(@chiffre.tresorerie_max_date, format: '%B')  %><%else %>ND<%end %></div>
+          </div>
+          <div class="fr-col-6">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Niveau le plus haut de trésorerie en jours de fonctionnement</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.jours_fonctionnement_tresorerie_max) %> Jours</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fr-grid-row fr-grid-row--gutters options">
+          <div class="fr-col-6">
+            <div>Point le plus bas dans le plan de trésorerie</div>
+            <div class="fr-text--bold fr-mt-1w"><%= format_nombre_entier(@chiffre.tresorerie_min) %> € au mois de <% if @chiffre.tresorerie_min_date %><%= I18n.localize(@chiffre.tresorerie_min_date, format: '%B') %><%else %>ND<%end %></div>
+          </div>
+          <div class="fr-col-6">
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Niveau le plus bas de trésorerie en jours de fonctionnement</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.jours_fonctionnement_tresorerie_min) %> Jours</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <hr class="fr-my-2w page_break">
+      <div data-tab-target="section" data-tab-value="analyse" class="fr-mb-4w">
+        <h2 class="title-btn">Analyse financière</h2>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-6">
+            <h3 class="fr-h4">Fonds de roulement</h3>
+            <div class="fr-mt-1w">Niveau final du fonds de roulement </div>
+            <div class="fr-text--bold fr-mt-1w fr-mb-2w"><%= format_nombre_entier(@chiffre.fonds_roulement_final) %> €</div>
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Fonds de roulement en jours de fonctionnement</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.jours_fonctionnement_fr_final) %> Jours</p>
+                </div>
+              </div>
+            </div>
+            <div class="fr-mb-2w options ">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Niveau initial du fonds de roulement </p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.fonds_roulement_initial) %> €</p>
+                </div>
+              </div>
+            </div>
+            <div class="options ">
+              <div class="fr-mt-1w">Niveau final du besoin en fonds de roulement </div>
+              <div class="fr-text--bold fr-mt-1w fr-mb-2w"><%= format_nombre_entier(@chiffre.fonds_roulement_besoin_final) %> €</div>
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Niveau initial du besoin en fonds de roulement</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.fonds_roulement_besoin_initial) %> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="fr-col-6">
+            <% if @chiffre.comptabilite_budgetaire == true  %>
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.solde_budgetaire) %>€</p>
+                  </div>
+                </div>
+              </div>
+            <% end  %>
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Variation de la trésorerie</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.tresorerie_variation) %> €</p>
+                </div>
+              </div>
+            </div>
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Variation du fonds de roulement</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.fonds_roulement_variation) %> €</p>
+                </div>
+              </div>
+            </div>
+            <div class="fr-mb-2w">
+              <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Variation du besoin en fonds de roulement </p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.variation_bfr) %> €</p>
+                </div>
+              </div>
+            </div>
+            <div class="fr-text--center fr-mb-2w"><span class="fr-icon-arrow-down-fill" aria-hidden="true"></span></div>
+            <div class="fr-mb-2w">
+              <div class="fr-card <% if @chiffre.risque_insolvabilite == 'Situation saine' %>fr-card--vert<%elsif @chiffre.risque_insolvabilite == 'Situation saine a priori mais à surveiller'%>fr-card--jaune<%elsif @chiffre.risque_insolvabilite == 'Risque d’insoutenabilité à moyen terme'%>fr-card--orange<%elsif @chiffre.risque_insolvabilite == 'Risque d’insoutenabilité élevé'%>fr-card--rouge<%end %> fr-p-2w fr-card--no-border">
+                <div class="fr-cart__body">
+                  <p class="fr-mb-0 fr-text--center">Examen à moyen-court termes</p>
+                  <p class="fr-text--bold fr-mb-0 fr-text--center"><%= @chiffre.risque_insolvabilite %></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="fr-text--italic">
+          <%= @chiffre.texte_analyse %>
+        </div>
+      </div>
+      <hr class="fr-my-2w">
+      <div data-tab-target="section" data-tab-value="commentaires" class="fr-mb-4w">
+        <h2 class="title-btn">Commentaires</h2>
+        <h3 class="fr-h4">Commentaire sur le budget</h3>
+        <div><%= auto_link(simple_format(format_boolean(@chiffre.commentaire), {}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></div>
+        <h3 class="fr-h4 fr-mt-4w">Autres points de vigilance</h3>
+        <div><%= auto_link(simple_format(format_boolean(@chiffre.commentaire_annexe), {}, wrapper_tag: "span"), :html => { :target => '_blank' }) %></div>
+      </div>
+    <% end %>
+  </div>
+</main>

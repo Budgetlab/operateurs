@@ -15,8 +15,13 @@ Rails.application.routes.draw do
     resources :organismes do
       resources :chiffres, only: [:index]
       get 'restitutions', to: 'chiffres#restitutions'
+      member do
+        get 'enquete', to: 'organismes#enquete'
+      end
     end
+    post 'import_organismes' => 'organismes#import_organismes'
     resources :control_documents
+    resources :objectifs_contrats
     resources :chiffres, except: [:index]
     post '/show_dates' => 'chiffres#show_dates'
     post '/select_comptabilite' => 'chiffres#select_comptabilite'
@@ -36,6 +41,9 @@ Rails.application.routes.draw do
     resources :modifications
     post 'open_modal' => 'modifications#open_modal'
     post 'filter_modifications' => 'modifications#filter_modifications'
+    resources :enquete_reponses
+    post '/import_reponses' => 'enquete_reponses#import'
+    resources :enquete_questions
   # routes statiques
     get '/mentions-legales', to: 'pages#mentions_legales'
     get '/donnees-personnelles', to: 'pages#donnees_personnelles'

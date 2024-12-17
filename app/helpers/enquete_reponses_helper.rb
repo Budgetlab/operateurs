@@ -1,0 +1,2 @@
+module EnqueteReponsesHelper
+end

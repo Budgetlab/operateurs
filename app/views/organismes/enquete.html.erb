@@ -1,0 +1,168 @@
+<% content_for :title do %>Enquête <%= @organisme.nom %> | OPERA
+<% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container">
+    <nav role="navigation" class="fr-breadcrumb fr-my-3w" aria-label="vous êtes ici :">
+      <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">Voir le fil d’Ariane
+      </button>
+      <div class="fr-collapse" id="breadcrumb-1">
+        <ol class="fr-breadcrumb__list">
+          <li>
+            <%= link_to root_path, class: "fr-breadcrumb__link" do %>Accueil
+            <% end %>
+          </li>
+          <li>
+            <%= link_to organismes_path, class: "fr-breadcrumb__link" do %>Liste des organismes
+            <% end %>
+          </li>
+          <li>
+            <a class="fr-breadcrumb__link" aria-current="page"><%= @organisme.nom %></a>
+          </li>
+        </ol>
+      </div>
+    </nav>
+
+    <h1 class="fr-mb-4w title-btn"><%= @organisme.nom %></h1>
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-4">
+        <nav class="fr-sidemenu fr-sidemenu--sticky-full-height" aria-labelledby="fr-sidemenu-title">
+          <div class="fr-sidemenu__inner">
+            <button class="fr-sidemenu__btn" hidden aria-controls="fr-sidemenu-wrapper" aria-expanded="false">
+              Dans cette rubrique
+            </button>
+            <div class="fr-collapse" id="fr-sidemenu-wrapper">
+              <div class="fr-sidemenu__title" id="fr-sidemenu-title">Sections</div>
+              <ul class="fr-sidemenu__list">
+                <li class="fr-sidemenu__item">
+                  <%= link_to organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>Fiche
+                    d'identité
+                  <% end %>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <%= link_to organisme_chiffres_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>
+                    Données budgétaires et comptables
+                  <% end %>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <%= link_to organisme_restitutions_path(organisme_id: @organisme), class: "fr-sidemenu__link fr-icon-bar-chart-box-fill fr-link--icon-right", target: "_self" do %>
+                    Restitutions graphiques
+                  <% end %>
+                </li>
+                <li class="fr-sidemenu__item">
+                  <button class="fr-sidemenu__btn " aria-expanded="false" aria-controls="fr-sidemenu-item-0" aria-current="true">Contrôle
+                    Interne Financier
+                  </button>
+                  <div class="fr-collapse" id="fr-sidemenu-item-0">
+                    <ul class="fr-sidemenu__list">
+                      <li class="fr-sidemenu__item">
+                        <button class="fr-sidemenu__link" data-toggle-id="enquete" data-action="click->toggle#changeMenuSection">Enquête
+                          CIB-CIC
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <div class="fr-col-12 fr-col-lg-8">
+        <div id="enquete" class="fr-mb-4w">
+          <h2 class="title-btn">Enquête CIB-CIC
+            <% if @enquete_annees.present? %>
+              <button class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-download-line" aria-controls="modal-telechargement" data-fr-opened="false">
+                Télécharger
+              </button>
+            <% end %>
+          </h2>
+          <% if @enquete_annees.present? %>
+
+            <div class="fr-notice fr-notice--info">
+              <div class="fr-container">
+                <div class="fr-notice__body">
+                  <p>
+                    <span class="fr-notice__title">Information</span>
+                    <span class="fr-notice__desc">Les réponses ci-dessous sont issues de l'enquête CIB-CIC menée auprès des organismes. Elles vous sont retranscrites ici brutes, sans vérification ni retraitement.</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="fr-my-2w">
+              <ul class="fr-tags-group">
+                <% @enquete_annees.each do |annee| %>
+                  <li>
+                    <%= link_to annee, enquete_organisme_path(@organisme, annee: annee), class: "fr-tag", 'aria-pressed' => (@annee_a_afficher == annee ? 'true' : 'false') %>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+
+            <div id="containPDF">
+              <h2 class="fr-h2 fr-mt-6w print fr-hidden">Enquête CIC-CIB <%= @annee_a_afficher %> - <%= @organisme.nom %></h2>
+              <% @questions&.each do |question| %>
+                <div class="fr-grid-row fr-grid-row--gutters">
+                  <div class="fr-col-12 fr-col-lg-12">
+                    <div><%= question.numero %>. <%= question.nom %></div>
+                  </div>
+                  <div class="fr-col-12 fr-col-lg-12">
+                    <p class="fr-text--bold fr-text--blue">
+                      <%= !@enquete_reponse.reponses[question.id.to_s].blank? ? @enquete_reponse.reponses[question.id.to_s] : 'Pas de réponse' %>
+                    </p>
+                  </div>
+                </div>
+                <div data-controller="highcharts" data-highcharts-datavalue="<%= @resultats[question.id].to_json %>"></div>
+                <hr class="fr-mt-2w">
+              <% end %>
+            </div>
+
+            <div class="fr-grid-row fr-grid-row--right">
+              <a class="fr-link fr-icon-arrow-up-fill fr-link--icon-left" href="#top">
+                Haut de page
+              </a>
+            </div>
+
+            <dialog aria-labelledby="modal-telechargement-title" id="modal-telechargement" class="fr-modal" role="dialog">
+              <div class="fr-container fr-container--fluid fr-container-md">
+                <div class="fr-grid-row fr-grid-row--center">
+                  <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+                    <div class="fr-modal__body">
+                      <div class="fr-modal__header">
+                        <button class="fr-btn--close fr-btn" aria-controls="modal-telechargement">Fermer</button>
+                      </div>
+                      <div class="fr-modal__content">
+                        <h1 id="fr-modal-2-title" class="fr-modal__title">
+                          <span class="fr-icon-arrow-right-line fr-icon--lg"></span>
+                          Télécharger les résultats
+                        </h1>
+                        <p>
+                        <div data-controller="pdf-export">
+                          <button class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-download-line" data-action="pdf-export#export" data-pdf-export-target="button">
+                            Exporter les résultats <%= @annee_a_afficher %> au format PDF
+                          </button>
+                        </div>
+                        </p>
+                        <p>
+                          <%= button_to enquete_organisme_path(@organisme, annee: @annee_a_afficher, format: :xlsx), method: :get, class: "fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-download-line" do %>
+                            Exporter tous les résultats au format XLSX
+                            <% end %>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </dialog>
+        <% else %>
+            <div class="fr-highlight">
+              <p>Il n'y a pas d'enquête CIC-CIB renseignée pour cet organisme.</p>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>

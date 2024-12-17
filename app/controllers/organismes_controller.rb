@@ -6,14 +6,23 @@ require 'google/cloud/storage'
 class OrganismesController < ApplicationController
   include Authentication
   before_action :authenticate_user!
-  before_action :redirect_unless_admin, only: %i[new create destroy]
+  before_action :authenticate_admin!, only: %i[new create destroy]
   before_action :fetch_list_name_filter, only: :index
-  before_action :set_organisme, only: %i[show edit update destroy]
+  before_action :set_organisme, only: %i[show edit update destroy enquete]
   before_action :redirect_unless_access, only: :show
   before_action :redirect_unless_editor, only: %i[edit update]
   def index
     # Fetch all organisms relevant to user's permissions, including those in extended families
-    extended_family_organisms = fetch_extended_family_organisms
+    extended_family_organisms = fetch_extended_family_organisms.includes(
+      :bureau,
+      :controleur,
+      :organisme_destinations,
+      :organisme_rattachements,
+      :ministere,
+      :control_documents,
+      operateur: [:mission, :programme, :operateur_programmes],
+      organisme_ministeres: [:ministere]
+    )
     @q_params = q_params
     q_params_send = params[:q]
     if q_params_send
@@ -28,7 +37,7 @@ class OrganismesController < ApplicationController
       end
     end
     @q = extended_family_organisms.ransack(q_params_send)
-    @organisms_for_results = @q.result.includes(:bureau, :controleur)
+    @organisms_for_results = @q.result
     if value_reset_all
       q_params_send[:operateur_operateur_n_null] = 'true'
       q_params_send[:operateur_operateur_n_in] = ["true"]
@@ -112,7 +121,7 @@ class OrganismesController < ApplicationController
     organismes_to_link = params[:organisme].delete(:organismes)
     ministeres_to_link = params[:organisme].delete(:ministeres)
     reset_values(%i[date_dissolution effet_dissolution]) if params[:organisme][:etat]
-    reset_values(%i[nature_controle texte_soumission_controle autorite_controle texte_reglementaire_controle arrete_controle document_controle_present document_controle_lien document_controle_date arrete_nomination]) if params[:organisme][:presence_controle]
+    reset_values(%i[nature_controle texte_soumission_controle autorite_controle texte_reglementaire_controle arrete_controle document_controle_present arrete_nomination]) if params[:organisme][:presence_controle]
     reset_values([:admin_db_fonction]) if params[:organisme][:admin_db_present]
     reset_values([:delegation_approbation]) if params[:organisme][:tutelle_financiere]
     if @organisme.statut == 'valide'
@@ -141,6 +150,62 @@ class OrganismesController < ApplicationController
     redirect_to organismes_path
   end
 
+  def import_organismes
+    file = params[:file]
+    Organisme.import(file) if file.present?
+    respond_to do |format|
+      format.turbo_stream { redirect_to operateurs_path }
+    end
+  end
+
+  def enquete
+    # liste des enquetes et réponses
+    @enquetes_reponses = @organisme.enquete_reponses.joins(:enquete).order('enquetes.annee DESC')
+    # Récupérer toutes les années des enquêtes disponibles pour cet organisme
+    @enquete_annees = @enquetes_reponses.pluck('enquetes.annee').uniq.sort
+    # Récupérer l'enquête pour l'année spécifiée ou la plus récente
+    @enquete_reponse = if params[:annee].present?
+                         # Récupérer l'enquête pour l'année spécifiée
+                         @enquetes_reponses.where(enquetes: { annee: params[:annee].to_i }).first
+                       else
+                         # Récupérer la dernière enquête si aucune année n'est fournie
+                         @enquetes_reponses.first
+                       end
+    return unless @enquete_reponse
+
+    @annee_a_afficher = @enquete_reponse.enquete.annee
+    # Récupérer les questions associées à cette enquête et les trier par numéro
+    @questions = @enquete_reponse.enquete.enquete_questions.order(:numero)
+    # recupérer l'ensemble des réponses de tous les organismes
+    @resultats = @questions.where.not(numero: [15, 29, 31]).each_with_object({}) do |question, result|
+      all_responses = EnqueteReponse
+                        .where(enquete_id: @enquete_reponse.enquete.id)
+                        .group("reponses->>'#{question.id}'")
+                        .count
+      cbr_responses = EnqueteReponse
+                        .joins(organisme: :controleur)
+                        .where(enquete_id: @enquete_reponse.enquete.id)
+                        .where(controleur: {id: @organisme.controleur_id})
+                        .group("reponses->>'#{question.id}'")
+                        .count
+      famille_reponses = EnqueteReponse
+                           .joins(:organisme)
+                           .where(enquete_id: @enquete_reponse.enquete.id)
+                           .where(organismes: { famille: @organisme.famille})
+                           .group("reponses->>'#{question.id}'")
+                           .count
+      result[question.id] = {
+        'Total' => all_responses.sort.to_h,
+        @organisme.controleur.nom => cbr_responses.sort.to_h
+      }
+      result[question.id][@organisme.famille] = famille_reponses.sort.to_h if @organisme.famille != 'Aucune'
+    end
+    respond_to do |format|
+      format.html
+      format.xlsx { headers['Content-Disposition'] = "attachment; filename=\"Enquete.xlsx\"" }
+    end
+  end
+
   private
 
   def organisme_params
@@ -150,11 +215,11 @@ class OrganismesController < ApplicationController
                                       :degre_gbcp, :gbcp_3, :comptabilite_budgetaire, :presence_controle, :controleur_id,
                                       :nature_controle, :texte_soumission_controle, :autorite_controle,
                                       :texte_reglementaire_controle, :arrete_controle, :document_controle_present,
-                                      :document_controle_lien, :document_controle_date, :arrete_nomination,
-                                      :tutelle_financiere, :delegation_approbation, :autorite_approbation, :ministere_id,
+                                      :arrete_nomination, :tutelle_financiere, :delegation_approbation,
+                                      :autorite_approbation, :ministere_id,
                                       :admin_db_present, :admin_db_fonction, :admin_preca, :controleur_preca,
                                       :controleur_ca, :comite_audit, :apu, :ciassp_n, :ciassp_n1, :odac_n, :odac_n1,
-                                      :odal_n, :odal_n1, :arrete_interdiction_odac)
+                                      :odal_n, :odal_n1, :arrete_interdiction_odac, :taux_cadrage_n, :taux_cadrage_n1)
   end
 
   def reset_values(param_names)
@@ -179,7 +244,7 @@ class OrganismesController < ApplicationController
   end
 
   def fetch_extended_family_organisms
-    organisms = Organisme.all.includes(:controleur, :bureau, :operateur)
+    organisms = Organisme.all
     case @statut_user
     when 'Controleur'
       organisms = organisms.where(statut: 'valide').where('controleur_id = :user_id OR famille IN (:familles)', user_id: current_user.id, familles: @familles)
@@ -232,21 +297,21 @@ class OrganismesController < ApplicationController
     modifications = []
     champs_a_surveiller = %i[nom etat acronyme siren nature texte_institutif commentaire gbcp_1 gbcp_3
                            comptabilite_budgetaire nature_controle texte_soumission_controle autorite_controle
-                           texte_reglementaire_controle arrete_controle document_controle_date comite_audit
+                           texte_reglementaire_controle arrete_controle comite_audit
                            arrete_nomination ciassp_n ciassp_n1 odal_n odal_n1 odac_n odac_n1]
     champs_texte = ['Nom', 'État', 'Acronyme', 'Siren', 'Nature juridique', 'Texte institutif', 'Commentaire', 'Partie I GBCP',
                     'Partie III GBCP', 'Comptabilité budgétaire', 'Nature contrôle', 'Texte soumission au contrôle',
                     'Autorité de contrôle', "Texte réglementaire de désignation de l'autorité de contrôle",
-                    'Arrêté de contrôle', 'Date signature document contrôle ', 'Comité audit et risques',
+                    'Arrêté de contrôle', 'Comité audit et risques',
                     'Arrêté de nomination comissaire du gouvernement', "CIASSP #{(Date.today.year).to_s}",
                     "CIASSP #{(Date.today.year - 1).to_s}", "ODAL #{(Date.today.year - 2).to_s}",
                     "ODAL #{(Date.today.year - 3).to_s}", "ODAC #{(Date.today.year - 2).to_s}",
                     "ODAC #{(Date.today.year - 3).to_s}"]
     champs_supp_controleur = %i[date_creation date_previsionnelle_dissolution agent_comptable_present
-                              degre_gbcp document_controle_present document_controle_lien ministere_id
+                              degre_gbcp document_controle_present ministere_id
                               admin_db_present admin_db_fonction admin_preca controleur_preca controleur_ca]
     champs_supp_texte = ['Date création', 'Date prévisionnelle dissolution', 'Présence agent comptable', 'Degré GBCP',
-                         'Présence document contrôle', 'Lien document contrôle', 'Ministère', 'Présence Admin DB',
+                         'Présence document contrôle', 'Ministère', 'Présence Admin DB',
                          'Fonction Admin DB', 'Présence DB préCA', 'Présence contrôleur préCA', 'Présence contrôleur CA']
     champs_a_surveiller.each_with_index do |champ, i|
       if organisme_params[champ] && organisme_params[champ].to_s != check_format(@organisme[champ]) # réucpérer que ceux qui sont dans le formulaire

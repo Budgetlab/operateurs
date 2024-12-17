@@ -1,0 +1,41 @@
+<% content_for :title do %>Enquête <%= @organisme.nom %> | OPERA
+<% end %>
+<main role="main">
+  <div class="fr-container">
+
+    <h1 class="fr-my-4w title-btn"><%= @organisme.nom %>
+      <% if @organisme.acronyme && !@organisme.acronyme.blank? %> - <%= @organisme.acronyme %>
+      <% end %></h1>
+    <p class="fr-badge fr-badge--blue-ecume fr-mb-2w">Ministère : <%= @organisme.ministere.nom %></p>
+    <% if @enquete_reponse.present? %>
+      <h2>Enquête CIB-CIC <%= @enquete_reponse.enquete.annee %></h2>
+      <div class="fr-notice fr-notice--info fr-mb-2w">
+        <div class="fr-container">
+          <div class="fr-notice__body">
+            <p>
+              <span class="fr-notice__desc">Les réponses ci-dessous sont issues de l'enquête CIC CIB menée auprès des organismes. Elles vous sont retranscrites ici brutes, sans vérification ni retraitement.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <% @questions.each do |question| %>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <div class="fr-col-8">
+            <p class="fr-text--regular"><%= question.numero %>. <%= question.nom %></p>
+          </div>
+          <div class="fr-col-4">
+            <p class="fr-text--bold">
+              <%= !@enquete_reponse.reponses[question.id.to_s].blank? ? @enquete_reponse.reponses[question.id.to_s] : 'Pas de réponse' %>
+            </p>
+          </div>
+        </div>
+        <hr class="fr-mt-2w">
+      <% end %>
+
+    <% else %>
+      <p>Aucune enquête disponible pour cet organisme.</p>
+    <% end %>
+
+  </div>
+</main>

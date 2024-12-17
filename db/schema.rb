@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_06_12_064412) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_27_095940) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "unaccent"
@@ -167,6 +167,31 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_12_064412) do
     t.index ["user_id"], name: "index_control_documents_on_user_id"
   end
 
+  create_table "enquete_questions", force: :cascade do |t|
+    t.text "nom"
+    t.integer "numero"
+    t.bigint "enquete_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enquete_id"], name: "index_enquete_questions_on_enquete_id"
+  end
+
+  create_table "enquete_reponses", force: :cascade do |t|
+    t.bigint "organisme_id", null: false
+    t.bigint "enquete_id", null: false
+    t.jsonb "reponses", default: {}
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["enquete_id"], name: "index_enquete_reponses_on_enquete_id"
+    t.index ["organisme_id"], name: "index_enquete_reponses_on_organisme_id"
+  end
+
+  create_table "enquetes", force: :cascade do |t|
+    t.integer "annee", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "ministeres", force: :cascade do |t|
     t.string "nom"
     t.datetime "created_at", null: false
@@ -194,6 +219,18 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_12_064412) do
     t.string "nom"
     t.index ["organisme_id"], name: "index_modifications_on_organisme_id"
     t.index ["user_id"], name: "index_modifications_on_user_id"
+  end
+
+  create_table "objectifs_contrats", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "organisme_id", null: false
+    t.string "nom"
+    t.integer "debut"
+    t.integer "fin"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["organisme_id"], name: "index_objectifs_contrats_on_organisme_id"
+    t.index ["user_id"], name: "index_objectifs_contrats_on_user_id"
   end
 
   create_table "operateur_programmes", force: :cascade do |t|
@@ -268,8 +305,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_12_064412) do
     t.string "texte_reglementaire_controle"
     t.string "arrete_controle"
     t.boolean "document_controle_present"
-    t.string "document_controle_lien"
-    t.date "document_controle_date"
     t.string "arrete_nomination"
     t.boolean "tutelle_financiere"
     t.boolean "delegation_approbation"
@@ -291,6 +326,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_12_064412) do
     t.datetime "updated_at", null: false
     t.bigint "ministere_id"
     t.string "arrete_interdiction_odac"
+    t.float "taux_cadrage_n"
+    t.float "taux_cadrage_n1"
     t.index ["bureau_id"], name: "index_organismes_on_bureau_id"
     t.index ["controleur_id"], name: "index_organismes_on_controleur_id"
     t.index ["ministere_id"], name: "index_organismes_on_ministere_id"
@@ -313,6 +350,11 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_12_064412) do
     t.datetime "updated_at", null: false
     t.string "statut"
     t.string "nom"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string "current_sign_in_ip"
+    t.string "last_sign_in_ip"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -323,9 +365,14 @@ ActiveRecord::Schema[7.1].define(version: 2024_06_12_064412) do
   add_foreign_key "chiffres", "users"
   add_foreign_key "control_documents", "organismes"
   add_foreign_key "control_documents", "users"
+  add_foreign_key "enquete_questions", "enquetes"
+  add_foreign_key "enquete_reponses", "enquetes"
+  add_foreign_key "enquete_reponses", "organismes"
   add_foreign_key "missions", "programmes"
   add_foreign_key "modifications", "organismes"
   add_foreign_key "modifications", "users"
+  add_foreign_key "objectifs_contrats", "organismes"
+  add_foreign_key "objectifs_contrats", "users"
   add_foreign_key "operateur_programmes", "operateurs"
   add_foreign_key "operateur_programmes", "programmes"
   add_foreign_key "operateurs", "missions"

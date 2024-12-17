@@ -29,6 +29,15 @@ module ApplicationHelper
     end
   end
 
+  def format_unit(value, unit)
+    case value
+    when nil, ''
+      ''
+    else
+      unit
+    end
+  end
+
   def format_date(date)
     return if date.nil?
 

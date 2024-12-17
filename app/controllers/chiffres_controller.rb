@@ -5,7 +5,7 @@ class ChiffresController < ApplicationController
   include Authentication
   before_action :authenticate_user!
   before_action :find_organisme, only: %i[index show_dates restitutions]
-  before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy open_phase]
+  before_action :find_chiffre_and_organisme, only: %i[edit update update_phase destroy open_phase show]
   before_action :redirect_unless_access, only: %i[index restitutions]
   before_action :redirect_unless_controleur, only: :new
   before_action :redirect_unless_can_edit, only: %i[edit update destroy]
@@ -142,6 +142,19 @@ class ChiffresController < ApplicationController
             turbo_stream.update("content_phase-#{@chiffre.id}", partial: 'chiffres/content_phase', locals: { chiffre: @chiffre })
           ]
         end
+      end
+    end
+  end
+
+  def show
+    respond_to do |format|
+      format.html
+      format.pdf do
+        render pdf: "#{@organisme.nom}_#{@chiffre.type_budget}_#{@chiffre.exercice_budgetaire}",
+               template: "chiffres/show",
+               layout: 'pdf',
+               disposition: 'inline',
+               encoding: 'UTF-8'
       end
     end
   end

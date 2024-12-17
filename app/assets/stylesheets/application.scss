@@ -336,3 +336,40 @@ select:disabled {
 .fr-collapse--grey{
   background-color: var(--grey-975-75) !important;
 }
+
+a.fr-tag[aria-pressed=true]:not(:disabled) {
+  background-color: transparent;
+  color: var(--text-inverted-blue-france);
+  background-image: radial-gradient(circle at 100% 0.25rem, transparent 0.578125rem, var(--background-active-blue-france) 0.625rem);
+}
+
+a.fr-tag[aria-pressed=true]:not(:disabled):hover{
+  background-image: radial-gradient(circle at 100% 0.25rem, transparent 0.578125rem, var(--background-active-blue-france-hover) 0.625rem);
+}
+
+a.fr-tag[aria-pressed=true]:not(:disabled):active {
+  background-image: radial-gradient(circle at 100% 0.25rem, transparent 0.578125rem, var(--background-active-blue-france-active) 0.625rem);
+}
+
+a.fr-tag[aria-pressed=true]::after{
+  color: var(--text-action-high-blue-france);
+}
+
+.fr-input-unit{
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-title-grey);
+  pointer-events: none;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+.fr-text--blue{
+  color: var(--blue-france-sun-113-625);
+}

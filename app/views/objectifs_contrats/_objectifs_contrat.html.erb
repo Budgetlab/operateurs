@@ -1,0 +1,11 @@
+<%  if organisme.objectifs_contrats&.count > 0 %>
+  <% objectifs_contrat = organisme.objectifs_contrats.order(:fin).last %>
+  <p class="fr-card__desc">
+    Contrat COP/COM : <b>Oui, <%= objectifs_contrat.nom %> <%= objectifs_contrat.debut %> - <%= objectifs_contrat.fin %> </b>
+    <% if objectifs_contrat.document.attached? %><br><%= link_to rails_blob_url(objectifs_contrat.document, disposition: :attachment), class: "fr-link fr-link--sm fr-icon-download-line fr-link--icon-right" do %>Télécharger le document <% end %><%end %>
+  </p>
+<% end %>
+<%= render 'objectifs_contrats/flash'%>
+<% if @statut_user == '2B2O' || current_user == organisme.controleur %>
+  <p class="fr-card__desc"><%= link_to "Ajouter un nouveau document de COP/COM", new_objectifs_contrat_path(organisme_id: organisme.id),class:"fr-btn fr-btn--secondary fr-btn--sm", 'aria-controls': "modal-document", data: {turbo_frame: :form_document, fr_opened: false} %></p>
+<% end %>

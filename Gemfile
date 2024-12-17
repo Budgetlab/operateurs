@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.3.5'
+ruby '3.3.6'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem 'rails', '~> 7.1', '>= 7.1.4'
+gem 'rails', '~> 7.2', '>= 7.2.2.1'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'
@@ -59,6 +59,10 @@ gem 'rails_autolink'
 gem 'rails-i18n'
 gem 'ransack'
 gem 'roo', '~> 2.10.0'
+gem 'wicked_pdf'
+gem 'wkhtmltopdf-binary'
+gem 'ostruct'
+gem 'ferrum'
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

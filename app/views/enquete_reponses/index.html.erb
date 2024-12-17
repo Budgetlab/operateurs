@@ -1,0 +1,108 @@
+<main role="main" class="containtAll">
+  <div class="fr-container ">
+
+    <h1 class="fr-mt-7w fr-mb-4w">Enquêtes CIB-CIC</h1>
+    <div class="fr-notice fr-notice--info fr-mb-4w">
+      <div class="fr-container">
+        <div class="fr-notice__body">
+          <p>
+            <span class="fr-notice__title">Information</span>
+            <span class="fr-notice__desc">Il s'agit de la synthèse des résultats de l'ensemble des organismes soumis à l'enquête sur l'année sélectionnée. Les résultats de l’enquête d’un organisme spécifique se trouvent sur la page de l’organisme.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+
+    <div>
+      <ul class="fr-tags-group">
+        <% @enquete_annees.each do |annee| %>
+          <li>
+            <%= link_to annee, enquete_reponses_path(annee: annee), class: "fr-tag", 'aria-pressed' => (@annee_a_afficher == annee ? 'true' : 'false') %>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+
+    <h2 class="title-btn">Restitutions des résultats d'enquête <%= @annee_a_afficher %>
+      <button class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-download-line" aria-controls="modal-telechargement" data-fr-opened="false">
+        Télécharger
+      </button>
+    </h2>
+    <dialog aria-labelledby="modal-telechargement-title" id="modal-telechargement" class="fr-modal" role="dialog">
+      <div class="fr-container fr-container--fluid fr-container-md">
+        <div class="fr-grid-row fr-grid-row--center">
+          <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
+            <div class="fr-modal__body">
+              <div class="fr-modal__header">
+                <button class="fr-btn--close fr-btn" aria-controls="modal-telechargement">Fermer</button>
+              </div>
+              <div class="fr-modal__content">
+                <h1 id="fr-modal-2-title" class="fr-modal__title">
+                  <span class="fr-icon-arrow-right-line fr-icon--lg"></span>
+                  Télécharger les résultats de l'enquête <%= @annee_a_afficher %>
+                </h1>
+                <p>
+                <div data-controller="pdf-export">
+                  <button class="fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-download-line" data-action="pdf-export#export" data-pdf-export-target="button">
+                    Exporter les résultats au format PDF
+                  </button>
+                </div>
+                </p>
+                <p>
+                  <%= button_to enquete_reponses_path(annee: @annee_a_afficher, format: :xlsx), method: :get, class: "fr-btn fr-btn--tertiary fr-btn--icon-left fr-icon-download-line" do %>
+                    Exporter les résultats <%= @annee_a_afficher %> au format XLSX
+                  <% end %>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <div data-controller="request">
+      <%= search_form_for @q, data: { turbo_frame: 'results' } do |f| %>
+        <div class="fr-grid-row fr-grid-row--gutters">
+          <% if @statut_user != "Controleur" %>
+            <div class="fr-col-6 fr-col-lg-4">
+              <%= f.collection_select(
+                    :organisme_controleur_nom_in, # Ransack key
+                    User.where(statut: 'Controleur').order(:nom), # Collection for select
+                    :nom, # Value method
+                    :nom, # Display method
+                    { prompt: 'Sélectionner un contrôleur' }, # Options for the select
+                    { class: 'fr-select', oninput: 'this.form.requestSubmit()' } # HTML attributes
+                  ) %>
+            </div>
+          <% end %>
+          <div class="fr-col-6 fr-col-lg-4">
+            <%= f.select(
+                  :organisme_famille_in, # Ransack key
+                  @liste_familles, # Collection for select
+                  { prompt: 'Sélectionner une famille' }, # Options for the select
+                  { class: 'fr-select', oninput: 'this.form.requestSubmit()' } # HTML attributes
+                ) %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+
+    <div id="containPDF">
+      <h2 class="fr-h2 fr-mt-6w print fr-hidden">Restitutions des résultats d'enquête <%= @annee_a_afficher %></h2>
+      <%= turbo_frame_tag :results do %>
+        <% @resultats.each_with_index do |(question, reponses), index| %>
+          <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
+            <div class="fr-col-12 fr-col-lg-4">
+              <p class="fr-text--regular"><%= question %></p>
+            </div>
+            <div class="fr-col-12 fr-col-lg-8">
+              <div data-controller="highcharts" data-highcharts-datavalue="<%= reponses.to_json %>"></div>
+            </div>
+          </div>
+          <hr class="fr-mt-2w">
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</main>

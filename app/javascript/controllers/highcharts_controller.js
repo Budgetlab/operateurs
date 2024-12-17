@@ -1,10 +1,14 @@
 import { Controller } from "@hotwired/stimulus"
 import Highcharts from "highcharts"
 import exporting from "exporting"
+import HighchartsExportData from 'export-data';
+import HighchartsOfflineExporting from 'offline-exporting';
 import data from "data"
 import accessibility from "accessibility"
 import nodata from "nodata"
 exporting(Highcharts)
+HighchartsExportData(Highcharts)
+HighchartsOfflineExporting(Highcharts)
 data(Highcharts)
 accessibility(Highcharts)
 nodata(Highcharts)
@@ -16,6 +20,10 @@ export default class extends Controller {
     }
     connect() {
         this.showViz();
+        const data = JSON.parse(this.data.get("datavalue"))
+        if (data && Object.keys(data).length > 0) {
+            this.renderChart(data)
+        }
     }
 
     showViz(){
@@ -38,7 +46,9 @@ export default class extends Controller {
         if (grouped_datas != null ) {
 
             const colors_ms = ["var(--green-menthe-950-100)","var(--green-menthe-850-200)"];
+            const colors_ms_export = ["#bafaee", "#73e0cf"];
             const colors_emplois = ["var(--purple-glycine-925-125)", "var(--purple-glycine-main-494)"];
+            const colors_emplois_export = ["#fddbfa","#a558a0"];
             let stack_type_budget = ["BI","CF"]
 
             let data_bi = {
@@ -107,44 +117,49 @@ export default class extends Controller {
             let dataRecettesCF = [data_cf.dataRecettesCF_non_flechees,data_cf.dataRecettesCF_flechees]
 
             const colors_treso = ["var(--blue-france-925-125)","var(--blue-france-850-200)"];
-            const options_treso = this.syntheseBarSimple("Évolution de la trésorerie finale", abscisses, "Trésorerie finale (€)",'Trésorerie finale BI', data_bi.dataTresoBI, " €",  "Trésorerie finale CF", data_cf.dataTresoCF,  colors_treso);
+            const colors_treso_export = ["#e3e3fd","#cacafb"]
+            const options_treso = this.syntheseBarSimple("Évolution de la trésorerie finale", abscisses, "Trésorerie finale (€)",'Trésorerie finale BI', data_bi.dataTresoBI, " €",  "Trésorerie finale CF", data_cf.dataTresoCF,  colors_treso, colors_treso_export);
             this.chart = Highcharts.chart(this.canvasTresoTarget, options_treso);
             this.chart.reflow();
 
-            const options_ms = this.syntheseBarSimple("Évolution de la masse salariale", abscisses, "Masse salariale (€)",'Masse salariale BI', data_bi.dataCPBI_personnel," €", "Masse salariale CF", data_cf.dataCPCF_personnel, colors_ms);
+            const options_ms = this.syntheseBarSimple("Évolution de la masse salariale", abscisses, "Masse salariale (€)",'Masse salariale BI', data_bi.dataCPBI_personnel," €", "Masse salariale CF", data_cf.dataCPCF_personnel, colors_ms, colors_ms_export);
             this.chart = Highcharts.chart(this.canvasMSTarget, options_ms);
             this.chart.reflow();
 
-            const options_emplois = this.syntheseBarSimple("Évolution des emplois", abscisses, "Emplois (ETPT)","Emplois BI", data_bi.dataETPTBI," ETPT", "Emplois CF", data_cf.dataETPTCF, colors_emplois);
+            const options_emplois = this.syntheseBarSimple("Évolution des emplois", abscisses, "Emplois (ETPT)","Emplois BI", data_bi.dataETPTBI," ETPT", "Emplois CF", data_cf.dataETPTCF, colors_emplois, colors_emplois_export);
             this.chart = Highcharts.chart(this.canvasEmploisTarget, options_emplois);
             this.chart.reflow();
 
             if (this.data.get("cb") == "Non") {
                 const colors_charges = ["var(--brown-caramel-850-200)","var(--green-archipel-850-200)","var(--beige-gris-galet-main-702) " ];
+                const colors_charges_export = ["#eac7b2","#60e0eb","#aea397"]
                 let serie_name1_charges = ["Charges de personnel BI", "Charges de fonctionnement BI", "Charges d'intervention BI"];
                 let serie_name2_charges = ["Charges de personnel CF", "Charges de fonctionnement CF", "Charges d'intervention CF"];
-                const options_charges = this.syntheseBarStacked("Évolution des charges", abscisses, "Montant (€)",' €', serie_name1_charges, dataChargesBI,serie_name2_charges, dataChargesCF, colors_charges, stack_type_budget );
+                const options_charges = this.syntheseBarStacked("Évolution des charges", abscisses, "Montant (€)",' €', serie_name1_charges, dataChargesBI,serie_name2_charges, dataChargesCF, colors_charges, stack_type_budget, colors_charges_export );
                 this.chart = Highcharts.chart(this.canvasChargesTarget, options_charges);
                 this.chart.reflow();
 
                 const colors_produits = ["var(--beige-gris-galet-sun-407-moon-821-active)","var(--yellow-tournesol-950-100-hover)", "var(--beige-gris-galet-925-125)","var(--green-menthe-850-200)" ];
+                const colors_produits_export = ["#afa08f","#fbd335","#eee4d9", "#73e0cf"]
                 let serie_name1_produits = ["Subventions de l’Etat BI", "Fiscalité affectée BI", "Autres subventions BI", "Autres produits BI"];
                 let serie_name2_produits = ["Subventions de l’Etat CF", "Fiscalité affectée CF", "Autres subventions CF", "Autres produits CF"];
-                const options_produits = this.syntheseBarStacked("Évolution des produits", abscisses, "Montant (€)",' €', serie_name1_produits, dataProduitsBI,serie_name2_produits, dataProduitsCF, colors_produits, stack_type_budget );
+                const options_produits = this.syntheseBarStacked("Évolution des produits", abscisses, "Montant (€)",' €', serie_name1_produits, dataProduitsBI,serie_name2_produits, dataProduitsCF, colors_produits, stack_type_budget, colors_produits_export );
                 this.chart = Highcharts.chart(this.canvasProduitsTarget, options_produits);
                 this.chart.reflow();
             }else {
-                const colors_depenses = ["var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active","var(--green-emeraude-sun-425-moon-753-active)" ];
+                const colors_depenses = ["var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active)","var(--green-emeraude-sun-425-moon-753-active)" ];
+                const colors_depenses_export = ["#dae6fd","#2f4077", "#faa184", "#49bc8d" ]
                 let serie_name1_depenses = ["Dépenses de personnel BI", "Dépenses de fonctionnement BI", "Dépenses d'intervention BI", "Dépenses d'investissement BI"];
                 let serie_name2_depenses = ["Dépenses de personnel CF", "Dépenses de fonctionnement CF", "Dépenses d'intervention CF", "Dépenses d'investissement CF"];
-                const options_depenses = this.syntheseBarStacked("Évolution des dépenses", abscisses, "Montant (€)",' €',serie_name1_depenses, dataCPBI,serie_name2_depenses,dataCPCF, colors_depenses, stack_type_budget );
+                const options_depenses = this.syntheseBarStacked("Évolution des dépenses", abscisses, "Montant (€)",' €',serie_name1_depenses, dataCPBI,serie_name2_depenses,dataCPCF, colors_depenses, stack_type_budget, colors_depenses_export );
                 this.chart = Highcharts.chart(this.canvasDepensesTarget, options_depenses);
                 this.chart.reflow();
 
                 const colors_recettes = ["var(--yellow-tournesol-950-100-hover)", "var(--beige-gris-galet-925-125)"];
+                const colors_recettes_export = ["#fbd335","#eee4d9"]
                 let serie_name1_recettes = ["Recettes globalisées BI", "Recettes fléchées BI"];
                 let serie_name2_recettes = ["Recettes globalisées CF", "Recettes fléchées CF"];
-                const options_recettes = this.syntheseBarStacked("Évolution des recettes", abscisses, "Montant (€)",' €',serie_name1_recettes, dataRecettesBI,serie_name2_recettes,dataRecettesCF, colors_recettes, stack_type_budget );
+                const options_recettes = this.syntheseBarStacked("Évolution des recettes", abscisses, "Montant (€)",' €',serie_name1_recettes, dataRecettesBI,serie_name2_recettes,dataRecettesCF, colors_recettes, stack_type_budget, colors_recettes_export );
                 this.chart = Highcharts.chart(this.canvasRecettesTarget, options_recettes);
                 this.chart.reflow();
             }
@@ -153,16 +168,18 @@ export default class extends Controller {
             const abscisses_series = JSON.parse(this.data.get("abscissesbis"));
 
             const colors_emplois_cout = ["var(--green-menthe-850-200)","var(--purple-glycine-main-494)","var(--pink-tuile-925-125-active)", "var(--pink-tuile-main-556)","var(--background-disabled-grey)"]
+            const colors_emplois_cout_export = ["#73e0cf", "#a558a0", "#faa191", "#ce614a", "#e5e5e5"]
             const emplois_total = Object.values(series).map(values => values[3]);
             const emplois_montant = Object.values(series).map(values => values[4]);
-            const options_emplois_bis = this.syntheseColSpline("Comparaison de l'évolution de la masse salariale et des emplois", abscisses_series, "Masse salariale (€)",'Masse salariale', emplois_montant," €", "Emplois (ETPT)", "Emplois", emplois_total, " ETPT" ,colors_emplois_cout);
+            const options_emplois_bis = this.syntheseColSpline("Comparaison de l'évolution de la masse salariale et des emplois", abscisses_series, "Masse salariale (€)",'Masse salariale', emplois_montant," €", "Emplois (ETPT)", "Emplois", emplois_total, " ETPT" ,colors_emplois_cout, colors_emplois_cout_export);
             this.chart = Highcharts.chart(this.canvasEmploisBisTarget, options_emplois_bis);
             this.chart.reflow();
 
             const colors_treso_bfr = ["var(--blue-ecume-850-200)", "var(--green-menthe-850-200)"]
+            const colors_treso_bfr_export = ["#bfccfb", "#73e0cf"]
             const treso = Object.values(series).map(values => values[1]);
             const bfr = Object.values(series).map(values => values[17]);
-            const options_treso_bfr = this.syntheseColSpline( "Comparaison de la trésorerie et du besoin en fonds de roulement", abscisses_series, "Montant (€)",'Trésorerie finale', treso, " €", "", "Besoin fonds de roulement", bfr, " €",colors_treso_bfr );
+            const options_treso_bfr = this.syntheseColSpline( "Comparaison de la trésorerie et du besoin en fonds de roulement", abscisses_series, "Montant (€)",'Trésorerie finale', treso, " €", "", "Besoin fonds de roulement", bfr, " €",colors_treso_bfr,colors_treso_bfr_export );
             this.chart = Highcharts.chart(this.canvasTresoBFRTarget, options_treso_bfr);
             this.chart.reflow();
 
@@ -185,11 +202,12 @@ export default class extends Controller {
                 this.chart.reflow();
             }else{
                 const colors_treso_rap = ["var(--yellow-tournesol-850-200)", "var(--blue-france-850-200)", "var(--pink-tuile-main-556)"]
+                const colors_treso_rap_export = ["#efcb3a", "#cacafb", "#ce614a"]
                 const treso_flechee = Object.values(series).map(values => values[19]);
                 const treso_non_flechee = Object.values(series).map(values => values[20]);
                 const rap = Object.values(series).map(values => values[18]);
                 const stack_treso = ["Trésorerie"]
-                const options_treso_bfr = this.syntheseStackSpline( "Comparaison de la trésorerie et des RAP ", abscisses_series, "Montant (€)",'Trésorerie fléchée', treso_flechee, "Trésorerie non fléchée", treso_non_flechee," €", "Restes à payer", rap, " €",colors_treso_rap, stack_treso );
+                const options_treso_bfr = this.syntheseStackSpline( "Comparaison de la trésorerie et des RAP ", abscisses_series, "Montant (€)",'Trésorerie fléchée', treso_flechee, "Trésorerie non fléchée", treso_non_flechee," €", "Restes à payer", rap, " €",colors_treso_rap, stack_treso, colors_treso_rap_export );
                 this.chart = Highcharts.chart(this.canvasTresoRAPTarget, options_treso_bfr);
                 this.chart.reflow();
 
@@ -201,11 +219,12 @@ export default class extends Controller {
                 const d_intervention = Object.values(series).map(values => values[9]);
                 const d_investissement = Object.values(series).map(values => values[10]);
                 const data_depenses = [d_personnel, d_fonctionnel,d_intervention, d_investissement];
-                const colors_depenses = ["var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active","var(--green-emeraude-sun-425-moon-753-active)", "var(--yellow-tournesol-950-100-hover)", "var(--beige-gris-galet-925-125)" ];
+                const colors_depenses = ["var(--blue-cumulus-925-125)","var(--blue-ecume-sun-247-moon-675)","var(--orange-terre-battue-925-125-active)","var(--green-emeraude-sun-425-moon-753-active)", "var(--yellow-tournesol-950-100-hover)", "var(--beige-gris-galet-925-125)" ];
+                const colors_depenses_export = ["#dae6fd", "#2f4077", "#faa184", "#49bc8d", "#fbd335", "#eee4d9"]
                 const serie_name1_recettes = ["Recettes fléchées", "Recette globalisées"];
                 const serie_name2_depenses = ["Dépenses de personnel", "Dépenses de fonctionnement", "Dépenses d'intervention", "Dépenses d'investissement"];
                 const stack_depenses = ["Dépenses", "Recettes"];
-                const options_dr = this.syntheseBarStacked("Comparaison de l’évolution des dépenses et des recettes", abscisses_series, "Montant (€)",' €',serie_name2_depenses,data_depenses,serie_name1_recettes, data_recettes, colors_depenses, stack_depenses );
+                const options_dr = this.syntheseBarStacked("Comparaison de l’évolution des dépenses et des recettes", abscisses_series, "Montant (€)",' €',serie_name2_depenses,data_depenses,serie_name1_recettes, data_recettes, colors_depenses, stack_depenses, colors_depenses_export );
                 this.chart = Highcharts.chart(this.canvasDepensesRecettesTarget, options_dr);
                 this.chart.reflow();
             }
@@ -294,7 +313,7 @@ export default class extends Controller {
         return options
     }
 
-    syntheseBarSimple(title, abscisses, title_y, serie_name1, data1, value_tooltip, serie_name2, data2, colors){
+    syntheseBarSimple(title, abscisses, title_y, serie_name1, data1, value_tooltip, serie_name2, data2, colors, colors_export){
         const options = {
             chart: {
                 height: 400,
@@ -303,8 +322,38 @@ export default class extends Controller {
                 },
                 type: 'column',
             },
-            exporting:{enabled: true},
+            exporting:{
+                enabled: true,
+                allowHTML: true,
+                chartOptions: {
+                    colors: colors_export,
+                    chart: {
+                        style: {
+                            fontFamily: "Marianne"
+                        }
+                    }
+                },
+                buttons: {
+                    contextButton: {
+                        menuItems: ["downloadPNG", "downloadJPEG", "downloadPDF", "downloadSVG", "downloadCSV", "downloadXLS"],
+                        theme: {
+                            fill: 'transparent'
+                        }
+                    }
+                },
+                menuItemDefinitions: {
+                    downloadPNG: { text: 'Télécharger en PNG' },
+                    downloadJPEG: { text: 'Télécharger en JPEG' },
+                    downloadPDF: { text: 'Télécharger en PDF' },
+                    downloadSVG: { text: 'Télécharger en SVG' },
+                    downloadCSV: { text: 'Télécharger en CSV' },
+                    downloadXLS: { text: 'Télécharger en XLS' }
+                }
+            },
             colors: colors,
+            credits: {
+                enabled: false
+            },
             title: {
                 text: '',
 
@@ -409,7 +458,7 @@ export default class extends Controller {
         return options
     }
 
-    syntheseBarStacked(title, abscisses, title_y, value_tooltip, serie_name1, data1, serie_name2, data2, colors, stack){
+    syntheseBarStacked(title, abscisses, title_y, value_tooltip, serie_name1, data1, serie_name2, data2, colors, stack, colors_export){
         let series = [];
 
         data1.forEach((data, i) => {
@@ -440,8 +489,38 @@ export default class extends Controller {
                 },
                 type: 'column',
             },
-            exporting:{enabled: true},
+            exporting:{
+                enabled: true,
+                allowHTML: true,
+                chartOptions: {
+                    colors: colors_export,
+                    chart: {
+                        style: {
+                            fontFamily: "Marianne"
+                        }
+                    }
+                },
+                buttons: {
+                    contextButton: {
+                        menuItems: ["downloadPNG", "downloadJPEG", "downloadPDF", "downloadSVG", "downloadCSV", "downloadXLS"],
+                        theme: {
+                            fill: 'transparent'
+                        }
+                    }
+                },
+                menuItemDefinitions: {
+                    downloadPNG: { text: 'Télécharger en PNG' },
+                    downloadJPEG: { text: 'Télécharger en JPEG' },
+                    downloadPDF: { text: 'Télécharger en PDF' },
+                    downloadSVG: { text: 'Télécharger en SVG' },
+                    downloadCSV: { text: 'Télécharger en CSV' },
+                    downloadXLS: { text: 'Télécharger en XLS' }
+                }
+            },
             colors: colors,
+            credits: {
+                enabled: false
+            },
             title: {
                 text: '',
 
@@ -523,7 +602,7 @@ export default class extends Controller {
         return options
     }
 
-    syntheseColSpline(title, abscisses, title_y, serie_name,data, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors){
+    syntheseColSpline(title, abscisses, title_y, serie_name,data, value_tooltip1, title_y2, serie_name2, data2, value_tooltip2, colors, colors_export){
         let y_Axis = []
         let y_Axis_value = 0
         if (title_y2 == ''){
@@ -577,9 +656,38 @@ export default class extends Controller {
                 },
                 type: 'column',
             },
-            exporting:{enabled: true},
+            exporting:{
+                enabled: true,
+                allowHTML: true,
+                chartOptions: {
+                    colors: colors_export,
+                    chart: {
+                        style: {
+                            fontFamily: "Marianne"
+                        }
+                    }
+                },
+                buttons: {
+                    contextButton: {
+                        menuItems: ["downloadPNG", "downloadJPEG", "downloadPDF", "downloadSVG", "downloadCSV", "downloadXLS"],
+                        theme: {
+                            fill: 'transparent'
+                        }
+                    }
+                },
+                menuItemDefinitions: {
+                    downloadPNG: { text: 'Télécharger en PNG' },
+                    downloadJPEG: { text: 'Télécharger en JPEG' },
+                    downloadPDF: { text: 'Télécharger en PDF' },
+                    downloadSVG: { text: 'Télécharger en SVG' },
+                    downloadCSV: { text: 'Télécharger en CSV' },
+                    downloadXLS: { text: 'Télécharger en XLS' }
+                }
+            },
             colors: colors,
-
+            credits: {
+                enabled: false
+            },
             title: {
                 text: '',
 
@@ -657,7 +765,7 @@ export default class extends Controller {
         return options
     }
 
-    syntheseStackSpline(title, abscisses, title_y, serie_name,data,serie_name_bis, data_bis, value_tooltip1, serie_name2, data2, value_tooltip2, colors, stack){
+    syntheseStackSpline(title, abscisses, title_y, serie_name,data,serie_name_bis, data_bis, value_tooltip1, serie_name2, data2, value_tooltip2, colors, stack, colors_export){
 
         const options = {
             chart: {
@@ -667,8 +775,38 @@ export default class extends Controller {
                 },
                 type: 'column',
             },
-            exporting:{enabled: true},
+            exporting:{
+                enabled: true,
+                allowHTML: true,
+                chartOptions: {
+                    colors: colors_export,
+                    chart: {
+                        style: {
+                            fontFamily: "Marianne"
+                        }
+                    }
+                },
+                buttons: {
+                    contextButton: {
+                        menuItems: ["downloadPNG", "downloadJPEG", "downloadPDF", "downloadSVG", "downloadCSV", "downloadXLS"],
+                        theme: {
+                            fill: 'transparent'
+                        }
+                    }
+                },
+                menuItemDefinitions: {
+                    downloadPNG: { text: 'Télécharger en PNG' },
+                    downloadJPEG: { text: 'Télécharger en JPEG' },
+                    downloadPDF: { text: 'Télécharger en PDF' },
+                    downloadSVG: { text: 'Télécharger en SVG' },
+                    downloadCSV: { text: 'Télécharger en CSV' },
+                    downloadXLS: { text: 'Télécharger en XLS' }
+                }
+            },
             colors: colors,
+            credits: {
+                enabled: false
+            },
 
             title: {
                 text: '',
@@ -767,5 +905,150 @@ export default class extends Controller {
         return options
     }
 
+    renderChart() {
+        const data = JSON.parse(this.data.get("datavalue"));
+        // Récupérer les catégories (total, cbr, etc.)
+        const categories = Object.keys(data);
+        // Calculer le total des valeurs
+        // const total = Object.values(data.total).reduce((sum, value) => sum + value, 0);
+        // Construire les séries dynamiquement
+        // const series = Object.entries(data.total).map(([name, value]) => ({
+        //    name: `${name} (${((value / total) * 100).toFixed(1)}%)`, // Ajout du pourcentage
+                //    data: [value] // Valeur sous forme de tableau
+        // }));
+        // Préparer les séries
+        let series = [];
+        const allKeys = new Set(); // Pour collecter toutes les clés/réponses possibles
 
+        // Collecter toutes les clés uniques à travers tous les ensembles de données
+        categories.forEach(category => {
+            Object.keys(data[category]).forEach(key => allKeys.add(key));
+        });
+
+        // Convertir les données pour chaque clé unique
+        Array.from(allKeys).forEach(key => {
+            const seriesData = categories.map(category => ({
+                name: category,
+                y: data[category][key] || 0 // utilise 0 si la valeur n'existe pas
+            }));
+
+            series.push({
+                name: key,
+                data: seriesData
+            });
+        });
+
+        this.chart = Highcharts.chart(this.element, {
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false,
+                type: 'bar',
+                height: 300,         // Hauteur totale plus grande
+
+            },
+            colors: ["var(--beige-gris-galet-925-125)", "var( --blue-ecume-850-200)", "var(--yellow-moutarde-850-200)", "var(--orange-terre-battue-850-200)", "var(--green-menthe-925-125)", "var(--green-emeraude-main-632)"],
+            title: {
+                text: null
+            },
+            xAxis: {
+                categories: categories, // Une seule barre, donc une seule catégorie
+                title: {
+                    text: null,
+                },
+                labels: {
+                    style: {
+                        fontSize: '11px',
+                        fontFamily: "Marianne"
+                    }
+                },
+
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Total (%)',
+                    align: 'high',
+                    style: {
+                        fontSize: '11px',
+                        fontFamily: "Marianne"
+                    },
+                },
+                labels: {
+                    overflow: 'justify',
+                    format: '{value}%',  // Ajoute le % après chaque valeur
+                    style: {
+                        fontSize: '11px',
+                        fontFamily: "Marianne"
+                    }
+                },
+                gridLineWidth: 0, // Supprime les traits verticaux
+
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}% ({point.y} organismes)</b><br>',
+                style: {
+                    fontSize: '11px',
+                    fontFamily: "Marianne"
+                }
+            },
+            plotOptions: {
+                series: {
+                    stacking: 'percent', // Empilage en pourcentage
+                    pointWidth: 30,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y} ',
+                        style: {
+                            fontSize: '11px',
+                            fontFamily: "Marianne"
+                        }
+                    }
+                }
+            },
+            legend: {
+                reversed: true,
+                enabled: true, // Activer la légende
+                layout: 'horizontal',
+                align: 'center',
+                verticalAlign: 'bottom',
+                itemStyle: {
+                    fontSize: '11px',
+                    fontFamily: "Marianne"
+                }
+            },
+            credits: {
+                enabled: false
+            },
+            exporting: {
+                enabled: true,
+                allowHTML: true,
+                chartOptions: {
+                    colors: ["#eee4d9", "#bfccfb", "#fcc63a", "#fcc0b0", "#8bf8e7", "#00a95f"],
+                    chart: {
+                        style: {
+                            fontFamily: "Marianne"
+                        }
+                    }
+                },
+                buttons: {
+                    contextButton: {
+                        menuItems: ["downloadPNG", "downloadJPEG", "downloadPDF", "downloadSVG", "downloadCSV", "downloadXLS"],
+                        theme: {
+                            fill: 'transparent'
+                        }
+                    }
+                },
+                menuItemDefinitions: {
+                    downloadPNG: { text: 'Télécharger en PNG' },
+                    downloadJPEG: { text: 'Télécharger en JPEG' },
+                    downloadPDF: { text: 'Télécharger en PDF' },
+                    downloadSVG: { text: 'Télécharger en SVG' },
+                    downloadCSV: { text: 'Télécharger en CSV' },
+                    downloadXLS: { text: 'Télécharger en XLS' }
+                }
+            },
+            series: series
+        })
+    }
 }

@@ -1,0 +1,43 @@
+<%= turbo_frame_tag :form_document do %>
+  <h1 id="modal-document--title" class="fr-modal__title">
+    <span class="fr-icon-arrow-right-line fr-icon--lg" aria-hidden="true"></span>
+    Ajouter un document de COP/COM
+  </h1>
+  <div class="fr-grid-row fr-grid-row--gutters">
+    <div class="fr-col-12 fr-col-lg-12">
+      <div data-controller="form" class="fr-my-2w">
+        <%= form_with(model: @objectifs_contrat, data: { 'form-target': "form", action: "change->form#validateForm input->form#validateForm" }, multipart: true) do |f| %>
+          <%= f.hidden_field :organisme_id, value: @organisme.id %>
+          <div class="fr-select-group">
+            <label for="nom" class="fr-label">Type de document*</label>
+            <%= f.select :nom, [["- sélectionner -", ""], ['COP', 'COP'], ['COM', 'COM']], {}, { data: { 'form-target': 'fieldRequire' }, id: "nom", class: "fr-select" } %>
+          </div>
+
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-select-group">
+                <label for="objectifs_contrat_debut" class="fr-label">Année de début*</label>
+                <%= f.select :debut, [['- sélectionner -', ""]] + (Date.today.year - 5..Date.today.year + 10).map{|y| [y, y]}, {}, { data: { 'form-target': 'fieldRequire', action: "change->form#updateFinOptions" }, id: "objectifs_contrat_debut", class: "fr-select" } %>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-select-group">
+                <label for="objectifs_contrat_fin" class="fr-label">Année de fin*</label>
+                <%= f.select :fin, [['- sélectionner -', ""]] + (Date.today.year - 5..Date.today.year + 10).map{|y| [y, y]}, {}, { data: { 'form-target': 'fieldRequire' }, id: "objectifs_contrat_fin", class: "fr-select" }%>
+              </div>
+            </div>
+          </div>
+          <div class="fr-upload-group fr-my-2w">
+            <label class="fr-label" for="file">Ajouter un fichier*<span class="fr-hint-text">Format du fichier : pdf uniquement</span></label>
+            <%= f.file_field :document, accept: 'application/pdf', data: { 'form-target': 'fieldRequire', action: 'change->form#checkFile' }, id: 'file', class: "fr-upload" %>
+            <p id="file-upload-with-error" class="fr-error-text fr-hidden">
+              Format de fichier non supporté. Seuls les fichiers au format pdf sont acceptés.
+            </p>
+          </div>
+
+          <%= f.submit "Valider", data: { 'form-target': "submitBouton" }, 'aria-controls': "modal-document", class: "fr-btn" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

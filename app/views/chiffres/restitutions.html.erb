@@ -54,13 +54,19 @@
                         <button class="fr-sidemenu__link" data-toggle-id="emplois" data-action="click->toggle#changeMenuSection">Emplois</button>
                       </li>
                       <li class="fr-sidemenu__item">
-                        <button class="fr-sidemenu__link" data-toggle-id="comptabilite" data-action="click->toggle#changeMenuSection"><%= @organisme.comptabilite_budgetaire == "Non" ? "Comptabilité générale" : "Crédits"%> </button>
+                        <button class="fr-sidemenu__link" data-toggle-id="comptabilite" data-action="click->toggle#changeMenuSection"><%= @organisme.comptabilite_budgetaire == "Non" ? "Comptabilité générale" : "Crédits" %> </button>
                       </li>
                       <li class="fr-sidemenu__item">
                         <button class="fr-sidemenu__link" data-toggle-id="tresorerie" data-action="click->toggle#changeMenuSection">Trésorerie</button>
                       </li>
                     </ul>
                   </div>
+                </li>
+
+                <li class="fr-sidemenu__item">
+                  <%= link_to enquete_organisme_path(@organisme), class: "fr-sidemenu__link", target: "_self" do %>
+                    Contrôle Interne Financier
+                  <% end %>
                 </li>
               </ul>
             </div>

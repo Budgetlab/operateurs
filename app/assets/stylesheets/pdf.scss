@@ -1,0 +1,293 @@
+/**
+ * Déclaration des fontes
+ */
+@font-face {
+  font-family: Marianne;
+  src: font-url("Marianne-Light.woff2") format("woff2"), font-url("Marianne-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Marianne;
+  src: font-url("Marianne-Regular.woff2") format("woff2"), font-url("Marianne-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Marianne;
+  src: font-url("Marianne-Medium.woff2") format("woff2"), font-url("Marianne-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Marianne;
+  src: font-url("Marianne-Bold.woff2") format("woff2"), font-url("Marianne-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+body {
+  font-family: "Marianne", arial, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  overflow-wrap: break-word;
+  color: #3a3a3a;
+}
+.fr-container,
+.fr-container-sm,
+.fr-container-md {
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+h6 {
+  font-weight: 700;
+  font-size: 1.125rem;
+  line-height: 1.5rem;
+  margin: 0 0 1.5rem;
+}
+
+h5 {
+  font-weight: 700;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  margin: 0 0 1.5rem;
+}
+
+h4 {
+  font-weight: 700;
+  font-size: 1.375rem;
+  line-height: 1.75rem;
+  margin: 0 0 1.5rem;
+}
+
+h3 {
+  font-weight: 700;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  margin: 0 0 1.5rem;
+}
+
+h2 {
+  font-weight: 700;
+  font-size: 1.75rem;
+  line-height: 2.25rem;
+  margin: 0 0 1.5rem;
+}
+
+h1 {
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 2.5rem;
+  margin: 0 0 1.5rem;
+}
+
+p {
+  font-weight:500;
+  font-size: 1rem;
+  line-height: 1.5rem;
+  margin: 0 0 1.5rem;
+}
+h6, h5, h4, h3, h2, h1 {
+  color: #161616;
+}
+.fr-mt-8v,
+.fr-mt-4w,
+.fr-my-8v,
+.fr-my-4w {
+  margin-top: 2rem !important;
+}
+
+.fr-mb-8v,
+.fr-mb-4w,
+.fr-my-8v,
+.fr-my-4w {
+  margin-bottom: 2rem !important;
+}
+.fr-mb-4v,
+.fr-mb-2w,
+.fr-my-4v,
+.fr-my-2w {
+  margin-bottom: 1rem !important;
+}
+.fr-text--regular {
+  font-weight: 400 !important;
+}
+.fr-text--bold {
+  font-weight: 700 !important;
+}
+.fr-notice__body {
+  position: relative;
+  padding: 0 2.25rem 0 0;
+}
+.fr-notice--info {
+  background-color: #e8edff;
+  color: #0063cb;
+}
+.fr-badge {
+  display: inline-block; /* Utiliser inline-block pour le rendu */
+  text-align: center; /* Centrer le texte si nécessaire */
+  font-size: 0.875rem;
+  line-height: 1.5rem;
+  min-height: 1.5rem;
+  padding: 0 0.5rem;
+  overflow: initial;
+  max-height: none;
+  font-weight: 700;
+  max-width: 100%;
+  text-transform: uppercase;
+  border-radius: 0.25rem;
+}
+.fr-badge--blue-ecume {
+  color: #2f4077;
+  background-color: #e9edfe;
+}
+.fr-badge--pink-tuile {
+  color: #a94645;
+  background-color: #fee9e7;
+}
+.fr-badge--brown-caramel {
+  color: #845d48;
+  background-color: #f7ebe5;
+}
+.fr-badge--green-archipel {
+  color: #006a6f;
+  background-color: #c7f6fc;
+}
+.fr-badge--info {
+  color: #0063cb;
+  background-color: #e8edff;
+}
+.fr-badge--beige-gris-galet {
+  color: #6a6156;
+  background-color: #f3ede5;
+}
+.fr-badge--success {
+  color: #18753c;
+  background-color: #b8fec9;
+}
+.fr-badge--purple-glycine {
+  color: #6e445a;
+  background-color: #fee7fc;
+}
+hr {
+  border-top: 1px solid #ddd;
+  margin-bottom: 1rem !important;
+}
+.fr-grid-row {
+  display: -webkit-box; /* Ancien support WebKit */
+  display: -webkit-flex; /* Support pour les anciens navigateurs */
+  display: flex; /* Flexbox moderne */
+  -webkit-flex-wrap: wrap; /* Support ancien */
+  flex-wrap: wrap; /* Permet aux éléments de s'enrouler */
+  margin: 0;
+  padding: 0;
+}
+.fr-grid-row--gutters, .fr-grid-row-sm--gutters, .fr-grid-row-md--gutters{
+  margin: -0.75rem;
+}
+.fr-col-12 {
+  -webkit-box-flex: 0; /* Flexibilité pour les anciens navigateurs */
+  -webkit-flex: 0 0 100%; /* Occupe 66.67% de l'espace */
+  flex: 0 0 100%; /* Occupe 66.67% de l'espace */
+  width: 100%;
+  max-width: 100%; /* Limite la largeur maximale */
+  box-sizing: border-box; /* Pour prendre en compte le padding et les bordures */
+  padding: 0.75rem;
+}
+
+.fr-col-8 {
+  -webkit-box-flex: 0; /* Flexibilité pour les anciens navigateurs */
+  -webkit-flex: 0 0 66.67%; /* Occupe 66.67% de l'espace */
+  flex: 0 0 66.67%; /* Occupe 66.67% de l'espace */
+  width: 66.67%;
+  max-width: 66.67%; /* Limite la largeur maximale */
+  box-sizing: border-box; /* Pour prendre en compte le padding et les bordures */
+  padding: 0.75rem;
+}
+
+.fr-col-4 {
+  -webkit-box-flex: 0; /* Flexibilité pour les anciens navigateurs */
+  -webkit-flex: 0 0 33.33%; /* Occupe 33.33% de l'espace */
+  flex: 0 0 33.33%; /* Occupe 33.33% de l'espace */
+  width: 33.33%;
+  max-width: 33.33%; /* Limite la largeur maximale */
+  box-sizing: border-box; /* Pour prendre en compte le padding et les bordures */
+  padding: 0.75rem;
+}
+.fr-col-6 {
+  -webkit-box-flex: 0; /* Flexibilité pour les anciens navigateurs */
+  -webkit-flex: 0 0 50%; /* Occupe 33.33% de l'espace */
+  flex: 0 0 50%; /* Occupe 33.33% de l'espace */
+  width: 50%;
+  max-width: 50%; /* Limite la largeur maximale */
+  box-sizing: border-box; /* Pour prendre en compte le padding et les bordures */
+  padding: 0.75rem;
+}
+.fr-card--grey {
+  background-color: #eee;
+}
+.fr-card--blue {
+  background-color: #e8edff !important;
+  color: #000091;
+}
+.fr-card--rouge {
+  background-color: #ffe9e9 !important;
+  color: #ce0500;
+}
+.fr-card--orange {
+  color: #b34000;
+  background-color: #ffe9e6 !important;
+}
+.fr-card--jaune {
+  color: #66673d;
+  background-color: #fceeac !important;
+}
+.fr-card--vert {
+  color: #006a6f;
+  background-color: #c7f6fc !important;
+}
+.fr-card--green-menthe {
+  color: #37635f;
+  background-color: #bafaee !important;
+}
+.fr-card--yellow-moutarde {
+  color: #695240;
+  background-color: #feebd0 !important;
+}
+.fr-text--barre{
+  text-decoration : line-through;
+}
+.fr-text--italic{
+  font-style: italic;
+}
+.fr-text--center{
+  text-align: center;
+}
+.fr-text--underline{
+  text-decoration: underline;
+}
+.fr-capitalize::first-letter{
+  text-transform: uppercase !important;
+}
+.fr-p-4v, .fr-p-2w{
+  padding: 1rem !important;
+}
+.fr-mb-0{
+  margin-bottom: 0 !important;
+}
+.page_break {
+  page-break-after: always;
+}
+.fr-grid-row, .fr-card, p {
+  page-break-inside: avoid;
+}
