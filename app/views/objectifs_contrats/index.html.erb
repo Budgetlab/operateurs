@@ -79,7 +79,7 @@
                         <td class="fr-cell--multiline"><%= objectifs_contrat.organisme.controleur.nom %></td>
                         <td>
                           <% if objectifs_contrat.document.attached? %>
-                            <%= link_to rails_blob_url(objectifs_contrat.document, disposition: :attachment), data: { turbo_frame: "_top" }, class: 'fr-link fr-link--download' do %>
+                            <%= link_to objectifs_contrat.document.url(disposition: "attachment"), data: { turbo_frame: "_top" }, class: 'fr-link fr-link--download' do %>
                               Télécharger <span class="fr-link__detail">PDF</span>
                             <% end %>
                           <% end %>
