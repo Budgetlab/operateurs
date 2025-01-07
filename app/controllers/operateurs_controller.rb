@@ -5,6 +5,12 @@ class OperateursController < ApplicationController
   before_action :authenticate_admin!
   def index
     @operateurs = Operateur.all
+    Organisme.find_each do |organisme|
+      organisme.update(odac_n1: organisme.odac_n, odal_n1: organisme.odal_n, ciassp_n1: organisme.ciassp_n, taux_cadrage_n1: organisme.taux_cadrage_n)
+    end
+    @operateurs.each do |operateur|
+      operateur.update(operateur_n2: operateur.operateur_n1, operateur_n1: operateur.operateur_n, operateur_n: operateur.operateur_nf)
+    end
   end
 
   def new

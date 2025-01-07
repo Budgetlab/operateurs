@@ -13,19 +13,6 @@
           <div class="fr-my-4w"><%= submit_tag "Transmettre", class: "fr-btn" %></div>
         <% end %>
       </div>
-      <div>
-        <% @enquetes.each do |enquete| %>
-          <div>
-            <% if enquete.document.attached? %>
-              <%= link_to enquete.document.url(disposition: "attachment"), class: "fr-link fr-link--download" do %>
-                Télécharger au format PDF <span class="fr-link__detail">Format .pdf</span>
-              <% end %>
-            <% else %>
-              <%= link_to "Générer enquete #{enquete.annee}", enquete_reponses_path(annee: enquete.annee, format: :pdf), target: :_blank, class: "fr-link--download fr-link" %>
-            <% end %>
-          </div>
-        <% end %>
-      </div>
     </div>
   </div>
 </main>
