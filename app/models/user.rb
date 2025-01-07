@@ -37,12 +37,12 @@ class User < ApplicationRecord
     {statut: true, nom: false}
   end
 
-  def self.ransackable_attributes(auth_object = nil)
-    ["created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "id", "id_value", "last_sign_in_at", "last_sign_in_ip", "nom", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "statut", "updated_at"]
+  def self.ransackable_associations(auth_object = nil)
+    ["bureau_organismes", "chiffres", "control_documents", "controleur_organismes", "modifications", "objectifs_contrats"]
   end
 
-  def self.ransackable_associations(auth_object = nil)
-    ["bureau_organismes", "chiffres", "control_documents", "controleur_organismes", "modifications"]
+  def self.ransackable_attributes(auth_object = nil)
+    ["created_at", "current_sign_in_at", "current_sign_in_ip", "email", "encrypted_password", "id", "id_value", "last_sign_in_at", "last_sign_in_ip", "nom", "remember_created_at", "reset_password_sent_at", "reset_password_token", "sign_in_count", "statut", "updated_at"]
   end
 
   ransacker :nom, type: :string do

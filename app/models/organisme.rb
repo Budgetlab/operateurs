@@ -145,7 +145,7 @@ class Organisme < ApplicationRecord
   end
 
   def self.ransackable_associations(auth_object = nil)
-    ["bureau", "chiffres", "controleur", "ministere", "modifications", "operateur", "organisme_destinations", "organisme_ministeres", "organisme_rattachements", "control_documents"]
+    ["bureau", "chiffres", "control_documents", "controleur", "enquete_reponses", "ministere", "modifications", "objectifs_contrats", "operateur", "organisme_destinations", "organisme_ministeres", "organisme_rattachements"]
   end
 
   ransacker :nom, type: :string do
