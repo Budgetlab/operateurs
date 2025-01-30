@@ -199,11 +199,11 @@
       sheet.add_row(@credits_restes_a_payer)
       @var_restes_a_payer = [@colonnes_credits[43],nil] + @credits_ae_total[2..-1].zip(@credits_cp_total[2..-1]).map { |a,b| a.nil? ? nil : (a || 0) - (b || 0)  }
       sheet.add_row(@var_restes_a_payer)
-      @poids_restes_a_payer = [@colonnes_credits[44],nil] + @chiffres_export.pluck(:credits_restes_a_payer, :credits_cp_total, :emplois_depenses_personnel).map { |x, y, z| y.nil? ? nil : ratio_excel_percent(x,y-z,1) }
+      @poids_restes_a_payer = [@colonnes_credits[44],nil] + @chiffres_export.pluck(:credits_restes_a_payer, :credits_cp_total, :emplois_depenses_personnel).map { |x, y, z| y.nil? || z.nil? ? nil : ratio_excel_percent(x,y-z,1) }
       sheet.add_row(@poids_restes_a_payer)
 
       sheet.add_row
-      @colonnes_compta = ["COMPTABILITE GENERALE","Total des charges","Dont charges de personnel","poids relatif des charges de Personnel","Dont Charges de fonctionnement (autre que les charges de personnel)","poids relatif des charges de fonctionnement","Dont Charges d'intervention","poids relatif des charges d'intervention","Total des produits","Dont subventions de l'Etat","Dont fiscalité affectée","Dont Autres subventions","Dont Autres produits","Résultat","Décaissables/non décaissables","Charges non décaissables","Charges décaissables","Produits non encaissables","Capacité d'autofinancement","Total des emplois","Dont Investissements","Total des ressources","Dont financement de l'actif par l'Etat","Dont autres ressources","Opérations non budgétaires","Décaissements non budgétaires","dont Opérations au nom et pour le compte de tiers (besoins) pour OCB ou dont Opérations au nom et pour le compte de tiers (débits) pour OHCB","dont Emprunts, Prêts, Dépôts et cautionnements (besoins)","dont Autres décaissements non budgétaires","Encaissements non budgétaires","dont Opérations au nom et pour le compte de tiers (financements)pour OCB ou dont Opérations au nom et pour le compte de tiers (crédits) pour OHCB","Emprunts, Prêts, Dépôts et cautionnements (financements)","Autres encaissements non budgétaires"]
+      @colonnes_compta = ["COMPTABILITE GENERALE","Total des charges","Dont charges de personnel","poids relatif des charges de Personnel","Dont Charges de fonctionnement (autre que les charges de personnel)","poids relatif des charges de fonctionnement","Dont Charges d'intervention","poids relatif des charges d'intervention","Total des produits","Dont subventions de l'Etat","Dont fiscalité affectée","Dont Autres subventions","Dont Autres produits","Résultat","Décaissables/non décaissables","Charges non décaissables","Charges décaissables","Produits non encaissables","Capacité d'autofinancement","Total des emplois","Dont Investissements","Total des ressources","Dont financement de l'actif par l'Etat","Dont autres ressources","Opérations non budgétaires","Décaissements non budgétaires","dont Opérations au nom et pour le compte de tiers (besoins) pour OCB ou dont Opérations au nom et pour le compte de tiers (débits) pour OHCB","dont Emprunts, Prêts, Dépôts et cautionnements (besoins)","dont Autres décaissements non budgétaires","Encaissements non budgétaires","dont Opérations au nom et pour le compte de tiers (financements)pour OCB ou dont Opérations au nom et pour le compte de tiers (crédits) pour OHCB","dont Emprunts, Prêts, Dépôts et cautionnements (financements)","dont Autres encaissements non budgétaires"]
       sheet.add_row [@colonnes_compta[0]], style: titre_header
 
       @charges_personnel = [@colonnes_compta[2],nil] + @emplois_charges_personnel
@@ -264,19 +264,19 @@
 
       sheet.add_row [@colonnes_compta[24]], style: titre_header
 
-      @decaissements_operations = [@colonnes_compta[25],nil] + @chiffres_export.pluck(:decaissements_operations)
-      @decaissements_emprunts = [@colonnes_compta[26],nil] + @chiffres_export.pluck(:decaissements_emprunts)
-      @decaissements_autres = [@colonnes_compta[27],nil] + @chiffres_export.pluck(:decaissements_autres)
-      @decaissements = [@colonnes_compta[24],nil] + @chiffres_export.pluck(:decaissements_operations, :decaissements_emprunts, :decaissements_autres).map {|a,b,c| (a || 0) + (b || 0) + (c || 0) }
+      @decaissements_operations = [@colonnes_compta[26],nil] + @chiffres_export.pluck(:decaissements_operations)
+      @decaissements_emprunts = [@colonnes_compta[27],nil] + @chiffres_export.pluck(:decaissements_emprunts)
+      @decaissements_autres = [@colonnes_compta[28],nil] + @chiffres_export.pluck(:decaissements_autres)
+      @decaissements = [@colonnes_compta[25],nil] + @chiffres_export.pluck(:decaissements_operations, :decaissements_emprunts, :decaissements_autres).map {|a,b,c| (a || 0) + (b || 0) + (c || 0) }
       sheet.add_row(@decaissements)
       sheet.add_row(@decaissements_operations)
       sheet.add_row(@decaissements_emprunts)
       sheet.add_row(@decaissements_autres)
 
-      @encaissements_operations = [@colonnes_compta[29],nil] + @chiffres_export.pluck(:encaissements_operations)
-      @encaissements_emprunts = [@colonnes_compta[30],nil] + @chiffres_export.pluck(:encaissements_emprunts)
-      @encaissements_autres = [@colonnes_compta[31],nil] + @chiffres_export.pluck(:encaissements_autres)
-      @encaissements = [@colonnes_compta[28],nil] + @chiffres_export.pluck(:encaissements_operations, :encaissements_emprunts, :encaissements_autres).map {|a,b,c| (a || 0) + (b || 0) + (c || 0) }
+      @encaissements_operations = [@colonnes_compta[30],nil] + @chiffres_export.pluck(:encaissements_operations)
+      @encaissements_emprunts = [@colonnes_compta[31],nil] + @chiffres_export.pluck(:encaissements_emprunts)
+      @encaissements_autres = [@colonnes_compta[32],nil] + @chiffres_export.pluck(:encaissements_autres)
+      @encaissements = [@colonnes_compta[29],nil] + @chiffres_export.pluck(:encaissements_operations, :encaissements_emprunts, :encaissements_autres).map {|a,b,c| (a || 0) + (b || 0) + (c || 0) }
       sheet.add_row(@encaissements)
       sheet.add_row(@encaissements_operations)
       sheet.add_row(@encaissements_emprunts)
