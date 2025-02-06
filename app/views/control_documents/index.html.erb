@@ -20,7 +20,8 @@
             <p class="fr-table__detail"></p>
             <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-md fr-btns-group--icon-left">
               <li>
-                <button class="fr-btn fr-icon-settings-5-line fr-btn--icon-left fr-btn--secondary" aria-controls="filtres" aria-expanded="false">Filtrer les
+                <button class="fr-btn fr-icon-settings-5-line fr-btn--icon-left fr-btn--secondary" aria-controls="filtres" aria-expanded="false">Filtrer
+                  les
                   résultats
                 </button>
               </li>
@@ -28,9 +29,9 @@
           </div>
           <div class="fr-collapse" id="filtres" data-controller="request">
             <div class="fr-mb-2w">
-            <%= search_form_for @q, data: { turbo_frame: 'table' } do |f| %>
-              <%= f.search_field :organisme_nom_or_organisme_acronyme_or_organisme_controleur_nom_contains, class: 'fr-input', placeholder: "Rechercher les documents d'un organisme ou d'un contrôleur", oninput: 'this.form.requestSubmit()' %>
-            <% end %>
+              <%= search_form_for @q, data: { turbo_frame: 'table' } do |f| %>
+                <%= f.search_field :organisme_nom_or_organisme_acronyme_or_organisme_controleur_nom_contains, class: 'fr-input', placeholder: "Rechercher les documents d'un organisme ou d'un contrôleur", oninput: 'this.form.requestSubmit()' %>
+              <% end %>
             </div>
           </div>
           <%= turbo_frame_tag :table do %>
@@ -67,8 +68,8 @@
                       <th scope="col">Organisme</th>
                       <th scope="col">Contrôleur référent</th>
                       <th scope="col">Action</th>
-                      <% if @statut_user == "2B2O" %>
-                        <th scope="col">Action 2B2O</th>
+                      <% if @statut_user == "2B2O" || @statut_user == 'Controleur' %>
+                        <th scope="col"></th>
                       <% end %>
                     </tr>
                     </thead>
@@ -91,10 +92,12 @@
                             <% end %>
                           <% end %>
                         </td>
-                        <% if @statut_user == "2B2O" %>
+                        <% if @statut_user == "2B2O" || @statut_user == 'Controleur' %>
                           <td>
-                            <%= link_to edit_control_document_path(control_document), class: 'fr-btn fr-btn--sm fr-btn--tertiary fr-icon-delete-fill', 'aria-controls': "modal-document-control", data: { turbo_frame: :form_control_document, fr_opened: false } do %>
-                              Supprimer
+                            <% if @statut_user == "2B2O" || control_document.organisme.controleur == current_user %>
+                              <%= link_to edit_control_document_path(control_document), class: 'fr-btn fr-btn--sm fr-btn--tertiary fr-icon-delete-fill', 'aria-controls': "modal-document-control", data: { turbo_frame: :form_control_document, fr_opened: false } do %>
+                                Supprimer
+                              <% end %>
                             <% end %>
                           </td>
                         <% end %>
@@ -123,7 +126,7 @@
           <% end %>
         </div>
 
-        <% if @statut_user == "2B2O" %>
+        <% if @statut_user == "2B2O" || @statut_user == 'Controleur'%>
           <dialog id="modal-document-control" class="fr-modal" aria-labelledby="modal-document-control--title">
             <div class="fr-container fr-container--fluid fr-container-md">
               <div class="fr-grid-row fr-grid-row--center">

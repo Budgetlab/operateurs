@@ -60,8 +60,9 @@
                       <th scope="col">Organisme</th>
                       <th scope="col">Contrôleur référent</th>
                       <th scope="col">Action</th>
-                      <th scope="col"></th>
-
+                      <% if @statut_user == "2B2O" || @statut_user == 'Controleur' %>
+                        <th scope="col"></th>
+                      <% end %>
                     </tr>
                     </thead>
                     <tbody>
@@ -84,13 +85,15 @@
                             <% end %>
                           <% end %>
                         </td>
-                        <td>
-                          <% if @statut_user == "2B2O" || current_user == objectifs_contrat.user %>
-                            <%= link_to edit_objectifs_contrat_path(objectifs_contrat), class: 'fr-btn fr-btn--sm fr-btn--tertiary fr-icon-delete-fill', 'aria-controls': "modal-objectifs-contrat", data: { turbo_frame: :form_objectifs_contrat, fr_opened: false } do %>
-                              Supprimer
+                        <% if @statut_user == "2B2O" || @statut_user == 'Controleur' %>
+                          <td>
+                            <% if @statut_user == "2B2O" || objectifs_contrat.organisme.controleur == current_user %>
+                              <%= link_to edit_objectifs_contrat_path(objectifs_contrat), class: 'fr-btn fr-btn--sm fr-btn--tertiary fr-icon-delete-fill', 'aria-controls': "modal-objectifs-contrat", data: { turbo_frame: :form_objectifs_contrat, fr_opened: false } do %>
+                                Supprimer
+                              <% end %>
                             <% end %>
-                          <% end %>
-                        </td>
+                          </td>
+                        <% end %>
                       </tr>
                     <% end %>
                     </tbody>
@@ -116,7 +119,7 @@
           <% end %>
         </div>
 
-        <% if @statut_user == "2B2O" %>
+        <% if @statut_user == "2B2O" || @statut_user == 'Controleur' %>
           <dialog id="modal-objectifs-contrat" class="fr-modal" aria-labelledby="modal-objectifs-contrat--title">
             <div class="fr-container fr-container--fluid fr-container-md">
               <div class="fr-grid-row fr-grid-row--center">
