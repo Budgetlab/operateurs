@@ -159,6 +159,17 @@ class ChiffresController < ApplicationController
     end
   end
 
+  def duplicate
+    original = Chiffre.find(params[:id])
+    new_chiffre = original.dup
+
+    if new_chiffre.save
+      redirect_to organisme_chiffres_path(new_chiffre.organisme, paramId: new_chiffre.id), notice: 'Le BR a été dupliqué avec succès'
+    else
+      redirect_to organisme_chiffres_path(original.organisme, paramId: original.id), alert: 'Erreur lors de la duplication'
+    end
+  end
+
   def historique
     chiffres_all = select_chiffres
     @q = chiffres_all.ransack(params[:q])

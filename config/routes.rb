@@ -22,7 +22,11 @@ Rails.application.routes.draw do
     post 'import_organismes' => 'organismes#import_organismes'
     resources :control_documents
     resources :objectifs_contrats
-    resources :chiffres, except: [:index]
+    resources :chiffres, except: [:index] do
+      member do
+        post :duplicate
+      end
+    end
     post '/show_dates' => 'chiffres#show_dates'
     post '/select_comptabilite' => 'chiffres#select_comptabilite'
     post '/select_exercice' => 'chiffres#select_exercice'

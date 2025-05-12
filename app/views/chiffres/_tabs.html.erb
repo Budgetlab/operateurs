@@ -6,7 +6,7 @@
     <li role="presentation">
       <button id="budget-initial" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= @chiffre_default.nil? || budget_initial.first&.id == @chiffre_default&.id %>" aria-controls="budget-initial-tab" data-action="click->tab#showSection">Budget initial <%= @exercice_budgetaire %></button>
     </li>
-    <% budgets_rectificatifs.each_with_index do |budget, i| %>
+    <% budgets_rectificatifs&.each_with_index do |budget, i| %>
       <li role="presentation">
         <button id="budget-rectificatif-<%= i %>" class="fr-tabs__tab " tabindex="0" role="tab" aria-selected="<%= budget.id == @chiffre_default&.id %>" aria-controls="budget-rectificatif-tab-<%= i %>" data-action="click->tab#showSection">BR n°<%= i+1 %></button>
       </li>
@@ -23,7 +23,7 @@
     <%= render partial: 'chiffres/content', locals: {chiffre: budget_initial.first} %>
   </div>
 
-  <% budgets_rectificatifs.each_with_index do |budget, i| %>
+  <% budgets_rectificatifs&.each_with_index do |budget, i| %>
     <div id="budget-rectificatif-tab-<%= i %>" class="fr-tabs__panel" role="tabpanel" aria-labelledby="budget-rectificatif-<%= i %>" tabindex="0">
       <%= render partial: 'chiffres/content', locals: {chiffre: budget} %>
     </div>

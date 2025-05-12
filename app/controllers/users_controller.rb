@@ -12,8 +12,8 @@ class UsersController < ApplicationController
   end
 
   def import
-    # User.import(params[:file])
-    Chiffre.import(params[:file])
+    User.import(params[:file])
+    # Chiffre.import(params[:file])
     respond_to do |format|
       format.turbo_stream { redirect_to users_path }
     end
