@@ -4,7 +4,7 @@
 # [START cloudrun_rails_base_image]
 # Pinning the OS to buster because the nodejs install script is buster-specific.
 # Be sure to update the nodejs install command if the base image OS is updated.
-FROM ruby:3.3
+FROM ruby:3.4
 # FROM ruby:3.3.0-slim-bookworm AS assets
 # [END cloudrun_rails_base_image]
 
