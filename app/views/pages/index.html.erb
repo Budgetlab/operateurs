@@ -79,7 +79,7 @@
   <div class="fr-container">
     <h2>Informations sur les organismes<% if @statut_user != "2B2O" %> de mon périmètre<% end %></h2>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
-      <div class="fr-col-12 fr-col-lg-4" data-controller="highcharts" data-highcharts-budgetsbi="<%= @chiffres_bi_2025 %>" data-highcharts-budgetscf="<%= @chiffres_cf_2024 %>">
+      <div class="fr-col-12 fr-col-lg-4" data-controller="highcharts" data-highcharts-budgetsbi="<%= @chiffres_bi %>" data-highcharts-budgetscf="<%= @chiffres_cf %>">
         <h3>Suivi des budgets</h3>
         <div class="fr-card fr-card--shadow fr-card--auto">
           <div class="fr-card__body">
@@ -88,17 +88,17 @@
 
                 <ul class="fr-badges-group">
                   <li>
-                    <p class="fr-badge "><%= @chiffres_bi_2025.take(4).sum %>/<%= @organismes_user_active&.length %> BI
-                      2025</p></li>
+                    <p class="fr-badge "><%= @chiffres_bi.take(4).sum %>/<%= @organismes_user_active&.length %> BI
+                      <%= @year_bi %></p></li>
                 </ul>
-                <div class="fr-text--bold fr-text--center">Répartition des BI 2025</div>
+                <div class="fr-text--bold fr-text--center">Répartition des BI <%= @year_bi %></div>
                 <div data-highcharts-target="canvasBI"></div>
                 <ul class="fr-badges-group">
                   <li>
-                    <p class="fr-badge "><%= @chiffres_cf_2024.take(4).sum %>/<%= @organismes_user_active&.length %> CF
-                      2024</p></li>
+                    <p class="fr-badge "><%= @chiffres_cf.take(4).sum %>/<%= @organismes_user_active&.length %> CF
+                      <%= @year_cf %></p></li>
                 </ul>
-                <div class="fr-text--bold fr-text--center">Répartition des CF 2024</div>
+                <div class="fr-text--bold fr-text--center">Répartition des CF <%= @year_cf %></div>
                 <div data-highcharts-target="canvasCF"></div>
 
               </div>

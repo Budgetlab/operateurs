@@ -99,7 +99,7 @@
         </div>
         <div class="fr-mb-2w">
           <ul class="fr-tags-group">
-            <% (2019..2025).to_a.each do |annee| %>
+            <% @years.each do |annee| %>
               <li>
                 <% if @organisme.chiffres&.where(exercice_budgetaire: annee)&.size > 0 %>
                   <button class="fr-tag" data-toggle-target="nav" data-action="click->toggle#changeNav" aria-pressed="<%= @exercice_budgetaire == annee ? 'true' : 'false' %>">

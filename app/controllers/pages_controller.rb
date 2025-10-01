@@ -12,8 +12,10 @@ class PagesController < ApplicationController
     @organismes_last = @organismes_user ? @organismes_user.order(updated_at: :desc).limit(4).pluck(:id, :nom, :acronyme, :updated_at, :nature, :famille, :etat, :statut) : []
     @chiffres = Chiffre.where(statut: 'valide').where(organisme_id: @organismes_user.pluck(:id))
     @organismes_user_active = @statut_user == "2B2O" ? @organismes_user.where(etat: "Actif", presence_controle: true, gbcp_1: true).where.not(controleur_id: current_user.id) : @organismes_user.where(etat: "Actif", presence_controle: true, gbcp_1: true)
-    @chiffres_bi_2025 = calculate_chiffres_budget_exercice(@chiffres, @organismes_user_active, 2025, 'Budget initial')
-    @chiffres_cf_2024 = calculate_chiffres_budget_exercice(@chiffres, @organismes_user_active, 2024, 'Compte financier')
+    @year_bi = Date.today < Date.new(Date.today.year,9,1) ? Date.today.year : Date.today.year + 1
+    @chiffres_bi = calculate_chiffres_budget_exercice(@chiffres, @organismes_user_active, @year_bi, 'Budget initial')
+    @year_cf = Date.today.year - 1
+    @chiffres_cf = calculate_chiffres_budget_exercice(@chiffres, @organismes_user_active, @year_cf, 'Compte financier')
   end
 
   def mentions_legales; end

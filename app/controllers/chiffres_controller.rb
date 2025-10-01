@@ -12,6 +12,7 @@ class ChiffresController < ApplicationController
 
   # page des chiffres clés de l'organisme
   def index
+    @years = ChiffresYearsService.range
     # Check if the logged-in user is the "controller" of the organism, and store the result in @est_editeur
     @est_editeur = current_user == @organisme.controleur
     # Fetch all "chiffres" attached to the organism and sort them descendingly by "exercice_budgetaire"
@@ -35,9 +36,10 @@ class ChiffresController < ApplicationController
   end
 
   def show_dates
+    @years = ChiffresYearsService.range
     @est_editeur = current_user == @organisme.controleur
     @chiffres = @organisme.chiffres
-    @exercice_budgetaire = params[:exercice_budgetaire] && [2019, 2020, 2021, 2022, 2023, 2024, 2025].include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
+    @exercice_budgetaire = params[:exercice_budgetaire] && @years.to_a.include?(params[:exercice_budgetaire].to_i) ? params[:exercice_budgetaire].to_i : Date.today.year
     @chiffres_exercice_budgetaire = @chiffres.where(exercice_budgetaire: @exercice_budgetaire).order(created_at: :asc) || []
     @chiffre_default = set_default_chiffre(nil, @exercice_budgetaire, @chiffres)
     respond_to do |format|
@@ -52,6 +54,7 @@ class ChiffresController < ApplicationController
   def new
     @chiffre = Chiffre.new
     @organismes = current_user.controleur_organismes.where(statut: 'valide', etat: 'Actif').order(nom: :asc)
+    @years = ChiffresYearsService.range
   end
 
   def select_comptabilite
@@ -171,6 +174,7 @@ class ChiffresController < ApplicationController
   end
 
   def historique
+    @years = ChiffresYearsService.range
     chiffres_all = select_chiffres
     @q = chiffres_all.ransack(params[:q])
     @chiffres = @q.result.includes(:organisme, :user)
@@ -182,6 +186,7 @@ class ChiffresController < ApplicationController
   end
 
   def budgets
+    @years = ChiffresYearsService.range
     extended_family_organisms = fetch_extended_family_organisms
     chiffres_user = Chiffre.where(statut: 'valide').where(organisme_id: extended_family_organisms.pluck(:id)).order(updated_at: :desc)
     @q_params = q_params
@@ -213,9 +218,10 @@ class ChiffresController < ApplicationController
 
   def suivi_remplissage
     # filtres
+    @years = ChiffresYearsService.range
     @q_params = q_params
     @famille = params.dig(:q, :organisme_famille_eq)
-    @exercice = params.dig(:q, :exercice_budgetaire_eq) || 2025
+    @exercice = params.dig(:q, :exercice_budgetaire_eq) || Date.today.year
     # Récupérer les organismes qui peuvent avoir des budgets pour l'année sélectionnée et la famille sélectionnée
     organisms_actifs = fetch_organisms_actifs(@exercice.to_i, @famille)
     # Récupérer la liste des contrôleurs de ces organismes
@@ -248,7 +254,7 @@ class ChiffresController < ApplicationController
     @series = @grouped_chiffres_by_exercice.transform_values(&:last)
     exercices = @chiffres.map(&:exercice_budgetaire)
     first_exercice = exercices.min && exercices.min < 2022 ? exercices.min : 2022
-    last_exercice = exercices.max && exercices.max > 2025 ? exercices.max : 2025
+    last_exercice = exercices.max && exercices.max > Date.today.year ? exercices.max : Date.today.year
 
     @abscisses = (first_exercice..last_exercice).map(&:to_s) if first_exercice && last_exercice
     @abscisses_bis = @series.map { |k, v| "#{v.first} #{k}" }
@@ -335,7 +341,7 @@ class ChiffresController < ApplicationController
   def set_exercice_budgetaire_chiffres(params_id, params_exercice_budgetaire, chiffres)
     if params_id
       Chiffre.find(params_id.to_i)&.exercice_budgetaire
-    elsif params_exercice_budgetaire && [2019, 2020, 2021, 2022, 2023, 2024, 2025].include?(params_exercice_budgetaire.to_i)
+    elsif params_exercice_budgetaire && @years.to_a.include?(params_exercice_budgetaire.to_i)
       params_exercice_budgetaire.to_i
     else
       chiffres&.first&.exercice_budgetaire || Date.today.year
