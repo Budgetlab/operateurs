@@ -15,19 +15,26 @@ class EnqueteReponse < ApplicationRecord
     enquete_questions_map = {} # Map question titles to question IDs
     question_titles.each_with_index do |title, idx|
       number = question_numbers[idx]
-      next if title.nil? || number.nil? # Skip if there’s no title or question number
+      next if title.nil? || number.nil? # Skip if there's no title or question number
 
       # Create or find the question by title and number
       question = EnqueteQuestion.find_or_create_by!(nom: title, numero: number, enquete_id: enquete.id)
       enquete_questions_map[title] = question.id
     end
+
+    # Tableau pour collecter les SIREN non trouvés
+    siren_non_trouves = []
+
     data.each_with_index do |row, idx|
       next if idx < 2 # skip header
 
       row_data = Hash[[question_titles, row].transpose] # Associer les headers et les valeurs des colonnes
       # Récupérer l'organisme par SIREN
       organisme = Organisme.where(siren: row_data['SIREN'].to_s).first
-      next unless organisme
+      unless organisme
+        siren_non_trouves << row_data['SIREN']
+        next
+      end
 
       # Construire un hash pour les réponses
       reponses = {}
@@ -42,6 +49,14 @@ class EnqueteReponse < ApplicationRecord
       # Mettre à jour les réponses
       enquete_reponse.reponses = reponses
       enquete_reponse.save!
+    end
+
+    # Afficher tous les SIREN non trouvés à la fin
+    if siren_non_trouves.any?
+      puts "\n=========================================="
+      puts "SIREN non trouvés (#{siren_non_trouves.length}) :"
+      puts siren_non_trouves.join(', ')
+      puts "==========================================\n"
     end
   end
 

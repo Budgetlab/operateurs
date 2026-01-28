@@ -36,6 +36,11 @@
 
               <%= render_select_group("Contrôleur référent", :controleur_nom_in_insensitive, @controleur_name_list) %>
 
+              <div class="fr-label fr-text--bold">SIREN</div>
+              <div class="fr-mb-2w" role="search">
+                <%= f.search_field :siren_contains, class: 'fr-input', placeholder: "Filtrer sur le SIREN", oninput: 'this.form.requestSubmit()' %>
+              </div>
+
               <div class="fr-hidden" id="more_filters">
                 <%= render_tag_group 'Nature du contrôle', :nature_controle_in, ["Contrôle Économique et Financier", "Contrôle Budgétaire", "Contrôle Budgétaire EPSCP", "Autre"] %>
                 <%= render_select_group("Autorité de contrôle", :autorite_controle_in, @liste_autorite_controle) %>
