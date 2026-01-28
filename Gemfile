@@ -4,7 +4,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 ruby '3.4.8'
 
 # Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
-gem 'rails', '~> 7.2', '>= 7.2.2.2'
+gem 'rails', '~> 8.1', '>= 8.1.1'
 
 # The original asset pipeline for Rails [https://github.com/rails/sprockets-rails]
 gem 'sprockets-rails'
@@ -47,14 +47,14 @@ gem "sassc-rails"
 
 # Use Active Storage variants [https://guides.rubyonrails.org/active_storage_overview.html#transforming-images]
 # gem "image_processing", "~> 1.2"
-gem 'activeadmin'
+gem 'activeadmin', '~> 3.4'
 gem 'active_link_to'
 gem 'caxlsx'
 gem 'caxlsx_rails'
-gem 'devise'
+gem 'devise', '~> 4.9'
 gem 'dotenv-rails', '~> 2.7', '>= 2.7.6'
 gem 'google-cloud-storage'
-gem 'pagy'
+gem 'pagy', '~> 43.2'
 gem 'rails_autolink'
 gem 'rails-i18n'
 gem 'ransack'

@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  scope(:path => '/opera') do
+  scope(path: '/opera') do
     devise_for :admin_users, ActiveAdmin::Devise.config
     ActiveAdmin.routes(self)
     devise_for :users, path: '',
