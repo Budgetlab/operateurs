@@ -77,12 +77,12 @@ class Organisme < ApplicationRecord
         comite_audit: convert_to_boolean(row_data['Comité Audit Risques']),
         apu: convert_to_boolean(row_data['APU']),
         arrete_interdiction_odac: convert_to_boolean(row_data['Arrêté Interdiction emprunt ODAC']),
-        ciassp_n: convert_to_boolean(row_data['CIASSP 2024']),
-        ciassp_n1: convert_to_boolean(row_data['CIASSP 2023']),
-        odac_n: convert_to_boolean(row_data['ODAC 2022']),
-        odac_n1: convert_to_boolean(row_data['ODAC 2021']),
-        odal_n: convert_to_boolean(row_data['ODAL 2022']),
-        odal_n1: convert_to_boolean(row_data['ODAL 2021']),
+        ciassp_n: convert_to_boolean(row_data['CIASSP 2026']),
+        ciassp_n1: convert_to_boolean(row_data['CIASSP 2025']),
+        odac_n: convert_to_boolean(row_data['ODAC 2024']),
+        odac_n1: convert_to_boolean(row_data['ODAC 2023']),
+        odal_n: convert_to_boolean(row_data['ODAL 2024']),
+        odal_n1: convert_to_boolean(row_data['ODAL 2023']),
         statut: 'valide',
         )
       # Sauvegarder uniquement si des modifications ont été apportées

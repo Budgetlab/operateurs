@@ -4,8 +4,7 @@
 class MissionsController < ApplicationController
   before_action :authenticate_admin!, only: %i[index import_missions]
   def index
-    @missions = Mission.all.pluck(:nom)
-    @programmes = Programme.all.pluck(:nom)
+    @missions = Mission.all
   end
 
   def import_missions

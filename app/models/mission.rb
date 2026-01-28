@@ -12,13 +12,15 @@ class Mission < ApplicationRecord
       next if idx == 0 # skip header
 
       row_data = Hash[[headers, row].transpose]
-      Programme.where(numero: row_data['Code Programme'].to_i).first_or_create do |programme|
-        programme.nom = row_data['Intitulé de Programme'].to_s
-        programme.numero = row_data['Code Programme'].to_i
-      end
-      mission = Mission.new
+
+      # Trouver ou créer le programme et mettre à jour son intitulé
+      programme = Programme.find_or_initialize_by(numero: row_data['Code Programme'].to_i)
+      programme.nom = row_data['Intitulé de Programme'].to_s
+      programme.save
+
+      # Trouver ou créer la mission associée et mettre à jour son nom
+      mission = Mission.find_or_initialize_by(programme_id: programme.id)
       mission.nom = row_data['Mission'].to_s
-      mission.programme_id = Programme.where(nom: row_data['Intitulé de Programme'].to_s).first.id
       mission.save
     end
   end

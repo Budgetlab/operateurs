@@ -14,8 +14,29 @@
           <div class="fr-my-4w"><%= submit_tag "Transmettre", class:"fr-btn" %></div>
         <% end %>
       </div>
-      <div class="fr-my-4w"><%= @missions.length %> missions : <%= @missions %></div>
-      <div class="fr-my-4w"><%= @programmes.length %> programmes : <%= @programmes %></div>
+      <div class="fr-my-4w">
+        <h2><%= @missions.length %> missions</h2>
+        <div class="fr-table">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Mission</th>
+                <th scope="col">Code Programme</th>
+                <th scope="col">Intitulé de Programme</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @missions.each do |mission| %>
+                <tr>
+                  <td><%= mission.nom %></td>
+                  <td><%= mission.programme.numero %></td>
+                  <td><%= mission.programme.nom %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   </div>
 </main>
