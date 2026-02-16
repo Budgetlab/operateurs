@@ -2,6 +2,41 @@
   <div class="fr-container ">
     <div class="fr-col-lg-12">
       <h1 class="fr-my-7w">Réponses [<%= @reponses&.length %>]</h1>
+
+      <% if @stats_par_annee.present? %>
+        <div class="fr-mb-6w">
+          <h2 class="fr-h5 fr-mb-3w">Statistiques par année</h2>
+          <div class="fr-table">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Année</th>
+                  <th scope="col">Nombre d'enquêtes</th>
+                  <th scope="col">Nombre de réponses</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% @stats_par_annee.each do |stat| %>
+                  <tr>
+                    <td><%= stat[:annee] %></td>
+                    <td><%= stat[:nb_enquetes] %></td>
+                    <td><%= stat[:nb_reponses] %></td>
+                    <td>
+                      <%= button_to "Supprimer",
+                                    enquete_reponse_path(stat[:id]),
+                                    method: :delete,
+                                    data: { turbo_confirm: "Êtes-vous sûr de vouloir supprimer l'enquête de l'année #{stat[:annee]} et toutes ses réponses ?" },
+                                    class: "fr-btn fr-btn--secondary fr-btn--sm" %>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      <% end %>
+
       <div>
         <%= form_tag import_reponses_path, multipart: true do %>
           <div class="fr-upload-group">

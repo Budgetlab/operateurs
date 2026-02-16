@@ -1,6 +1,6 @@
 class EnqueteReponsesController < ApplicationController
   # before_action :authenticate_user!
-  before_action :authenticate_admin!, only: [:new, :import]
+  before_action :authenticate_admin!, only: [:new, :import, :destroy]
 
   def index
     @enquete_annees = Enquete.order(annee: :asc).pluck(:annee)
@@ -63,6 +63,16 @@ class EnqueteReponsesController < ApplicationController
   def new
     @enquetes = Enquete.all
     @reponses = EnqueteReponse.all
+
+    # Statistiques par année
+    @stats_par_annee = Enquete.order(annee: :desc).map do |enquete|
+      {
+        annee: enquete.annee,
+        id: enquete.id,
+        nb_enquetes: 1,
+        nb_reponses: enquete.enquete_reponses.count
+      }
+    end
   end
 
   def show
@@ -86,6 +96,17 @@ class EnqueteReponsesController < ApplicationController
     EnqueteReponse.import(file) if file.present?
     respond_to do |format|
       format.turbo_stream { redirect_to enquete_reponses_path }
+    end
+  end
+
+  def destroy
+    @enquete = Enquete.find(params[:id])
+    annee = @enquete.annee
+
+    if @enquete.destroy
+      redirect_to new_enquete_reponse_path, notice: "L'enquête de l'année #{annee} a été supprimée avec succès."
+    else
+      redirect_to new_enquete_reponse_path, alert: "Erreur lors de la suppression de l'enquête."
     end
   end
 end
