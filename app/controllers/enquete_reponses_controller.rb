@@ -14,7 +14,15 @@ class EnqueteReponsesController < ApplicationController
     @enquete_reponses = @enquete.enquete_reponses.joins(organisme: :controleur)
     @q = @enquete_reponses.ransack(params[:q])
     reponses = @q.result.includes(organisme: :controleur)
-    @questions = @enquete.enquete_questions.where.not(numero: [15, 29, 31]).order(:numero)
+
+    # Filtrer les questions selon l'année
+    if @annee_a_afficher == 2025
+      @questions = @enquete.enquete_questions.where.not(numero: 14).order(:numero)
+    elsif [2023, 2024].include?(@annee_a_afficher)
+      @questions = @enquete.enquete_questions.where.not(numero: [15, 29, 31]).order(:numero)
+    else
+      @questions = @enquete.enquete_questions.order(:numero)
+    end
 
     # construire les résultats
     @resultats = @questions.each_with_object({}) do |question, result|

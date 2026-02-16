@@ -71,7 +71,7 @@
     <orderEntry type="library" scope="PROVIDED" name="drb (v2.2.3, rbenv: 3.4.8) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="erb (v6.0.1, rbenv: 3.4.8) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="erubi (v1.13.1, rbenv: 3.4.8) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="faraday (v2.14.0, rbenv: 3.4.8) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="faraday (v2.14.1, rbenv: 3.4.8) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="faraday-follow_redirects (v0.5.0, rbenv: 3.4.8) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="faraday-net_http (v3.4.2, rbenv: 3.4.8) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="ferrum (v0.17.1, rbenv: 3.4.8) [gem]" level="application" />
@@ -97,7 +97,7 @@
     <orderEntry type="library" scope="PROVIDED" name="irb (v1.16.0, rbenv: 3.4.8) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jbuilder (v2.14.1, rbenv: 3.4.8) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jquery-rails (v4.6.1, rbenv: 3.4.8) [gem]" level="application" />
-    <orderEntry type="library" scope="PROVIDED" name="json (v2.18.0, rbenv: 3.4.8) [gem]" level="application" />
+    <orderEntry type="library" scope="PROVIDED" name="json (v2.18.1, rbenv: 3.4.8) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="jwt (v3.1.2, rbenv: 3.4.8) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="kaminari (v1.2.2, rbenv: 3.4.8) [gem]" level="application" />
     <orderEntry type="library" scope="PROVIDED" name="kaminari-actionview (v1.2.2, rbenv: 3.4.8) [gem]" level="application" />

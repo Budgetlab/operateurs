@@ -1,48 +1,71 @@
 <main role="main" class="containtAll">
   <div class="fr-container ">
     <div class="fr-col-lg-12">
-      <h1 class="fr-my-7w">Questions</h1>
-      <div class="fr-table" id="table-md-component">
-        <div class="fr-table__wrapper">
-          <div class="fr-table__container">
-            <div class="fr-table__content">
-              <table id="table-md">
-                <caption>
-                  Questions [<%= @questions&.length %>]
-                </caption>
-                <thead>
-                <tr>
-                  <th scope="col">
-                    Année
-                  </th>
-                  <th scope="col">
-                    Numéro
-                  </th>
-                  <th scope="col">
-                    Nom
-                  </th>
-                </tr>
-                </thead>
-                <tbody>
-                <% @questions.each do |question| %>
-                  <tr>
-                    <td>
-                      <%= question.enquete.annee %>
-                    </td>
-                    <td>
-                      <%= question.numero %>
-                    </td>
-                    <td class="fr-cell--multiline">
-                      <%= question.nom %>
-                    </td>
-                  </tr>
-                <% end %>
-                </tbody>
-              </table>
+      <h1 class="fr-my-7w">Questions [<%= @questions&.length %>]</h1>
+
+      <% if @years.present? %>
+        <div class="fr-tabs">
+          <ul class="fr-tabs__list" role="tablist" aria-label="Questions par année">
+            <% @years.each_with_index do |year, index| %>
+              <li role="presentation">
+                <button id="tabpanel-<%= year %>" class="fr-tabs__tab <%= 'fr-tabs__tab--selected' if index == 0 %>"
+                        tabindex="<%= index == 0 ? '0' : '-1' %>"
+                        role="tab"
+                        aria-selected="<%= index == 0 ? 'true' : 'false' %>"
+                        aria-controls="tabpanel-<%= year %>-panel">
+                  <%= year %> [<%= @questions_by_year[year].length %>]
+                </button>
+              </li>
+            <% end %>
+          </ul>
+
+          <% @years.each_with_index do |year, index| %>
+            <div id="tabpanel-<%= year %>-panel"
+                 class="fr-tabs__panel <%= 'fr-tabs__panel--selected' if index == 0 %>"
+                 role="tabpanel"
+                 aria-labelledby="tabpanel-<%= year %>"
+                 tabindex="0">
+              <div class="fr-table" id="table-<%= year %>-component">
+                <div class="fr-table__wrapper">
+                  <div class="fr-table__container">
+                    <div class="fr-table__content">
+                      <table id="table-<%= year %>">
+                        <caption>
+                          Questions <%= year %> [<%= @questions_by_year[year].length %>]
+                        </caption>
+                        <thead>
+                        <tr>
+                          <th scope="col">
+                            Numéro
+                          </th>
+                          <th scope="col">
+                            Nom
+                          </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <% @questions_by_year[year].sort_by(&:numero).each do |question| %>
+                          <tr>
+                            <td>
+                              <%= question.numero %>
+                            </td>
+                            <td class="fr-cell--multiline">
+                              <%= question.nom %>
+                            </td>
+                          </tr>
+                        <% end %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          <% end %>
         </div>
-      </div>
+      <% else %>
+        <p>Aucune question disponible.</p>
+      <% end %>
     </div>
   </div>
 </main>
