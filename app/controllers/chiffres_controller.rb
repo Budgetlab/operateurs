@@ -74,6 +74,8 @@ class ChiffresController < ApplicationController
                   operateur&.operateur_n
                 when Date.today.year - 1
                   operateur&.operateur_n1
+                when Date.today.year - 2
+                  operateur&.operateur_n2
                 else
                   false
                 end
