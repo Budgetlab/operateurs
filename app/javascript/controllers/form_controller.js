@@ -220,7 +220,7 @@ export default class extends Controller {
             agent_comptable_no.disabled = true;
             agent_comptable_oui.checked = true;
             gbcp_3_oui.disabled = false;
-            if (degre.value == "Exclusion"){
+            if (degre.value === "Exclusion"){
                 this.resetChamp(degre);
                 ['3° Etablissements publics de santé / GCS','4° Autres personnes morales de droit public (cf. arrêté)','5° Personnes morales de droit privé','6° Personnes morales de droit public hors APU'].forEach((deg)=>{
                     const option = document.createElement("option");
@@ -229,7 +229,7 @@ export default class extends Controller {
                     degre.appendChild(option);
                 })
             }
-        }else if (gbcp_no == true) {
+        }else if (gbcp_no === true) {
             agent_comptable_no.disabled = false;
             gbcp_3_no.checked = true;
             gbcp_3_oui.disabled = true;
@@ -245,14 +245,14 @@ export default class extends Controller {
         const gbcp3_no= this.element.querySelector('#radio-gbcp-3N').checked;
         const comptabilite_non= document.getElementById("radio-compta");
         const comptabilite_oui= document.getElementById("radio-compta-1");
-        const comptabilite_adapte= document.getElementById("radio-compta-b");
+        //const comptabilite_adapte= document.getElementById("radio-compta-b");
         if (gbcp3_no == true){
             comptabilite_non.checked = true;
             comptabilite_oui.disabled = true;
-            comptabilite_adapte.disabled = true;
+            //comptabilite_adapte.disabled = true;
         }else{
             comptabilite_oui.disabled = false;
-            comptabilite_adapte.disabled = false;
+            //comptabilite_adapte.disabled = false;
         }
     }
 

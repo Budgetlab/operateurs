@@ -80,7 +80,7 @@
               </fieldset>
 
               <div class="fr-select-group">
-                <label for="degre_gbcp" class="fr-label">Champ d'application du décret GBCP <%= render partial: "organismes/tooltip", locals: {num_id: "degre_gbcp"} %></label>
+                <label for="degre_gbcp" class="fr-label">Champ d'application du décret GBCP <%= render partial: "organismes/tooltip", locals: {num_id: "degre_gbcp_desc"} %></label>
                 <%= f.select :degre_gbcp,[["- sélectionner -",""],['3° Etablissements publics de santé / GCS','3° Etablissements publics de santé / GCS'],['4° Autres personnes morales de droit public (cf. arrêté)','4° Autres personnes morales de droit public (cf. arrêté)'],["5° Personnes morales de droit privé",'5° Personnes morales de droit privé'],["6° Personnes morales de droit public hors APU",'6° Personnes morales de droit public hors APU']],{selected: @organisme.degre_gbcp}, {id:"degre_gbcp",class:"fr-select"}%>
               </div>
 
