@@ -29,6 +29,21 @@
         Télécharger
       </button>
     </h2>
+
+    <% if @annee_a_afficher == 2025 %>
+      <div class="fr-notice fr-notice--info fr-mb-4w">
+        <div class="fr-container">
+          <div class="fr-notice__body">
+            <p>
+              <span class="fr-notice__title">NB : </span>
+              <span class="fr-notice__desc">
+              Vous trouverez, ci-après, une restitution quantitative de l'enquête 2025 sur le déploiement des dispositifs de CIB et CIC dans les organismes publics nationaux (QCIBC2025). Pour vous permettre de comparer les données 2025 aux données des années précédentes, seules les réponses aux questions du socle historique du QCIBC vous sont ici présentées.
+            </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    <% end %>
     <dialog aria-labelledby="modal-telechargement-title" id="modal-telechargement" class="fr-modal" role="dialog">
       <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
