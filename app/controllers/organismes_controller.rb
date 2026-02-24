@@ -16,10 +16,10 @@ class OrganismesController < ApplicationController
     extended_family_organisms = fetch_extended_family_organisms.includes(
       :bureau,
       :controleur,
-      :organisme_destinations,
-      :organisme_rattachements,
       :ministere,
       :control_documents,
+      :organisme_destinations,
+      organisme_rattachements: :organisme_destination,
       operateur: [:mission, :programme, :operateur_programmes],
       organisme_ministeres: [:ministere]
     )
@@ -37,7 +37,7 @@ class OrganismesController < ApplicationController
       end
     end
     @q = extended_family_organisms.ransack(q_params_send)
-    @organisms_for_results = @q.result
+    @organisms_for_results = @q.result(distinct: true)
     if value_reset_all
       q_params_send[:operateur_operateur_n_null] = 'true'
       q_params_send[:operateur_operateur_n_in] = ["true"]
@@ -377,7 +377,9 @@ class OrganismesController < ApplicationController
                                 :operateur_programme_numero_in => [], :gbcp_1_in => [], :gbcp_3_in => [],
                                 :comptabilite_budgetaire_in => [], :tutelle_financiere_in => [], :delegation_approbation_in => [],
                                 :autorite_approbation_in => [], :ministere_nom_in => [],
-                                :organisme_ministeres_ministere_nom_in => [], :admin_db_present_in => [], :admin_preca_in => [],
+                                :organisme_ministeres_ministere_nom_in => [],
+                                :ministere_nom_or_organisme_ministeres_ministere_nom_in => [],
+                                :admin_db_present_in => [], :admin_preca_in => [],
                                 :controleur_preca_in => [], :controleur_ca_in => [], :comite_audit_in => [], :apu_in => [],
                                 :ciassp_n_in => [], :odal_n_in => [], :odac_n_in => [], :arrete_interdiction_odac_in => [])
     else

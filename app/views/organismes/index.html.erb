@@ -1,4 +1,5 @@
-<% content_for :title do %>Liste des organismes | OPERA <% end %>
+<% content_for :title do %>Liste des organismes | OPERA
+<% end %>
 <main role="main" class="containtAll">
   <div class="fr-container ">
     <div class="fr-grid-row fr-grid-row--gutters">
@@ -13,20 +14,30 @@
           <div class="fr-sidemenu__inner">
             <div class="fr-sidemenu__title">Affiner la recherche</div>
 
-            <div class="fr-mb-2w"><%= link_to organismes_path, class:"fr-btn fr-btn--sm fr-btn--secondary fr-btn--icon-right fr-icon-refresh-line" do %>Réinitialiser les filtres<%end %></div>
+            <div class="fr-mb-2w"><%= link_to organismes_path, class: "fr-btn fr-btn--sm fr-btn--secondary fr-btn--icon-right fr-icon-refresh-line" do %>
+                Réinitialiser les filtres
+              <% end %></div>
 
-            <%= search_form_for @q, data: {'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance'} do |f| %>
+            <%= search_form_for @q, data: { 'request-target': 'form', turbo_frame: 'results', turbo_action: 'advance' } do |f| %>
               <div class="fr-mb-1w" role="search">
-                <%= f.search_field :nom_or_acronyme_contains, class: 'fr-input',id: 'search-input', placeholder: "Filtrer sur le nom ou l'acronyme", oninput: 'this.form.requestSubmit()' %>
+                <%= f.search_field :nom_or_acronyme_contains, class: 'fr-input', id: 'search-input', placeholder: "Filtrer sur le nom ou l'acronyme", oninput: 'this.form.requestSubmit()' %>
               </div>
 
               <div class="fr-label fr-text--bold">État</div>
               <ul class="fr-tags-group fr-my-1w">
                 <% ["Actif", "Inactif", "En cours de création"].each do |etat| %>
-                  <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:etat_in].present? && params[:q][:etat_in].include?(etat) ? 'true' : 'false' %>"><label><%= check_box_tag('q[etat_in][]', etat, params[:q] && params[:q][:etat_in].present? && params[:q][:etat_in].include?(etat) ? true : false, {class: "fr-hidden"}) %><%= etat %></label></button></li>
+                  <li>
+                    <button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:etat_in].present? && params[:q][:etat_in].include?(etat) ? 'true' : 'false' %>">
+                      <label><%= check_box_tag('q[etat_in][]', etat, params[:q] && params[:q][:etat_in].present? && params[:q][:etat_in].include?(etat) ? true : false, { class: "fr-hidden" }) %><%= etat %></label>
+                    </button>
+                  </li>
                 <% end %>
                 <% if @statut_user == '2B2O' %>
-                  <li><button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] &&  params[:q][:statut_not_eq].present? ? 'true' : 'false' %>"><label><%= check_box_tag('q[statut_not_eq]', 'valide', params[:q] && params[:q][:statut_not_eq].present? ? true : false, {class: "fr-hidden"}) %>Brouillon</label></button></li>
+                  <li>
+                    <button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:statut_not_eq].present? ? 'true' : 'false' %>">
+                      <label><%= check_box_tag('q[statut_not_eq]', 'valide', params[:q] && params[:q][:statut_not_eq].present? ? true : false, { class: "fr-hidden" }) %>
+                        Brouillon</label></button>
+                  </li>
                 <% end %>
               </ul>
 
@@ -52,12 +63,14 @@
                 <ul class="fr-tags-group fr-my-1w">
                   <li>
                     <button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?('true') ? 'true' : 'false' %>">
-                      <label><%= check_box_tag "q[operateur_operateur_n_in][]", true, params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?('true') ? true : false, { class: 'fr-hidden' } %> Oui</label>
+                      <label><%= check_box_tag "q[operateur_operateur_n_in][]", true, params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?('true') ? true : false, { class: 'fr-hidden' } %>
+                        Oui</label>
                     </button>
                   </li>
                   <li>
                     <button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_null].present? && params[:q][:operateur_operateur_n_null] == 'true' ? 'true' : 'false' %>">
-                      <label><%= check_box_tag "q[operateur_operateur_n_null]", true, params[:q] && params[:q][:operateur_operateur_n_null].present? && params[:q][:operateur_operateur_n_null] == 'true'  ? true : false, { class: 'fr-hidden' } %> Non</label>
+                      <label><%= check_box_tag "q[operateur_operateur_n_null]", true, params[:q] && params[:q][:operateur_operateur_n_null].present? && params[:q][:operateur_operateur_n_null] == 'true' ? true : false, { class: 'fr-hidden' } %>
+                        Non</label>
                     </button>
                   </li>
                 </ul>
@@ -75,7 +88,9 @@
                 <%= render_select_group("Autorité chargée de l'approbation BI/BR/CF", :autorite_approbation_in, @liste_approbation) %>
                 <%= render_select_group("Ministère de tutelle", :ministere_nom_in, @liste_nom_ministeres) %>
                 <%= render_select_group("Ministère de co-tutelle", :organisme_ministeres_ministere_nom_in, @liste_nom_ministeres) %>
-
+                <% if @statut_user == "2B2O" %>
+                  <%= render_select_group("Ministère de tutelle ou co-tutelle", :ministere_nom_or_organisme_ministeres_ministere_nom_in, @liste_nom_ministeres) %>
+                <% end %>
                 <%= render_tag_group 'Admin DB', :admin_db_present_in, ['true', 'false'] %>
                 <%= render_tag_group 'Présence DB au pré-CA', :admin_preca_in, ['true', 'false'] %>
                 <%= render_tag_group 'Présence contrôleur au pré-CA', :controleur_preca_in, ['true', 'false'] %>
@@ -84,11 +99,13 @@
 
                 <%= render_tag_group 'APU', :apu_in, ['true', 'false'] %>
                 <%= render_tag_group 'CIASSP', :ciassp_n_in, ['true', 'false'] %>
-                <%= render_tag_group "ODAL #{Date.today.year-2}", :odal_n_in, ['true', 'false'] %>
-                <%= render_tag_group "ODAC #{Date.today.year-2}", :odac_n_in, ['true', 'false'] %>
+                <%= render_tag_group "ODAL #{Date.today.year - 2}", :odal_n_in, ['true', 'false'] %>
+                <%= render_tag_group "ODAC #{Date.today.year - 2}", :odac_n_in, ['true', 'false'] %>
                 <%= render_tag_group 'Arrêté interdiction emprunt ODAC', :arrete_interdiction_odac_in, ['Annexe 1', 'Annexe 2', 'Exclusion'] %>
               </div>
-              <button class="fr-btn fr-btn--secondary fr-btn--sm fr-mb-2w" data-tag="more_filters" data-text="Afficher moins de filtres" data-action="click->request#toggleFilter">Afficher plus de filtres</button>
+              <button class="fr-btn fr-btn--secondary fr-btn--sm fr-mb-2w" data-tag="more_filters" data-text="Afficher moins de filtres" data-action="click->request#toggleFilter">Afficher
+                plus de filtres
+              </button>
 
             <% end %>
           </div>
@@ -96,56 +113,78 @@
       </div>
       <div class="fr-col-12 fr-col-lg-8">
         <%= turbo_frame_tag :results, target: "_top" do %>
-          <h2 class="fr-h3"><%= pluralize(@organisms_for_results&.count, 'résultat', plural: 'résultats')%>
-            <% if @statut_user == 'Controleur' %><a class="fr-link" aria-describedby="info_resultats" id="link-info_resultats" href="#" data-controller="filter" data-action="filter#Dropdown">
-              <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true"></span>
-            </a>
-            <span class="fr-tooltip fr-placement" id="info_resultats" role="tooltip" aria-hidden="true">Les résultats incluent les organismes de votre périmètre et ceux des familles auxquelles vous avez accès. Pour afficher uniquement vos organismes, sélectionnez votre profil dans controleur référent.</span>
+          <h2 class="fr-h3"><%= pluralize(@organisms_for_results&.count, 'résultat', plural: 'résultats') %>
+            <% if @statut_user == 'Controleur' %>
+              <a class="fr-link" aria-describedby="info_resultats" id="link-info_resultats" href="#" data-controller="filter" data-action="filter#Dropdown">
+                <span class="fr-icon-question-line fr-icon--sm" aria-hidden="true"></span>
+              </a>
+              <span class="fr-tooltip fr-placement" id="info_resultats" role="tooltip" aria-hidden="true">Les résultats incluent les organismes de votre périmètre et ceux des familles auxquelles vous avez accès. Pour afficher uniquement vos organismes, sélectionnez votre profil dans controleur référent.</span>
             <% end %>
             <div class="fr-download">
-              <% path_params = params[:q].present? ? {q: @q_params, format: 'xlsx'} : {format: 'xlsx'} %>
-              <p><%= link_to organismes_path(path_params), class: "fr-link fr-download__link", target: "_blank" do %>Télécharger les fiches d'identité <span class="fr-download__detail">Format .xlsx</span><%end %></p>
+              <% path_params = params[:q].present? ? { q: @q_params, format: 'xlsx' } : { format: 'xlsx' } %>
+              <p><%= link_to organismes_path(path_params), class: "fr-link fr-download__link", target: "_blank" do %>
+                  Télécharger les fiches d'identité <span class="fr-download__detail">Format .xlsx</span>
+                <% end %></p>
             </div>
           </h2>
 
-          <% @organisms_page.each do |organisme|%>
+          <% @organisms_page.each do |organisme| %>
             <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
               <div class="fr-col-6 fr-col-lg-12">
                 <div class="fr-badge-group">
                   <ul class="fr-mr-2w fr-mb-1v">
-                    <li><%= link_to organisme_path(organisme.id) do%><%= organisme.nom %><% if organisme.acronyme.present? %> - <%= organisme.acronyme %><%end %><%end %></li>
+                    <li><%= link_to organisme_path(organisme.id) do %><%= organisme.nom %>
+                        <% if organisme.acronyme.present? %> - <%= organisme.acronyme %>
+                        <% end %>
+                      <% end %></li>
                   </ul>
-                  <% class_badge_controleur = if current_user == organisme.controleur then "fr-badge--green-emeraude" else "fr-badge--blue-ecume" end%>
-                  <% class_badge_bs = if current_user == organisme.bureau then "fr-badge--green-emeraude" else "fr-badge--purple-glycine" end%>
+                  <% class_badge_controleur = if current_user == organisme.controleur then
+                                                "fr-badge--green-emeraude"
+                                              else
+                                                "fr-badge--blue-ecume"
+                                              end %>
+                  <% class_badge_bs = if current_user == organisme.bureau then
+                                        "fr-badge--green-emeraude"
+                                      else
+                                        "fr-badge--purple-glycine"
+                                      end %>
                   <% if organisme.statut != "valide" %>
                     <p class="fr-badge fr-badge--yellow-moutarde">Etape <%= organisme.statut %>/6</p>
                   <% else %>
-                    <p class="fr-badge <%= class_badge_controleur%>"><%= organisme.controleur.nom %></p><% if organisme.bureau %><p class="fr-badge <%= class_badge_bs %>"><%= organisme.bureau.nom %></p><% end %>
+                    <p class="fr-badge <%= class_badge_controleur %>"><%= organisme.controleur.nom %></p>
+                    <% if organisme.bureau %><p class="fr-badge <%= class_badge_bs %>"><%= organisme.bureau.nom %></p>
+                    <% end %>
                   <% end %>
 
 
                 </div>
                 <% if organisme.statut == "valide" %>
-                  <div><ul class="fr-tags-group">
-                    <li>
-                      <p class="fr-tag fr-tag--sm">Famille : <%= organisme.famille %></p>
-                    </li>
-                    <li>
-                      <p class="fr-tag fr-tag--sm">Nature juridique : <%= organisme.nature %></p>
-                    </li>
-                  </ul></div>
+                  <div>
+                    <ul class="fr-tags-group">
+                      <li>
+                        <p class="fr-tag fr-tag--sm">Famille : <%= organisme.famille %></p>
+                      </li>
+                      <li>
+                        <p class="fr-tag fr-tag--sm">Nature juridique : <%= organisme.nature %></p>
+                      </li>
+                    </ul>
+                  </div>
                 <% else %>
                   <div class="fr-mb-2w">
                     <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--sm">
-                      <li><%= link_to edit_organisme_path(organisme.id), class: "fr-btn fr-my-0 fr-btn--sm" do%>Reprendre le brouillon<%end %></li>
-                      <li><%= link_to organisme_path(organisme.id),data: { "turbo-method": :delete}, class: "fr-btn fr-btn--secondary fr-btn--sm fr-my-0" do%>Supprimer<%end %></li>
+                      <li><%= link_to edit_organisme_path(organisme.id), class: "fr-btn fr-my-0 fr-btn--sm" do %>
+                          Reprendre le brouillon
+                        <% end %></li>
+                      <li><%= link_to organisme_path(organisme.id), data: { "turbo-method": :delete }, class: "fr-btn fr-btn--secondary fr-btn--sm fr-my-0" do %>
+                          Supprimer
+                        <% end %></li>
                     </ul>
                   </div>
-                <% end  %>
+                <% end %>
               </div>
             </div>
             <hr class="fr-hr fr-py-1w"/>
-          <%end %>
+          <% end %>
 
           <div class="fr-my-2w">
             <%== pagy_nav_custom(@pagy) %>
@@ -154,7 +193,6 @@
         <% end %>
       </div>
     </div>
-
 
 
   </div>
