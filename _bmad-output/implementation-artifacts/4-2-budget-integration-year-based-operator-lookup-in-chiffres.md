@@ -1,6 +1,6 @@
 # Story 4.2: Budget Integration — Year-Based Operator Lookup in Chiffres
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -22,8 +22,8 @@ So that operator programme association works correctly regardless of the fiscal 
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Replace `select_exercice` case/when block (AC: #1, #2)
-  - [ ] 1.1: Replace lines 70-81 with single `operateur_pour_annee?` call
+- [x] Task 1: Replace `select_exercice` case/when block (AC: #1, #2)
+  - [x] 1.1: Replace lines 70-81 with single `operateur_pour_annee?` call
 
 ## Dev Notes
 
@@ -86,8 +86,28 @@ Called via AJAX from the budget creation form (`new` action for Chiffres). When 
 
 ### Agent Model Used
 
+claude-sonnet-4-6
+
 ### Debug Log References
+
+- `select_exercice_chiffres_url` n'existe pas — la route est `select_exercice_url` (POST `/opera/select_exercice`)
+- `toutes_annees` étend jusqu'à `Date.today.year` seulement, pas au-delà → test AC#2 ajusté pour couvrir les années passées hors plage hardcodée
 
 ### Completion Notes List
 
+- Remplacé le `case/when` de 12 lignes dans `ChiffresController#select_exercice` par un appel à `operateur&.operateur_pour_annee?(date.to_i)`
+- Variable `operateur` renommée `is_operateur` pour clarté (évite la réutilisation confuse du nom de variable)
+- Format JSON `{ operateur: boolean }` préservé exactement
+- 4 tests ajoutés : true, false, sans record, année hors plage hardcodée
+- 57 tests passent, 0 régression
+- CR: CLEAN — no findings, no fixes needed. Edge cases (nil exercice, nil organisme) verified safe.
+
 ### File List
+
+- app/controllers/chiffres_controller.rb
+- test/controllers/chiffres_controller_test.rb
+
+## Change Log
+
+- 2026-02-25: Story 4.2 implemented — replaced hardcoded 4-year case/when with `operateur_pour_annee?` in `select_exercice`
+- 2026-02-25: CR passed clean — no issues found, all edge cases verified safe

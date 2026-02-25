@@ -24,26 +24,8 @@ class OrganismesController < ApplicationController
       organisme_ministeres: [:ministere]
     )
     @q_params = q_params
-    q_params_send = params[:q]
-    if q_params_send
-      if q_params_send[:operateur_operateur_n_null] == 'true' && q_params[:operateur_operateur_n_in]&.include?('true')
-        value_reset_all = true
-        q_params_send.delete(:operateur_operateur_n_null)
-        q_params_send.delete(:operateur_operateur_n_in)
-      elsif q_params_send[:operateur_operateur_n_null] == 'true'
-        value_reset_operateur_n = true
-        q_params_send.delete(:operateur_operateur_n_null)
-        extended_family_organisms = extended_family_organisms.where(operateurs: { operateur_n: [nil, false] })
-      end
-    end
-    @q = extended_family_organisms.ransack(q_params_send)
+    @q = extended_family_organisms.ransack(params[:q])
     @organisms_for_results = @q.result(distinct: true)
-    if value_reset_all
-      q_params_send[:operateur_operateur_n_null] = 'true'
-      q_params_send[:operateur_operateur_n_in] = ["true"]
-    elsif value_reset_operateur_n
-      q_params_send[:operateur_operateur_n_null] = 'true'
-    end
     respond_to do |format|
       format.html do
         @pagy, @organisms_page = pagy(@organisms_for_results)
@@ -370,8 +352,8 @@ class OrganismesController < ApplicationController
 
   def q_params
     if params[:q].present?
-      params.require(:q).permit(:nom_or_acronyme_contains, :siren_contains, :operateur_operateur_n_null, :etat_in => [], :statut_not_eq => [], :famille_in => [],
-                                :nature_in => [],:operateur_operateur_n_in => [], :controleur_nom_in_insensitive => [],
+      params.require(:q).permit(:nom_or_acronyme_contains, :siren_contains, :etat_in => [], :statut_not_eq => [], :famille_in => [],
+                                :nature_in => [], :operateur_actif_in => [], :controleur_nom_in_insensitive => [],
                                 :nature_controle_in => [] ,:autorite_controle_in => [], :document_controle_present_in => [],
                                 :bureau_nom_in => [], :operateur_nom_categorie_in => [], :operateur_mission_nom_in => [],
                                 :operateur_programme_numero_in => [], :gbcp_1_in => [], :gbcp_3_in => [],

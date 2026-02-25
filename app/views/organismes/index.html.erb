@@ -62,15 +62,19 @@
                 <div class="fr-label fr-text--bold">Opérateur</div>
                 <ul class="fr-tags-group fr-my-1w">
                   <li>
-                    <button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?('true') ? 'true' : 'false' %>">
-                      <label><%= check_box_tag "q[operateur_operateur_n_in][]", true, params[:q] && params[:q][:operateur_operateur_n_in].present? && params[:q][:operateur_operateur_n_in].include?('true') ? true : false, { class: 'fr-hidden' } %>
-                        Oui</label>
+                    <button class="fr-tag" data-action="click->request#checkTag"
+                            aria-pressed="<%= params[:q] && params[:q][:operateur_actif_in]&.include?('true') ? 'true' : 'false' %>">
+                      <label><%= check_box_tag "q[operateur_actif_in][]", true,
+                             params[:q] && params[:q][:operateur_actif_in]&.include?('true'),
+                             { class: 'fr-hidden' } %> Oui</label>
                     </button>
                   </li>
                   <li>
-                    <button class="fr-tag" data-action="click->request#checkTag" aria-pressed="<%= params[:q] && params[:q][:operateur_operateur_n_null].present? && params[:q][:operateur_operateur_n_null] == 'true' ? 'true' : 'false' %>">
-                      <label><%= check_box_tag "q[operateur_operateur_n_null]", true, params[:q] && params[:q][:operateur_operateur_n_null].present? && params[:q][:operateur_operateur_n_null] == 'true' ? true : false, { class: 'fr-hidden' } %>
-                        Non</label>
+                    <button class="fr-tag" data-action="click->request#checkTag"
+                            aria-pressed="<%= params[:q] && params[:q][:operateur_actif_in]&.include?('false') ? 'true' : 'false' %>">
+                      <label><%= check_box_tag "q[operateur_actif_in][]", false,
+                             params[:q] && params[:q][:operateur_actif_in]&.include?('false'),
+                             { class: 'fr-hidden' } %> Non</label>
                     </button>
                   </li>
                 </ul>

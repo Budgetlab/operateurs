@@ -59,10 +59,10 @@ development_status:
   epic-3-retrospective: optional
 
   # Epic 4: Filtering, Budget Integration & Import
-  epic-4: in-progress
-  4-1-organism-index-filtering-simplify-to-operateur-actif: ready-for-dev
-  4-2-budget-integration-year-based-operator-lookup-in-chiffres: ready-for-dev
-  4-3-excel-import-adaptation-backward-compatible-year-array-construction: ready-for-dev
+  epic-4: done
+  4-1-organism-index-filtering-simplify-to-operateur-actif: done
+  4-2-budget-integration-year-based-operator-lookup-in-chiffres: done
+  4-3-excel-import-adaptation-backward-compatible-year-array-construction: done
   epic-4-retrospective: optional
 
   # Epic 5: Exports, Admin & Cleanup

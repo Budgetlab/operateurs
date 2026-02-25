@@ -94,4 +94,42 @@ class OrganismesControllerTest < ActionDispatch::IntegrationTest
     assert_match "Opérateur : Non", response.body
     assert_no_match "Années opérateur", response.body
   end
+
+  # --- Story 4.1: Organism Index Filtering — operateur_actif ---
+
+  test "index: filter operateur_actif_in=true returns only active operators" do
+    actif = Organisme.create!(nom: "Org Actif", statut: "valide", etat: "Actif",
+                              operateur_actif: true, controleur: @viewer)
+    inactif = Organisme.create!(nom: "Org Inactif", statut: "valide", etat: "Actif",
+                                operateur_actif: false, controleur: @viewer)
+
+    get organismes_url, params: { q: { operateur_actif_in: ['true'] } }
+    assert_response :success
+    assert_match actif.nom, response.body
+    assert_no_match inactif.nom, response.body
+  ensure
+    actif&.destroy
+    inactif&.destroy
+  end
+
+  test "index: filter operateur_actif_in=false returns only non-operators" do
+    actif = Organisme.create!(nom: "Org Actif F41", statut: "valide", etat: "Actif",
+                              operateur_actif: true, controleur: @viewer)
+    inactif = Organisme.create!(nom: "Org Inactif F41", statut: "valide", etat: "Actif",
+                                operateur_actif: false, controleur: @viewer)
+
+    get organismes_url, params: { q: { operateur_actif_in: ['false'] } }
+    assert_response :success
+    assert_no_match actif.nom, response.body
+    assert_match inactif.nom, response.body
+  ensure
+    actif&.destroy
+    inactif&.destroy
+  end
+
+  test "index: no longer accepts legacy operateur_operateur_n_null param" do
+    get organismes_url, params: { q: { operateur_operateur_n_null: 'true' } }
+    assert_response :success
+    # No error — param is simply ignored (not permitted)
+  end
 end

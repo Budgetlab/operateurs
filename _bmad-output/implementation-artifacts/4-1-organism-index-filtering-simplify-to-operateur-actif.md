@@ -1,6 +1,6 @@
 # Story 4.1: Organism Index Filtering — Simplify to operateur_actif
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -26,16 +26,16 @@ So that filtering organisms by operator status is intuitive and reliable.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Simplify controller index method (AC: #1)
-  - [ ] 1.1: Remove lines 28-46 (entire complex operateur filter block)
-  - [ ] 1.2: The `operateur_actif_in` filter works natively via Ransack on the organismes table — no custom logic needed
+- [x] Task 1: Simplify controller index method (AC: #1)
+  - [x] 1.1: Remove lines 28-46 (entire complex operateur filter block)
+  - [x] 1.2: The `operateur_actif_in` filter works natively via Ransack on the organismes table — no custom logic needed
 
-- [ ] Task 2: Update `q_params` (AC: #1)
-  - [ ] 2.1: Remove `:operateur_operateur_n_null` and `:operateur_operateur_n_in` from permitted params (line 373)
-  - [ ] 2.2: Add `:operateur_actif_in => []` to permitted params
+- [x] Task 2: Update `q_params` (AC: #1)
+  - [x] 2.1: Remove `:operateur_operateur_n_null` and `:operateur_operateur_n_in` from permitted params (line 373)
+  - [x] 2.2: Add `:operateur_actif_in => []` to permitted params
 
-- [ ] Task 3: Update index view filter (AC: #2)
-  - [ ] 3.1: Replace lines 62-76 (complex tag group) with simple `operateur_actif_in` tag group
+- [x] Task 3: Update index view filter (AC: #2)
+  - [x] 3.1: Replace lines 62-76 (complex tag group) with simple `operateur_actif_in` tag group
 
 ## Dev Notes
 
@@ -142,8 +142,31 @@ Add:
 
 ### Agent Model Used
 
+claude-sonnet-4-6
+
 ### Debug Log References
+
+None — clean implementation, no blockers.
 
 ### Completion Notes List
 
+- Removed 19-line complex operateur filter block from `OrganismesController#index` (lines 28-46)
+- Removed `value_reset_all`/`value_reset_operateur_n` variables and their post-ransack reset logic (lines 41-46)
+- `@q` now ransacks `params[:q]` directly (no intermediate manipulation)
+- Removed legacy params `:operateur_operateur_n_null` and `:operateur_operateur_n_in => []` from `q_params` permit list
+- Added `:operateur_actif_in => []` to `q_params` permit list
+- Updated index view filter (lines 62-76) to use `operateur_actif_in` with Oui/Non tags
+- Added 3 controller tests: filter true, filter false, legacy param ignored
+- All 53 tests pass, 0 regressions
+- CR: CLEAN — no findings, no fixes needed. All ACs verified, no residual legacy code.
+
 ### File List
+
+- app/controllers/organismes_controller.rb
+- app/views/organismes/index.html.erb
+- test/controllers/organismes_controller_test.rb
+
+## Change Log
+
+- 2026-02-25: Story 4.1 implemented — simplified operateur filter from complex null-check logic to direct `operateur_actif_in` Ransack predicate
+- 2026-02-25: CR passed clean — no issues found, all ACs verified

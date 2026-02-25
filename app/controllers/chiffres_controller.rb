@@ -67,19 +67,8 @@ class ChiffresController < ApplicationController
   def select_exercice
     date = params[:exercice]
     operateur = Organisme.where(id: params[:organisme])&.first&.operateur if params[:organisme]
-    operateur = case date.to_i
-                when Date.today.year + 1
-                  operateur&.operateur_nf
-                when Date.today.year
-                  operateur&.operateur_n
-                when Date.today.year - 1
-                  operateur&.operateur_n1
-                when Date.today.year - 2
-                  operateur&.operateur_n2
-                else
-                  false
-                end
-    response = { operateur: operateur || false }
+    is_operateur = operateur&.operateur_pour_annee?(date.to_i) || false
+    response = { operateur: is_operateur }
     render json: response
   end
 

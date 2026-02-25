@@ -120,4 +120,113 @@ class OperateurTest < ActiveSupport::TestCase
     assert_raises(ArgumentError) { @op_actif.desactiver!(nil) }
     assert_raises(ArgumentError) { @op_actif.desactiver!("2027") }
   end
+
+  # --- Operateur.import (Story 4.3) ---
+
+  test "import builds annees array from OUI columns and sets operateur_actif true for current year" do
+    organisme = Organisme.create!(nom: "Import Test 1", statut: "valide", etat: "Actif",
+                                  siren: "111111111", operateur_actif: false, controleur: users(:one))
+    organisme.operateur&.destroy
+    current_year = Date.today.year
+
+    call_operateur_import_row(organisme, 'OUI', 'OUI', 'NON', current_year)
+
+    organisme.reload
+    op = organisme.operateur
+    assert op.present?, "operateur should be created"
+    assert_includes op.annees, current_year,     "operateur_n maps to current_year"
+    assert_includes op.annees, current_year - 1, "operateur_n1 maps to current_year-1"
+    refute_includes op.annees, current_year - 2, "operateur_n2 NON should not be in annees"
+    assert organisme.operateur_actif, "operateur_actif should be true when current year is OUI"
+  ensure
+    organisme&.destroy
+  end
+
+  test "import sets operateur_actif false when only past years are OUI" do
+    organisme = Organisme.create!(nom: "Import Test 2", statut: "valide", etat: "Actif",
+                                  siren: "222222222", operateur_actif: false, controleur: users(:one))
+    organisme.operateur&.destroy
+    current_year = Date.today.year
+
+    call_operateur_import_row(organisme, 'NON', 'NON', 'OUI', current_year)
+
+    organisme.reload
+    op = organisme.operateur
+    assert op.present?
+    assert_includes op.annees, current_year - 2
+    refute_includes op.annees, current_year
+    refute organisme.operateur_actif, "operateur_actif false when only old years"
+  ensure
+    organisme&.destroy
+  end
+
+  test "import merges new years with existing annees" do
+    current_year = Date.today.year
+    organisme = Organisme.create!(nom: "Import Test 3", statut: "valide", etat: "Actif",
+                                  siren: "333333333", operateur_actif: false, controleur: users(:one))
+    organisme.operateur&.destroy
+    Operateur.create!(organisme: organisme, mission: @mission, programme: @programme,
+                      annees: [current_year - 5], presence_categorie: false)
+
+    call_operateur_import_row(organisme, 'OUI', 'NON', 'NON', current_year)
+
+    op = organisme.reload.operateur
+    assert_includes op.annees, current_year - 5, "old year preserved"
+    assert_includes op.annees, current_year,     "new year added"
+  ensure
+    organisme&.destroy
+  end
+
+  test "import destroys operateur when all columns are NON" do
+    organisme = Organisme.create!(nom: "Import Test 4", statut: "valide", etat: "Actif",
+                                  siren: "444444444", operateur_actif: true, controleur: users(:one))
+    organisme.operateur&.destroy
+    Operateur.create!(organisme: organisme, mission: @mission, programme: @programme,
+                      annees: [Date.today.year], presence_categorie: false)
+
+    call_operateur_import_row(organisme, 'NON', 'NON', 'NON', Date.today.year, destroy: true)
+
+    organisme.reload
+    assert_nil organisme.operateur, "operateur destroyed when all NON"
+    refute organisme.operateur_actif, "operateur_actif should be false after destroy"
+  ensure
+    organisme&.destroy
+  end
+
+  private
+
+  # Simulates processing a single row from Operateur.import.
+  # Mirrors the year_map logic in production: operateur_n=current_year, n1=year-1, n2=year-2.
+  def call_operateur_import_row(organisme, n_val, n1_val, n2_val, current_year, destroy: false)
+    row_data = {
+      'siren'              => organisme.siren,
+      'operateur_n'        => n_val,
+      'operateur_n1'       => n1_val,
+      'operateur_n2'       => n2_val,
+      'presence_categorie' => 'NON',
+      'nom_categorie'      => nil,
+      'programme'          => @programme.numero.to_s,
+      'programmes_annexes' => ''
+    }
+
+    year_map  = { 'operateur_n' => current_year, 'operateur_n1' => current_year - 1, 'operateur_n2' => current_year - 2 }
+    new_years = year_map.select { |col, _| row_data[col].to_s.upcase == 'OUI' }.values
+
+    if new_years.any?
+      operateur       = Operateur.where(organisme_id: organisme.id).first || Operateur.new(organisme_id: organisme.id)
+      existing_years  = operateur.annees || []
+      operateur.annees           = (existing_years + new_years).uniq.sort
+      operateur.presence_categorie = Operateur.convert_to_boolean(row_data['presence_categorie'])
+      operateur.nom_categorie    = row_data['nom_categorie']
+      operateur.programme_id     = @programme.id
+      operateur.mission_id       = @mission.id
+      if operateur.save
+        is_active = new_years.any? { |y| y >= current_year }
+        organisme.update!(operateur_actif: is_active)
+      end
+    else
+      organisme.operateur&.destroy
+      organisme.update!(operateur_actif: false)
+    end
+  end
 end

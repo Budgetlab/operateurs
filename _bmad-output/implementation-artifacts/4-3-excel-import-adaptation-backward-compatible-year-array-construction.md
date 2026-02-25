@@ -1,6 +1,6 @@
 # Story 4.3: Excel Import Adaptation — Backward-Compatible Year Array Construction
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -23,17 +23,17 @@ So that the import process is unchanged from my perspective but the data is stor
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Update `Operateur.import` method (AC: #1)
-  - [ ] 1.1: Replace line 21 check: map column values to years instead of checking booleans
-  - [ ] 1.2: Replace lines 23-27: build `annees` array from OUI columns
-  - [ ] 1.3: Merge with existing `annees` if operateur already exists
-  - [ ] 1.4: Set `operateur_actif` on organism
-  - [ ] 1.5: Handle "all NON" case (destroy operateur — line 43-44 existing behavior)
+- [x] Task 1: Update `Operateur.import` method (AC: #1)
+  - [x] 1.1: Replace line 21 check: map column values to years instead of checking booleans
+  - [x] 1.2: Replace lines 23-27: build `annees` array from OUI columns
+  - [x] 1.3: Merge with existing `annees` if operateur already exists
+  - [x] 1.4: Set `operateur_actif` on organism
+  - [x] 1.5: Handle "all NON" case (destroy operateur — line 43-44 existing behavior)
 
-- [ ] Task 2: Update `Organisme.import` method (AC: #2)
-  - [ ] 2.1: Replace lines 104-108 (boolean assignments) with year-based logic
-  - [ ] 2.2: Build annees array, merge with existing
-  - [ ] 2.3: Set operateur_actif on organism
+- [x] Task 2: Update `Organisme.import` method (AC: #2)
+  - [x] 2.1: Replace lines 104-108 (boolean assignments) with year-based logic
+  - [x] 2.2: Build annees array, merge with existing
+  - [x] 2.3: Set operateur_actif on organism
 
 ## Dev Notes
 
@@ -166,8 +166,31 @@ Each needs its own year-mapping logic.
 
 ### Agent Model Used
 
+claude-sonnet-4-6
+
 ### Debug Log References
+
+- Les deux méthodes `import` étaient déjà migrées (story 1.3). Cette story ajoute la couverture de tests manquante.
+- `Minitest::Mock` non disponible sans require — approche `call_operateur_import_row` helper adoptée (même pattern qu'`organisme_test.rb`)
 
 ### Completion Notes List
 
+- `Operateur.import` : déjà implémenté avec `year_map` et merge `(existing + new).uniq.sort`
+- `Organisme.import` : déjà implémenté avec extraction dynamique `/Opérateur \d{4}/` et `convert_to_boolean`
+- Aucun code de production modifié — les deux implémentations sont conformes aux ACs
+- 4 tests ajoutés pour `Operateur.import` : OUI courant, OUI passé seulement, merge, destroy all NON
+- `Organisme.import` déjà couvert par 4 tests existants dans `organisme_test.rb`
+- 61 tests passent, 0 régression
+- CR fix: H1 — `Operateur.import` destroy path missing `organisme.update(operateur_actif: false)` — added
+- CR fix: added `refute organisme.operateur_actif` assertion to destroy test
+- 61 tests, 199 assertions, 0 failures after CR
+
 ### File List
+
+- test/models/operateur_test.rb
+- app/models/operateur.rb (CR fix: added operateur_actif reset on destroy)
+
+## Change Log
+
+- 2026-02-25: Story 4.3 — implémentation déjà présente (story 1.3) ; ajout de 4 tests pour `Operateur.import`
+- 2026-02-25: CR fix — H1: added `organisme.update(operateur_actif: false)` to destroy branch in `Operateur.import`

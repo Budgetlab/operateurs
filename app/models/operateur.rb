@@ -48,6 +48,7 @@ class Operateur < ApplicationRecord
         end
       elsif organisme
         organisme.operateur&.destroy
+        organisme.update(operateur_actif: false)
       end
     end
   end
