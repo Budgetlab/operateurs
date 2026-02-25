@@ -41,7 +41,11 @@ Rails.application.routes.draw do
     get '/missions' => 'missions#index'
     post '/import_missions' => 'missions#import_missions'
     post '/select_mission' => 'missions#select_mission'
-    resources :operateurs
+    resources :operateurs do
+      member do
+        patch :deactivate
+      end
+    end
     resources :modifications
     post 'open_modal' => 'modifications#open_modal'
     post 'filter_modifications' => 'modifications#filter_modifications'

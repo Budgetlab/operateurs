@@ -54,8 +54,8 @@ development_status:
   epic-2-retrospective: optional
 
   # Epic 3: Operators Index & Batch Deactivation
-  epic-3: in-progress
-  3-1-operators-index-table-view-with-deactivation-modal: ready-for-dev
+  epic-3: done
+  3-1-operators-index-table-view-with-deactivation-modal: done
   epic-3-retrospective: optional
 
   # Epic 4: Filtering, Budget Integration & Import

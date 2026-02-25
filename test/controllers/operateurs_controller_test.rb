@@ -191,6 +191,70 @@ class OperateursControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to organisme_path(@organisme)
   end
 
+  # --- index ---
+
+  test "index: renders table with operateurs" do
+    @organisme.update!(operateur_actif: true)
+    @operateur.update!(annees: [2024])
+
+    get operateurs_url
+    assert_response :success
+    assert_select "table"
+    assert_select "td", text: /#{@organisme.nom}/
+  end
+
+  test "index: shows Rendre inactif button for active operator" do
+    @organisme.update!(operateur_actif: true)
+    @operateur.update!(annees: [2024])
+
+    get operateurs_url
+    assert_response :success
+    assert_select "button", text: /Rendre inactif/
+  end
+
+  test "index: does not show Rendre inactif button for inactive operator" do
+    @organisme.update!(operateur_actif: false)
+    @operateur.update!(annees: [2022, 2023])
+
+    get operateurs_url
+    assert_response :success
+    assert_select "button", text: /Rendre inactif/, count: 0
+  end
+
+  # --- deactivate ---
+
+  test "deactivate: calls desactiver! and redirects with flash" do
+    @organisme.update!(operateur_actif: true)
+    @operateur.update!(annees: [2024])
+
+    patch deactivate_operateur_url(@operateur), params: { annee_fin: "2025" }
+
+    @organisme.reload
+    @operateur.reload
+    refute @organisme.operateur_actif
+    assert_includes @operateur.annees, 2025
+    assert_redirected_to operateurs_path
+    assert_equal "#{@organisme.nom} est maintenant inactif.", flash[:notice]
+  end
+
+  test "deactivate: rejects invalid annee_fin and redirects with alert" do
+    @organisme.update!(operateur_actif: true)
+    @operateur.update!(annees: [2024])
+
+    patch deactivate_operateur_url(@operateur), params: { annee_fin: "" }
+
+    @organisme.reload
+    assert @organisme.operateur_actif, "Operator should still be active"
+    assert_redirected_to operateurs_path
+    assert_equal "Année invalide.", flash[:alert]
+  end
+
+  test "deactivate: requires authentication" do
+    sign_out @admin
+    patch deactivate_operateur_url(@operateur), params: { annee_fin: "2025" }
+    assert_redirected_to new_user_session_path
+  end
+
   # --- unauthenticated ---
 
   test "redirects to login when not authenticated" do

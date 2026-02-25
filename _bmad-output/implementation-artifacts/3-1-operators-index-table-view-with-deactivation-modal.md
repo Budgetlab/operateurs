@@ -1,6 +1,6 @@
 # Story 3.1: Operators Index — Table View with Deactivation Modal
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -32,21 +32,21 @@ So that I can quickly see all operators and deactivate any of them without navig
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Update operators index view (AC: #1)
-  - [ ] 1.1: Replace current index content with DSFR table
-  - [ ] 1.2: Add columns: Organisme (link to show), Programme, Mission, Catégorie, Statut, Années
-  - [ ] 1.3: Add "Rendre inactif" button for active operators
-  - [ ] 1.4: Display year range for inactive operators
+- [x] Task 1: Update operators index view (AC: #1)
+  - [x] 1.1: Replace current index content with DSFR table
+  - [x] 1.2: Add columns: Organisme (link to show), Programme, Mission, Catégorie, Statut, Années
+  - [x] 1.3: Add "Rendre inactif" button for active operators
+  - [x] 1.4: Display year range for inactive operators
 
-- [ ] Task 2: Add DSFR deactivation modal (AC: #2, #4)
-  - [ ] 2.1: Create modal markup following DSFR `fr-modal` pattern
-  - [ ] 2.2: Add year input field and confirm/cancel buttons
-  - [ ] 2.3: Wire button to open modal (DSFR `aria-controls`)
+- [x] Task 2: Add DSFR deactivation modal (AC: #2, #4)
+  - [x] 2.1: Create modal markup following DSFR `fr-modal` pattern
+  - [x] 2.2: Add year input field and confirm/cancel buttons
+  - [x] 2.3: Wire button to open modal (DSFR `aria-controls`)
 
-- [ ] Task 3: Add deactivation endpoint (AC: #3)
-  - [ ] 3.1: Add `deactivate` action to `OperateursController`
-  - [ ] 3.2: Call `@operateur.desactiver!(year)` and redirect with flash
-  - [ ] 3.3: Add route for the deactivation action
+- [x] Task 3: Add deactivation endpoint (AC: #3)
+  - [x] 3.1: Add `deactivate` action to `OperateursController`
+  - [x] 3.2: Call `@operateur.desactiver!(year)` and redirect with flash
+  - [x] 3.3: Add route for the deactivation action
 
 ## Dev Notes
 
@@ -188,8 +188,37 @@ end
 
 ### Agent Model Used
 
+claude-sonnet-4-6
+
 ### Debug Log References
+
+None — implementation straightforward.
 
 ### Completion Notes List
 
+- Rewrote `index.html.erb`: DSFR table with 7 columns (Organisme, Programme, Mission, Catégorie, Statut, Années, Actions)
+- Active operators show "Rendre inactif" button wired via DSFR `aria-controls`
+- One `fr-modal` dialog per active operator rendered after the table
+- Modal contains year input (default = current year) + Confirmer / Annuler buttons
+- Added `deactivate` action to `OperateursController` — calls `desactiver!(annee_fin.to_i)`, redirects with flash notice
+- Added `member { patch :deactivate }` route inside `resources :operateurs`
+- Updated `index` action to eager-load `organisme`, `mission`, `programme` (N+1 prevention)
+- Preserved existing import forms (downgraded to `<h2>` headings)
+- Fixed duplicate `id` on file upload inputs (was `file-upload` twice)
+- 5 new tests added (index table, active button, inactive no-button, deactivate action, deactivate auth)
+- 49/49 tests pass, 0 regressions
+- CR fix: added annee_fin validation (>= 2000) in deactivate action to prevent silent data corruption on empty/invalid input
+- CR fix: added test for invalid annee_fin — verifies redirect with alert flash and operator remains active
+- 15 controller tests, 50/50 total pass
+
 ### File List
+
+- `app/views/operateurs/index.html.erb` — full rewrite
+- `app/controllers/operateurs_controller.rb` — added `deactivate` action, updated `index` eager loading
+- `config/routes.rb` — added `member { patch :deactivate }` to operateurs resources
+- `test/controllers/operateurs_controller_test.rb` — 5 new tests
+
+## Change Log
+
+- 2026-02-25: Story 3.1 implemented — operators index table, deactivation modal, deactivate endpoint
+- 2026-02-25: CR fixes — M1: validated annee_fin >= 2000 before calling desactiver!; L1: added test for invalid annee_fin edge case

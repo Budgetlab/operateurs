@@ -1,28 +1,109 @@
 <main role="main" class="containtAll">
-  <div class="fr-container ">
+  <div class="fr-container">
     <div class="fr-col-lg-12">
-      <h1 class="fr-my-7w">Mettre à jour les opérateurs [<%= @operateurs.length %>]</h1>
+      <h1 class="fr-my-7w">Opérateurs [<%= @operateurs.length %>]</h1>
+
+      <div class="fr-table">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Organisme</th>
+              <th scope="col">Programme</th>
+              <th scope="col">Mission</th>
+              <th scope="col">Catégorie</th>
+              <th scope="col">Statut</th>
+              <th scope="col">Années</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @operateurs.each do |operateur| %>
+              <tr>
+                <td><%= link_to operateur.organisme.nom, organisme_path(operateur.organisme), class: "fr-link" %></td>
+                <td><%= operateur.programme&.numero %></td>
+                <td><%= operateur.mission&.nom %></td>
+                <td><%= operateur.nom_categorie %></td>
+                <td><%= operateur.organisme.operateur_actif ? 'Actif' : 'Inactif' %></td>
+                <td><%= operateur.toutes_annees.join(', ') %></td>
+                <td>
+                  <% if operateur.organisme.operateur_actif %>
+                    <button class="fr-btn fr-btn--secondary fr-btn--sm"
+                            aria-controls="modal-deactivate-<%= operateur.id %>"
+                            data-fr-opened="false">
+                      Rendre inactif
+                    </button>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <%# Modales de désactivation — une par opérateur actif %>
+      <% @operateurs.select { |op| op.organisme.operateur_actif }.each do |operateur| %>
+        <dialog id="modal-deactivate-<%= operateur.id %>" class="fr-modal" aria-labelledby="modal-title-<%= operateur.id %>">
+          <div class="fr-container fr-container--fluid fr-container-md">
+            <div class="fr-grid-row fr-grid-row--center">
+              <div class="fr-col-12 fr-col-md-8">
+                <div class="fr-modal__body">
+                  <div class="fr-modal__header">
+                    <button class="fr-btn--close fr-btn" aria-controls="modal-deactivate-<%= operateur.id %>">Fermer</button>
+                  </div>
+                  <div class="fr-modal__content">
+                    <h1 id="modal-title-<%= operateur.id %>" class="fr-modal__title">
+                      Rendre inactif — <%= operateur.organisme.nom %>
+                    </h1>
+                    <%= form_with url: deactivate_operateur_path(operateur), method: :patch, local: true do |f| %>
+                      <div class="fr-input-group">
+                        <label class="fr-label" for="annee_fin_<%= operateur.id %>">Inactif depuis (année)</label>
+                        <input type="number" class="fr-input" id="annee_fin_<%= operateur.id %>"
+                               name="annee_fin" value="<%= Date.today.year %>"
+                               min="2000" max="<%= Date.today.year + 2 %>" />
+                      </div>
+                      <div class="fr-modal__footer">
+                        <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline">
+                          <li>
+                            <button type="button" class="fr-btn fr-btn--secondary"
+                                    aria-controls="modal-deactivate-<%= operateur.id %>">
+                              Annuler
+                            </button>
+                          </li>
+                          <li><%= f.submit 'Confirmer', class: 'fr-btn' %></li>
+                        </ul>
+                      </div>
+                    <% end %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </dialog>
+      <% end %>
+
+      <h2 class="fr-mt-7w fr-mb-3w">Mettre à jour les opérateurs</h2>
       <div>
         <%= form_tag import_operateurs_path, multipart: true do %>
           <div class="fr-upload-group">
-            <label class="fr-label" for="file-upload">Ajouter des fichiers
-              <span class="fr-hint-text">Taille maximale : 50 Mo. Formats supportés : xlsx. </span>
+            <label class="fr-label" for="file-upload-operateurs">Ajouter des fichiers
+              <span class="fr-hint-text">Taille maximale : 50 Mo. Formats supportés : xlsx.</span>
             </label>
-            <%= file_field_tag  :file, accept: '.xlsx', class: "fr-upload", id: "file-upload" %>
+            <%= file_field_tag :file, accept: '.xlsx', class: "fr-upload", id: "file-upload-operateurs" %>
           </div>
-          <div class="fr-my-4w"><%= submit_tag "Transmettre", class:"fr-btn" %></div>
+          <div class="fr-my-4w"><%= submit_tag "Transmettre", class: "fr-btn" %></div>
         <% end %>
       </div>
-      <h1 class="fr-my-7w">Mettre à jour les organismes [<%= Organisme.all.count %>]</h1>
+
+      <h2 class="fr-mt-7w fr-mb-3w">Mettre à jour les organismes [<%= Organisme.all.count %>]</h2>
       <div>
         <%= form_tag import_organismes_path, multipart: true do %>
           <div class="fr-upload-group">
-            <label class="fr-label" for="file-upload">Ajouter des fichiers
-              <span class="fr-hint-text">Taille maximale : 50 Mo. Formats supportés : xlsx. </span>
+            <label class="fr-label" for="file-upload-organismes">Ajouter des fichiers
+              <span class="fr-hint-text">Taille maximale : 50 Mo. Formats supportés : xlsx.</span>
             </label>
-            <%= file_field_tag  :file, accept: '.xlsx', class: "fr-upload", id: "file-upload" %>
+            <%= file_field_tag :file, accept: '.xlsx', class: "fr-upload", id: "file-upload-organismes" %>
           </div>
-          <div class="fr-my-4w"><%= submit_tag "Transmettre", class:"fr-btn" %></div>
+          <div class="fr-my-4w"><%= submit_tag "Transmettre", class: "fr-btn" %></div>
         <% end %>
       </div>
     </div>

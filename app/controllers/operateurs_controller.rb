@@ -4,7 +4,18 @@
 class OperateursController < ApplicationController
   before_action :authenticate_admin!
   def index
-    @operateurs = Operateur.all
+    @operateurs = Operateur.includes(:organisme, :mission, :programme).all
+  end
+
+  def deactivate
+    @operateur = Operateur.find(params[:id])
+    annee_fin = params[:annee_fin].to_i
+    if annee_fin >= 2000
+      @operateur.desactiver!(annee_fin)
+      redirect_to operateurs_path, flash: { notice: "#{@operateur.organisme.nom} est maintenant inactif." }
+    else
+      redirect_to operateurs_path, flash: { alert: "Année invalide." }
+    end
   end
 
   def new
