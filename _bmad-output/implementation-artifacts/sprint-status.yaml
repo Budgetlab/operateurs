@@ -41,16 +41,16 @@ story_location: _bmad-output/implementation-artifacts
 
 development_status:
   # Epic 1: Data Model Migration & Core Lifecycle Methods
-  epic-1: in-progress
+  epic-1: done
   1-1-database-migration-add-new-columns-and-migrate-data: done
   1-2-operateur-model-lifecycle-methods-and-year-queries: done
   1-3-organisme-model-update-ransackable-attributes-and-import: done
   epic-1-retrospective: optional
 
   # Epic 2: Operator Management UI (Forms & Show Page)
-  epic-2: in-progress
-  2-1-operateur-form-replace-radio-buttons-with-toggle-and-year-input: ready-for-dev
-  2-2-organism-show-page-display-operator-status-and-enable-editing: ready-for-dev
+  epic-2: done
+  2-1-operateur-form-replace-radio-buttons-with-toggle-and-year-input: done
+  2-2-organism-show-page-display-operator-status-and-enable-editing: done
   epic-2-retrospective: optional
 
   # Epic 3: Operators Index & Batch Deactivation

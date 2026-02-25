@@ -27,86 +27,41 @@
           <%= f.hidden_field :organisme_id, value: @organisme.id %>
           <%= render 'organismes/form_notice' %>
           <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-3">
+            <div class="fr-col-12 fr-col-lg-4">
               <fieldset class="fr-fieldset">
-                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
-                  Opérateur PLF <%= Date.today.year + 1 %>*
-                </legend>
+                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">Opérateur actif*</legend>
                 <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
-                    <%= f.radio_button :operateur_nf, true, id: "radio-operateurnf-1", checked: @operateur.operateur_nf, data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" } %>
-                    <label class="fr-label" for="radio-operateurnf-1">Oui</label>
+                    <input type="radio" name="operateur[operateur_actif]" value="true"
+                           id="radio-operateur-actif-1"
+                           <%= @operateur.organisme&.operateur_actif ? 'checked' : '' %>
+                           data-form-target="checkRequire"
+                           data-action="change->form#ChangeOperateur" />
+                    <label class="fr-label" for="radio-operateur-actif-1">Oui</label>
                   </div>
                 </div>
                 <div class="fr-fieldset__element fr-fieldset__element--inline">
                   <div class="fr-radio-group">
-                    <%= f.radio_button :operateur_nf, false, checked: @operateur.operateur_nf != true, id:"operateurnf", data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" }  %>
-                    <label class="fr-label" for="operateurnf">Non</label>
+                    <input type="radio" name="operateur[operateur_actif]" value="false"
+                           id="radio-operateur-actif-2"
+                           <%= !@operateur.organisme&.operateur_actif ? 'checked' : '' %>
+                           data-form-target="checkRequire"
+                           data-action="change->form#ChangeOperateur" />
+                    <label class="fr-label" for="radio-operateur-actif-2">Non</label>
                   </div>
                 </div>
               </fieldset>
             </div>
-
-            <div class="fr-col-12 fr-col-lg-3">
-              <fieldset class="fr-fieldset">
-                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
-                  Opérateur PLF <%= Date.today.year %>*
-                </legend>
-                <div class="fr-fieldset__element fr-fieldset__element--inline">
-                  <div class="fr-radio-group">
-                    <%= f.radio_button :operateur_n, true, id: "radio-operateurn-1", checked: @operateur.operateur_n, data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" } %>
-                    <label class="fr-label" for="radio-operateurn-1">Oui</label>
-                  </div>
-                </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline">
-                  <div class="fr-radio-group">
-                    <%= f.radio_button :operateur_n, false, checked: @operateur.operateur_n != true, id:"operateurn", data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" }  %>
-                    <label class="fr-label" for="operateurn">Non</label>
-                  </div>
-                </div>
-              </fieldset>
+            <div class="fr-col-12 fr-col-lg-4" id="annee-debut-group" style="<%= 'display:none' unless @operateur.organisme&.operateur_actif %>">
+              <div class="fr-input-group">
+                <label class="fr-label" for="annee_debut">Opérateur depuis (année)*</label>
+                <input type="number" class="fr-input" id="annee_debut"
+                       name="operateur[annee_debut]"
+                       value="<%= @operateur.annees&.min %>"
+                       min="2000" max="<%= Date.today.year + 2 %>"
+                       data-form-target="fieldRequire" />
+              </div>
             </div>
-
-            <div class="fr-col-12 fr-col-lg-3">
-              <fieldset class="fr-fieldset">
-                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
-                  Opérateur PLF <%= Date.today.year-1 %>*
-                </legend>
-                <div class="fr-fieldset__element fr-fieldset__element--inline">
-                  <div class="fr-radio-group">
-                    <%= f.radio_button :operateur_n1, true, id: "radio-operateurn1-1", checked: @operateur.operateur_n1, data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" }  %>
-                    <label class="fr-label" for="radio-operateurn1-1">Oui</label>
-                  </div>
-                </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline">
-                  <div class="fr-radio-group">
-                    <%= f.radio_button :operateur_n1, false, checked: @operateur.operateur_n1 != true, id:"operateurn1", data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" } %>
-                    <label class="fr-label" for="operateurn1">Non</label>
-                  </div>
-                </div>
-              </fieldset>
-            </div>
-
-            <div class="fr-col-12 fr-col-lg-3">
-              <fieldset class="fr-fieldset">
-                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
-                  Opérateur PLF <%= Date.today.year-2 %>*
-                </legend>
-                <div class="fr-fieldset__element fr-fieldset__element--inline">
-                  <div class="fr-radio-group">
-                    <%= f.radio_button :operateur_n2, true, id: "radio-operateurn2-1", checked: @operateur.operateur_n2, data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" }  %>
-                    <label class="fr-label" for="radio-operateurn2-1">Oui</label>
-                  </div>
-                </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline">
-                  <div class="fr-radio-group">
-                    <%= f.radio_button :operateur_n2, false, checked: @operateur.operateur_n2 != true, id:"operateurn2", data: {'form-target': 'checkRequire', action: "change->form#ChangeOperateur" } %>
-                    <label class="fr-label" for="operateurn2">Non</label>
-                  </div>
-                </div>
-              </fieldset>
-            </div>
-
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">

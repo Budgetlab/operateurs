@@ -1,6 +1,6 @@
 # Story 2.2: Organism Show Page — Display Operator Status and Enable Editing
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -31,12 +31,12 @@ So that I can see and manage operator status without navigating to a separate pa
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Update the operator display section (AC: #1, #2, #3, #5)
-  - [ ] 1.1: Replace lines 295-322 (4 year lines) with new lifecycle display
-  - [ ] 1.2: Show "Opérateur: Oui (depuis XXXX)" for active operators
-  - [ ] 1.3: Show "Opérateur: Non" for non-operators
-  - [ ] 1.4: Show year history for inactive operators with history
-  - [ ] 1.5: Keep category, mission, programme, programmes annexes display (lines 323-341)
+- [x] Task 1: Update the operator display section (AC: #1, #2, #3, #5)
+  - [x] 1.1: Replace lines 295-322 (4 year lines) with new lifecycle display
+  - [x] 1.2: Show "Opérateur: Oui (depuis XXXX)" for active operators
+  - [x] 1.3: Show "Opérateur: Non" for non-operators
+  - [x] 1.4: Show year history for inactive operators with history
+  - [x] 1.5: Keep category, mission, programme, programmes annexes display (lines 323-341)
 
 ## Dev Notes
 
@@ -105,9 +105,25 @@ Lines 282-289 — **unchanged**. The edit/new button logic is controlled by `@st
 ## Dev Agent Record
 
 ### Agent Model Used
+claude-sonnet-4-6
 
 ### Debug Log References
+- Ancien test `should get index` nécessitait `sign_out :user` explicite car le `setup` signe maintenant un utilisateur.
 
 ### Completion Notes List
+- Task 1: Remplacé les 4 lignes PLF (lignes 295-322) par `Opérateur : Oui (depuis XXXX)` / `Opérateur : Non` + affichage des années via `toutes_annees` ou `annees.sort`
+- AC #4 (lien edit) : bouton inchangé, fonctionne tel quel
+- AC #5 : catégorie, mission, programme, programmes annexes inchangés
+- 5 tests de contrôleur ajoutés pour les 4 cas d'affichage, 43/43 passent
+- CR fix: guarded "depuis XXXX" display against empty annees to prevent "Oui (depuis )" text
+- CR fix: conditioned "Années opérateur" on `.present?` to prevent empty display line
+- CR fix: added edge case test for empty annees + operateur_actif true
+- 7 controller tests, 44/44 total pass
 
 ### File List
+- app/views/organismes/show.html.erb
+- test/controllers/organismes_controller_test.rb
+
+### Change Log
+- 2026-02-25: Implemented story 2-2 — replaced 4 PLF display lines with lifecycle-based operator status display
+- 2026-02-25: CR fixes — M1: guarded empty annees in view (safe fallback); L2: added edge case test for empty annees + active operator

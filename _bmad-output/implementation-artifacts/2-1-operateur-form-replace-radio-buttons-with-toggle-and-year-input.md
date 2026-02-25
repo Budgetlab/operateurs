@@ -1,6 +1,6 @@
 # Story 2.1: Operateur Form — Replace Radio Buttons with Toggle and Year Input
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -32,21 +32,21 @@ So that activating or deactivating an operator is simpler and more intuitive.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Update the form view (AC: #1)
-  - [ ] 1.1: Replace lines 29-108 (4 radio groups) with single DSFR radio group for "Opérateur actif"
-  - [ ] 1.2: Add numeric input field "Opérateur depuis (année)" with `display: none` when "Non"
-  - [ ] 1.3: Pre-fill year from `@operateur.annees&.min` for existing operators
-  - [ ] 1.4: Keep category, programme, mission, programmes annexes fields unchanged (lines 111-179)
+- [x] Task 1: Update the form view (AC: #1)
+  - [x] 1.1: Replace lines 29-108 (4 radio groups) with single DSFR radio group for "Opérateur actif"
+  - [x] 1.2: Add numeric input field "Opérateur depuis (année)" with `display: none` when "Non"
+  - [x] 1.3: Pre-fill year from `@operateur.annees&.min` for existing operators
+  - [x] 1.4: Keep category, programme, mission, programmes annexes fields unchanged (lines 111-179)
 
-- [ ] Task 2: Update JavaScript controller (AC: #2)
-  - [ ] 2.1: Change `ChangeOperateur()` selector from `[id^="radio-operateurn"]` to `#radio-operateur-actif-1`
-  - [ ] 2.2: Update `is_checked` logic to check single radio instead of `.some()`
-  - [ ] 2.3: Add show/hide logic for `annee_debut` field based on toggle state
+- [x] Task 2: Update JavaScript controller (AC: #2)
+  - [x] 2.1: Change `ChangeOperateur()` selector from `[id^="radio-operateurn"]` to `#radio-operateur-actif-1`
+  - [x] 2.2: Update `is_checked` logic to check single radio instead of `.some()`
+  - [x] 2.3: Add show/hide logic for `annee_debut` field based on toggle state
 
-- [ ] Task 3: Update operateurs controller (AC: #3, #4)
-  - [ ] 3.1: Update `create` method: replace boolean check (line 20) with `activer!` call
-  - [ ] 3.2: Update `update` method: replace boolean check + destroy (line 38) with `activer!/desactiver!`
-  - [ ] 3.3: Update `operateur_params`: replace 4 booleans with `:annee_debut`
+- [x] Task 3: Update operateurs controller (AC: #3, #4)
+  - [x] 3.1: Update `create` method: replace boolean check (line 20) with `activer!` call
+  - [x] 3.2: Update `update` method: replace boolean check + destroy (line 38) with `activer!/desactiver!`
+  - [x] 3.3: Update `operateur_params`: remove 4 booleans (virtual params `annee_debut`/`operateur_actif` read directly from params)
 
 ## Dev Notes
 
@@ -197,9 +197,28 @@ ChangeOperateur(){
 ## Dev Agent Record
 
 ### Agent Model Used
+claude-sonnet-4-6
 
 ### Debug Log References
+- Fixed: `annee_debut` was in `operateur_params` causing `UnknownAttributeError` — removed from permitted params since it's a virtual param read directly from `params[:operateur]`
 
 ### Completion Notes List
+- Task 1: Replaced 4 DSFR radio groups (lines 29-108) with single "Opérateur actif" toggle + numeric `annee_debut` field; year pre-filled from `@operateur.annees&.min`
+- Task 2: Updated `ChangeOperateur()` in `form_controller.js` — now uses `#radio-operateur-actif-1`, toggles `annee-debut-group` visibility
+- Task 3: Updated `create`/`update` to call `activer!`/`desactiver!`; removed legacy 4-boolean logic; `operateur_params` no longer permits the 4 old booleans
+- 7 controller tests added, 36/36 total pass
+- CR fix: `save!` → `save` in create to prevent 500 crashes; `update_operateur_programmes` only called after successful save
+- CR fix: removed useless `nom_categorie` self-assignment in update
+- CR fix: added conditional `display:none` on `annee-debut-group` to prevent UX flicker
+- CR fix: added 2 tests (programme linking on create, no crash when false + programmes)
+- 9 controller tests, 38/38 total pass
 
 ### File List
+- app/views/operateurs/_form.html.erb
+- app/javascript/controllers/form_controller.js
+- app/controllers/operateurs_controller.rb
+- test/controllers/operateurs_controller_test.rb
+
+### Change Log
+- 2026-02-25: Implemented story 2-1 — replaced 4 PLF radio groups with operateur_actif toggle + annee_debut input; updated JS controller and Rails controller to use activer!/desactiver! lifecycle methods
+- 2026-02-25: CR fixes — H1: save! → save to prevent 500 on validation failure, moved update_operateur_programmes inside save success block; L1: removed dead self-assignment; L2: conditional display:none; M3: added 2 edge-case tests

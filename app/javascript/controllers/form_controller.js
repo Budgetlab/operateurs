@@ -304,13 +304,19 @@ export default class extends Controller {
     }
 
     ChangeOperateur(){
-        const operateurRadios = Array.from(this.element.querySelectorAll('[id^="radio-operateurn"]'));
+        const operateurActif = this.element.querySelector('#radio-operateur-actif-1');
+        const is_checked = operateurActif && operateurActif.checked;
+        const anneeDebutGroup = document.getElementById("annee-debut-group");
+
+        if (anneeDebutGroup) {
+            anneeDebutGroup.style.display = is_checked ? '' : 'none';
+        }
+
         const mission = document.getElementById("mission");
         const programme = document.getElementById("programme");
         const btn_rattachement= document.getElementById("BtnRattachement");
         const presenceRadios = Array.from(this.element.querySelectorAll('[id^="radio-presence"]'));
         const checkedFields = Array.from(this.formTarget.querySelectorAll("input[type=\'checkbox\']"));
-        const is_checked = operateurRadios.some(radio => radio.checked);
 
         this.changeCheckDisable(!is_checked,...presenceRadios);
         this.ChangeCategorie();

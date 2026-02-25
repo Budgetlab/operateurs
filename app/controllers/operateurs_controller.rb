@@ -17,8 +17,12 @@ class OperateursController < ApplicationController
     @organisme = Organisme.find(params[:operateur][:organisme_id])
     programmes_to_link = params[:operateur].delete(:programmes)
     @operateur = Operateur.new(operateur_params)
-    @operateur.save if @operateur.operateur_nf == true || @operateur.operateur_n == true || @operateur.operateur_n1 == true || @operateur.operateur_n2 == true
-    update_operateur_programmes(programmes_to_link)
+    if params[:operateur][:operateur_actif] == 'true' && params[:operateur][:annee_debut].present?
+      if @operateur.save
+        @operateur.activer!(params[:operateur][:annee_debut].to_i)
+        update_operateur_programmes(programmes_to_link)
+      end
+    end
     redirect_to organisme_path(@organisme)
   end
 
@@ -33,9 +37,12 @@ class OperateursController < ApplicationController
     @organisme = Organisme.find(params[:operateur][:organisme_id])
     @operateur = Operateur.find(params[:id])
     programmes_to_link = params[:operateur].delete(:programmes)
-    params[:operateur][:nom_categorie] = params[:operateur][:nom_categorie]
     @operateur.update(operateur_params)
-    @operateur.destroy if @operateur.operateur_nf == false && @operateur.operateur_n == false && @operateur.operateur_n1 == false && @operateur.operateur_n2 == false
+    if params[:operateur][:operateur_actif] == 'false'
+      @operateur.desactiver!(Date.today.year)
+    elsif params[:operateur][:annee_debut].present?
+      @operateur.activer!(params[:operateur][:annee_debut].to_i)
+    end
     update_operateur_programmes(programmes_to_link)
     redirect_to organisme_path(@organisme)
   end
@@ -51,7 +58,7 @@ class OperateursController < ApplicationController
   private
 
   def operateur_params
-    params.require(:operateur).permit(:organisme_id, :operateur_nf, :operateur_n, :operateur_n1, :operateur_n2, :presence_categorie,
+    params.require(:operateur).permit(:organisme_id, :presence_categorie,
                                       :nom_categorie, :mission_id, :programme_id)
   end
 
