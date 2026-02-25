@@ -1,6 +1,6 @@
 # Story 1.1: Database Migration — Add New Columns and Migrate Data
 
-Status: ready-for-dev
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -59,34 +59,34 @@ So that the data model supports lifecycle-based operator tracking with full hist
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create the migration file (AC: #1, #2, #3, #4, #5, #6, #7, #8)
-  - [ ] 1.1: Add `annees integer[], default: []` column to `operateurs`
-  - [ ] 1.2: Add `operateur_actif boolean, default: false` column to `organismes`
-  - [ ] 1.3: Write data migration logic with year mapping (nf→2027, n→2026, n1→2025, n2→2024)
-  - [ ] 1.4: Handle active operators (n or nf true): store only start year of contiguous range, set `operateur_actif: true`
-  - [ ] 1.5: Handle inactive operators (only n1/n2 true): store all individual years, set `operateur_actif: false`
-  - [ ] 1.6: Handle edge cases (non-contiguous years, all false, all true)
-  - [ ] 1.7: Drop the 4 boolean columns
-  - [ ] 1.8: Add GIN index on `operateurs.annees`
-  - [ ] 1.9: Write reversible `down` method restoring boolean columns from `annees` data
+- [x] Task 1: Create the migration file (AC: #1, #2, #3, #4, #5, #6, #7, #8)
+  - [x] 1.1: Add `annees integer[], default: []` column to `operateurs`
+  - [x] 1.2: Add `operateur_actif boolean, default: false` column to `organismes`
+  - [x] 1.3: Write data migration logic with year mapping (nf→2027, n→2026, n1→2025, n2→2024)
+  - [x] 1.4: Handle active operators (n or nf true): store only start year of contiguous range, set `operateur_actif: true`
+  - [x] 1.5: Handle inactive operators (only n1/n2 true): store all individual years, set `operateur_actif: false`
+  - [x] 1.6: Handle edge cases (non-contiguous years, all false, all true)
+  - [x] 1.7: Drop the 4 boolean columns
+  - [x] 1.8: Add GIN index on `operateurs.annees`
+  - [x] 1.9: Write reversible `down` method restoring boolean columns from `annees` data
 
-- [ ] Task 2: Update test fixtures (AC: #10)
-  - [ ] 2.1: Update `test/fixtures/operateurs.yml` — replace `operateur_n`/`n1`/`n2` with `annees` arrays
-  - [ ] 2.2: Add `operateur_actif: true/false` to `test/fixtures/organismes.yml` if needed
+- [x] Task 2: Update test fixtures (AC: #10)
+  - [x] 2.1: Update `test/fixtures/operateurs.yml` — replace `operateur_n`/`n1`/`n2` with `annees` arrays
+  - [x] 2.2: Add `operateur_actif: true/false` to `test/fixtures/organismes.yml` if needed
 
-- [ ] Task 3: Update Operateur model ransackable_attributes (AC: #9)
-  - [ ] 3.1: Remove `"operateur_n"`, `"operateur_n1"`, `"operateur_n2"`, `"operateur_nf"` from `ransackable_attributes`
-  - [ ] 3.2: Add `"annees"` to `ransackable_attributes`
+- [x] Task 3: Update Operateur model ransackable_attributes (AC: #9)
+  - [x] 3.1: Remove `"operateur_n"`, `"operateur_n1"`, `"operateur_n2"`, `"operateur_nf"` from `ransackable_attributes`
+  - [x] 3.2: Add `"annees"` to `ransackable_attributes`
 
-- [ ] Task 4: Update Organisme model ransackable_attributes
-  - [ ] 4.1: Add `"operateur_actif"` to `Organisme.ransackable_attributes`
+- [x] Task 4: Update Organisme model ransackable_attributes
+  - [x] 4.1: Add `"operateur_actif"` to `Organisme.ransackable_attributes`
 
-- [ ] Task 5: Verify migration (AC: #9)
-  - [ ] 5.1: Run `rails db:migrate` and verify schema changes
-  - [ ] 5.2: Spot-check data: active operators have correct annees + operateur_actif
-  - [ ] 5.3: Spot-check data: inactive operators have correct annees + operateur_actif
-  - [ ] 5.4: Run `rails db:rollback` and verify reversibility
-  - [ ] 5.5: Re-run migration and confirm `rails test` passes
+- [x] Task 5: Verify migration (AC: #9)
+  - [x] 5.1: Run `rails db:migrate` and verify schema changes
+  - [x] 5.2: Spot-check data: active operators have correct annees + operateur_actif
+  - [x] 5.3: Spot-check data: inactive operators have correct annees + operateur_actif
+  - [x] 5.4: Run `rails db:rollback` and verify reversibility
+  - [x] 5.5: Re-run migration and confirm `rails test` passes
 
 ## Dev Notes
 
@@ -210,10 +210,33 @@ Indexes: mission_id, organisme_id, programme_id. **ADD:** GIN index on `annees`.
 
 ### Agent Model Used
 
-(to be filled by dev agent)
+claude-sonnet-4-6 (Amelia, Dev Agent)
 
 ### Debug Log References
 
+No blockers encountered.
+
 ### Completion Notes List
 
+- Migration `20260224172059_refactor_operateur_annees.rb` created with PL/pgSQL for complex contiguous-range data migration logic
+- Handles all AC scenarios: active (n/nf), inactive (only n1/n2), non-contiguous, all-false edge cases
+- `down` method restores boolean columns using PL/pgSQL with contiguous-range expansion for active operators
+- Fixtures updated: `operateurs.yml` uses `annees: []`, `organismes.yml` adds `operateur_actif: false`
+- `Operateur.ransackable_attributes`: removed 4 boolean columns, added `"annees"`
+- `Organisme.ransackable_attributes`: added `"operateur_actif"`
+- Migration ran successfully, rollback verified, re-migration verified
+- 11 tests, 22 assertions, 0 failures ✅
+
 ### File List
+
+- `db/migrate/20260224172059_refactor_operateur_annees.rb` (new)
+- `db/schema.rb` (auto-generated by migration)
+- `test/fixtures/operateurs.yml` (modified)
+- `test/fixtures/organismes.yml` (modified)
+- `app/models/operateur.rb` (modified — ransackable_attributes)
+- `app/models/organisme.rb` (modified — ransackable_attributes)
+
+### Change Log
+
+- 2026-02-24: Story 1.1 implemented — database migration, fixture updates, ransackable_attributes cleanup
+- 2026-02-24: Code review (Amelia/claude-opus-4-6) — Fixed lossy rollback in `down` method: active operators with contiguous-range start years now correctly expand back to individual boolean columns using PL/pgSQL. Added `db/schema.rb` to File List. Noted 8 CRITICAL findings (broken controllers/views/admin/imports referencing dropped boolean columns) as intentionally deferred to stories 1.2-5.x per story Dev Notes.

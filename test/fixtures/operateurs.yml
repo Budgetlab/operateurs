@@ -2,9 +2,7 @@
 
 one:
   organisme: one
-  operateur_n: false
-  operateur_n1: false
-  operateur_n2: false
+  annees: []
   presence_categorie: false
   nom_categorie: MyString
   mission: one
@@ -12,9 +10,7 @@ one:
 
 two:
   organisme: two
-  operateur_n: false
-  operateur_n1: false
-  operateur_n2: false
+  annees: []
   presence_categorie: false
   nom_categorie: MyString
   mission: two

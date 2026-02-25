@@ -1,6 +1,6 @@
 # Story 1.3: Organisme Model — Update ransackable_attributes and Import
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -22,15 +22,15 @@ So that filtering and data import work correctly with the new data model.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Add `"operateur_actif"` to Organisme.ransackable_attributes (AC: #1)
-  - [ ] 1.1: Edit line 144 of `app/models/organisme.rb` to include `"operateur_actif"` in the array
+- [x] Task 1: Add `"operateur_actif"` to Organisme.ransackable_attributes (AC: #1)
+  - [x] 1.1: Already done in story 1.1 — verified by test
 
-- [ ] Task 2: Update `Organisme.import` method (AC: #2)
-  - [ ] 2.1: Replace lines 104-108 (boolean assignments) with year-based logic
-  - [ ] 2.2: Map Excel columns to years: "Opérateur 2025" → 2025, "Opérateur 2024" → 2024, etc.
-  - [ ] 2.3: Build `annees` array from OUI values, merge with existing years
-  - [ ] 2.4: Set `operateur_actif` based on whether any current/future year is active
-  - [ ] 2.5: Handle Programme chef file = 'N/A' case (destroy operateur — existing behavior)
+- [x] Task 2: Update `Organisme.import` method (AC: #2)
+  - [x] 2.1: Replace lines 104-108 (boolean assignments) with year-based logic
+  - [x] 2.2: Map Excel columns to years: "Opérateur 2025" → 2025, "Opérateur 2024" → 2024, etc.
+  - [x] 2.3: Build `annees` array from OUI values, merge with existing years
+  - [x] 2.4: Set `operateur_actif` based on whether any current/future year is active
+  - [x] 2.5: Handle Programme chef file = 'N/A' case (destroy operateur — existing behavior)
 
 ## Dev Notes
 
@@ -131,8 +131,28 @@ This must also be updated to build `annees` arrays. The column names differ from
 
 ### Agent Model Used
 
+claude-sonnet-4-6 (Amelia, Dev Agent)
+
 ### Debug Log References
+
+- Tests initially used hardcoded years (2024, 2025) which are both past in 2026 — fixed to use `Date.today.year` dynamically in test data.
+- `call_import_row` helper uses dynamic regex extraction of year columns (`/\AOpérateur \d{4}\z/`) so tests don't depend on hardcoded year list.
 
 ### Completion Notes List
 
+- Task 1 (ransackable_attributes): already complete from story 1.1 — confirmed by test ✅
+- `Organisme.import`: replaced `operateur_nf/n/n1/n2` assignments with `year_columns` hash mapping → `annees` merge logic; `organisme.update(operateur_actif:)` added
+- `Operateur.import`: replaced `any?('OUI')` boolean check + column assignments with `year_map` hash; sets `annees` + `organisme.operateur_actif`
+- Tests: 4 integration-style unit tests covering OUI/active, OUI/inactive, merge preservation, N/A destroy
+- 29 tests, 67 assertions, 0 failures ✅
+
 ### File List
+
+- `app/models/organisme.rb` (modified — import method updated with dynamic year extraction)
+- `app/models/operateur.rb` (modified — import method updated with dynamic year mapping)
+- `test/models/organisme_test.rb` (populated with 5 unit tests)
+
+### Change Log
+
+- 2026-02-24: Story 1.3 implemented — Organisme.import and Operateur.import updated to year-based annees logic
+- 2026-02-24: Code review (Amelia/claude-opus-4-6) — Fixed: (H1) Organisme.import year_columns hardcoded with stale years — replaced with dynamic regex extraction from row headers; (H2) Operateur.import year_map hardcoded 2026 — replaced with Date.today.year-based dynamic mapping; (M1) Tests now use identical regex extraction logic as production code; (M3) operateur_actif update now conditional on successful operateur.save in both imports; (L1) Removed task-reference comments from tests. Also found and fixed missing organisme.update(operateur_actif:) in Operateur.import that had been dropped during refactoring.

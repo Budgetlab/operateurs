@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_02_16_085646) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_24_172059) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "unaccent"
@@ -244,17 +244,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_16_085646) do
   end
 
   create_table "operateurs", force: :cascade do |t|
+    t.integer "annees", default: [], array: true
     t.datetime "created_at", null: false
     t.bigint "mission_id", null: false
     t.string "nom_categorie"
-    t.boolean "operateur_n"
-    t.boolean "operateur_n1"
-    t.boolean "operateur_n2"
-    t.boolean "operateur_nf"
     t.bigint "organisme_id", null: false
     t.boolean "presence_categorie"
     t.bigint "programme_id", null: false
     t.datetime "updated_at", null: false
+    t.index ["annees"], name: "index_operateurs_on_annees", using: :gin
     t.index ["mission_id"], name: "index_operateurs_on_mission_id"
     t.index ["organisme_id"], name: "index_operateurs_on_organisme_id"
     t.index ["programme_id"], name: "index_operateurs_on_programme_id"
@@ -319,6 +317,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_02_16_085646) do
     t.boolean "odac_n1"
     t.boolean "odal_n"
     t.boolean "odal_n1"
+    t.boolean "operateur_actif", default: false
     t.boolean "presence_controle"
     t.string "siren"
     t.string "statut"

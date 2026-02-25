@@ -1,6 +1,6 @@
 # Story 1.2: Operateur Model — Lifecycle Methods and Year Queries
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -47,33 +47,33 @@ So that all code can use clean, consistent methods instead of checking individua
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Add `toutes_annees` method (AC: #1, #2, #3)
-  - [ ] 1.1: If `operateur_actif` is true, find the max contiguous start in `annees` and expand to current year
-  - [ ] 1.2: If `operateur_actif` is false, return `annees` as-is (sorted)
-  - [ ] 1.3: Handle edge case: gap in years (past segment stays, active segment expands)
+- [x] Task 1: Add `toutes_annees` method (AC: #1, #2, #3)
+  - [x] 1.1: If `operateur_actif` is true, find the max contiguous start in `annees` and expand to current year
+  - [x] 1.2: If `operateur_actif` is false, return `annees` as-is (sorted)
+  - [x] 1.3: Handle edge case: gap in years (past segment stays, active segment expands)
 
-- [ ] Task 2: Add `operateur_pour_annee?(year)` method (AC: #4)
-  - [ ] 2.1: Return `toutes_annees.include?(year)`
+- [x] Task 2: Add `operateur_pour_annee?(year)` method (AC: #4)
+  - [x] 2.1: Return `toutes_annees.include?(year)`
 
-- [ ] Task 3: Add `activer!(annee)` method (AC: #5)
-  - [ ] 3.1: Add year to `annees` array if not present
-  - [ ] 3.2: Set `organisme.operateur_actif = true`
-  - [ ] 3.3: Save both operateur and organisme in transaction
+- [x] Task 3: Add `activer!(annee)` method (AC: #5)
+  - [x] 3.1: Add year to `annees` array if not present
+  - [x] 3.2: Set `organisme.operateur_actif = true`
+  - [x] 3.3: Save both operateur and organisme in transaction
 
-- [ ] Task 4: Add `desactiver!(annee_fin)` method (AC: #6)
-  - [ ] 4.1: Expand active range into individual years up to `annee_fin`
-  - [ ] 4.2: Set `organisme.operateur_actif = false`
-  - [ ] 4.3: Save both operateur and organisme in transaction
+- [x] Task 4: Add `desactiver!(annee_fin)` method (AC: #6)
+  - [x] 4.1: Expand active range into individual years up to `annee_fin`
+  - [x] 4.2: Set `organisme.operateur_actif = false`
+  - [x] 4.3: Save both operateur and organisme in transaction
 
-- [ ] Task 5: Update `ransackable_attributes` (AC: #7)
+- [x] Task 5: Update `ransackable_attributes` (AC: #7)
 
-- [ ] Task 6: Write unit tests (AC: #8)
-  - [ ] 6.1: Test `toutes_annees` with active operator (single year → expanded)
-  - [ ] 6.2: Test `toutes_annees` with inactive operator (returns stored years)
-  - [ ] 6.3: Test `toutes_annees` with gaps in years
-  - [ ] 6.4: Test `operateur_pour_annee?` true and false cases
-  - [ ] 6.5: Test `activer!` sets correct state
-  - [ ] 6.6: Test `desactiver!` expands years and sets inactive
+- [x] Task 6: Write unit tests (AC: #8)
+  - [x] 6.1: Test `toutes_annees` with active operator (single year → expanded)
+  - [x] 6.2: Test `toutes_annees` with inactive operator (returns stored years)
+  - [x] 6.3: Test `toutes_annees` with gaps in years
+  - [x] 6.4: Test `operateur_pour_annee?` true and false cases
+  - [x] 6.5: Test `activer!` sets correct state
+  - [x] 6.6: Test `desactiver!` expands years and sets inactive
 
 ## Dev Notes
 
@@ -161,8 +161,27 @@ You'll need to create fixture operateurs with different states:
 
 ### Agent Model Used
 
+claude-sonnet-4-6 (Amelia, Dev Agent)
+
 ### Debug Log References
+
+- `desactiver!` v1 used `toutes_annees.select { |y| y <= annee_fin }` which capped at `Date.today.year` (2026) — failed test expecting 2027. Fixed by expanding directly from `active_start..annee_fin`.
 
 ### Completion Notes List
 
+- `toutes_annees`: returns `annees.sort` when inactive; expands `sorted.last..Date.today.year` when active; handles empty arrays and gap years
+- `operateur_pour_annee?`: delegates to `toutes_annees.include?`
+- `activer!`: transactional, deduplicates with `uniq.sort`, sets `operateur_actif: true`
+- `desactiver!`: expands `active_start..annee_fin` (future years included), sets `operateur_actif: false`
+- `ransackable_attributes` already updated in story 1.1 ✅
+- 13 unit tests, 21 assertions, 0 failures; full suite 24 runs, 0 failures ✅
+
 ### File List
+
+- `app/models/operateur.rb` (modified — added 4 instance methods with input validation)
+- `test/models/operateur_test.rb` (populated with 13 unit tests)
+
+### Change Log
+
+- 2026-02-24: Story 1.2 implemented — toutes_annees, operateur_pour_annee?, activer!, desactiver! with full unit test coverage
+- 2026-02-24: Code review (Amelia/claude-opus-4-6) — Fixed: (H1) desactiver! crash on empty annees — added guard clause; (H2) activer!/desactiver! accept non-integer input — added ArgumentError validation; (M1) added 4 missing tests: desactiver! with gap years, empty annees, ArgumentError tests; (M3) fixed test setup destroying fixture operateurs to avoid has_one conflict; (L1) removed task-reference comments from production code.

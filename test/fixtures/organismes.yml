@@ -46,6 +46,7 @@ one:
   odac_n1: false
   odal_n: false
   odal_n1: false
+  operateur_actif: false
 
 two:
   etat: MyString
@@ -93,3 +94,4 @@ two:
   odac_n1: false
   odal_n: false
   odal_n1: false
+  operateur_actif: false

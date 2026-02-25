@@ -101,17 +101,29 @@ class Organisme < ApplicationRecord
         operateur = Operateur.find_or_initialize_by(organisme_id: organisme.id)
         programme_id = Programme.find_by(numero: row_data['Programme chef file'].to_i)&.id if row_data['Programme chef file']
         mission_id = Mission.where(programme_id: programme_id).first.id if programme_id
+        # Dynamically extract "Opérateur YYYY" columns from row headers
+        year_columns = row_data.keys
+                               .grep(/\AOpérateur \d{4}\z/)
+                               .each_with_object({}) { |col, h| h[col] = col[/\d{4}/].to_i }
+        new_years = year_columns.select { |col, _| convert_to_boolean(row_data[col]) == true }.values
+        existing_years = operateur.annees || []
+        merged_years = (existing_years + new_years).uniq.sort
+        is_active = new_years.any? { |y| y >= Date.today.year }
+
         operateur.assign_attributes(
-          operateur_nf: convert_to_boolean(row_data['Opérateur 2025']),
-          operateur_n: convert_to_boolean(row_data['Opérateur 2024']),
-          operateur_n1: convert_to_boolean(row_data['Opérateur 2023']),
-          operateur_n2: convert_to_boolean(row_data['Opérateur 2022']),
+          annees: merged_years,
           presence_categorie: convert_to_boolean(row_data['Appartenance catégorie opérateurs']),
-          nom_categorie: convert_to_boolean(row_data['Nom catégorie']),
+          nom_categorie: row_data['Nom catégorie'],
           programme_id: programme_id,
           mission_id: mission_id,
-          )
-        operateur.save if operateur.changed?
+        )
+        if operateur.changed? || operateur.new_record?
+          if operateur.save
+            organisme.update(operateur_actif: is_active)
+          end
+        else
+          organisme.update(operateur_actif: is_active)
+        end
         operateur.operateur_programmes&.destroy_all
         selected_programmes = row_data['Autres Programmes financeurs'].tr('[]', '').split(',').map(&:to_i) || []
         selected_programmes.each do |programme_numero|
@@ -141,7 +153,7 @@ class Organisme < ApplicationRecord
   end
 
   def self.ransackable_attributes(auth_object = nil)
-    ["acronyme", "admin_db_fonction", "admin_db_present", "admin_preca", "agent_comptable_present", "apu", "arrete_controle", "arrete_interdiction_odac", "arrete_nomination", "autorite_approbation", "autorite_controle", "bureau_id", "ciassp_n", "ciassp_n1", "comite_audit", "commentaire", "comptabilite_budgetaire", "controleur_ca", "controleur_id", "controleur_preca", "created_at", "date_creation", "date_dissolution", "date_previsionnelle_dissolution", "degre_gbcp", "delegation_approbation", "document_controle_present", "effet_dissolution", "etat", "famille", "gbcp_1", "gbcp_3", "id", "ministere_id", "nature", "nature_controle", "nom", "odac_n", "odac_n1", "odal_n", "odal_n1", "presence_controle", "siren", "statut","taux_cadrage_n", "taux_cadrage_n1", "texte_institutif", "texte_reglementaire_controle", "texte_soumission_controle", "tutelle_financiere", "updated_at"]
+    ["acronyme", "admin_db_fonction", "admin_db_present", "admin_preca", "agent_comptable_present", "apu", "arrete_controle", "arrete_interdiction_odac", "arrete_nomination", "autorite_approbation", "autorite_controle", "bureau_id", "ciassp_n", "ciassp_n1", "comite_audit", "commentaire", "comptabilite_budgetaire", "controleur_ca", "controleur_id", "controleur_preca", "created_at", "date_creation", "date_dissolution", "date_previsionnelle_dissolution", "degre_gbcp", "delegation_approbation", "document_controle_present", "effet_dissolution", "etat", "famille", "gbcp_1", "gbcp_3", "id", "ministere_id", "nature", "nature_controle", "nom", "odac_n", "odac_n1", "odal_n", "odal_n1", "operateur_actif", "presence_controle", "siren", "statut","taux_cadrage_n", "taux_cadrage_n1", "texte_institutif", "texte_reglementaire_controle", "texte_soumission_controle", "tutelle_financiere", "updated_at"]
   end
 
   def self.ransackable_associations(auth_object = nil)
