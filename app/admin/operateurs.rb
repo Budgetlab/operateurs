@@ -5,14 +5,6 @@ ActiveAdmin.register Operateur do
   #
   # Uncomment all parameters which should be permitted for assignment
   #
-  permit_params :organisme_id, :operateur_n, :operateur_n1, :operateur_n2, :presence_categorie, :nom_categorie, :mission_id, :programme_id, :operateur_nf
-  #
-  # or
-  #
-  # permit_params do
-  #   permitted = [:organisme_id, :operateur_n, :operateur_n1, :operateur_n2, :presence_categorie, :nom_categorie, :mission_id, :programme_id, :operateur_nf]
-  #   permitted << :other if params[:action] == 'create' && current_user.admin?
-  #   permitted
-  # end
+  permit_params :organisme_id, :presence_categorie, :nom_categorie, :mission_id, :programme_id, annees: []
   
 end

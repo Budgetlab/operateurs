@@ -132,4 +132,36 @@ class OrganismesControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     # No error — param is simply ignored (not permitted)
   end
+
+  # --- Story 5.1: XLSX exports — updated columns ---
+
+  test "index xlsx: responds with xlsx content for operator with new columns" do
+    @organisme.update!(operateur_actif: true, statut: "valide")
+    Operateur.where(organisme: @organisme).destroy_all
+    Operateur.create!(organisme: @organisme, mission: @mission, programme: @programme,
+                      annees: [2024], presence_categorie: false)
+
+    get organismes_url(format: :xlsx)
+    assert_response :success
+    assert_includes response.content_type, "xlsx"
+  end
+
+  test "show xlsx: responds with xlsx content for organism with new operator columns" do
+    @organisme.update!(operateur_actif: true, statut: "valide")
+    Operateur.where(organisme: @organisme).destroy_all
+    Operateur.create!(organisme: @organisme, mission: @mission, programme: @programme,
+                      annees: [2024], presence_categorie: false)
+
+    get organisme_url(@organisme, format: :xlsx)
+    assert_response :success
+    assert_includes response.content_type, "xlsx"
+  end
+
+  test "show xlsx: responds without error when organisme has no operator record" do
+    @organisme.update!(operateur_actif: false, statut: "valide")
+    Operateur.where(organisme: @organisme).destroy_all
+
+    get organisme_url(@organisme, format: :xlsx)
+    assert_response :success
+  end
 end

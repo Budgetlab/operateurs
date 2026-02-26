@@ -1,6 +1,6 @@
 # Story 5.1: XLSX Exports — Update Columns for New Data Model
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -23,18 +23,18 @@ So that exports contain richer historical data in a cleaner format.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Update index.xlsx.axlsx (AC: #1)
-  - [ ] 1.1: Replace 4 operateur year headers with 2: "Opérateur actif", "Années opérateur"
-  - [ ] 1.2: Update `array_operateur` construction (line 31)
-  - [ ] 1.3: Update `sheet_col` from 57 to 55 (line 8)
-  - [ ] 1.4: Update auto_filter range (line 11)
-  - [ ] 1.5: Update style ranges (lines 46-48) — shift all column letters after operateur section by -2
+- [x] Task 1: Update index.xlsx.axlsx (AC: #1)
+  - [x] 1.1: Replace 4 operateur year headers with 2: "Opérateur actif", "Années opérateur"
+  - [x] 1.2: Update `array_operateur` construction (line 31)
+  - [x] 1.3: Update `sheet_col` from 57 to 55 (line 8)
+  - [x] 1.4: Update auto_filter range (line 11)
+  - [x] 1.5: Update style ranges (lines 46-48) — shift all column letters after operateur section by -2
 
-- [ ] Task 2: Update show.xlsx.axlsx (AC: #2)
-  - [ ] 2.1: Same header changes as index
-  - [ ] 2.2: Update `array_operateur` construction (line 28)
-  - [ ] 2.3: Update `sheet_col` from 59 to 57 (line 9)
-  - [ ] 2.4: Update style ranges (lines 41-42) — shift by -2
+- [x] Task 2: Update show.xlsx.axlsx (AC: #2)
+  - [x] 2.1: Same header changes as index
+  - [x] 2.2: Update `array_operateur` construction (line 28)
+  - [x] 2.3: Update `sheet_col` from 59 to 57 (line 9)
+  - [x] 2.4: Update style ranges (lines 41-42) — shift by -2
 
 ## Dev Notes
 
@@ -136,8 +136,21 @@ Same pattern but different ranges. Verify against actual file content.
 
 ### Agent Model Used
 
+claude-sonnet-4-6
+
 ### Debug Log References
+
+None.
 
 ### Completion Notes List
 
+- Task 1: `index.xlsx.axlsx` — replaced 4 "Opérateur YYYY" headers with "Opérateur actif" + "Années opérateur"; updated array_operateur to use operateur_actif + toutes_annees.join(', '); sheet_col 57→55; auto_filter BE→BC; style column letters shifted -2 after col N.
+- Task 2: `show.xlsx.axlsx` — same header/data changes; sheet_col 59→57; style ranges shifted -2 after col N; last col BG→BE.
+- 3 new controller tests added for XLSX responses (index, show with operator, show without operator). All 64 tests pass.
+- CR: CLEAN — all column letter shifts verified manually, no findings.
+
 ### File List
+
+- app/views/organismes/index.xlsx.axlsx
+- app/views/organismes/show.xlsx.axlsx
+- test/controllers/organismes_controller_test.rb

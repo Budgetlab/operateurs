@@ -1,6 +1,6 @@
 # Story 5.2: ActiveAdmin & Final Cleanup
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -24,16 +24,16 @@ So that the codebase is clean with no references to the old four-boolean model.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Update ActiveAdmin permit_params (AC: #1)
-  - [ ] 1.1: Replace line 8 in `app/admin/operateurs.rb`
+- [x] Task 1: Update ActiveAdmin permit_params (AC: #1)
+  - [x] 1.1: Replace line 8 in `app/admin/operateurs.rb`
 
-- [ ] Task 2: Codebase sweep for legacy references (AC: #2)
-  - [ ] 2.1: Search entire codebase for `operateur_nf`, `operateur_n[^_]`, `operateur_n1`, `operateur_n2`
-  - [ ] 2.2: Remove or replace any remaining references (excluding migration files and schema.rb)
+- [x] Task 2: Codebase sweep for legacy references (AC: #2)
+  - [x] 2.1: Search entire codebase for `operateur_nf`, `operateur_n[^_]`, `operateur_n1`, `operateur_n2`
+  - [x] 2.2: Remove or replace any remaining references (excluding migration files and schema.rb)
 
-- [ ] Task 3: Run full test suite (AC: #3)
-  - [ ] 3.1: Run `rails test` and verify all tests pass
-  - [ ] 3.2: Fix any test failures related to removed columns
+- [x] Task 3: Run full test suite (AC: #3)
+  - [x] 3.1: Run `rails test` and verify all tests pass
+  - [x] 3.2: Fix any test failures related to removed columns
 
 ## Dev Notes
 
@@ -106,8 +106,24 @@ Also verify `test/fixtures/organismes.yml` includes `operateur_actif` if the fix
 
 ### Agent Model Used
 
+claude-sonnet-4-6
+
 ### Debug Log References
+
+None.
 
 ### Completion Notes List
 
+- Task 1: `app/admin/operateurs.rb` — `permit_params` remplacé : suppression des 4 booleans, ajout de `annees: []`.
+- Task 2: Sweep complet — seules références restantes à `operateur_n/n1/n2` sont dans `Operateur.import` (clés de colonnes Excel pour import backward-compatible, story 4.3) et les tests associés. `db/schema.rb` ne contient aucune référence aux colonnes supprimées. Aucune suppression nécessaire — ces références sont fonctionnelles et intentionnelles.
+- Task 3: 64 tests, 0 failures, 0 errors.
+- CR: CLEAN — independent codebase sweep confirmed zero legacy references outside intentional Excel import keys. All ACs verified.
+
 ### File List
+
+- app/admin/operateurs.rb
+
+## Change Log
+
+- 2026-02-25: Story 5.2 implemented — ActiveAdmin permit_params updated, codebase sweep clean
+- 2026-02-25: CR passed clean — independent sweep confirmed, all 64 tests pass

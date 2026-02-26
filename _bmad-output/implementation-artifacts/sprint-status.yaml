@@ -66,7 +66,7 @@ development_status:
   epic-4-retrospective: optional
 
   # Epic 5: Exports, Admin & Cleanup
-  epic-5: in-progress
-  5-1-xlsx-exports-update-columns-for-new-data-model: ready-for-dev
-  5-2-activeadmin-and-final-cleanup: ready-for-dev
+  epic-5: done
+  5-1-xlsx-exports-update-columns-for-new-data-model: done
+  5-2-activeadmin-and-final-cleanup: done
   epic-5-retrospective: optional
