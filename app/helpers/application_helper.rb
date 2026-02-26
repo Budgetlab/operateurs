@@ -69,6 +69,22 @@ module ApplicationHelper
     end
   end
 
+  def format_periodes_activite(periodes)
+    return "Aucune période renseignée" if periodes.blank?
+
+    current_year = Date.today.year
+    parts = periodes.map do |p|
+      if p[:a].present?
+        "#{p[:de]} → #{p[:a]}"
+      elsif p[:de] <= current_year
+        "depuis #{p[:de]}"
+      else
+        "à partir de #{p[:de]}"
+      end
+    end
+    parts.join(", ")
+  end
+
   def ratio(a, b, n)
     if !a.nil? && !b.nil? && b != 0
       ((a.to_f/ b.to_f) * n.to_f).round

@@ -10,11 +10,12 @@ class OperateursController < ApplicationController
   def deactivate
     @operateur = Operateur.find(params[:id])
     annee_fin = params[:annee_fin].to_i
-    if annee_fin >= 2000
+    annee_min = @operateur.annees.max || Date.today.year
+    if annee_fin >= annee_min
       @operateur.desactiver!(annee_fin)
       redirect_to operateurs_path, flash: { notice: "#{@operateur.organisme.nom} est maintenant inactif." }
     else
-      redirect_to operateurs_path, flash: { alert: "Année invalide." }
+      redirect_to operateurs_path, flash: { alert: "L'année de fin ne peut pas être antérieure à #{annee_min}." }
     end
   end
 
@@ -27,12 +28,21 @@ class OperateursController < ApplicationController
   def create
     @organisme = Organisme.find(params[:operateur][:organisme_id])
     programmes_to_link = params[:operateur].delete(:programmes)
+
+    if params[:operateur][:operateur_actif] == 'false'
+      @organisme.update!(operateur_actif: false)
+      return redirect_to organisme_path(@organisme)
+    end
+
     @operateur = Operateur.new(operateur_params)
-    if params[:operateur][:operateur_actif] == 'true' && params[:operateur][:annee_debut].present?
-      if @operateur.save
-        @operateur.activer!(params[:operateur][:annee_debut].to_i)
-        update_operateur_programmes(programmes_to_link)
-      end
+    annees = build_annees_from_periodes(params[:periodes])
+    annees = [Date.today.year] if annees.empty?
+    is_active = open_periode?(params[:periodes])
+
+    if @operateur.save
+      @operateur.update!(annees: annees)
+      @organisme.update!(operateur_actif: is_active)
+      update_operateur_programmes(programmes_to_link)
     end
     redirect_to organisme_path(@organisme)
   end
@@ -48,12 +58,19 @@ class OperateursController < ApplicationController
     @organisme = Organisme.find(params[:operateur][:organisme_id])
     @operateur = Operateur.find(params[:id])
     programmes_to_link = params[:operateur].delete(:programmes)
-    @operateur.update(operateur_params)
+
     if params[:operateur][:operateur_actif] == 'false'
-      @operateur.desactiver!(Date.today.year)
-    elsif params[:operateur][:annee_debut].present?
-      @operateur.activer!(params[:operateur][:annee_debut].to_i)
+      @operateur.destroy
+      @organisme.update!(operateur_actif: false)
+      return redirect_to organisme_path(@organisme)
     end
+
+    annees = build_annees_from_periodes(params[:periodes])
+    annees = [Date.today.year] if annees.empty?
+    is_active = open_periode?(params[:periodes])
+
+    @operateur.update(operateur_params.merge(annees: annees))
+    @organisme.update!(operateur_actif: is_active)
     update_operateur_programmes(programmes_to_link)
     redirect_to organisme_path(@organisme)
   end
@@ -71,6 +88,35 @@ class OperateursController < ApplicationController
   def operateur_params
     params.require(:operateur).permit(:organisme_id, :presence_categorie,
                                       :nom_categorie, :mission_id, :programme_id)
+  end
+
+  # Builds a flat sorted array of years from submitted periodes.
+  # Each periode has de: (required) and optionally a: (end year).
+  # If a: is absent, the range is open-ended (active period: only de is stored).
+  def build_annees_from_periodes(periodes_param)
+    return [] if periodes_param.blank?
+
+    annees = []
+    periodes_param.each do |_i, p|
+      de = p[:de].to_i
+      next if de.zero?
+
+      if p[:a].present?
+        a = p[:a].to_i
+        annees += (de..a).to_a if a >= de
+      else
+        annees << de
+      end
+    end
+    annees.uniq.sort
+  end
+
+  # Returns true if any submitted periode has no end year (open-ended = currently active).
+  # Falls back to true when no periodes are submitted (defaulting to current year as open period).
+  def open_periode?(periodes_param)
+    return true if periodes_param.blank?
+
+    periodes_param.values.any? { |p| p[:de].present? && p[:a].blank? }
   end
 
   def update_operateur_programmes(programmes_to_link)

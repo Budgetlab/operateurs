@@ -23,9 +23,8 @@ class OperateursControllerTest < ActionDispatch::IntegrationTest
 
   # --- create ---
 
-  test "create: saves operator and calls activer! when operateur_actif is true with annee_debut" do
+  test "create: saves operator with periode when operateur_actif is true" do
     new_org = organismes(:two)
-    # Ensure no operateur exists for this organisme
     Operateur.where(organisme: new_org).destroy_all
 
     assert_difference("Operateur.count", 1) do
@@ -33,11 +32,11 @@ class OperateursControllerTest < ActionDispatch::IntegrationTest
         operateur: {
           organisme_id: new_org.id,
           operateur_actif: "true",
-          annee_debut: "2026",
           presence_categorie: "false",
           mission_id: @mission.id,
           programme_id: @programme.id
-        }
+        },
+        periodes: { "0" => { de: "2026" } }
       }
     end
 
@@ -68,22 +67,25 @@ class OperateursControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to organisme_path(new_org)
   end
 
-  test "create: does not save when operateur_actif is true but annee_debut is missing" do
+  test "create: defaults annees to current year when no periodes submitted" do
     new_org = organismes(:two)
     Operateur.where(organisme: new_org).destroy_all
 
-    assert_no_difference("Operateur.count") do
+    assert_difference("Operateur.count", 1) do
       post operateurs_url, params: {
         operateur: {
           organisme_id: new_org.id,
           operateur_actif: "true",
-          annee_debut: "",
           presence_categorie: "false",
           mission_id: @mission.id,
           programme_id: @programme.id
         }
       }
     end
+
+    op = Operateur.find_by(organisme: new_org)
+    assert_not_nil op
+    assert_equal [Date.today.year], op.annees
   end
 
   test "create: links programmes when operateur is saved" do
@@ -130,9 +132,10 @@ class OperateursControllerTest < ActionDispatch::IntegrationTest
 
   # --- update ---
 
-  test "update: calls desactiver! when operateur_actif is false" do
+  test "update: destroys operateur and sets operateur_actif false when operateur_actif is false" do
     @organisme.update!(operateur_actif: true)
     @operateur.update!(annees: [2024])
+    operateur_id = @operateur.id
 
     patch operateur_url(@operateur), params: {
       operateur: {
@@ -145,12 +148,12 @@ class OperateursControllerTest < ActionDispatch::IntegrationTest
     }
 
     @organisme.reload
-    @operateur.reload
     refute @organisme.operateur_actif
+    assert_nil Operateur.find_by(id: operateur_id)
     assert_redirected_to organisme_path(@organisme)
   end
 
-  test "update: calls activer! when operateur_actif is true and annee_debut present" do
+  test "update: sets annees from periodes when operateur_actif is true" do
     @organisme.update!(operateur_actif: false)
     @operateur.update!(annees: [])
 
@@ -158,11 +161,11 @@ class OperateursControllerTest < ActionDispatch::IntegrationTest
       operateur: {
         organisme_id: @organisme.id,
         operateur_actif: "true",
-        annee_debut: "2025",
         presence_categorie: "false",
         mission_id: @mission.id,
         programme_id: @programme.id
-      }
+      },
+      periodes: { "0" => { de: "2025" } }
     }
 
     @operateur.reload
@@ -172,14 +175,36 @@ class OperateursControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to organisme_path(@organisme)
   end
 
-  test "update: does not call activer! when operateur_actif is true but annee_debut missing" do
-    original_annees = @operateur.annees.dup
+  test "update: sets annees from periode with date de fin and sets operateur_actif false" do
+    @organisme.update!(operateur_actif: true)
+    @operateur.update!(annees: [])
 
     patch operateur_url(@operateur), params: {
       operateur: {
         organisme_id: @organisme.id,
         operateur_actif: "true",
-        annee_debut: "",
+        presence_categorie: "false",
+        mission_id: @mission.id,
+        programme_id: @programme.id
+      },
+      periodes: { "0" => { de: "2022", a: "2024" } }
+    }
+
+    @operateur.reload
+    @organisme.reload
+    assert_equal [2022, 2023, 2024], @operateur.annees
+    refute @organisme.operateur_actif
+    assert_redirected_to organisme_path(@organisme)
+  end
+
+  test "update: defaults annees to current year and operateur_actif true when no periodes submitted" do
+    @operateur.update!(annees: [2020])
+    @organisme.update!(operateur_actif: false)
+
+    patch operateur_url(@operateur), params: {
+      operateur: {
+        organisme_id: @organisme.id,
+        operateur_actif: "true",
         presence_categorie: "false",
         mission_id: @mission.id,
         programme_id: @programme.id
@@ -187,7 +212,9 @@ class OperateursControllerTest < ActionDispatch::IntegrationTest
     }
 
     @operateur.reload
-    assert_equal original_annees, @operateur.annees
+    @organisme.reload
+    assert_equal [Date.today.year], @operateur.annees
+    assert @organisme.operateur_actif
     assert_redirected_to organisme_path(@organisme)
   end
 
@@ -246,7 +273,7 @@ class OperateursControllerTest < ActionDispatch::IntegrationTest
     @organisme.reload
     assert @organisme.operateur_actif, "Operator should still be active"
     assert_redirected_to operateurs_path
-    assert_equal "Année invalide.", flash[:alert]
+    assert_match "ne peut pas être antérieure", flash[:alert]
   end
 
   test "deactivate: requires authentication" do

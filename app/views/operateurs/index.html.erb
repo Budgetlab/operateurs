@@ -1,43 +1,86 @@
 <main role="main" class="containtAll">
   <div class="fr-container">
     <div class="fr-col-lg-12">
+      <% operateurs_actifs = @operateurs.select { |op| op.organisme.operateur_actif } %>
+      <% operateurs_inactifs = @operateurs.reject { |op| op.organisme.operateur_actif } %>
+
       <h1 class="fr-my-7w">Opérateurs [<%= @operateurs.length %>]</h1>
 
-      <div class="fr-table">
-        <table>
-          <thead>
-            <tr>
-              <th scope="col">Organisme</th>
-              <th scope="col">Programme</th>
-              <th scope="col">Mission</th>
-              <th scope="col">Catégorie</th>
-              <th scope="col">Statut</th>
-              <th scope="col">Années</th>
-              <th scope="col">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% @operateurs.each do |operateur| %>
-              <tr>
-                <td><%= link_to operateur.organisme.nom, organisme_path(operateur.organisme), class: "fr-link" %></td>
-                <td><%= operateur.programme&.numero %></td>
-                <td><%= operateur.mission&.nom %></td>
-                <td><%= operateur.nom_categorie %></td>
-                <td><%= operateur.organisme.operateur_actif ? 'Actif' : 'Inactif' %></td>
-                <td><%= operateur.toutes_annees.join(', ') %></td>
-                <td>
-                  <% if operateur.organisme.operateur_actif %>
-                    <button class="fr-btn fr-btn--secondary fr-btn--sm"
-                            aria-controls="modal-deactivate-<%= operateur.id %>"
-                            data-fr-opened="false">
-                      Rendre inactif
-                    </button>
-                  <% end %>
-                </td>
-              </tr>
-            <% end %>
-          </tbody>
-        </table>
+      <div class="fr-tabs">
+        <ul class="fr-tabs__list" role="tablist" aria-label="Opérateurs">
+          <li role="presentation">
+            <button class="fr-tabs__tab" tabindex="0" role="tab" aria-selected="true" aria-controls="tab-actifs">
+              Actifs [<%= operateurs_actifs.length %>]
+            </button>
+          </li>
+          <li role="presentation">
+            <button class="fr-tabs__tab" tabindex="-1" role="tab" aria-selected="false" aria-controls="tab-inactifs">
+              Inactifs [<%= operateurs_inactifs.length %>]
+            </button>
+          </li>
+        </ul>
+
+        <div id="tab-actifs" class="fr-tabs__panel fr-tabs__panel--selected" role="tabpanel">
+          <div class="fr-table">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Organisme</th>
+                  <th scope="col">Programme</th>
+                  <th scope="col">Mission</th>
+                  <th scope="col">Catégorie</th>
+                  <th scope="col">Années</th>
+                  <th scope="col">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% operateurs_actifs.each do |operateur| %>
+                  <tr>
+                    <td><%= link_to operateur.organisme.nom, organisme_path(operateur.organisme), class: "fr-link" %></td>
+                    <td><%= operateur.programme&.numero %></td>
+                    <td><%= operateur.mission&.nom %></td>
+                    <td><%= operateur.nom_categorie %></td>
+                    <td><%= operateur.toutes_annees.join(', ') %></td>
+                    <td>
+                      <button class="fr-btn fr-btn--secondary fr-btn--sm"
+                              aria-controls="modal-deactivate-<%= operateur.id %>"
+                              data-fr-opened="false">
+                        Rendre inactif
+                      </button>
+                    </td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="tab-inactifs" class="fr-tabs__panel" role="tabpanel">
+          <div class="fr-table">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Organisme</th>
+                  <th scope="col">Programme</th>
+                  <th scope="col">Mission</th>
+                  <th scope="col">Catégorie</th>
+                  <th scope="col">Années</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% operateurs_inactifs.each do |operateur| %>
+                  <tr>
+                    <td><%= link_to operateur.organisme.nom, organisme_path(operateur.organisme), class: "fr-link" %></td>
+                    <td><%= operateur.programme&.numero %></td>
+                    <td><%= operateur.mission&.nom %></td>
+                    <td><%= operateur.nom_categorie %></td>
+                    <td><%= operateur.toutes_annees.join(', ') %></td>
+                  </tr>
+                <% end %>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
 
       <%# Modales de désactivation — une par opérateur actif %>
@@ -59,9 +102,9 @@
                         <label class="fr-label" for="annee_fin_<%= operateur.id %>">Inactif depuis (année)</label>
                         <input type="number" class="fr-input" id="annee_fin_<%= operateur.id %>"
                                name="annee_fin" value="<%= Date.today.year %>"
-                               min="2000" max="<%= Date.today.year + 2 %>" />
+                               min="<%= operateur.annees.max || Date.today.year %>" max="<%= Date.today.year + 2 %>" />
                       </div>
-                      <div class="fr-modal__footer">
+                      <div>
                         <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline">
                           <li>
                             <button type="button" class="fr-btn fr-btn--secondary"
@@ -81,18 +124,6 @@
         </dialog>
       <% end %>
 
-      <h2 class="fr-mt-7w fr-mb-3w">Mettre à jour les opérateurs</h2>
-      <div>
-        <%= form_tag import_operateurs_path, multipart: true do %>
-          <div class="fr-upload-group">
-            <label class="fr-label" for="file-upload-operateurs">Ajouter des fichiers
-              <span class="fr-hint-text">Taille maximale : 50 Mo. Formats supportés : xlsx.</span>
-            </label>
-            <%= file_field_tag :file, accept: '.xlsx', class: "fr-upload", id: "file-upload-operateurs" %>
-          </div>
-          <div class="fr-my-4w"><%= submit_tag "Transmettre", class: "fr-btn" %></div>
-        <% end %>
-      </div>
 
       <h2 class="fr-mt-7w fr-mb-3w">Mettre à jour les organismes [<%= Organisme.all.count %>]</h2>
       <div>

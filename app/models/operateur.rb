@@ -115,6 +115,36 @@ class Operateur < ApplicationRecord
     end
   end
 
+  # Converts the flat annees array into a list of {de:, a:} period hashes.
+  # The last period has a: nil if the operator is currently active.
+  def annees_en_periodes
+    return [] if annees.blank?
+
+    sorted = annees.sort
+    periodes = []
+    debut = sorted.first
+    prev  = sorted.first
+
+    sorted.each_cons(2) do |a, b|
+      if b == a + 1
+        prev = b
+      else
+        periodes << { de: debut, a: prev }
+        debut = b
+        prev  = b
+      end
+    end
+
+    # Last period: open-ended if active, closed otherwise
+    if organisme.operateur_actif
+      periodes << { de: debut, a: nil }
+    else
+      periodes << { de: debut, a: prev }
+    end
+
+    periodes
+  end
+
   def self.ransackable_attributes(auth_object = nil)
     ["annees", "created_at", "id", "id_value", "mission_id", "nom_categorie", "organisme_id", "presence_categorie", "programme_id", "updated_at"]
   end

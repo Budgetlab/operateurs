@@ -3,13 +3,16 @@
   <div class="fr-collapse" id="breadcrumb-1">
     <ol class="fr-breadcrumb__list">
       <li>
-        <%= link_to root_path, class:"fr-breadcrumb__link" do %>Accueil<%end %>
+        <%= link_to root_path, class: "fr-breadcrumb__link" do %>Accueil
+        <% end %>
       </li>
       <li>
-        <%= link_to organismes_path, class:"fr-breadcrumb__link" do %>Liste des organismes<%end %>
+        <%= link_to organismes_path, class: "fr-breadcrumb__link" do %>Liste des organismes
+        <% end %>
       </li>
       <li>
-        <%= link_to organisme_path(@organisme), class:"fr-breadcrumb__link" do %><%= @organisme.nom %><%end %>
+        <%= link_to organisme_path(@organisme), class: "fr-breadcrumb__link" do %><%= @organisme.nom %>
+        <% end %>
       </li>
       <li>
         <a class="fr-breadcrumb__link" aria-current="page">Modification opérateur</a>
@@ -23,130 +26,216 @@
   <div class="fr-card fr-card--no-arrow">
     <div class="fr-card__body" data-controller="form">
       <div class="fr-card__content">
-        <%= form_with(model: @operateur, data: {'form-target': "form", action: "change->form#validateForm turbo:before-fetch-request->form#submitForm"}) do |f|%>
+        <%= form_with(model: @operateur, data: { 'form-target': "form", action: "change->form#validateForm turbo:before-fetch-request->form#submitForm" }) do |f| %>
           <%= f.hidden_field :organisme_id, value: @organisme.id %>
           <%= render 'organismes/form_notice' %>
-          <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-4">
-              <fieldset class="fr-fieldset">
-                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">Opérateur actif*</legend>
-                <div class="fr-fieldset__element fr-fieldset__element--inline">
-                  <div class="fr-radio-group">
-                    <input type="radio" name="operateur[operateur_actif]" value="true"
-                           id="radio-operateur-actif-1"
-                           <%= @operateur.organisme&.operateur_actif ? 'checked' : '' %>
-                           data-form-target="checkRequire"
-                           data-action="change->form#ChangeOperateur" />
-                    <label class="fr-label" for="radio-operateur-actif-1">Oui</label>
+          <%# --- Bloc Opérateur --- %>
+          <% est_operateur = @organisme.operateur_actif || @operateur.annees&.any? %>
+          <% toutes_periodes = @operateur.persisted? ? @operateur.annees_en_periodes : [] %>
+          <% periodes_fermees = toutes_periodes.select { |p| p[:a].present? } %>
+          <% periode_ouverte = toutes_periodes.find { |p| p[:a].nil? } %>
+          <div data-controller="operateur-periodes" data-operateur-periodes-target="root">
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <%# Colonne 1 : radio Opérateur %>
+              <div class="fr-col-12 fr-col-lg-3">
+                <fieldset class="fr-fieldset fr-mb-0">
+                  <legend class="fr-fieldset__legend--regular fr-fieldset__legend">Opérateur*</legend>
+                  <div class="fr-fieldset__element fr-fieldset__element--inline">
+                    <div class="fr-radio-group">
+                      <input type="radio" name="operateur[operateur_actif]" value="true"
+                             id="radio-operateur-actif-1"
+                             <%= est_operateur ? 'checked' : '' %>
+                             data-form-target="checkRequire"
+                             data-action="change->operateur-periodes#toggleOperateur"/>
+                      <label class="fr-label" for="radio-operateur-actif-1">Oui</label>
+                    </div>
                   </div>
-                </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline">
-                  <div class="fr-radio-group">
-                    <input type="radio" name="operateur[operateur_actif]" value="false"
-                           id="radio-operateur-actif-2"
-                           <%= !@operateur.organisme&.operateur_actif ? 'checked' : '' %>
-                           data-form-target="checkRequire"
-                           data-action="change->form#ChangeOperateur" />
-                    <label class="fr-label" for="radio-operateur-actif-2">Non</label>
+                  <div class="fr-fieldset__element fr-fieldset__element--inline">
+                    <div class="fr-radio-group">
+                      <input type="radio" name="operateur[operateur_actif]" value="false"
+                             id="radio-operateur-actif-2"
+                             <%= !est_operateur ? 'checked' : '' %>
+                             data-form-target="checkRequire"
+                             data-action="change->operateur-periodes#toggleOperateur"/>
+                      <label class="fr-label" for="radio-operateur-actif-2">Non</label>
+                    </div>
                   </div>
-                </div>
-              </fieldset>
-            </div>
-            <div class="fr-col-12 fr-col-lg-4" id="annee-debut-group" style="<%= 'display:none' unless @operateur.organisme&.operateur_actif %>">
-              <div class="fr-input-group">
-                <label class="fr-label" for="annee_debut">Opérateur depuis (année)*</label>
-                <input type="number" class="fr-input" id="annee_debut"
-                       name="operateur[annee_debut]"
-                       value="<%= @operateur.annees&.min %>"
-                       min="2000" max="<%= Date.today.year + 2 %>"
-                       data-form-target="fieldRequire" />
+                </fieldset>
               </div>
             </div>
-          </div>
-          <div class="fr-grid-row fr-grid-row--gutters">
-            <div class="fr-col-12 fr-col-lg-4">
-              <fieldset class="fr-fieldset">
-                <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
-                  Appartenance catégorie d'opérateurs*
-                </legend>
-                <div class="fr-fieldset__element fr-fieldset__element--inline">
-                  <div class="fr-radio-group">
-                    <%= f.radio_button :presence_categorie, true, id: "radio-presence-1", checked: @operateur.presence_categorie, data: {'form-target': 'checkRequire', action: "change->form#ChangeCategorie" }  %>
-                    <label class="fr-label" for="radio-presence-1">Oui</label>
-                  </div>
-                </div>
-                <div class="fr-fieldset__element fr-fieldset__element--inline">
-                  <div class="fr-radio-group">
-                    <%= f.radio_button :presence_categorie, false, checked: @operateur.presence_categorie != true, id:"radio-presence", data: {'form-target': 'checkRequire', action: "change->form#ChangeCategorie" } %>
-                    <label class="fr-label" for="radio-presence">Non</label>
-                  </div>
-                </div>
-              </fieldset>
-            </div>
-            <div class="fr-col-12 fr-col-lg-4">
-              <div class="fr-select-group">
-                <label for="nom_categorie" class="fr-label">Catégorie d'opérateurs*</label>
-                <%= f.select :nom_categorie,options_for_select([["- sélectionner -", ""]] + @liste_autorites.map { |autorite| [autorite, autorite] }, selected: @operateur.nom_categorie),{}, {data: {'form-target': 'fieldRequire'}, id:"nom_categorie",class:"fr-select"}%>
-              </div>
-            </div>
-          </div>
-          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-grid-row fr-grid-row--gutters">
+              <%# Colonne 2 : bloc Périodes d'activité %>
+              <div class="fr-col-12 fr-col-lg-3" id="periodes-block"
+                   data-operateur-periodes-target="block">
 
-            <div class="fr-col-12 fr-col-lg-4">
-              <div class="fr-select-group">
-                <label for="programme" class="fr-label">Programme chef de file*</label>
-                <%= f.select :programme_id, options_for_select([["- sélectionner -", ""]] + @programmes.map { |programme| [programme.numero.to_s + ' - ' + programme.nom, programme.id] }, selected: @operateur.programme_id),{}, {data: {'form-target': 'fieldRequire', action: "change->form#changeProgramme"}, id:"programme",class:"fr-select"}%>
-              </div>
-            </div>
-            <div class="fr-col-12 fr-col-lg-4">
-              <div class="fr-select-group">
-                <label for="mission" class="fr-label">Mission du programme chef de file*</label>
-                <%= f.select :mission_id, [["- sélectionner -", ""]], {selected: @operateur.mission_id}, {data: {'form-target': 'fieldRequire'}, id:"mission",class:"fr-select"}%>
-              </div>
-            </div>
-            <div class="fr-col-12 fr-col-lg-4">
-              <div class="fr-select-group">
-                <label class="fr-label">Autres programmes</label>
-                <button class="fr-select fr-btns-group--left" aria-controls="translate-1295" aria-expanded="false" title="Sélectionner un ou plusieurs programmes" data-action="click->form#Dropdown" id="BtnRattachement">
-                  - sélectionner -
-                </button>
-                <div class="div-dropdown">
-                  <div class="fr-collapse fr-menu" id="translate-1295">
-                    <fieldset class="fr-fieldset" id="checkboxes-" aria-labelledby="checkboxes-legend checkboxes-messages">
-                      <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="checkboxes-legend">
-                        Sélectionner un ou plusieurs programmes
-                      </legend>
-                      <% @programmes.each_with_index do |programme, i|%>
-                        <div class="fr-fieldset__element">
-                          <div class="fr-checkbox-group fr-checkbox-group--sm">
-                            <%= f.check_box :programmes, {id: "checkboxes-#{i}", data: {'form-target':'checklist',action: "change->form#checkBox"}, multiple: true,checked: @liste_operateur.include?(programme.id) }, programme.id%>
-                            <label class="fr-label" for="checkboxes-<%=i %>">
-                              <%= programme.numero%>
-                            </label>
+                <div class="fr-h6 fr-mb-1v">Périodes d'activité</div>
 
-                          </div>
-                        </div>
-                      <%end %>
-                    </fieldset>
+                <%# Liste des périodes fermées uniquement %>
+                <div id="periodes-list" data-operateur-periodes-target="list">
+                  <% periodes_fermees.each_with_index do |periode, i| %>
+                    <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle periode-item"
+                         data-operateur-periodes-target="periodeItem">
+                      <input type="hidden" name="periodes[<%= i %>][de]" value="<%= periode[:de] %>"/>
+                      <input type="hidden" name="periodes[<%= i %>][a]" value="<%= periode[:a] %>"/>
+                      <div class="fr-col-auto">
+                          <span class="fr-text--sm">
+                            De <strong><%= periode[:de] %></strong> à <strong><%= periode[:a] %></strong>
+                          </span>
+                      </div>
+                      <div class="fr-col-auto">
+                        <button type="button" class="fr-btn fr-btn--tertiary-no-outline fr-btn--sm fr-icon-delete-line"
+                                aria-label="Supprimer cette période"
+                                data-action="click->operateur-periodes#removePeriode">
+                        </button>
+                      </div>
+                    </div>
+                  <% end %>
+                </div>
+
+                <%# Hidden inputs synchronisés avec les champs De/À, soumis avec le formulaire %>
+                <input type="hidden" data-operateur-periodes-target="deHidden"
+                       name="<%= periode_ouverte ? "periodes[#{periodes_fermees.length}][de]" : '' %>"
+                       value="<%= periode_ouverte&.dig(:de) %>"/>
+                <input type="hidden" data-operateur-periodes-target="aHidden"
+                       name=""
+                       value=""/>
+                <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle ">
+                  <div class="fr-col-12 fr-col-sm-auto">
+                    <div class="fr-input-group">
+                      <label class="fr-label" for="periode-de">De (année)</label>
+                      <input type="number" class="fr-input" id="periode-de"
+                             min="2000" max="<%= Date.today.year + 5 %>"
+                             value="<%= periode_ouverte&.dig(:de) %>"
+                             data-operateur-periodes-target="deInput"
+                             data-action="input->operateur-periodes#updateAddButton input->operateur-periodes#syncDeHidden"/>
+                    </div>
+                  </div>
+
+                  <div class="fr-col-12 fr-col-sm-auto">
+                    <div class="fr-checkbox-group fr-checkbox-group--sm">
+                      <input type="checkbox" id="avec-date-fin"
+                             data-operateur-periodes-target="avecFin"
+                             data-action="change->operateur-periodes#toggleFin"/>
+                      <label class="fr-label" for="avec-date-fin">Renseigner une date de fin</label>
+                    </div>
+                  </div>
+
+                  <div class="fr-col-12 fr-col-sm-auto" id="periode-a-group" style="display:none"
+                       data-operateur-periodes-target="aGroup">
+                    <div class="fr-input-group">
+                      <label class="fr-label" for="periode-a">À (année)</label>
+                      <input type="number" class="fr-input" id="periode-a"
+                             min="2000" max="<%= Date.today.year + 5 %>"
+                             data-operateur-periodes-target="aInput"
+                             data-action="input->operateur-periodes#updateAddButton"/>
+                    </div>
+                  </div>
+
+                  <div class="fr-col-12 fr-col-sm-auto" style="display:none"
+                       data-operateur-periodes-target="addBtnWrapper">
+                    <button type="button"
+                            class="fr-btn fr-btn--secondary fr-btn--sm"
+                            id="btn-ajouter-periode"
+                            disabled
+                            data-operateur-periodes-target="addBtn"
+                            data-action="click->operateur-periodes#addPeriode">
+                      Ajouter la période
+                    </button>
+                  </div>
+                </div>
+
+
+              </div>
+            </div>
+            <div data-operateur-periodes-target="details"
+                 style="<%= 'display:none' unless est_operateur %>">
+              <div class="fr-grid-row fr-grid-row--gutters">
+                <div class="fr-col-12 fr-col-lg-4">
+                  <fieldset class="fr-fieldset">
+                    <legend class="fr-fieldset__legend--regular fr-fieldset__legend">
+                      Appartenance catégorie d'opérateurs*
+                    </legend>
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                      <div class="fr-radio-group">
+                        <%= f.radio_button :presence_categorie, true, id: "radio-presence-1", checked: @operateur.presence_categorie, data: { 'form-target': 'checkRequire', action: "change->form#ChangeCategorie" } %>
+                        <label class="fr-label" for="radio-presence-1">Oui</label>
+                      </div>
+                    </div>
+                    <div class="fr-fieldset__element fr-fieldset__element--inline">
+                      <div class="fr-radio-group">
+                        <%= f.radio_button :presence_categorie, false, checked: @operateur.presence_categorie != true, id: "radio-presence", data: { 'form-target': 'checkRequire', action: "change->form#ChangeCategorie" } %>
+                        <label class="fr-label" for="radio-presence">Non</label>
+                      </div>
+                    </div>
+                  </fieldset>
+                </div>
+                <div class="fr-col-12 fr-col-lg-4">
+                  <div class="fr-select-group">
+                    <label for="nom_categorie" class="fr-label">Catégorie d'opérateurs*</label>
+                    <%= f.select :nom_categorie, options_for_select([["- sélectionner -", ""]] + @liste_autorites.map { |autorite| [autorite, autorite] }, selected: @operateur.nom_categorie), {}, { data: { 'form-target': 'fieldRequire' }, id: "nom_categorie", class: "fr-select" } %>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
+              <div class="fr-grid-row fr-grid-row--gutters">
+
+                <div class="fr-col-12 fr-col-lg-4">
+                  <div class="fr-select-group">
+                    <label for="programme" class="fr-label">Programme chef de file*</label>
+                    <%= f.select :programme_id, options_for_select([["- sélectionner -", ""]] + @programmes.map { |programme| [programme.numero.to_s + ' - ' + programme.nom, programme.id] }, selected: @operateur.programme_id), {}, { data: { 'form-target': 'fieldRequire', action: "change->form#changeProgramme" }, id: "programme", class: "fr-select" } %>
+                  </div>
+                </div>
+                <div class="fr-col-12 fr-col-lg-4">
+                  <div class="fr-select-group">
+                    <label for="mission" class="fr-label">Mission du programme chef de file*</label>
+                    <%= f.select :mission_id, [["- sélectionner -", ""]], { selected: @operateur.mission_id }, { data: { 'form-target': 'fieldRequire' }, id: "mission", class: "fr-select" } %>
+                  </div>
+                </div>
+                <div class="fr-col-12 fr-col-lg-4">
+                  <div class="fr-select-group">
+                    <label class="fr-label">Autres programmes</label>
+                    <button class="fr-select fr-btns-group--left" aria-controls="translate-1295" aria-expanded="false" title="Sélectionner un ou plusieurs programmes" data-action="click->form#Dropdown" id="BtnRattachement">
+                      - sélectionner -
+                    </button>
+                    <div class="div-dropdown">
+                      <div class="fr-collapse fr-menu" id="translate-1295">
+                        <fieldset class="fr-fieldset" id="checkboxes-" aria-labelledby="checkboxes-legend checkboxes-messages">
+                          <legend class="fr-fieldset__legend--regular fr-fieldset__legend" id="checkboxes-legend">
+                            Sélectionner un ou plusieurs programmes
+                          </legend>
+                          <% @programmes.each_with_index do |programme, i| %>
+                            <div class="fr-fieldset__element">
+                              <div class="fr-checkbox-group fr-checkbox-group--sm">
+                                <%= f.check_box :programmes, { id: "checkboxes-#{i}", data: { 'form-target': 'checklist', action: "change->form#checkBox" }, multiple: true, checked: @liste_operateur.include?(programme.id) }, programme.id %>
+                                <label class="fr-label" for="checkboxes-<%= i %>">
+                                  <%= programme.numero %>
+                                </label>
+
+                              </div>
+                            </div>
+                          <% end %>
+                        </fieldset>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div><%# fin champs %>
+          </div><%# fin operateur-periodes controller %>
 
           <div class="fr-my-4w">
             <ul class="fr-btns-group fr-btns-group--inline fr-btns-group--right">
               <li>
-                  <%=link_to organisme_path(@organisme), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %>
+                <%= link_to organisme_path(@organisme), class: "fr-btn fr-btn--secondary" do %>Annuler
+                <% end %>
               </li>
               <li>
-                <%= f.submit 'Valider', class: "fr-btn", data: {'form-target': "submitBouton"}, aria: { label: "Valider"} %>
+                <%= f.submit 'Valider', class: "fr-btn", data: { 'form-target': "submitBouton" }, aria: { label: "Valider" } %>
               </li>
             </ul>
           </div>
 
 
-        <%end %>
+        <% end %>
       </div>
     </div>
   </div>
