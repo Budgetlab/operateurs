@@ -119,6 +119,62 @@ class OrganismeTest < ActiveSupport::TestCase
     assert_nil organisme.reload.operateur, "operateur should be destroyed when Programme chef file is N/A"
   end
 
+  # --- desactiver_operateur_si_inactif callback ---
+
+  test "passing etat to Inactif desactivates operator using date_dissolution year" do
+    organisme = organismes(:one)
+    organisme.operateur&.destroy
+    op = Operateur.create!(organisme: organisme, mission: missions(:one), programme: programmes(:one),
+                           annees: [2023], presence_categorie: false)
+    organisme.update!(operateur_actif: true, date_dissolution: Date.new(2024, 6, 1))
+
+    organisme.update!(etat: 'Inactif')
+
+    organisme.reload
+    op.reload
+    refute organisme.operateur_actif
+    assert_equal (2023..2024).to_a, op.annees
+  end
+
+  test "passing etat to Inactif desactivates operator using current year when no date_dissolution" do
+    organisme = organismes(:one)
+    organisme.operateur&.destroy
+    op = Operateur.create!(organisme: organisme, mission: missions(:one), programme: programmes(:one),
+                           annees: [2023], presence_categorie: false)
+    organisme.update!(operateur_actif: true, date_dissolution: nil)
+
+    organisme.update!(etat: 'Inactif')
+
+    organisme.reload
+    op.reload
+    refute organisme.operateur_actif
+    assert_includes op.annees, Date.today.year
+  end
+
+  test "changing etat to non-Inactif does not touch operator" do
+    organisme = organismes(:one)
+    organisme.operateur&.destroy
+    op = Operateur.create!(organisme: organisme, mission: missions(:one), programme: programmes(:one),
+                           annees: [2024], presence_categorie: false)
+    organisme.update!(operateur_actif: true, etat: 'Actif')
+
+    organisme.update!(etat: 'En cours de dissolution')
+
+    organisme.reload
+    op.reload
+    assert organisme.operateur_actif
+    assert_equal [2024], op.annees
+  end
+
+  test "passing etat to Inactif does nothing when no operator exists" do
+    organisme = organismes(:one)
+    organisme.operateur&.destroy
+    organisme.update!(operateur_actif: false)
+
+    assert_nothing_raised { organisme.update!(etat: 'Inactif') }
+    refute organisme.reload.operateur_actif
+  end
+
   private
 
   # Simulates processing a single row from the Organisme import spreadsheet.

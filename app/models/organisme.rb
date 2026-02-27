@@ -15,6 +15,20 @@ class Organisme < ApplicationRecord
   has_many :enquete_reponses, dependent: :destroy
   has_many :objectifs_contrats, dependent: :destroy
 
+  after_save :desactiver_operateur_si_inactif, if: :saved_change_to_etat?
+
+  private
+
+  def desactiver_operateur_si_inactif
+    return unless etat == 'Inactif'
+    return unless operateur_actif? && operateur.present?
+
+    annee_fin = date_dissolution&.year || Date.today.year
+    operateur.desactiver!(annee_fin)
+  end
+
+  public
+
   def self.import(file)
     data = Roo::Spreadsheet.open(file.path)
     headers = data.row(1) # get header row
