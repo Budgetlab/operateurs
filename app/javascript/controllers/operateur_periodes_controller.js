@@ -1,7 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["block", "list", "periodeItem", "deInput", "aInput", "aGroup", "avecFin", "addBtn", "addBtnWrapper", "deHidden", "aHidden", "details"]
+  static targets = ["block", "list", "periodeItem", "deInput", "aInput", "aGroup", "avecFin", "addBtn", "addBtnWrapper", "deHidden", "aHidden", "deGroup", "deError", "details"]
+  static values = { minDe: Number }
 
   connect() {
     this.periodeIndex = this.periodeItemTargets.length
@@ -46,11 +47,24 @@ export default class extends Controller {
     const de = parseInt(this.deInputTarget.value)
     const avecFin = this.avecFinTarget.checked
     const a = avecFin ? parseInt(this.aInputTarget.value) : null
+    const minDe = this.minDeValue || 2000
 
-    const deValide = !isNaN(de) && de >= 2000
+    const deValide = !isNaN(de) && de >= minDe
     const aValide  = !avecFin || (!isNaN(a) && a >= de)
 
     this.addBtnTarget.disabled = !(deValide && aValide)
+
+    // Feedback visuel si De < minDe
+    if (!isNaN(de) && de < minDe) {
+      this.deInputTarget.classList.add('fr-input--error')
+      this.deGroupTarget.classList.add('fr-input-group--error')
+      this.deErrorTarget.textContent = `L'année de début doit être supérieure ou égale à ${minDe}.`
+      this.deErrorTarget.style.display = ''
+    } else {
+      this.deInputTarget.classList.remove('fr-input--error')
+      this.deGroupTarget.classList.remove('fr-input-group--error')
+      this.deErrorTarget.style.display = 'none'
+    }
 
     // Sync aHidden quand la valeur est valide
     if (avecFin && deValide && !isNaN(a) && a >= de) {
@@ -111,9 +125,28 @@ export default class extends Controller {
     this.deHiddenTarget.value = ''
     this.aHiddenTarget.name = ''
     this.aHiddenTarget.value = ''
+
+    // Update minDe: if the added period was closed, new min = a + 2
+    if (a != null) {
+      this.minDeValue = a + 2
+      this.deInputTarget.min = this.minDeValue
+    }
   }
 
   removePeriode(event) {
     event.currentTarget.closest('.periode-item').remove()
+    this._recalcMinDe()
+  }
+
+  _recalcMinDe() {
+    // Find max end year among remaining closed periods in the list
+    const aValues = Array.from(this.listTarget.querySelectorAll('input[type="hidden"][name$="][a]"]'))
+      .map(el => parseInt(el.value))
+      .filter(v => !isNaN(v))
+
+    const initial = parseInt(this.element.dataset.operateurPeriodesMinDeValue) || 2000
+    this.minDeValue = aValues.length > 0 ? Math.max(...aValues) + 2 : initial
+    this.deInputTarget.min = this.minDeValue
+    this.updateAddButton()
   }
 }

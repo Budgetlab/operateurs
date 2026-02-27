@@ -34,7 +34,11 @@
           <% toutes_periodes = @operateur.persisted? ? @operateur.annees_en_periodes : [] %>
           <% periodes_fermees = toutes_periodes.select { |p| p[:a].present? } %>
           <% periode_ouverte = toutes_periodes.find { |p| p[:a].nil? } %>
-          <div data-controller="operateur-periodes" data-operateur-periodes-target="root">
+          <% derniere_fin = periodes_fermees.map { |p| p[:a] }.compact.max %>
+          <% min_de = derniere_fin ? derniere_fin + 2 : 2000 %>
+          <div data-controller="operateur-periodes"
+               data-operateur-periodes-target="root"
+               data-operateur-periodes-min-de-value="<%= min_de %>">
             <div class="fr-grid-row fr-grid-row--gutters">
               <%# Colonne 1 : radio Opérateur %>
               <div class="fr-col-12 fr-col-lg-3">
@@ -101,13 +105,14 @@
                        value=""/>
                 <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle ">
                   <div class="fr-col-12 fr-col-sm-auto">
-                    <div class="fr-input-group">
+                    <div class="fr-input-group" data-operateur-periodes-target="deGroup">
                       <label class="fr-label" for="periode-de">De (année)</label>
                       <input type="number" class="fr-input" id="periode-de"
-                             min="2000" max="<%= Date.today.year + 5 %>"
+                             min="<%= min_de %>" max="<%= Date.today.year + 5 %>"
                              value="<%= periode_ouverte&.dig(:de) %>"
                              data-operateur-periodes-target="deInput"
                              data-action="input->operateur-periodes#updateAddButton input->operateur-periodes#syncDeHidden"/>
+                      <p class="fr-error-text" data-operateur-periodes-target="deError" style="display:none"></p>
                     </div>
                   </div>
 
