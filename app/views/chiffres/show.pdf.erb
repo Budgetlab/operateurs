@@ -24,7 +24,7 @@
       <div data-tab-target="section" data-tab-value="emplois" class="fr-mb-4w">
         <h2 class="title-btn">Emplois</h2>
         <h3 class="fr-h4">Emplois rémunérés par l’organisme</h3>
-        <% title_emplois = @chiffre.comptabilite_budgetaire ? 'autorisation d’emplois' : 'emplois' %>
+        <% title_emplois = terme_emplois(@chiffre) %>
         <% title_depenses_or_charges =  @chiffre.comptabilite_budgetaire ? 'dépenses' : 'charges'%>
         <% if @chiffre.operateur == true %>
           <div class="fr-grid-row fr-grid-row--gutters">
@@ -182,7 +182,7 @@
         </div>
         <div class="fr-grid-row fr-grid-row--gutters options">
           <div class="fr-col-6">
-            <div>Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisation d'emplois - MAD sortantes</div>
+            <div>Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond de <%= @chiffre.type_budget == "Compte financier" ? "consommation" : "autorisation" %> d'emplois - MAD sortantes</div>
             <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(@chiffre.emplois_autre_entite) %> ETPT</div>
           </div>
           <div class="fr-col-6">

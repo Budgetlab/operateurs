@@ -146,6 +146,30 @@ module ApplicationHelper
     end
   end
 
+  def terme_emplois(chiffre)
+    if chiffre&.comptabilite_budgetaire
+      chiffre.type_budget == "Compte financier" ? "consommation d'emplois" : "autorisation d'emplois"
+    else
+      "emplois"
+    end
+  end
+
+  def terme_emplois_plural(chiffre)
+    if chiffre&.comptabilite_budgetaire
+      chiffre.type_budget == "Compte financier" ? "consommations d'emplois" : "autorisations d'emplois"
+    else
+      "emplois"
+    end
+  end
+
+  def liasse_emplois_prefix(chiffre)
+    if chiffre&.comptabilite_budgetaire
+      chiffre.type_budget == "Compte financier" ? "Consommations d'" : "Autorisations d'"
+    else
+      "Présentation des "
+    end
+  end
+
   def numero_br(chiffre)
     rectificatifs = Chiffre.where(organisme_id: chiffre.organisme_id, exercice_budgetaire: chiffre.exercice_budgetaire, type_budget: "Budget rectificatif").order(:created_at)
     rectificatifs.index(chiffre)+1

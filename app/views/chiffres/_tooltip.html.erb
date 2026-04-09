@@ -3,23 +3,23 @@
 </a>
 <span class="fr-tooltip fr-placement" id="<%= num_id %>-<%=chiffre.id %>" role="tooltip" aria-hidden="true">
   <% if num_id == "emplois_plafond_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= liasse_emplois_prefix(chiffre) %>emplois"</span><br>
     > Tableau "Pour vote de l'organe délibérant" <br>
     > Cellule "Sous plafond LFI (a)"
   <% elsif num_id == "emplois_hors_plafond_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= liasse_emplois_prefix(chiffre) %>emplois"</span><br>
     > Tableau "Pour vote de l'organe délibérant" <br>
     > Cellule "Hors plafond LFI (b)"
   <% elsif num_id == "emplois_total_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= liasse_emplois_prefix(chiffre) %>emplois"</span><br>
     > Tableau "Pour vote de l'organe délibérant" <br>
     > Cellule "Plafond organisme"
   <% elsif num_id == "emplois_total2_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= liasse_emplois_prefix(chiffre) %>emplois"</span><br>
     > Tableau "Pour vote de l'organe délibérant" <br>
     > Cellule <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme' : 'Total organisme' %>
   <% elsif num_id == "emplois_depenses_personnel_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= liasse_emplois_prefix(chiffre) %>emplois"</span><br>
     > Tableau "Pour information de l'organe délibérant" <br>
     > Cellule "Total des emplois rémunérés par l'organisme et des autres dépenses de personnel / <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme / Dépenses' : 'Total organisme / Charges' %> de personnel"<br>
       OU <br>
@@ -40,7 +40,7 @@
     > Tableau "Consolidation des emplois de l'opérateur"<br>
     > Cellule "Emplois rémunérés par l'opérateur / Sous plafond / PLF N"<br>
   <% elsif num_id == "emplois_plafond_prenotifie_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= liasse_emplois_prefix(chiffre) %>emplois"</span><br>
     >  Cellule "Rappel du plafond d'emploi notifié par le responsable de programme en ETPT"<br>
     OU<br>
     Source : <span class="fr-text--underline">Pré-notification soumise à l'avis du contrôleur budgétaire</span> <br>
@@ -52,33 +52,33 @@
   <% elsif num_id == "emplois_schema_prenotifie_t" %>
     Source : <span class="fr-text--underline">Pré-notification soumise à l'avis du contrôleur budgétaire </span>
   <% elsif num_id == "emplois_titulaires_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= liasse_emplois_prefix(chiffre) %>emplois"</span><br>
     > Tableau "Pour information de l'organe délibérant"<br>
     > Cellule  "Titulaires / <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme' : 'Total organisme' %> / ETPT"<br>
   <% elsif num_id == "emplois_titulaires_montant_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= liasse_emplois_prefix(chiffre) %>emplois"</span><br>
     > Tableau "Pour information de l'organe délibérant"<br>
     > Cellule "Titulaires / <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme / Dépenses' : 'Total organisme / Charges' %> de personnel"<br>
   <% elsif num_id == "emplois_contractuels_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= liasse_emplois_prefix(chiffre) %>emplois"</span><br>
     > Tableau "Pour information de l'organe délibérant"<br>
     > Cellule  "Contractuels / <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme' : 'Total organisme' %> / ETPT"<br>
   <% elsif num_id == "emplois_contractuels_montant_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= liasse_emplois_prefix(chiffre) %>emplois"</span><br>
     > Tableau "Pour information de l'organe délibérant"<br>
     > Cellule "Contractuels / <%= chiffre&.comptabilite_budgetaire ? 'Plafond organisme / Dépenses' : 'Total organisme / Charges' %> de personnel"<br>
   <% elsif num_id == "emplois_non_remuneres_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= liasse_emplois_prefix(chiffre) %>emplois"</span><br>
     <% if chiffre.comptabilite_budgetaire == true %>
-    > Tableau  "Pour information : tableau détaillé des emplois rémunérés par d'autres personnes morales et ne décomptant pas dans le plafond des autorisations d'emplois de l'organisme"<br>
+    > Tableau  "Pour information : tableau détaillé des emplois rémunérés par d'autres personnes morales et ne décomptant pas dans le plafond des <%= terme_emplois_plural(chiffre) %> de l'organisme"<br>
     <%else %>
     > Tableau  "Pour information : tableau détaillé des emplois rémunérés par d'autres personnes morales"<br>
     <% end %>
     > Cellule "Emplois rémunérés par d'autres personnes morales (en ETPT)" <br>
   <% elsif num_id == "emplois_autre_entite_t" %>
-    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= chiffre&.comptabilite_budgetaire ? "Autorisations d'" : 'Présentation des ' %>emplois"</span><br>
+    Source : <span class="fr-text--underline">Tableau 1 de la liasse<%if chiffre&.comptabilite_budgetaire %> budgétaire<%end %> - "<%= liasse_emplois_prefix(chiffre) %>emplois"</span><br>
     <% if chiffre.comptabilite_budgetaire == true %>
-    > Tableau "Pour information : tableau détaillé des emplois rémunérés par l'organisme et décomptant le plafond des autorisations d'emplois de l'organisme mais en fonction dans une autre entité"<br>
+    > Tableau "Pour information : tableau détaillé des emplois rémunérés par l'organisme et décomptant le plafond des <%= terme_emplois_plural(chiffre) %> de l'organisme mais en fonction dans une autre entité"<br>
     <% else %>
     > Tableau "Pour information : tableau détaillé des emplois rémunérés par l'organisme en fonction dans une autre entité"<br>
     <% end %>
@@ -88,7 +88,7 @@
   <% elsif num_id == "indicateur_cout_autre_t" %>
     <span class="fr-text--bold">Formule de calcul : <br>
     <% if chiffre.comptabilite_budgetaire == true %>
-    (Total autorisations d'emplois rémunérés par l'organisme - Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisations d'emplois + Emplois en fonction dans l'organisme, non rémunérés par lui) / Total autorisations d'emplois rémunérés par l'organisme
+    (Total <%= terme_emplois_plural(chiffre) %> rémunérés par l'organisme - Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond de <%= terme_emplois_plural(chiffre) %> + Emplois en fonction dans l'organisme, non rémunérés par lui) / Total <%= terme_emplois_plural(chiffre) %> rémunérés par l'organisme
     <%else %>
     (Total emplois rémunérés par l'organisme - Emplois en fonction dans une autre entité, rémunérés par l'organisme + Emplois en fonction dans l'organisme, non rémunérés par lui) / Total emplois rémunérés par l'organisme
     <%end %>

@@ -1,5 +1,5 @@
 <h3 class="fr-h4">Emplois rémunérés par l’organisme</h3>
-<% title_emplois = chiffre.comptabilite_budgetaire ? 'autorisation d’emplois' : 'emplois' %>
+<% title_emplois = terme_emplois(chiffre) %>
 <% title_depenses_or_charges =  chiffre.comptabilite_budgetaire ? 'dépenses' : 'charges'%>
 <% if chiffre.operateur == true %>
   <div class="fr-grid-row fr-grid-row--gutters">
@@ -29,7 +29,7 @@
       <div class="fr-mb-2w">
         <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
           <div class="fr-cart__body">
-            <p class="fr-mb-0 fr-text--center">Total des <%= title_emplois %> rémunérés par l'organisme <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_total_t", chiffre: chiffre} %></p>
+            <p class="fr-mb-0 fr-text--center">Total des <%= terme_emplois_plural(chiffre) %> rémunérés par l'organisme <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_total_t", chiffre: chiffre} %></p>
             <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_decimal(chiffre.emplois_total) %> ETPT</p>
           </div>
         </div>
@@ -39,7 +39,7 @@
 <%else %>
   <div class="fr-grid-row fr-grid-row--gutters">
     <div class="fr-col-12 fr-col-lg-6">
-      <div>Total des <%= title_emplois %> rémunérés par l'organisme <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_total2_t", chiffre: chiffre} %></div>
+      <div>Total des <%= terme_emplois_plural(chiffre) %> rémunérés par l'organisme <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_total2_t", chiffre: chiffre} %></div>
       <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_total) %> ETPT</div>
     </div>
   </div>
@@ -157,7 +157,7 @@
 </div>
 <div class="fr-grid-row fr-grid-row--gutters options fr-hidden">
   <div class="fr-col-12 fr-col-lg-6">
-    <div>Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond d'autorisation d'emplois - MAD sortantes <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_autre_entite_t", chiffre: chiffre} %></div>
+    <div>Emplois en fonction dans une autre entité, rémunérés par l'organisme et décomptés dans son plafond <%= chiffre.type_budget == "Compte financier" ? "de consommation" : "d'autorisation" %> d'emplois - MAD sortantes <%= render partial: "chiffres/tooltip", locals: {num_id: "emplois_autre_entite_t", chiffre: chiffre} %></div>
     <div class="fr-text--bold fr-mt-1w"><%= format_nombre_decimal(chiffre.emplois_autre_entite) %> ETPT</div>
   </div>
   <div class="fr-col-12 fr-col-lg-6">
