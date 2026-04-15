@@ -6,63 +6,56 @@ class EnqueteReponsesController < ApplicationController
     @enquete_annees = Enquete.order(annee: :asc).pluck(:annee)
     return if @enquete_annees.empty?
 
+    @controleur_name_list = User.where(statut: 'Controleur').order(:nom).pluck(:nom)
+
     @annee_a_afficher = params[:annee] ? params[:annee].to_i : @enquete_annees.last.to_i # prendre la plus récente
     @enquete = Enquete.find_by(annee: @annee_a_afficher)
     redirect_to enquete_reponses_path and return unless @enquete
 
-    # filtrer les résultats
+    # Scope de base : toutes les réponses de l'année (le Total ne sera jamais filtré)
     @enquete_reponses = @enquete.enquete_reponses.joins(organisme: :controleur)
     @q = @enquete_reponses.ransack(params[:q])
-    reponses = @q.result.includes(organisme: :controleur)
 
     # Filtrer les questions selon l'année
-    if @annee_a_afficher == 2025
-      @questions = @enquete.enquete_questions.where.not(numero: 14).order(:numero)
-    elsif [2023, 2024].include?(@annee_a_afficher)
-      @questions = @enquete.enquete_questions.where.not(numero: [15, 29, 31]).order(:numero)
-    else
-      @questions = @enquete.enquete_questions.order(:numero)
-    end
+    @questions = if @annee_a_afficher == 2025
+                   @enquete.enquete_questions.where.not(numero: 14).order(:numero)
+                 elsif [2023, 2024].include?(@annee_a_afficher)
+                   @enquete.enquete_questions.where.not(numero: [15, 29, 31]).order(:numero)
+                 else
+                   @enquete.enquete_questions.order(:numero)
+                 end
+
+    # Pré-calculer les scopes filtrés (indépendants du Total)
+    controleur_noms = params.dig(:q, :organisme_controleur_nom_in).presence
+    famille_noms = params.dig(:q, :organisme_famille_in).presence
 
     # construire les résultats
     @resultats = @questions.each_with_object({}) do |question, result|
-      # Initialiser la structure de réponse avec le total
-      all_responses = @enquete_reponses.group("reponses->>'#{question.id}'").count
+      grp = "reponses->>'#{question.id}'"
+
+      # Total : toujours toutes les réponses de l'année
+      all_responses = @enquete_reponses.group(grp).count
       result["#{question.numero}. #{question.nom}"] = { 'Total' => all_responses.sort.to_h }
 
-      # Calcul conditionnel des réponses CBR
-      cbr_responses = nil
-      if params.dig(:q, :organisme_controleur_nom_in).present?
-        cbr_responses = @enquete_reponses
-                          .where(controleur: { nom: params[:q][:organisme_controleur_nom_in] })
-                          .group("reponses->>'#{question.id}'")
-                          .count
-        cbr_key = params[:q][:organisme_controleur_nom_in]
-      elsif @statut_user == "Controleur"
-        cbr_responses = @enquete_reponses
-                          .where(organisme_id: current_user.controleur_organismes.pluck(:id))
-                          .group("reponses->>'#{question.id}'")
-                          .count
-        cbr_key = current_user.nom
+      # Série CBR : filtre contrôleur (param ou utilisateur connecté)
+      if controleur_noms
+        cbr = @enquete_reponses.where(controleur: { nom: controleur_noms }).group(grp).count
+        result["#{question.numero}. #{question.nom}"][controleur_noms] = cbr.sort.to_h
+      elsif @statut_user == 'Controleur'
+        cbr = @enquete_reponses.where(organisme_id: current_user.controleur_organismes.pluck(:id)).group(grp).count
+        result["#{question.numero}. #{question.nom}"][current_user.nom] = cbr.sort.to_h
       end
-      # Ajouter les réponses famille si filtre sur la famille
-      famille_reponses = nil
-      if params.dig(:q, :organisme_famille_in).present?
-        famille_reponses = @enquete_reponses
-                             .where(organismes: { famille: params[:q][:organisme_famille_in] })
-                             .group("reponses->>'#{question.id}'")
-                             .count
-        famille_key = params[:q][:organisme_famille_in]
+
+      # Série Famille : filtre famille
+      if famille_noms
+        famille = @enquete_reponses.where(organismes: { famille: famille_noms }).group(grp).count
+        result["#{question.numero}. #{question.nom}"][famille_noms] = famille.sort.to_h
       end
-      # Ajouter la série CBR et famille si elle existe
-      result["#{question.numero}. #{question.nom}"][cbr_key] = cbr_responses.sort.to_h if cbr_responses
-      result["#{question.numero}. #{question.nom}"][famille_key] = famille_reponses.sort.to_h if famille_reponses
     end
 
     respond_to do |format|
       format.html
       format.xlsx do
-        headers['Content-Disposition'] = 'attachment; filename="Enquete.xlsx"'
         render xlsx: 'index', filename: 'Enquete.xlsx', disposition: 'attachment'
       end
     end

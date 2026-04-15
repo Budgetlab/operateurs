@@ -44,6 +44,40 @@ export default class extends Controller {
         this.formTarget.requestSubmit()
     }
 
+    checkTagOnly(event){
+        event.preventDefault();
+        let button = event.currentTarget;
+        let checkbox = button.querySelector('input[type="checkbox"]');
+        checkbox.checked = !checkbox.checked;
+        button.setAttribute('aria-pressed', checkbox.checked ? 'true' : 'false');
+    }
+
+    addTagSelectedOnly(event){
+        event.preventDefault();
+        const selectedValue = event.currentTarget.value;
+        const selectedName = event.currentTarget.options[event.currentTarget.selectedIndex].text;
+        const tag = `<li data-action="click->request#removeTagSelectedOnly" data-value="${selectedValue}"><button class="fr-tag fr-tag--dismiss" aria-label="Retirer">${selectedName}</button></li>`;
+        const nomTag = event.currentTarget.getAttribute("data-tag");
+        const fieldTag = document.getElementById(nomTag);
+        let checkbox = fieldTag.querySelector('input[type="checkbox"][value="' + selectedValue + '"]');
+        if (checkbox.checked == false){
+            checkbox.checked = !checkbox.checked;
+            fieldTag.insertAdjacentHTML("beforeend", tag);
+        }
+        const selectElement = event.currentTarget.closest(".fr-select-group").querySelector(".fr-select");
+        selectElement.selectedIndex = 0;
+    }
+
+    removeTagSelectedOnly(event){
+        event.preventDefault();
+        const selectedValue = event.currentTarget.getAttribute("data-value");
+        let checkbox = event.currentTarget.parentNode.querySelector('input[type="checkbox"][value="' + selectedValue + '"]');
+        if (checkbox.checked){
+            checkbox.checked = !checkbox.checked;
+        }
+        event.currentTarget.remove();
+    }
+
     toggleFilter(event){
         event.preventDefault();
         const button = event.currentTarget

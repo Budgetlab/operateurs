@@ -263,7 +263,12 @@ select:disabled {
 .fr-tag label{
   cursor: pointer !important;
 }
-
+.fr-container--grey{
+  background-color: var(--background-contrast-raised-grey);
+}
+.fr-backgroud--grey{
+  background-color: var(--text-inverted-grey);
+}
 
 .fr-header .fr-container-lg--fluid {
       overflow: initial;
@@ -297,6 +302,50 @@ select:disabled {
 
 .fr-header{
   --ul-type: disc !important;
+}
+.fr-modal__body.fr-modal--body-search{
+  max-height: 30vh !important;
+}
+/* Transforme le modal DSFR en panneau latéral gauche */
+.fr-modal--custom{
+  padding: 0 !important;
+  --modal-max-width: 34rem !important;
+
+}
+.fr-modal--custom::before, .fr-modal--custom::after{
+  height: 100% !important;
+  width: calc(100% - var(--modal-max-width)) !important;
+  flex: 1 0 0 !important;
+}
+.fr-modal-custom__row--left{
+  justify-content: flex-start !important;      /* aligne le contenu à gauche */
+  align-items: stretch;            /* prend toute la hauteur */
+  padding: 0;                      /* enlève le padding DSFR */
+  height: 100vh;                   /* plein écran */
+  max-height: 100vh;
+  max-width: 34rem !important;
+}
+
+.fr-modal-custom__body{
+  pointer-events: all;
+  overflow-y: auto;
+  flex: 1 1 auto;
+  z-index: calc(var(--ground) + 2000);
+  background-color: var(--background-lifted-grey);
+
+  --idle: transparent;
+  --hover: var(--background-lifted-grey-hover);
+  --active: var(--background-lifted-grey-active);
+  --modal-max-height: 100vh !important;
+  max-height: 100vh !important;
+  height: 100vh !important;
+  filter: none;
+}
+.fr-modal-custom__body.fr-scroll-divider .fr-modal__footer {
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  background-size: 100% 1px;
+  background-image: linear-gradient(0deg, var(--border-default-grey), var(--border-default-grey));
 }
 /**
   * HIGHCHARTS
@@ -372,4 +421,13 @@ a.fr-tag[aria-pressed=true]::after{
 
 .fr-text--blue{
   color: var(--blue-france-sun-113-625);
+}
+
+.fr-tag--filtres{
+  color: var(--text-action-high-blue-france) !important;
+  background-color: var(--background-action-low-blue-france) !important;
+
+  --idle: transparent;
+  --hover: var(--background-action-low-blue-france-hover);
+  --active: var(--background-action-low-blue-france-active);
 }
