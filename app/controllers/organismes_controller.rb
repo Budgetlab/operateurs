@@ -295,39 +295,46 @@ class OrganismesController < ApplicationController
 
   def generate_modifications(ministeres_to_link)
     modifications = []
-    champs_a_surveiller = %i[nom etat acronyme siren nature texte_institutif commentaire gbcp_1 gbcp_3
-                           comptabilite_budgetaire nature_controle texte_soumission_controle autorite_controle
-                           texte_reglementaire_controle arrete_controle comite_audit
-                           arrete_nomination ciassp_n ciassp_n1 odal_n odal_n1 odac_n odac_n1]
-    champs_texte = ['Nom', 'État', 'Acronyme', 'Siren', 'Nature juridique', 'Texte institutif', 'Commentaire', 'Partie I GBCP',
-                    'Partie III GBCP', 'Comptabilité budgétaire', 'Nature contrôle', 'Texte soumission au contrôle',
-                    'Autorité de contrôle', "Texte réglementaire de désignation de l'autorité de contrôle",
-                    'Arrêté de contrôle', 'Comité audit et risques',
-                    'Arrêté de nomination comissaire du gouvernement', "CIASSP #{(Date.today.year).to_s}",
-                    "CIASSP #{(Date.today.year - 1).to_s}", "ODAL #{(Date.today.year - 2).to_s}",
-                    "ODAL #{(Date.today.year - 3).to_s}", "ODAC #{(Date.today.year - 2).to_s}",
-                    "ODAC #{(Date.today.year - 3).to_s}"]
-    champs_supp_controleur = %i[date_creation date_previsionnelle_dissolution agent_comptable_present
-                              degre_gbcp document_controle_present ministere_id
-                              admin_db_present admin_db_fonction admin_preca controleur_preca controleur_ca]
-    champs_supp_texte = ['Date création', 'Date prévisionnelle dissolution', 'Présence agent comptable', 'Degré GBCP',
-                         'Présence document contrôle', 'Ministère', 'Présence Admin DB',
-                         'Fonction Admin DB', 'Présence DB préCA', 'Présence contrôleur préCA', 'Présence contrôleur CA']
+    champs_a_surveiller = %i[
+      nom etat acronyme siren nature texte_institutif commentaire
+      gbcp_1 gbcp_3 comptabilite_budgetaire nature_controle
+      texte_soumission_controle autorite_controle texte_reglementaire_controle
+      arrete_controle comite_audit arrete_nomination
+      ciassp_n ciassp_n1 odal_n odal_n1 odac_n odac_n1
+      date_creation date_previsionnelle_dissolution agent_comptable_present
+      degre_gbcp document_controle_present ministere_id
+      admin_db_present admin_db_fonction admin_preca controleur_preca controleur_ca
+      apu arrete_interdiction_odac autorite_approbation bureau_id controleur_id
+      date_dissolution delegation_approbation effet_dissolution famille
+      presence_controle statut taux_cadrage_n taux_cadrage_n1 tutelle_financiere
+    ]
+    champs_texte = [
+      'Nom', 'État', 'Acronyme', 'Siren', 'Nature juridique', 'Texte institutif', 'Commentaire',
+      'Partie I GBCP', 'Partie III GBCP', 'Comptabilité budgétaire', 'Nature contrôle',
+      'Texte soumission au contrôle', 'Autorité de contrôle',
+      "Texte réglementaire de désignation de l'autorité de contrôle",
+      'Arrêté de contrôle', 'Comité audit et risques',
+      'Arrêté de nomination comissaire du gouvernement',
+      "CIASSP #{Date.today.year}", "CIASSP #{Date.today.year - 1}",
+      "ODAL #{Date.today.year - 2}", "ODAL #{Date.today.year - 3}",
+      "ODAC #{Date.today.year - 2}", "ODAC #{Date.today.year - 3}",
+      'Date création', 'Date prévisionnelle dissolution', 'Présence agent comptable',
+      'Degré GBCP', 'Présence document contrôle', 'Ministère',
+      'Présence Admin DB', 'Fonction Admin DB', 'Présence DB préCA',
+      'Présence contrôleur préCA', 'Présence contrôleur CA',
+      'APU', 'Arrêté interdiction ODAC', "Autorité d'approbation",
+      'Bureau', 'Contrôleur', 'Date dissolution', 'Délégation approbation',
+      'Effet dissolution', 'Famille', 'Présence contrôle',
+      'Statut', "Taux cadrage #{Date.today.year}", "Taux cadrage #{Date.today.year - 1}", 'Tutelle financière'
+    ]
     champs_a_surveiller.each_with_index do |champ, i|
-      if organisme_params[champ] && organisme_params[champ].to_s != check_format(@organisme[champ]) # réucpérer que ceux qui sont dans le formulaire
+      if organisme_params[champ] && organisme_params[champ].to_s != check_format(@organisme[champ])
         modifications << { champ: champ.to_s, nom: champs_texte[i], ancienne_valeur: check_format(@organisme[champ]), nouvelle_valeur: organisme_params[champ].to_s }
       end
     end
-    if current_user.statut == 'Controleur'
-      champs_supp_controleur.each_with_index do |champ, i|
-        if organisme_params[champ] && organisme_params[champ].to_s != check_format(@organisme[champ])
-          modifications << { champ: champ.to_s, nom: champs_supp_texte[i], ancienne_valeur: check_format(@organisme[champ]), nouvelle_valeur: organisme_params[champ].to_s }
-        end
-      end
-      if ministeres_to_link && ministeres_to_link.map(&:to_i).reject { |element| element.zero? } != @organisme.organisme_ministeres.pluck(:ministere_id)
-        nouvelle_valeur = ministeres_to_link.map(&:to_i).reject { |element| element.zero? }
-        modifications << { champ: 'ministeres', nom: 'Ministère•s co-tutelle', ancienne_valeur: @organisme.organisme_ministeres.pluck(:ministere_id), nouvelle_valeur: nouvelle_valeur }
-      end
+    if ministeres_to_link && ministeres_to_link.map(&:to_i).reject { |element| element.zero? } != @organisme.organisme_ministeres.pluck(:ministere_id)
+      nouvelle_valeur = ministeres_to_link.map(&:to_i).reject { |element| element.zero? }
+      modifications << { champ: 'ministeres', nom: 'Ministère•s co-tutelle', ancienne_valeur: @organisme.organisme_ministeres.pluck(:ministere_id), nouvelle_valeur: nouvelle_valeur }
     end
     modifications
   end

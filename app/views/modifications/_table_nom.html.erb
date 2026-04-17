@@ -1,6 +1,10 @@
 <% if modification %>
 <% if modification.nom == "Ministère" %>
   <b><% if !modification.nouvelle_valeur.blank? %><%= Ministere.find(modification.nouvelle_valeur.to_i).nom %><%else %>Aucun<%end %></b> <span class="fr-text--barre"><% if !modification.ancienne_valeur.blank?%><%= Ministere.find(modification.ancienne_valeur.to_i).nom %><%else %>Aucun<% end %></span>
+<% elsif modification.nom == "Bureau" %>
+  <b><% if !modification.nouvelle_valeur.blank? %><%= User.find_by(id: modification.nouvelle_valeur.to_i)&.nom || "Aucun" %><%else %>Aucun<%end %></b> <span class="fr-text--barre"><% if !modification.ancienne_valeur.blank? %><%= User.find_by(id: modification.ancienne_valeur.to_i)&.nom || "Aucun" %><%else %>Aucun<% end %></span>
+<% elsif modification.nom == "Contrôleur" %>
+  <b><% if !modification.nouvelle_valeur.blank? %><%= User.find_by(id: modification.nouvelle_valeur.to_i)&.nom || "Aucun" %><%else %>Aucun<%end %></b> <span class="fr-text--barre"><% if !modification.ancienne_valeur.blank? %><%= User.find_by(id: modification.ancienne_valeur.to_i)&.nom || "Aucun" %><%else %>Aucun<% end %></span>
 <% elsif modification.nom == "Ministère•s co-tutelle" %>
   <b><% if modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).length > 0 %><% modification.nouvelle_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).each do |id| %><%= Ministere.find(id.to_i).nom %> - <%end %><%else %>Aucun<%end %></b> <span class="fr-text--barre"><% if modification.ancienne_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).length > 0 %><% modification.ancienne_valeur.gsub(/\[|\]/, '').split(',').map(&:to_i).each do |id| %><%= Ministere.find(id.to_i).nom %> - <%end %><%else %>Aucun<%end %></span>
 <% else %>
