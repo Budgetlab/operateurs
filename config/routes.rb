@@ -18,6 +18,9 @@ Rails.application.routes.draw do
       member do
         get 'enquete', to: 'organismes#enquete'
       end
+      collection do
+        get 'export_nature_controle'
+      end
     end
     post 'import_organismes' => 'organismes#import_organismes'
     resources :control_documents

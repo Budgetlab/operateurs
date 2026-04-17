@@ -150,6 +150,16 @@ class OrganismesController < ApplicationController
     redirect_to organismes_path
   end
 
+  def export_nature_controle
+    @organismes_nature_controle = Organisme.where.not(nature_controle: [nil, '']).includes(:controleur).order(:nom)
+    respond_to do |format|
+      format.html
+      format.xlsx do
+        render xlsx: 'export_nature_controle', filename: 'organismes_nature_controle.xlsx', disposition: 'attachment'
+      end
+    end
+  end
+
   def import_organismes
     file = params[:file]
     Organisme.import(file) if file.present?

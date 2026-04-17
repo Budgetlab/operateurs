@@ -1,0 +1,14 @@
+<% content_for :title do %>Export nature de contrôle | OPERA<% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container">
+    <h1 class="fr-mt-7w fr-mb-4w">Export — Organismes avec nature de contrôle</h1>
+
+    <p class="fr-text--lg fr-mb-4w">
+      <%= @organismes_nature_controle.count %> organisme(s) avec une nature de contrôle renseignée.
+    </p>
+
+    <%= button_to export_nature_controle_organismes_path(format: :xlsx), method: :get, class: "fr-btn fr-btn--icon-left fr-icon-download-line" do %>
+      Télécharger le fichier XLSX
+    <% end %>
+  </div>
+</main>

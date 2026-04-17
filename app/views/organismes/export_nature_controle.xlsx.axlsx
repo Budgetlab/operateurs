@@ -1,0 +1,20 @@
+wb = xlsx_package.workbook
+s = wb.styles
+header = s.add_style b: true, border: { style: :thick, color: '000000', edges: [:bottom] }, font_name: 'Calibri', sz: 13
+normal = s.add_style font_name: 'Calibri', sz: 11
+
+headers_row = ['ID', 'Nom', 'Acronyme', 'État', 'Nature de contrôle', 'Contrôleur', 'Nom ANACO']
+col_count = headers_row.count
+last_col = col_count.then { |n| r = ""; loop { n, m = (n - 1).divmod(26); r = (65 + m).chr + r; break if n == 0 }; r }
+
+wb.add_worksheet(name: "Nature de contrôle") do |sheet|
+  sheet.add_row headers_row, style: header
+  sheet.auto_filter = "A1:#{last_col}1"
+
+  @organismes_nature_controle.each do |org|
+    controleur_nom = org.controleur&.nom
+    sheet.add_row([org.id, org.nom, org.acronyme, org.etat, org.nature_controle, controleur_nom, OPERA_ANACO_MAPPING[controleur_nom]], style: normal)
+  end
+
+  sheet.column_widths(*Array.new(col_count, 30))
+end
