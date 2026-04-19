@@ -1,0 +1,32 @@
+<% content_for :title do %>Export / Import complet organismes | OPERA<% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container">
+    <h1 class="fr-mt-7w fr-mb-4w">Export / Import complet des organismes</h1>
+
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12 fr-col-lg-6">
+        <div class="fr-card fr-p-4w">
+          <h2 class="fr-h4">Exporter</h2>
+          <p><%= @organismes.count %> organisme(s) — 4 onglets : Organismes, Opérateurs, Co-tutelles, Rattachements.</p>
+          <%= button_to export_complet_organismes_path(format: :xlsx), method: :get, class: "fr-btn fr-btn--icon-left fr-icon-download-line" do %>
+            Télécharger le fichier XLSX
+          <% end %>
+        </div>
+      </div>
+
+      <div class="fr-col-12 fr-col-lg-6">
+        <div class="fr-card fr-p-4w">
+          <h2 class="fr-h4">Réimporter</h2>
+          <p>Le fichier doit avoir la même structure que l'export (4 onglets, colonnes identiques). Les organismes sont mis à jour par leur <b>id</b>.</p>
+          <%= form_with url: import_complet_organismes_path, multipart: true do |f| %>
+            <div class="fr-upload-group fr-mb-2w">
+              <label class="fr-label" for="file">Fichier XLSX</label>
+              <%= f.file_field :file, accept: '.xlsx', class: 'fr-upload', id: 'file' %>
+            </div>
+            <%= f.submit "Importer", class: "fr-btn fr-btn--icon-left fr-icon-upload-line" %>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

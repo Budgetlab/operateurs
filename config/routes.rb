@@ -20,6 +20,8 @@ Rails.application.routes.draw do
       end
       collection do
         get 'export_nature_controle'
+        get 'export_complet'
+        post 'import_complet'
       end
     end
     post 'import_organismes' => 'organismes#import_organismes'

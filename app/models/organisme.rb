@@ -122,6 +122,131 @@ class Organisme < ApplicationRecord
     end
   end
 
+  SKIP_COLS = %w[id created_at updated_at].freeze
+  BOOL_COLS = %w[admin_db_present admin_preca agent_comptable_present apu ciassp_n ciassp_n1 comite_audit
+                 controleur_ca controleur_preca delegation_approbation document_controle_present gbcp_1 gbcp_3
+                 odac_n odac_n1 odal_n odal_n1 presence_controle tutelle_financiere].freeze
+  DATE_COLS = %w[date_creation date_dissolution date_previsionnelle_dissolution].freeze
+  INT_COLS  = %w[controleur_id bureau_id ministere_id].freeze
+  FLOAT_COLS = %w[taux_cadrage_n taux_cadrage_n1].freeze
+
+  def self.import_complet(file)
+    spreadsheet = Roo::Spreadsheet.open(file.path)
+    counts = { organismes: 0, operateurs: 0, ministeres: 0, rattachements: 0 }
+
+    ActiveRecord::Base.transaction do
+      # --- Onglet 1 : Organismes ---
+      sheet = spreadsheet.sheet(0)
+      headers = sheet.row(1).map(&:to_s)
+      updatable = headers - SKIP_COLS
+
+      sheet.each_with_index do |row, idx|
+        next if idx == 0
+        data = Hash[headers.zip(row)]
+        organisme = find_by(id: data['id'].to_i)
+        next unless organisme
+
+        attrs = updatable.each_with_object({}) do |col, h|
+          val = data[col]
+          h[col] = if BOOL_COLS.include?(col)
+                     parse_bool_import(val)
+                   elsif DATE_COLS.include?(col)
+                     parse_date_import(val)
+                   elsif INT_COLS.include?(col)
+                     val.present? ? val.to_i : nil
+                   elsif FLOAT_COLS.include?(col)
+                     val.present? ? val.to_f : nil
+                   else
+                     val.to_s.presence
+                   end
+        end
+        organisme.update!(attrs)
+        counts[:organismes] += 1
+      end
+
+      # --- Onglet 2 : Opérateurs ---
+      op_sheet = spreadsheet.sheet(1)
+      op_headers = op_sheet.row(1).map(&:to_s)
+      op_skip = %w[id created_at updated_at organisme_id]
+      op_bool = %w[operateur_n operateur_n1 operateur_n2 operateur_nf presence_categorie]
+      op_int  = %w[mission_id programme_id]
+
+      op_sheet.each_with_index do |row, idx|
+        next if idx == 0
+        data = Hash[op_headers.zip(row)]
+        organisme = find_by(id: data['organisme_id'].to_i)
+        next unless organisme
+
+        operateur = organisme.operateur || organisme.build_operateur
+        (op_headers - op_skip).each do |col|
+          val = data[col]
+          operateur[col] = if op_bool.include?(col)
+                             parse_bool_import(val)
+                           elsif op_int.include?(col)
+                             val.present? ? val.to_i : nil
+                           else
+                             val.to_s.presence
+                           end
+        end
+        operateur.save!
+        counts[:operateurs] += 1
+      end
+
+      # --- Onglet 3 : Co-tutelles ---
+      om_sheet = spreadsheet.sheet(2)
+      om_headers = om_sheet.row(1).map(&:to_s)
+      om_rows = []
+      om_sheet.each_with_index { |row, idx| next if idx == 0; om_rows << Hash[om_headers.zip(row)] }
+
+      om_rows.map { |d| d['organisme_id'].to_i }.uniq.each do |org_id|
+        find_by(id: org_id)&.organisme_ministeres&.destroy_all
+      end
+      om_rows.each do |data|
+        org_id = data['organisme_id'].to_i
+        min_id = data['ministere_id'].to_i
+        next unless org_id > 0 && min_id > 0
+        OrganismeMinistere.create!(organisme_id: org_id, ministere_id: min_id)
+        counts[:ministeres] += 1
+      end
+
+      # --- Onglet 4 : Rattachements ---
+      rat_sheet = spreadsheet.sheet(3)
+      rat_headers = rat_sheet.row(1).map(&:to_s)
+      rat_rows = []
+      rat_sheet.each_with_index { |row, idx| next if idx == 0; rat_rows << Hash[rat_headers.zip(row)] }
+
+      rat_rows.map { |d| d['organisme_id'].to_i }.uniq.each do |org_id|
+        find_by(id: org_id)&.organisme_rattachements&.destroy_all
+      end
+      rat_rows.each do |data|
+        org_id  = data['organisme_id'].to_i
+        dest_id = data['organisme_destination_id'].to_i
+        next unless org_id > 0 && dest_id > 0
+        OrganismeRattachement.create!(organisme_id: org_id, organisme_destination_id: dest_id)
+        counts[:rattachements] += 1
+      end
+    end
+
+    counts
+  end
+
+  def self.parse_bool_import(val)
+    return nil if val.nil? || val.to_s.strip == ''
+    return val if val.is_a?(TrueClass) || val.is_a?(FalseClass)
+    case val.to_s.strip.downcase
+    when 'true', 'oui', '1' then true
+    when 'false', 'non', '0' then false
+    end
+  end
+
+  def self.parse_date_import(val)
+    return nil if val.nil? || val.to_s.strip == ''
+    return val if val.is_a?(Date)
+    Date.parse(val.to_s)
+  rescue ArgumentError
+    nil
+  end
+
   def self.convert_to_boolean(value)
     case value
     when 'Oui'

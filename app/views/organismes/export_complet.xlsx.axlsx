@@ -1,0 +1,59 @@
+wb = xlsx_package.workbook
+s = wb.styles
+header = s.add_style b: true, border: { style: :thick, color: '000000', edges: [:bottom] }, font_name: 'Calibri', sz: 12
+normal = s.add_style font_name: 'Calibri', sz: 11
+
+def last_col_letter(n)
+  r = ""
+  loop { n, m = (n - 1).divmod(26); r = (65 + m).chr + r; break if n == 0 }
+  r
+end
+
+# Onglet 1 : Organismes
+org_cols = Organisme.column_names
+wb.add_worksheet(name: "Organismes") do |sheet|
+  sheet.add_row org_cols, style: header
+  sheet.auto_filter = "A1:#{last_col_letter(org_cols.count)}1"
+  @organismes.each do |org|
+    sheet.add_row org.attributes.values_at(*org_cols).map { |v| v.is_a?(Time) ? v.strftime('%Y-%m-%d %H:%M:%S') : v }, style: normal
+  end
+  sheet.column_widths(*Array.new(org_cols.count, 20))
+end
+
+# Onglet 2 : Opérateurs
+op_cols = Operateur.column_names
+wb.add_worksheet(name: "Operateurs") do |sheet|
+  sheet.add_row op_cols, style: header
+  sheet.auto_filter = "A1:#{last_col_letter(op_cols.count)}1"
+  @organismes.each do |org|
+    next unless org.operateur
+    sheet.add_row org.operateur.attributes.values_at(*op_cols).map { |v| v.is_a?(Time) ? v.strftime('%Y-%m-%d %H:%M:%S') : v }, style: normal
+  end
+  sheet.column_widths(*Array.new(op_cols.count, 20))
+end
+
+# Onglet 3 : Co-tutelles (organisme_ministeres)
+om_cols = OrganismeMinistere.column_names
+wb.add_worksheet(name: "Co-tutelles") do |sheet|
+  sheet.add_row om_cols, style: header
+  sheet.auto_filter = "A1:#{last_col_letter(om_cols.count)}1"
+  @organismes.each do |org|
+    org.organisme_ministeres.each do |om|
+      sheet.add_row om.attributes.values_at(*om_cols).map { |v| v.is_a?(Time) ? v.strftime('%Y-%m-%d %H:%M:%S') : v }, style: normal
+    end
+  end
+  sheet.column_widths(*Array.new(om_cols.count, 20))
+end
+
+# Onglet 4 : Rattachements (organisme_rattachements)
+or_cols = OrganismeRattachement.column_names
+wb.add_worksheet(name: "Rattachements") do |sheet|
+  sheet.add_row or_cols, style: header
+  sheet.auto_filter = "A1:#{last_col_letter(or_cols.count)}1"
+  @organismes.each do |org|
+    org.organisme_rattachements.each do |rat|
+      sheet.add_row rat.attributes.values_at(*or_cols).map { |v| v.is_a?(Time) ? v.strftime('%Y-%m-%d %H:%M:%S') : v }, style: normal
+    end
+  end
+  sheet.column_widths(*Array.new(or_cols.count, 20))
+end
