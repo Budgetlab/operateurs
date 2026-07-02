@@ -12,6 +12,15 @@ class PagesController < ApplicationController
     @organismes_last = @organismes_user ? @organismes_user.order(updated_at: :desc).limit(4).pluck(:id, :nom, :acronyme, :updated_at, :nature, :famille, :etat, :statut) : []
     @chiffres = Chiffre.where(statut: 'valide').where(organisme_id: @organismes_user.pluck(:id))
     @organismes_user_active = @statut_user == "2B2O" ? @organismes_user.where(etat: "Actif", presence_controle: true, gbcp_1: true).where.not(controleur_id: current_user.id) : @organismes_user.where(etat: "Actif", presence_controle: true, gbcp_1: true)
+    # Organismes actifs dont la date prévisionnelle de dissolution est dépassée (alerte 2B2O uniquement)
+    @organismes_dissolution_depassee = if @statut_user == "2B2O"
+                                          @organismes_user.where(etat: "Actif")
+                                                          .where.not(date_previsionnelle_dissolution: nil)
+                                                          .where("date_previsionnelle_dissolution < ?", Date.today)
+                                                          .order(:nom)
+                                        else
+                                          Organisme.none
+                                        end
     @year_bi = Date.today < Date.new(Date.today.year,9,1) ? Date.today.year : Date.today.year + 1
     @chiffres_bi = calculate_chiffres_budget_exercice(@chiffres, @organismes_user_active, @year_bi, 'Budget initial')
     @year_cf = Date.today.year - 1

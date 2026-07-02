@@ -150,6 +150,26 @@ class OrganismesController < ApplicationController
     redirect_to organismes_path
   end
 
+  def export_complet
+    @organismes = Organisme.includes(:operateur, :organisme_ministeres, :organisme_rattachements).order(:nom)
+    respond_to do |format|
+      format.html
+      format.xlsx do
+        render xlsx: 'export_complet', filename: "export_organismes_#{Date.today}.xlsx", disposition: 'attachment'
+      end
+    end
+  end
+
+  def import_complet
+    file = params[:file]
+    if file.present?
+      result = Organisme.import_complet(file)
+      redirect_to export_complet_organismes_path, notice: "Import réalisé : #{result[:organismes]} organisme(s), #{result[:operateurs]} opérateur(s), #{result[:ministeres]} co-tutelle(s), #{result[:rattachements]} rattachement(s) mis à jour."
+    else
+      redirect_to export_complet_organismes_path, alert: "Aucun fichier sélectionné."
+    end
+  end
+
   def export_nature_controle
     @organismes_nature_controle = Organisme.where.not(nature_controle: [nil, '']).includes(:controleur).order(:nom)
     respond_to do |format|

@@ -2,6 +2,18 @@
 <% end %>
 <main role="main" class="containtAll">
   <div class="fr-container">
+    <% if @statut_user == "2B2O" && @organismes_dissolution_depassee.present? %>
+      <% noms_organismes = safe_join(@organismes_dissolution_depassee.map { |o| link_to(o.nom, organisme_path(o)) }, ", ") %>
+      <% plusieurs = @organismes_dissolution_depassee.size > 1 %>
+      <div class="fr-alert fr-alert--warning fr-mt-4w fr-mb-2w">
+        <p>La date prévisionnelle de dissolution
+          <%= plusieurs ? "des organismes" : "de l'organisme" %> <%= noms_organismes %>
+          <%= plusieurs ? "est dépassée mais les organismes sont toujours actifs." : "est dépassée mais l'organisme est toujours actif." %></p>
+        <button class="fr-btn--close fr-btn" title="Masquer le message" onclick="this.parentElement.remove()">Masquer le
+          message
+        </button>
+      </div>
+    <% end %>
     <h1 class="fr-my-6w"><%= current_user.nom %></h1>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
       <div class="fr-col-12 fr-col-lg-4">
@@ -26,7 +38,8 @@
               <% elsif @statut_user == "Controleur" %>
                 <h3 class="fr-card__title"><%= link_to budgets_path do %>Accéder aux budgets des organismes
                   <% end %></h3>
-                <p class="fr-card__desc">Visualiser les budgets renseignés sur mon périmètre et les familles communes.</p>
+                <p class="fr-card__desc">Visualiser les budgets renseignés sur mon périmètre et les familles
+                  communes.</p>
               <% elsif @statut_user == "Bureau Sectoriel" %>
                 <h3 class="fr-card__title"><%= link_to suivi_remplissage_path do %>Suivre le remplissage des budgets
                   <% end %></h3>
@@ -77,7 +90,9 @@
   </div>
 
   <div class="fr-container">
-    <h2>Informations sur les organismes<% if @statut_user != "2B2O" %> de mon périmètre<% end %></h2>
+    <h2>Informations sur les organismes
+      <% if @statut_user != "2B2O" %> de mon périmètre
+      <% end %></h2>
     <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
       <div class="fr-col-12 fr-col-lg-4" data-controller="highcharts" data-highcharts-budgetsbi="<%= @chiffres_bi %>" data-highcharts-budgetscf="<%= @chiffres_cf %>">
         <h3>Suivi des budgets</h3>
@@ -156,10 +171,13 @@
             <div>
               <h2 class="fr-h5">Une question concernant OPERA ?</h2>
               <p class="fr-text--sm">Si vous rencontrez un problème dans l'utilisation de l'outil, vous pouvez nous
-                envoyer un mail à l'adresse <a href="mailto:DB-2B2O@finances.gouv.fr?subject=Contact-OPERA" rel="noopener" target="_blank" title="Nous contacter - nouvelle fenêtre">DB-2B2O@finances.gouv.fr</a>. Vous pouvez télécharger la charte d’utilisation d’OPERA en cliquant sur le bouton à droite.</p>
+                envoyer un mail à l'adresse
+                <a href="mailto:DB-2B2O@finances.gouv.fr?subject=Contact-OPERA" rel="noopener" target="_blank" title="Nous contacter - nouvelle fenêtre">DB-2B2O@finances.gouv.fr</a>.
+                Vous pouvez télécharger la charte d’utilisation d’OPERA en cliquant sur le bouton à droite.</p>
             </div>
             <div>
-              <a href="Charte_utilisation_OPERA.docx" class="fr-btn fr-btn--icon-left fr-icon-download-line" download>Télécharger la charte d'utilisation</a>
+              <a href="Charte_utilisation_OPERA.docx" class="fr-btn fr-btn--icon-left fr-icon-download-line" download>Télécharger
+                la charte d'utilisation</a>
             </div>
           </div>
         </div>
