@@ -318,7 +318,7 @@ GEM
     prettyprint (0.2.0)
     prism (1.9.0)
     public_suffix (7.0.5)
-    puma (6.4.3)
+    puma (8.0.2)
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.6)
@@ -510,7 +510,7 @@ DEPENDENCIES
   ostruct
   pagy (~> 43.2)
   pg (~> 1.1)
-  puma (~> 6.4.0)
+  puma (~> 8.0, >= 8.0.2)
   rails (~> 8.1, >= 8.1.1)
   rails-i18n
   rails_autolink
