@@ -938,13 +938,23 @@ export default class extends Controller {
             });
         });
 
+        // Hauteur adaptative : chaque ligne (catégorie) garde une épaisseur constante,
+        // la hauteur totale s'ajuste au nombre de lignes + à la hauteur réelle de la légende
+        // (mesurée après le premier rendu) pour ne jamais écraser les barres.
+        const barRowHeight = 46;   // pas vertical par ligne de barre
+        const axisPadding = 70;    // axes + marges haut/bas
+        const hasLongLegend = series.some(s => (s.name || '').length > 25);
+        const estimatedLegendLines = hasLongLegend ? series.length : Math.ceil(series.length / 2);
+        const estimatedLegendHeight = estimatedLegendLines * 24 + 24;
+        const initialHeight = categories.length * barRowHeight + axisPadding + estimatedLegendHeight;
+
         this.chart = Highcharts.chart(this.element, {
             chart: {
                 plotBackgroundColor: null,
                 plotBorderWidth: null,
                 plotShadow: false,
                 type: 'bar',
-                height: 300,         // Hauteur totale plus grande
+                height: initialHeight,
 
             },
             colors: ["var(--beige-gris-galet-925-125)", "var( --blue-ecume-850-200)", "var(--yellow-moutarde-850-200)", "var(--orange-terre-battue-850-200)", "var(--green-menthe-925-125)", "var(--green-emeraude-main-632)"],
@@ -1050,5 +1060,13 @@ export default class extends Controller {
             },
             series: series
         })
+
+        // Corrige la hauteur à partir de la hauteur réelle de la légende après rendu,
+        // pour que le tracé conserve exactement barRowHeight par ligne.
+        const legendHeight = (this.chart.legend && this.chart.legend.legendHeight) || estimatedLegendHeight;
+        const finalHeight = categories.length * barRowHeight + axisPadding + legendHeight + 10;
+        if (Math.abs(finalHeight - initialHeight) > 4) {
+            this.chart.setSize(null, finalHeight, false);
+        }
     }
 }
