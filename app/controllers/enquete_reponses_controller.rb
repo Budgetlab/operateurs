@@ -29,27 +29,55 @@ class EnqueteReponsesController < ApplicationController
     controleur_noms = params.dig(:q, :organisme_controleur_nom_in).presence
     famille_noms = params.dig(:q, :organisme_famille_in).presence
 
+    # Coche « Isoler les résultats des opérateurs » : ajoute des séries restreintes
+    # aux organismes opérateurs (année N en cours : operateur_n = true).
+    isoler_operateurs = params[:isoler_operateurs].present?
+    if isoler_operateurs
+      operateurs_reponses = @enquete.enquete_reponses
+                                    .joins(organisme: [:controleur, :operateur])
+                                    .where(operateurs: { operateur_n: true })
+    end
+
     # construire les résultats
     @resultats = @questions.each_with_object({}) do |question, result|
       grp = "reponses->>'#{question.id}'"
+      key = "#{question.numero}. #{question.nom}"
 
-      # Total : toujours toutes les réponses de l'année
+      # Total organismes : toujours toutes les réponses de l'année
       all_responses = @enquete_reponses.group(grp).count
-      result["#{question.numero}. #{question.nom}"] = { 'Total' => all_responses.sort.to_h }
+      result[key] = { 'Total organismes' => all_responses.sort.to_h }
+
+      # Total opérateurs : sous « Total organismes » si la coche est active
+      if isoler_operateurs
+        op_total = operateurs_reponses.group(grp).count
+        result[key]['Total opérateurs'] = op_total.sort.to_h
+      end
 
       # Série CBR : filtre contrôleur (param ou utilisateur connecté)
       if controleur_noms
+        libelle = Array(controleur_noms).join(', ')
         cbr = @enquete_reponses.where(controleur: { nom: controleur_noms }).group(grp).count
-        result["#{question.numero}. #{question.nom}"][controleur_noms] = cbr.sort.to_h
+        result[key]["Organismes #{libelle}"] = cbr.sort.to_h
+        # Opérateurs contrôleur X, Y : sous « Organismes contrôleur X, Y »
+        if isoler_operateurs
+          op_cbr = operateurs_reponses.where(controleur: { nom: controleur_noms }).group(grp).count
+          result[key]["Opérateurs #{libelle}"] = op_cbr.sort.to_h
+        end
       elsif @statut_user == 'Controleur'
-        cbr = @enquete_reponses.where(organisme_id: current_user.controleur_organismes.pluck(:id)).group(grp).count
-        result["#{question.numero}. #{question.nom}"][current_user.nom] = cbr.sort.to_h
+        org_ids = current_user.controleur_organismes.pluck(:id)
+        cbr = @enquete_reponses.where(organisme_id: org_ids).group(grp).count
+        result[key]["Organismes #{current_user.nom}"] = cbr.sort.to_h
+        # Opérateurs du contrôleur connecté : sous « Organismes <nom> »
+        if isoler_operateurs
+          op_cbr = operateurs_reponses.where(organisme_id: org_ids).group(grp).count
+          result[key]["Opérateurs #{current_user.nom}"] = op_cbr.sort.to_h
+        end
       end
 
       # Série Famille : filtre famille
       if famille_noms
         famille = @enquete_reponses.where(organismes: { famille: famille_noms }).group(grp).count
-        result["#{question.numero}. #{question.nom}"][famille_noms] = famille.sort.to_h
+        result[key][famille_noms] = famille.sort.to_h
       end
     end
 
