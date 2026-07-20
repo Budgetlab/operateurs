@@ -77,7 +77,7 @@ class EnqueteReponsesController < ApplicationController
       # Série Famille : filtre famille
       if famille_noms
         famille = @enquete_reponses.where(organismes: { famille: famille_noms }).group(grp).count
-        result[key][famille_noms] = famille.sort.to_h
+        result[key]["Famille #{Array(famille_noms).join(', ')}"] = famille.sort.to_h
       end
     end
 
