@@ -33,7 +33,10 @@
             <% if params.dig(:q, :organisme_controleur_nom_in).present? %>
               <% params[:q][:organisme_controleur_nom_in].each { |nom| active_filters << "Contrôleur : #{nom}" } %>
             <% end %>
-            <% has_extra_filters = params[:annee].present? || params.dig(:q, :organisme_famille_in).present? || params.dig(:q, :organisme_comptabilite_budgetaire_in).present? || params.dig(:q, :organisme_controleur_nom_in).present? %>
+            <% if params[:isoler_operateurs].present? %>
+              <% active_filters << "Résultats isolés : opérateurs" %>
+            <% end %>
+            <% has_extra_filters = params[:annee].present? || params.dig(:q, :organisme_famille_in).present? || params.dig(:q, :organisme_comptabilite_budgetaire_in).present? || params.dig(:q, :organisme_controleur_nom_in).present? || params[:isoler_operateurs].present? %>
             <div class="fr-mb-2w">
               <h6 class="fr-mb-1w">Filtres appliqués (<%= active_filters.count %>)</h6>
               <ul class="fr-tags-group">
@@ -144,6 +147,11 @@
                     <% if @statut_user != "Controleur" %>
                       <%= render_select_group("Contrôleur", :organisme_controleur_nom_in, @controleur_name_list, auto_submit: false) %>
                     <% end %>
+
+                    <div class="fr-checkbox-group fr-mt-1w">
+                      <%= check_box_tag :isoler_operateurs, "1", params[:isoler_operateurs].present?, id: "isoler_operateurs" %>
+                      <label class="fr-label" for="isoler_operateurs">Isoler les résultats des opérateurs</label>
+                    </div>
 
                     <div class="fr-mt-3w">
                       <button type="submit" class="fr-btn">

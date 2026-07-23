@@ -205,9 +205,15 @@ class OrganismesController < ApplicationController
 
     @annee_a_afficher = @enquete_reponse.enquete.annee
     # Récupérer les questions associées à cette enquête et les trier par numéro
-    @questions = @enquete_reponse.enquete.enquete_questions.order(:numero)
+    @questions = if @annee_a_afficher == 2025
+                   @enquete_reponse.enquete.enquete_questions.where.not(numero: 14).order(:numero)
+                 elsif [2023, 2024].include?(@annee_a_afficher)
+                   @enquete_reponse.enquete.enquete_questions.where.not(numero: [15, 29, 31]).order(:numero)
+                 else
+                   @enquete_reponse.enquete.enquete_questions.order(:numero)
+                 end
     # recupérer l'ensemble des réponses de tous les organismes
-    @resultats = @questions.where.not(numero: [15, 29, 31]).each_with_object({}) do |question, result|
+    @resultats = @questions.each_with_object({}) do |question, result|
       all_responses = EnqueteReponse
                         .where(enquete_id: @enquete_reponse.enquete.id)
                         .group("reponses->>'#{question.id}'")
@@ -225,10 +231,10 @@ class OrganismesController < ApplicationController
                            .group("reponses->>'#{question.id}'")
                            .count
       result[question.id] = {
-        'Total' => all_responses.sort.to_h,
-        @organisme.controleur.nom => cbr_responses.sort.to_h
+        'Total organismes' => all_responses.sort.to_h,
+        "Organismes #{@organisme.controleur.nom}" => cbr_responses.sort.to_h
       }
-      result[question.id][@organisme.famille] = famille_reponses.sort.to_h if @organisme.famille != 'Aucune'
+      result[question.id]["Famille #{@organisme.famille}"] = famille_reponses.sort.to_h if @organisme.famille != 'Aucune'
     end
     respond_to do |format|
       format.html
