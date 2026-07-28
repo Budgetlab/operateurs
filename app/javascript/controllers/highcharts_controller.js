@@ -304,8 +304,8 @@ export default class extends Controller {
                 data: [
                     { name: 'Situation saine', y: data[0] },
                     { name: 'Situation saine a priori mais à surveiller', y: data[1] },
-                    { name: 'Risque d’insoutenabilité à moyen terme', y: data[2] },
-                    { name: 'Risque d’insoutenabilité élevé', y: data[3] },
+                    { name: 'Risque d’insoutenabilité', y: data[2] },
+                    { name: 'Insoutenabilité avérée', y: data[3] },
                     { name: 'Budgets non renseignés', y: data[4] }
                 ]
             }]

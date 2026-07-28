@@ -374,9 +374,9 @@
           cell.add_style bg_color: "E5FBFD"
         elsif cell.value == "Situation saine a priori mais à surveiller"
           cell.add_style bg_color: "FEF7DA"
-        elsif cell.value == "Risque d’insoutenabilité à moyen terme"
+        elsif cell.value == "Risque d’insoutenabilité"
           cell.add_style bg_color: "FEF4F2"
-        elsif cell.value == "Risque d’insoutenabilité élevé"
+        elsif cell.value == "Insoutenabilité avérée"
           cell.add_style bg_color: "FFE9E9"
         end
       end

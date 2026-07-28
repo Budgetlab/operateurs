@@ -1,119 +1,176 @@
 <% if @chiffre.statut != "valide" %>
   <div class="fr-stepper">
     <h2 class="fr-stepper__title">
-      <span class="fr-stepper__state">Étape <%= @steps-1 %> sur <%= @steps %></span>
+      <span class="fr-stepper__state">Étape <%= @steps - 1 %> sur <%= @steps %></span>
       Analyse financière
     </h2>
-    <div class="fr-stepper__steps" data-fr-current-step="<%= @steps-1 %>" data-fr-steps="<%= @steps %>"></div>
+    <div class="fr-stepper__steps" data-fr-current-step="<%= @steps - 1 %>" data-fr-steps="<%= @steps %>"></div>
     <p class="fr-stepper__details">
       <span class="fr-text--bold">Étape suivante :</span> Commentaires sur l'analyse du budget
     </p>
   </div>
-<%end %>
+<% end %>
 
 <div class="fr-mb-6w">
   <div class="fr-card  fr-card--no-arrow">
     <div class="fr-card__body" data-controller="form" id="chiffres">
       <div class="fr-card__content">
         <%= render 'organismes/form_notice' %>
-        <%= form_with(model: @chiffre, data: {'form-target': "form", action: "input->form#changeAnalyse turbo:before-fetch-request->form#submitForm"}) do |f|%>
+        <%= form_with(model: @chiffre, data: { 'form-target': "form", action: "input->form#changeAnalyse turbo:before-fetch-request->form#submitForm" }) do |f| %>
           <%= f.hidden_field :user_id, value: current_user.id %>
           <% if @chiffre.statut != "valide" %>
-            <%= f.hidden_field :statut, value: @steps-1  %>
-          <%end %>
+            <%= f.hidden_field :statut, value: @steps - 1 %>
+          <% end %>
           <div id="tvar" data-form-tvar="<%= @chiffre.tresorerie_variation %>"></div>
-          <div id="cb" data-form-cb="<%= @chiffre.comptabilite_budgetaire %>"></div>
-          <% if @chiffre.comptabilite_budgetaire == true %>
-            <div id="solde" data-form-solde="<%= @chiffre.solde_budgetaire %>"></div>
-          <%end %>
-          <%= f.hidden_field :risque_insolvabilite, id: "risque_insolvabilite", value: @chiffre.risque_insolvabilite %>
+          <h2>Fonds de roulement</h2>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-6">
-              <h2>Fonds de roulement</h2>
-              <div class="fr-input-group">
-                <label for="fonds_roulement_variation" class="fr-label">Variation du fonds de roulement* <%= render partial: "chiffres/tooltip", locals: {num_id: "fonds_roulement_variation_t", chiffre: @chiffre} %></label>
-                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :fonds_roulement_variation, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.fonds_roulement_variation, id:"fonds_roulement_variation", class:"fr-input" %>
-                </div>
-              </div>
-              <div class="fr-input-group">
-                <label for="fonds_roulement_final" class="fr-label">Niveau final du fonds de roulement* <%= render partial: "chiffres/tooltip", locals: {num_id: "fonds_roulement_final_t", chiffre: @chiffre} %></label>
-                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :fonds_roulement_final, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.fonds_roulement_final, id:"fonds_roulement_final", class:"fr-input" %>
-                </div>
-              </div>
-              <div class="fr-mb-2w">
-                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                  <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Niveau initial du fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_fr_initial_t", chiffre: @chiffre} %></p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_fr_initial">-</span> €</p>
-                  </div>
-                </div>
-              </div>
-              <div class="fr-input-group">
-                <label for="fonds_roulement_besoin_final" class="fr-label">Niveau final du besoin en fonds de roulement* <%= render partial: "chiffres/tooltip", locals: {num_id: "fonds_roulement_besoin_final_t", chiffre: @chiffre} %></label>
-                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                  <%= f.text_field :fonds_roulement_besoin_final, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.fonds_roulement_besoin_final, id:"fonds_roulement_besoin_final", class:"fr-input" %>
-                </div>
-              </div>
-              <div class="fr-mb-2w">
-                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                  <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Niveau initial du besoin en fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_bfr_initial_t", chiffre: @chiffre} %></p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_bfr_initial">-</span> €</p>
-                  </div>
-                </div>
-              </div>
 
+              <div class="fr-input-group">
+                <label for="fonds_roulement_variation" class="fr-label">Variation du fonds de
+                  roulement* <%= render partial: "chiffres/tooltip", locals: { num_id: "fonds_roulement_variation_t", chiffre: @chiffre } %></label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :fonds_roulement_variation, data: { 'form-target': 'fieldRequire', action: 'input->form#changeNumber' }, value: @chiffre.fonds_roulement_variation, id: "fonds_roulement_variation", class: "fr-input" %>
+                </div>
+              </div>
+              <div class="fr-input-group">
+                <label for="fonds_roulement_final" class="fr-label">Niveau final du fonds de
+                  roulement* <%= render partial: "chiffres/tooltip", locals: { num_id: "fonds_roulement_final_t", chiffre: @chiffre } %></label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :fonds_roulement_final, data: { 'form-target': 'fieldRequire', action: 'input->form#changeNumber' }, value: @chiffre.fonds_roulement_final, id: "fonds_roulement_final", class: "fr-input" %>
+                </div>
+              </div>
+              <div class="fr-input-group">
+                <label for="fonds_roulement_besoin_final" class="fr-label">Niveau final du besoin en fonds de
+                  roulement* <%= render partial: "chiffres/tooltip", locals: { num_id: "fonds_roulement_besoin_final_t", chiffre: @chiffre } %></label>
+                <div class="fr-input-wrap fr-icon-money-euro-circle-line">
+                  <%= f.text_field :fonds_roulement_besoin_final, data: { 'form-target': 'fieldRequire', action: 'input->form#changeNumber' }, value: @chiffre.fonds_roulement_besoin_final, id: "fonds_roulement_besoin_final", class: "fr-input" %>
+                </div>
+              </div>
             </div>
             <div class="fr-col-12 fr-col-lg-6">
-              <h2>Indicateurs sur la soutenabilité du budget</h2>
-              <% if @chiffre.comptabilite_budgetaire == true %>
-
               <div class="fr-mb-2w">
                 <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.solde_budgetaire) %> €</p>
-                  </div>
-                </div>
-              </div>
-              <% end  %>
-
-              <div class="fr-mb-2w">
-                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                  <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Variation de la trésorerie</p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"> <%= format_nombre_entier(@chiffre.tresorerie_variation) %> €</p>
-                  </div>
-                </div>
-              </div>
-              <div class="fr-mb-2w">
-                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                  <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Variation du fonds de roulement</p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_variation_fr">-</span> €</p>
-                  </div>
-                </div>
-              </div>
-              <div class="fr-mb-2w">
-                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
-                  <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Variation du besoin en fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_besoin_fr_t", chiffre: @chiffre} %></p>
+                    <p class="fr-mb-0 fr-text--center">Variation du besoin en fonds de
+                      roulement <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_besoin_fr_t", chiffre: @chiffre } %></p>
                     <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_besoin_fr">-</span> €</p>
                   </div>
                 </div>
               </div>
-              <div class="fr-text--center fr-mb-2w"><span class="fr-icon-arrow-down-fill" aria-hidden="true"></span></div>
               <div class="fr-mb-2w">
-                <div class="fr-card fr-card--blue fr-p-2w fr-card--no-border" id="card_examen">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
                   <div class="fr-cart__body">
-                    <p class="fr-mb-0 fr-text--center">Examen à moyen-court termes</p>
-                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_examen">-</span></p>
+                    <p class="fr-mb-0 fr-text--center">Niveau initial du fonds de
+                      roulement <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_fr_initial_t", chiffre: @chiffre } %></p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_fr_initial">-</span> €</p>
                   </div>
                 </div>
               </div>
-              <div class="fr-text--italic" id="commentaire"></div>
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Niveau initial du besoin en fonds de
+                      roulement <%= render partial: "chiffres/tooltip", locals: { num_id: "indicateur_bfr_initial_t", chiffre: @chiffre } %></p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"><span id="indicateur_bfr_initial">-</span> €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <h2>Indicateurs sur la soutenabilité du budget</h2>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <% if @chiffre.comptabilite_budgetaire == true %>
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Solde budgétaire</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"><%= format_nombre_entier(@chiffre.solde_budgetaire) %>
+                        €</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Variation de la trésorerie</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"> <%= format_nombre_entier(@chiffre.tresorerie_variation) %>
+                      €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Niveau final de trésorerie</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"> <%= format_nombre_entier(@chiffre.tresorerie_finale) %>
+                      €</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-mb-2w">
+                <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                  <div class="fr-cart__body">
+                    <p class="fr-mb-0 fr-text--center">Trésorerie en jours de fonctionnement</p>
+                    <p class="fr-text--bold fr-mb-0 fr-text--center"> <%= format_nombre_entier(@chiffre.jours_fonctionnement_tresorerie) %>
+                      Jours</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <% if @chiffre.comptabilite_budgetaire == true %>
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Poids de la trésorerie non fléchée</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"> <%= format_nombre_entier(@chiffre.poids_tresorerie_non_flechee) %>
+                        %</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Trésorerie non fléchée en jours de fonctionnement</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"> <%= format_nombre_entier(@chiffre.jours_fonctionnement_tresorerie_non_flechee) %>
+                        Jours</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="fr-col-12 fr-col-lg-6">
+                <div class="fr-mb-2w">
+                  <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+                    <div class="fr-cart__body">
+                      <p class="fr-mb-0 fr-text--center">Niveau final des restes à payer</p>
+                      <p class="fr-text--bold fr-mb-0 fr-text--center"> <%= format_nombre_entier(@chiffre.credits_restes_a_payer) %>
+                        Jours</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            <% end %>
+          </div>
+          <div class="fr-grid-row fr-grid-row--gutters">
+            <div class="fr-col-12 fr-col-lg-6">
+              <div class="fr-select-group fr-mb-2w">
+                <label class="fr-label" for="risque_insolvabilite">Analyse de la soutenabilité du budget*</label>
+                <%= f.select :risque_insolvabilite,
+                             Chiffre::RISQUES,
+                             { prompt: "Sélectionner une option", selected: @chiffre.risque_insolvabilite.presence },
+                             { id: "risque_insolvabilite", class: "fr-select", required: true, data: { 'form-target': 'fieldRequire' } } %>
+              </div>
             </div>
           </div>
 
@@ -122,15 +179,17 @@
             <ul class="fr-btns-group fr-btns-group--icon-left fr-btns-group--inline fr-btns-group--right">
               <li>
                 <% if @chiffre.statut == 'valide' %>
-                  <%=link_to organisme_chiffres_path(@chiffre.organisme, paramId: @chiffre.id), class: "fr-btn fr-btn--secondary" do %>Annuler<%end %>
-                <%else %>
-                  <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line"  data-fr-opened="false" aria-controls="fr-modal-1" data-action="form#Dropdown">
+                  <%= link_to organisme_chiffres_path(@chiffre.organisme, paramId: @chiffre.id), class: "fr-btn fr-btn--secondary" do %>
+                    Annuler
+                  <% end %>
+                <% else %>
+                  <button class="fr-btn fr-btn--secondary fr-btn--icon-left fr-icon-arrow-left-line" data-fr-opened="false" aria-controls="fr-modal-1" data-action="form#Dropdown">
                     Étape précédente
                   </button>
-                <%end %>
+                <% end %>
               </li>
               <li>
-                <%= f.submit("#{@chiffre.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: {'form-target': "submitBouton", action: "click->form#changeTextToFloat" }, aria: { label: "Valider"}) %>
+                <%= f.submit("#{@chiffre.statut != 'valide' ? 'Valider et passer à l\'étape suivante' : 'Valider'}", class: "fr-btn", data: { 'form-target': "submitBouton", action: "click->form#changeTextToFloat" }, aria: { label: "Valider" }) %>
               </li>
             </ul>
           </div>
@@ -142,6 +201,6 @@
 
 <% if @chiffre.statut != "valide" %>
   <dialog id="fr-modal-1" class="fr-modal">
-    <%= render partial: 'chiffres/modal_retour',locals: {step: @steps-2} %>
+    <%= render partial: 'chiffres/modal_retour', locals: { step: @steps - 2 } %>
   </dialog>
 <% end %>

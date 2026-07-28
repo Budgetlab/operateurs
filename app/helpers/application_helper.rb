@@ -141,9 +141,9 @@ module ApplicationHelper
       'fr-badge--no-icon fr-badge--success'
     when 'Situation saine a priori mais à surveiller'
       'fr-badge--no-icon fr-badge--green-tilleul-verveine'
-    when 'Risque d’insoutenabilité à moyen terme'
+    when 'Risque d’insoutenabilité'
       'fr-badge--no-icon fr-badge--warning'
-    when 'Risque d’insoutenabilité élevé'
+    when 'Insoutenabilité avérée'
       'fr-badge--no-icon fr-badge--error'
     else
       ''
