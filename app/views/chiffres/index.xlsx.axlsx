@@ -241,9 +241,11 @@
 
 
       @produits_non_encaissables = [@colonnes_compta[17],nil] + @chiffres_export.pluck(:produits_non_encaissables)
+      @produits_encaissables = ["Produits encaissables",nil] + @chiffres_export.map(&:produits_encaissables)
       sheet.add_row(@charges_non_decaissables)
       sheet.add_row(@charges_decaissables)
       sheet.add_row(@produits_non_encaissables)
+      sheet.add_row(@produits_encaissables)
 
       sheet.add_row
       @capacite_autofinancement = [@colonnes_compta[18],nil] + @chiffres_export.pluck(:capacite_autofinancement)
@@ -317,10 +319,10 @@
 
       sheet.add_row(@tresorerie_initial)
       sheet.add_row(@tresorerie_finale)
-      sheet.add_row(@treso_jours)
-      sheet.add_row(@taux_rap)
       sheet.add_row(@tresorerie_finale_flechee)
       sheet.add_row(@tresorerie_finale_non_flechee)
+      sheet.add_row(@treso_jours)
+      sheet.add_row(@taux_rap)
       sheet.add_row(@poids_nf)
       sheet.add_row(@treso_nf_jours)
       sheet.add_row(@tresorerie_variation)
@@ -337,7 +339,7 @@
       sheet.add_row(@tresorerie_max_jours)
 
       sheet.add_row
-      @colonnes_analyse = ["ANALYSE FINANCIERE","Fonds de roulement","Niveau initial du fonds de roulement","Variation du fonds de roulement","Niveau final du fonds de roulement","Besoin en fonds de roulement","Niveau initial du besoin en fonds de roulement","Variation du besoin en fonds de roulement","Niveau final du besoin en fonds de roulement","Degré de risque d'insolvabilité", "Fonds de roulement en jours de fonctionnement"]
+      @colonnes_analyse = ["ANALYSE FINANCIERE","Fonds de roulement","Niveau initial du fonds de roulement","Variation du fonds de roulement","Niveau final du fonds de roulement","Besoin en fonds de roulement","Niveau initial du besoin en fonds de roulement","Variation du besoin en fonds de roulement","Niveau final du besoin en fonds de roulement","Analyse de la soutenabilité du budget", "Fonds de roulement en jours de fonctionnement"]
       sheet.add_row [@colonnes_analyse[0]], style: titre_header
       sheet.add_row [@colonnes_analyse[1]], style: titre_header
 

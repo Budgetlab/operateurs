@@ -11,7 +11,7 @@
         </div>
       </div>
     </div>
-    <div class="fr-mb-2w options fr-hidden">
+    <div class="fr-mb-2w">
       <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
         <div class="fr-cart__body">
           <p class="fr-mb-0 fr-text--center">Niveau initial du fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "indicateur_fr_initial_t", chiffre: chiffre} %></p>
@@ -19,7 +19,7 @@
         </div>
       </div>
     </div>
-    <div class="options fr-hidden">
+
       <div class="fr-mt-1w">Niveau final du besoin en fonds de roulement <%= render partial: "chiffres/tooltip", locals: {num_id: "fonds_roulement_besoin_final_t", chiffre: chiffre} %></div>
       <div class="fr-text--bold fr-mt-1w fr-mb-2w"><%= format_nombre_entier(chiffre.fonds_roulement_besoin_final) %> €</div>
       <div class="fr-mb-2w">
@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-    </div>
+
   </div>
   <div class="fr-col-12 fr-col-lg-6">
     <% if chiffre.comptabilite_budgetaire == true  %>

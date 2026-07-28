@@ -69,10 +69,10 @@
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
-              <div class="fr-input-group fr-input-group--option options fr-hidden">
-                <label for="credits_ae_fonctionnement" class="fr-label">Dont total des dépenses de fonctionnement (AE) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_ae_fonctionnement_t", chiffre: @chiffre} %></label>
+              <div class="fr-input-group">
+                <label for="credits_ae_fonctionnement" class="fr-label">Dont total des dépenses de fonctionnement (AE)* <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_ae_fonctionnement_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                <%= f.text_field :credits_ae_fonctionnement, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_ae_fonctionnement, id:"credits_ae_fonctionnement", class:"fr-input" %>
+                <%= f.text_field :credits_ae_fonctionnement, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_ae_fonctionnement, id:"credits_ae_fonctionnement", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -95,10 +95,10 @@
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
-              <div class="fr-input-group fr-input-group--option options fr-hidden">
-                <label for="credits_ae_intervention" class="fr-label">Dont total des dépenses d'intervention (AE) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_ae_intervention_t", chiffre: @chiffre} %></label>
+              <div class="fr-input-group">
+                <label for="credits_ae_intervention" class="fr-label">Dont total des dépenses d'intervention (AE)* <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_ae_intervention_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                <%= f.text_field :credits_ae_intervention, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_ae_intervention, id:"credits_ae_intervention", class:"fr-input" %>
+                <%= f.text_field :credits_ae_intervention, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_ae_intervention, id:"credits_ae_intervention", class:"fr-input" %>
                 </div>
               </div>
             </div>
@@ -121,10 +121,10 @@
           </div>
           <div class="fr-grid-row fr-grid-row--gutters">
             <div class="fr-col-12 fr-col-lg-4">
-              <div class="fr-input-group fr-input-group--option options fr-hidden">
-                <label for="credits_ae_investissement" class="fr-label">Dont total des dépenses d'investissement (AE) <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_ae_investissement_t", chiffre: @chiffre} %></label>
+              <div class="fr-input-group">
+                <label for="credits_ae_investissement" class="fr-label">Dont total des dépenses d'investissement (AE)* <%= render partial: "chiffres/tooltip", locals: {num_id: "credits_ae_investissement_t", chiffre: @chiffre} %></label>
                 <div class="fr-input-wrap fr-icon-money-euro-circle-line">
-                <%= f.text_field :credits_ae_investissement, data: {action: 'input->form#changeNumber'}, value: @chiffre.credits_ae_investissement, id:"credits_ae_investissement", class:"fr-input" %>
+                <%= f.text_field :credits_ae_investissement, data: {'form-target': 'fieldRequire', action: 'input->form#changeNumber'}, value: @chiffre.credits_ae_investissement, id:"credits_ae_investissement", class:"fr-input" %>
                 </div>
               </div>
             </div>
