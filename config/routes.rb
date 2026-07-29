@@ -40,6 +40,7 @@ Rails.application.routes.draw do
     get '/budgets' => 'chiffres#budgets'
     post '/open_phase' => 'chiffres#open_phase'
     get '/suivi-remplissage' => 'chiffres#suivi_remplissage'
+    get '/export-chiffres' => 'chiffres#export_2b2o'
     post '/import_operateurs' => 'operateurs#import'
     resources :ministeres
     post '/import_ministeres' => 'ministeres#import'
