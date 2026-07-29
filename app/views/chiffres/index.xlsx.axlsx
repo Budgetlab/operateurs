@@ -368,7 +368,7 @@
       sheet.add_row
       sheet.add_row(@risque_insolvabilite, style: titre_header)
 
-      row_d = sheet.rows[152]
+      row_d = sheet.rows.last
       row_d.cells.each_with_index do |cell,i|
         if cell.value == "Situation saine"
           cell.add_style bg_color: "E5FBFD"
