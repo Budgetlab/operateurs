@@ -133,7 +133,18 @@
           <div class="fr-cart__body">
             <p class="fr-mb-0 fr-text--center">Niveau final des restes à payer</p>
             <p class="fr-text--bold fr-mb-0 fr-text--center"> <%= format_nombre_entier(chiffre.credits_restes_a_payer) %>
-              Jours</p>
+              €</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="fr-col-12 fr-col-lg-6">
+      <div class="fr-mb-2w">
+        <div class="fr-card fr-card--grey fr-p-2w fr-card--no-border">
+          <div class="fr-cart__body">
+            <p class="fr-mb-0 fr-text--center">Poids des restes à payer</p>
+            <p class="fr-text--bold fr-mb-0 fr-text--center"> <%= format_nombre_entier(chiffre.poids_restes_a_payer) %>
+              %</p>
           </div>
         </div>
       </div>
