@@ -9,6 +9,7 @@ class ChiffresController < ApplicationController
   before_action :redirect_unless_access, only: %i[index restitutions]
   before_action :redirect_unless_controleur, only: :new
   before_action :redirect_unless_can_edit, only: %i[edit update destroy]
+  before_action :authenticate_admin!, only: :export_2b2o
 
   # page des chiffres clés de l'organisme
   def index
@@ -201,6 +202,17 @@ class ChiffresController < ApplicationController
     end
   end
 
+  # Export complet de tous les chiffres (réservé au profil 2B2O)
+  def export_2b2o
+    @chiffres = Chiffre.includes(:organisme, :user).order(:organisme_id, :exercice_budgetaire, :type_budget)
+    respond_to do |format|
+      format.html
+      format.xlsx do
+        render xlsx: 'export_2b2o', filename: "export_chiffres_#{Date.today}.xlsx", disposition: 'attachment'
+      end
+    end
+  end
+
   def destroy
     exercice = @chiffre.exercice_budgetaire
     @chiffre&.destroy
@@ -378,7 +390,7 @@ class ChiffresController < ApplicationController
 
   def calculate_chiffres_budget_exercice(chiffres, organismes, exercice_budgetaire, type_budget)
     chiffres_budget = []
-    risques = ["Situation saine", "Situation saine a priori mais à surveiller", 'Risque d’insoutenabilité à moyen terme', 'Risque d’insoutenabilité élevé']
+    risques = Chiffre::RISQUES
     chiffres_selected = chiffres.where(exercice_budgetaire: exercice_budgetaire, type_budget: type_budget).group_by(&:risque_insolvabilite)
     risques.each do |risque|
       chiffres_budget << (chiffres_selected[risque] || []).count

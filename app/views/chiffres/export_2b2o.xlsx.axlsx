@@ -1,0 +1,42 @@
+wb = xlsx_package.workbook
+s = wb.styles
+header_style = s.add_style(b: true, bg_color: 'bdd7ee', border: { style: :thin, color: '161616' }, alignment: { horizontal: :center, vertical: :center, wrap_text: true })
+cell_style = s.add_style(border: { style: :thin, color: 'DDDDDD' })
+
+# Colonnes de la table chiffres, avec insertion des noms lisibles
+# à côté des clés étrangères organisme_id et user_id.
+columns = Chiffre.column_names.each_with_object([]) do |col, acc|
+  acc << col
+  acc << 'organisme_nom' if col == 'organisme_id'
+  acc << 'user_nom' if col == 'user_id'
+end
+
+wb.add_worksheet(name: 'Chiffres') do |sheet|
+  sheet.add_row(columns, style: header_style)
+
+  @chiffres.each do |chiffre|
+    row = columns.map do |col|
+      case col
+      when 'organisme_nom'
+        chiffre.organisme&.nom
+      when 'user_nom'
+        chiffre.user&.nom
+      else
+        chiffre.public_send(col)
+      end
+    end
+    sheet.add_row(row, style: cell_style)
+  end
+
+  # Filtres automatiques sur la ligne d'en-tête (toute la plage de données)
+  last_col = Axlsx.col_ref(columns.size - 1)
+  last_row = @chiffres.size + 1
+  sheet.auto_filter = "A1:#{last_col}#{last_row}"
+
+  # Fige la ligne d'en-tête
+  sheet.sheet_view.pane do |pane|
+    pane.state = :frozen
+    pane.y_split = 1
+    pane.top_left_cell = 'A2'
+  end
+end

@@ -225,11 +225,11 @@
               <div class="fr-card
                 <% if chiffre.risque_insolvabilite == 'Situation saine' %>fr-card--vert
                 <% elsif chiffre.risque_insolvabilite == 'Situation saine a priori mais à surveiller' %>fr-card--jaune
-                <% elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité à moyen terme' %>fr-card--orange
-                <% elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité élevé' %>fr-card--rouge
+                <% elsif chiffre.risque_insolvabilite == 'Risque d’insoutenabilité' %>fr-card--orange
+                <% elsif chiffre.risque_insolvabilite == 'Insoutenabilité avérée' %>fr-card--rouge
                 <% end %> fr-p-2w fr-card--no-border">
                 <div class="fr-cart__body">
-                  <p class="fr-mb-0 fr-text--center">Examen à moyen-court termes</p>
+                  <p class="fr-mb-0 fr-text--center">Analyse de la soutenabilité du budget</p>
                   <p class="fr-text--bold fr-mb-0 fr-text--center"><%= chiffre.risque_insolvabilite %></p>
                 </div>
               </div>

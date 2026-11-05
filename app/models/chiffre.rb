@@ -5,7 +5,10 @@ class Chiffre < ApplicationRecord
   include ApplicationHelper
   belongs_to :organisme
   belongs_to :user
-  before_save :update_risque, if: :valide?
+
+  RISQUES = ['Situation saine', 'Situation saine a priori mais à surveiller', 'Risque d’insoutenabilité', 'Insoutenabilité avérée'].freeze
+
+  validates :risque_insolvabilite, presence: true, inclusion: { in: RISQUES }, if: :valide?
 
   FLOAT_COLUMNS = [:emplois_plafond, :emplois_hors_plafond, :emplois_total, :emplois_plafond_rappel,
                    :emplois_plafond_prenotifie, :emplois_schema, :emplois_schema_prenotifie, :emplois_non_remuneres,
@@ -354,28 +357,6 @@ class Chiffre < ApplicationRecord
 
   def valide?
     statut == "valide"
-  end
-
-  def update_risque
-    self.risque_insolvabilite = if comptabilite_budgetaire == true
-                                  if (solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0) || (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_bfr >= 0)
-                                    'Situation saine'
-                                  elsif (solde_budgetaire >= 0 && tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_bfr < 0) || (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr < 0) || (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0 && variation_bfr >= 0) || (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation >= 0 && variation_bfr >= 0)
-                                    'Situation saine a priori mais à surveiller'
-                                  elsif (solde_budgetaire >= 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr >= 0) || (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation >= 0 && variation_bfr < 0)
-                                    "Risque d’insoutenabilité à moyen terme"
-                                  elsif (solde_budgetaire < 0 && tresorerie_variation >= 0 && fonds_roulement_variation < 0 && variation_bfr < 0) || (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr >= 0) || (solde_budgetaire < 0 && tresorerie_variation < 0 && fonds_roulement_variation < 0 && variation_bfr < 0)
-                                    "Risque d’insoutenabilité élevé"
-                                  end
-                                else
-                                  if tresorerie_variation >= 0 && fonds_roulement_variation >= 0
-                                    'Situation saine'
-                                  elsif (tresorerie_variation < 0 && fonds_roulement_variation >= 0) || (tresorerie_variation >= 0 && fonds_roulement_variation < 0)
-                                    'Situation saine a priori mais à surveiller'
-                                  elsif tresorerie_variation < 0 && fonds_roulement_variation < 0
-                                    "Risque d’insoutenabilité élevé"
-                                  end
-                                end
   end
 
 end

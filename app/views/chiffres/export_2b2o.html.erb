@@ -1,0 +1,27 @@
+<% content_for :title do %>Export des chiffres | OPERA <% end %>
+<main role="main" class="containtAll">
+  <div class="fr-container">
+    <div class="fr-grid-row fr-grid-row--gutters">
+      <div class="fr-col-12">
+        <h1 class="fr-my-4w">Export de l'ensemble des chiffres</h1>
+
+        <div class="fr-callout fr-mb-4w">
+          <p class="fr-callout__text">
+            Cet export contient <strong><%= @chiffres.count %></strong> budget(s), avec la totalité
+            des colonnes de la table des chiffres. Le nom de l'organisme et le nom du contrôleur
+            sont ajoutés à côté de leurs identifiants respectifs.
+          </p>
+        </div>
+
+        <div class="fr-download">
+          <p>
+            <%= link_to export_chiffres_path(format: :xlsx), class: "fr-download__link", target: "_blank" do %>
+              Télécharger l'export complet
+              <span class="fr-download__detail">Format .xlsx</span>
+            <% end %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

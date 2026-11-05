@@ -61,7 +61,7 @@ class PagesController < ApplicationController
   end
   def calculate_chiffres_budget_exercice(chiffres, organismes, exercice_budgetaire, type_budget)
     chiffres_budget = []
-    risques = ["Situation saine","Situation saine a priori mais à surveiller",'Risque d’insoutenabilité à moyen terme','Risque d’insoutenabilité élevé']
+    risques = Chiffre::RISQUES
     chiffres_selected = chiffres.where(exercice_budgetaire: exercice_budgetaire, type_budget: type_budget)
     risques.each do |risque|
       chiffres_budget << chiffres_selected.where(risque_insolvabilite: risque)&.length
