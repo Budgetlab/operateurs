@@ -58,7 +58,7 @@ gem 'pagy', '~> 43.2'
 gem 'rails_autolink'
 gem 'rails-i18n'
 gem 'ransack'
-gem 'roo', '~> 2.10.0'
+gem 'roo', '~> 3.0'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 gem 'ostruct'
@@ -87,5 +87,4 @@ group :test do
   # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
   gem 'capybara'
   gem 'selenium-webdriver'
-  gem 'webdrivers'
 end
